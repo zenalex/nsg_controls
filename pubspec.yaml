@@ -1,0 +1,29 @@
+name: nsg_controls
+description: A new Flutter package project.
+version: 0.0.1
+homepage:
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+environment:
+  sdk: ">=2.16.2 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get: 
+    git:
+      url: https://github.com/zenalex/getx.git
+  nsg_data:
+    path: 
+      ../nsg_data
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+  
+
+flutter:
+
