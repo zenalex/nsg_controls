@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../const.dart';
+import 'nsg_control_options.dart';
 
 class NsgTextInput extends StatelessWidget {
   final String? label;
@@ -42,12 +42,12 @@ class NsgTextInput extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 children: [
                   AbsorbPointer(child: widget),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                     child: Icon(
                       Icons.add,
                       size: 24,
-                      color: colorMain,
+                      color: ControlOptions.instance.colorMain,
                     ),
                   )
                 ],
@@ -60,13 +60,14 @@ class NsgTextInput extends StatelessWidget {
         margin: margin,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         decoration: BoxDecoration(
-            color: colorInverted,
+            color: ControlOptions.instance.colorInverted,
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(width: 2, color: colorMain)),
+            border:
+                Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: TextFormField(
           textAlign: TextAlign.center,
           maxLines: maxlines ?? 1,
-          cursorColor: colorText,
+          cursorColor: ControlOptions.instance.colorText,
           initialValue: initial,
           onChanged: (String value) {
             //dataItem.setFieldValue(fieldName, value);
@@ -74,11 +75,12 @@ class NsgTextInput extends StatelessWidget {
               onChanged!(value);
             }
           },
-          style: TextStyle(color: colorText, fontSize: fontSize),
+          style: TextStyle(
+              color: ControlOptions.instance.colorText, fontSize: fontSize),
           //requestController.requestNew.requestSubjectName.toUpperCase(),
           readOnly: (disabled == null) ? false : true,
           decoration: InputDecoration(
-            fillColor: colorInverted,
+            fillColor: ControlOptions.instance.colorInverted,
             filled: true,
             alignLabelWithHint: true,
             hintText: hint != null ? '$hint'.toUpperCase() : '',
@@ -87,8 +89,9 @@ class NsgTextInput extends StatelessWidget {
               label != null ? '   $label   '.toUpperCase() : '',
             )),
             //labelText: label != null ? '$label'.toUpperCase() : '',
-            labelStyle: const TextStyle(
-                color: colorMainDarker, backgroundColor: colorInverted),
+            labelStyle: TextStyle(
+                color: ControlOptions.instance.colorMainDarker,
+                backgroundColor: ControlOptions.instance.colorInverted),
 
             //labelText: '$title'.toUpperCase(),
             contentPadding: const EdgeInsets.only(

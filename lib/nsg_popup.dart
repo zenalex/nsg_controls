@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../const.dart';
+import 'nsg_control_options.dart';
 import 'nsg_button.dart';
 
 class NsgPopUp extends StatefulWidget {
@@ -68,30 +68,38 @@ class _NsgPopUpState extends State<NsgPopUp> {
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
                               topRight: Radius.circular(10),
                               topLeft: Radius.circular(10),
                             ),
-                            color: colorText.withOpacity(0.05),
+                            color: ControlOptions.instance.colorText
+                                .withOpacity(0.05),
                           ),
                           child: Row(
                             children: [
                               IconButton(
-                                  icon: const Icon(Icons.arrow_back_ios_new,
-                                      color: colorText, size: 24), // set your color here
+                                  icon: Icon(Icons.arrow_back_ios_new,
+                                      color: ControlOptions.instance.colorText,
+                                      size: 24), // set your color here
                                   onPressed: () {
                                     Get.back();
                                   }),
                               Expanded(
                                 child: Text(widget.title,
                                     textAlign: TextAlign.center,
-                                    style:
-                                        const TextStyle(color: colorText, fontWeight: FontWeight.bold, fontSize: 18)),
+                                    style: TextStyle(
+                                        color:
+                                            ControlOptions.instance.colorText,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18)),
                               ),
                               IconButton(
-                                  icon: const Icon(Icons.check, color: colorText, size: 24), // set your color here
+                                  icon: Icon(Icons.check,
+                                      color: ControlOptions.instance.colorText,
+                                      size: 24), // set your color here
                                   onPressed: () {
                                     widget.onConfirm!();
                                   }),
@@ -110,8 +118,10 @@ class _NsgPopUpState extends State<NsgPopUp> {
                                 child: SingleChildScrollView(
                                     controller: controller1,
                                     child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         children: widget.content!)),
                               ),
@@ -122,15 +132,21 @@ class _NsgPopUpState extends State<NsgPopUp> {
                             flex: 2,
                             child: Container(
                               width: double.infinity,
-                              decoration: const BoxDecoration(color: colorMainOpacity),
+                              decoration: BoxDecoration(
+                                  color:
+                                      ControlOptions.instance.colorMainOpacity),
                               child: Column(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 15, 0, 10),
                                     child: Text(
                                       widget.title2,
-                                      style:
-                                          const TextStyle(color: colorText, fontWeight: FontWeight.bold, fontSize: 18),
+                                      style: TextStyle(
+                                          color:
+                                              ControlOptions.instance.colorText,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
                                     ),
                                   ),
                                   Expanded(
@@ -139,7 +155,10 @@ class _NsgPopUpState extends State<NsgPopUp> {
                                       thickness: 5,
                                       isAlwaysShown: true,
                                       child: SingleChildScrollView(
-                                          controller: controller2, child: Wrap(children: widget.contentSecondary!)),
+                                          controller: controller2,
+                                          child: Wrap(
+                                              children:
+                                                  widget.contentSecondary!)),
                                     ),
                                   ),
                                 ],
@@ -148,35 +167,46 @@ class _NsgPopUpState extends State<NsgPopUp> {
                           ),
                         if (widget.text != null)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-                            child: Text('${widget.text}', style: const TextStyle(color: colorText)),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 30),
+                            child: Text('${widget.text}',
+                                style: TextStyle(
+                                    color: ControlOptions.instance.colorText)),
                           ),
                         if (widget.hint != null)
                           Container(
                             padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
                             child: Text('${widget.hint}',
-                                textAlign: TextAlign.center, style: TextStyle(color: colorText.withOpacity(0.5))),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: ControlOptions.instance.colorText
+                                        .withOpacity(0.5))),
                           ),
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
                               bottomRight: Radius.circular(10),
                               bottomLeft: Radius.circular(10),
                             ),
-                            color: colorText.withOpacity(0.05),
+                            color: ControlOptions.instance.colorText
+                                .withOpacity(0.05),
                           ),
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                            if (widget.cancelText != null)
-                              Expanded(
-                                child: NsgButton(
-                                  text: widget.cancelText,
-                                  backColor: colorInverted,
-                                  onPressed: widget.onCancel,
-                                ),
-                              ),
-                          ]),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                if (widget.cancelText != null)
+                                  Expanded(
+                                    child: NsgButton(
+                                      text: widget.cancelText,
+                                      backColor:
+                                          ControlOptions.instance.colorInverted,
+                                      onPressed: widget.onCancel,
+                                    ),
+                                  ),
+                              ]),
                         ),
                       ]))),
         ));

@@ -1,4 +1,3 @@
-import '../const.dart';
 import 'nsg_controls.dart';
 import 'nsg_popup.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +63,9 @@ class NsgSelection {
     return Container(
         //key: GlobalKey(),
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        color: element == selectedElement ? colorMain : Colors.transparent,
+        color: element == selectedElement
+            ? ControlOptions.instance.colorMain
+            : Colors.transparent,
         height: 50,
         child: Center(child: _showRowWidget(element)));
   }
@@ -76,7 +77,9 @@ class NsgSelection {
       return Text(
         element.toString(),
         style: TextStyle(
-            color: element == selectedElement ? colorText : colorText),
+            color: element == selectedElement
+                ? ControlOptions.instance.colorText
+                : ControlOptions.instance.colorText),
       );
     }
   }

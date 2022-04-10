@@ -4,7 +4,7 @@ import 'nsg_input_type.dart';
 import 'nsg_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:nsg_data/nsg_data.dart';
-import '../const.dart';
+import 'nsg_control_options.dart';
 
 class NsgInput extends StatefulWidget {
   final String? label;
@@ -115,12 +115,12 @@ class _NsgInputState extends State<NsgInput> {
         children: [
           AbsorbPointer(child: interactiveWidget),
           if (noIcon == false)
-            const Padding(
-              padding: EdgeInsets.fromLTRB(0, 4, 10, 0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 4, 10, 0),
               child: Icon(
                 Icons.unfold_more,
                 size: 24,
-                color: colorText,
+                color: ControlOptions.instance.colorText,
               ),
             )
         ],
@@ -147,9 +147,10 @@ class _NsgInputState extends State<NsgInput> {
                 ? const EdgeInsets.fromLTRB(30, 0, 30, 0)
                 : const EdgeInsets.fromLTRB(10, 5, 10, 5),
             decoration: BoxDecoration(
-                color: colorInverted,
+                color: ControlOptions.instance.colorInverted,
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(width: 2, color: colorMain)),
+                border: Border.all(
+                    width: 2, color: ControlOptions.instance.colorMain)),
             child: Center(
               child: widget.widget ??
                   TextFormField(
@@ -157,7 +158,7 @@ class _NsgInputState extends State<NsgInput> {
                     textAlign: TextAlign.center,
                     textAlignVertical: TextAlignVertical.center,
                     maxLines: widget.maxlines ?? 1,
-                    cursorColor: colorText,
+                    cursorColor: ControlOptions.instance.colorText,
                     initialValue: fieldValue.toString(),
                     onEditingComplete: () {
                       FocusScope.of(context).unfocus();
@@ -174,11 +175,13 @@ class _NsgInputState extends State<NsgInput> {
                       }
                     },
                     style: TextStyle(
-                        color: colorText, fontSize: widget.fontSize, height: 1),
+                        color: ControlOptions.instance.colorText,
+                        fontSize: widget.fontSize,
+                        height: 1),
                     //requestController.requestNew.requestSubjectName.toUpperCase(),
                     readOnly: (widget.disabled == null) ? false : true,
                     decoration: InputDecoration(
-                      fillColor: colorInverted,
+                      fillColor: ControlOptions.instance.colorInverted,
                       filled: true,
                       alignLabelWithHint: true,
                       hintText: widget.hint != null
@@ -191,9 +194,10 @@ class _NsgInputState extends State<NsgInput> {
                             : '',
                       )),
                       //labelText: label != null ? '$label'.toUpperCase() : '',
-                      labelStyle: const TextStyle(
-                          color: colorMainDarker,
-                          backgroundColor: colorInverted),
+                      labelStyle: TextStyle(
+                          color: ControlOptions.instance.colorMainDarker,
+                          backgroundColor:
+                              ControlOptions.instance.colorInverted),
 
                       //labelText: '$title'.toUpperCase(),
                       contentPadding: const EdgeInsets.only(
@@ -256,9 +260,10 @@ class _NsgInputState extends State<NsgInput> {
         margin: widget.margin,
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         decoration: BoxDecoration(
-            color: colorInverted,
+            color: ControlOptions.instance.colorInverted,
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(width: 2, color: colorMain)),
+            border:
+                Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: SizedBox(
             height: 38,
             child: Row(
@@ -266,7 +271,7 @@ class _NsgInputState extends State<NsgInput> {
                 Expanded(child: Text(widget.label ?? '')),
                 CupertinoSwitch(
                     value: fieldValue,
-                    activeColor: colorMain,
+                    activeColor: ControlOptions.instance.colorMain,
                     onChanged: (value) {
                       widget.dataItem
                           .setFieldValue(widget.fieldName, !fieldValue);
