@@ -21,14 +21,14 @@ class ControlOptions {
   final Color colorConfirmed;
   final Color colorBlue;
 
+  double sizeL = 18;
   double sizeM = 16;
   double sizeS = 12;
 
   double get screenWidth => Get.width;
 
   /// Размер одного блока с иконкой у сдвигающегося влево блока
-  double get slideBlockWidth =>
-      screenWidth > 640 ? 1 / 640 * 60 : 1 / Get.width * 60;
+  double get slideBlockWidth => screenWidth > 640 ? 1 / 640 * 60 : 1 / Get.width * 60;
 
   /// Максимальная ширина блоков, которые не нужно растягивать на всю ширину
   double maxWidth = 400;
