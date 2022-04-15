@@ -221,7 +221,7 @@ class _NsgInputState extends State<NsgInput> {
     if (widget.inputType == NsgInputType.reference) {
       widget.selectionController!.selectedItem =
           widget.dataItem.getReferent(widget.fieldName);
-
+      widget.selectionController!.refreshData();
       var form = NsgSelection(
           inputType: widget.inputType,
           controller: widget.selectionController!,

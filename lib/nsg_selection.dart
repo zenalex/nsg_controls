@@ -1,5 +1,4 @@
 import 'nsg_controls.dart';
-import 'nsg_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -91,7 +90,8 @@ class NsgSelection {
     Get.dialog(
         NsgPopUp(
             title: title,
-            content: _listArray(),
+            getContent: _listArray,
+            dataController: controller,
             confirmText: 'Подтвердить',
             onConfirm: () {
               if (selectedElement != null) {
