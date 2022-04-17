@@ -17,6 +17,10 @@ dependencies:
   nsg_data:
     path: 
       ../nsg_data
+  flutter_fadein: ^2.0.0
+  pull_to_refresh: ^2.0.0
+  jiffy: ^5.0.0 
+  flutter_svg: ^1.0.3
 
 
 dev_dependencies:
