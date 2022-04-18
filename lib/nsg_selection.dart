@@ -86,6 +86,7 @@ class NsgSelection {
   void selectFromArray(String title, Function(NsgDataItem) onSelected) {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
+      if (controller!.lateInit) controller!.requestItems();
     }
     Get.dialog(
         NsgPopUp(
