@@ -62,8 +62,7 @@ class NsgTextInput extends StatelessWidget {
         decoration: BoxDecoration(
             color: ControlOptions.instance.colorInverted,
             borderRadius: BorderRadius.circular(15),
-            border:
-                Border.all(width: 2, color: ControlOptions.instance.colorMain)),
+            border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: TextFormField(
           textAlign: TextAlign.center,
           maxLines: maxlines ?? 1,
@@ -75,8 +74,7 @@ class NsgTextInput extends StatelessWidget {
               onChanged!(value);
             }
           },
-          style: TextStyle(
-              color: ControlOptions.instance.colorText, fontSize: fontSize),
+          style: TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
           //requestController.requestNew.requestSubjectName.toUpperCase(),
           readOnly: (disabled == null) ? false : true,
           decoration: InputDecoration(
@@ -90,12 +88,10 @@ class NsgTextInput extends StatelessWidget {
             )),
             //labelText: label != null ? '$label'.toUpperCase() : '',
             labelStyle: TextStyle(
-                color: ControlOptions.instance.colorMainDarker,
-                backgroundColor: ControlOptions.instance.colorInverted),
+                color: ControlOptions.instance.colorMainDarker, backgroundColor: ControlOptions.instance.colorInverted),
 
             //labelText: '$title'.toUpperCase(),
-            contentPadding: const EdgeInsets.only(
-                left: 10.0, bottom: 0.0, top: 0.0, right: 10.0),
+            contentPadding: const EdgeInsets.only(left: 10.0, bottom: 0.0, top: 0.0, right: 10.0),
             enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.transparent),
               borderRadius: BorderRadius.circular(10),

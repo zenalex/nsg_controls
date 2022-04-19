@@ -97,26 +97,22 @@ class NsgPeriod {
         dateText = NsgDateFormat.dateFormat(beginDate, 'yyyy г.');
         break;
       case 2:
-        dateText = NsgDateFormat.dateFormat(
-            beginDate, getKvartal(beginDate).toString() + ' квартал yyyy г.');
+        dateText = NsgDateFormat.dateFormat(beginDate, getKvartal(beginDate).toString() + ' квартал yyyy г.');
         break;
       case 3:
         dateText = NsgDateFormat.dateFormat(beginDate, 'MMM yyyy г.');
         break;
       case 4:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMM yy - ') +
-            NsgDateFormat.dateFormat(endDate, 'd MMM yy');
+        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMM yy - ') + NsgDateFormat.dateFormat(endDate, 'd MMM yy');
         break;
       case 5:
         dateText = NsgDateFormat.dateFormat(beginDate, 'd MMMM yyyy г.');
         break;
       case 6:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMM yy - ') +
-            NsgDateFormat.dateFormat(endDate, 'd MMM yy');
+        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMM yy - ') + NsgDateFormat.dateFormat(endDate, 'd MMM yy');
         break;
       case 7:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMM yy - ') +
-            NsgDateFormat.dateFormat(endDate, 'd MMM yy');
+        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMM yy - ') + NsgDateFormat.dateFormat(endDate, 'd MMM yy');
         break;
 
       default:
@@ -132,32 +128,22 @@ class NsgPeriod {
   }
 
   void setToQuarter(DateTime date) {
-    beginDate = Jiffy(DateTime(date.year))
-        .add(months: (getKvartal(date) - 1) * 3)
-        .dateTime;
-    endDate = Jiffy(beginDate)
-        .add(months: 3)
-        .dateTime
-        .subtract(const Duration(microseconds: 1));
+    beginDate = Jiffy(DateTime(date.year)).add(months: (getKvartal(date) - 1) * 3).dateTime;
+    endDate = Jiffy(beginDate).add(months: 3).dateTime.subtract(const Duration(microseconds: 1));
     type = NsgPeriodType.quarter;
     setDateText();
   }
 
   void setToMonth(DateTime date) {
     beginDate = DateTime(date.year, date.month);
-    endDate = Jiffy(beginDate)
-        .add(months: 1)
-        .dateTime
-        .subtract(const Duration(microseconds: 1));
+    endDate = Jiffy(beginDate).add(months: 1).dateTime.subtract(const Duration(microseconds: 1));
     type = NsgPeriodType.month;
     setDateText();
   }
 
   void setToWeek(DateTime date) {
     beginDate = dateZeroTime(date).subtract(Duration(days: date.weekday - 1));
-    endDate = beginDate
-        .add(const Duration(days: 7))
-        .subtract(const Duration(microseconds: 1));
+    endDate = beginDate.add(const Duration(days: 7)).subtract(const Duration(microseconds: 1));
     type = NsgPeriodType.week;
     setDateText();
   }
@@ -169,14 +155,16 @@ class NsgPeriod {
     setDateText();
   }
 
-  void setToPeriod(DateTime date) {
-    beginDate = dateZeroTime(beginDate);
-    endDate = dateZeroTime(endDate);
+  void setToPeriod(NsgPeriod date) {
+    beginDate = dateZeroTime(date.beginDate);
+    endDate = dateZeroTime(date.endDate);
     type = NsgPeriodType.period;
     setDateText();
   }
 
-  void setToPeriodWithTime(DateTime date) {
+  void setToPeriodWithTime(NsgPeriod date) {
+    beginDate = date.beginDate;
+    endDate = date.endDate;
     type = NsgPeriodType.periodWidthTime;
     setDateText();
   }

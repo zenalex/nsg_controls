@@ -8,6 +8,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'components/nsg_period.dart';
 import 'nsg_checkbox.dart';
+import 'nsg_date_picker.dart';
 import 'widgets/body_wrap.dart';
 import 'widgets/nsg_appbar.dart';
 import 'widgets/nsg_progressbar.dart';
@@ -52,9 +53,7 @@ class NsgListPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              controller.obx((state) => _getNsgAppBar(Get.context!),
-                  onLoading: SimpleBuilder(
-                      builder: (context) => _getNsgAppBar(context))),
+              controller.obx((state) => _getNsgAppBar(Get.context!), onLoading: SimpleBuilder(builder: (context) => _getNsgAppBar(context))),
               controller.obx(
                   (state) => SearchWidget(
                         controller: controller,
@@ -80,12 +79,7 @@ class NsgListPage extends StatelessWidget {
                           onRefresh: _onRefresh,
                           child: ListView(
                             children: [
-                              FadeIn(
-                                  duration: Duration(
-                                      milliseconds:
-                                          ControlOptions.instance.fadeSpeed),
-                                  curve: Curves.easeIn,
-                                  child: _showItems()),
+                              FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: _showItems()),
                             ],
                           ),
                         )),
@@ -151,8 +145,7 @@ class NsgListPage extends StatelessWidget {
           : null,
       onPressed3: () {
         //setState(() {
-        controller.controllerFilter.isOpen =
-            !controller.controllerFilter.isOpen;
+        controller.controllerFilter.isOpen = !controller.controllerFilter.isOpen;
         controller.update();
         //});
       },
@@ -169,9 +162,7 @@ class SearchWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 500),
-      crossFadeState: controller.controllerFilter.isOpen == true
-          ? CrossFadeState.showSecond
-          : CrossFadeState.showFirst,
+      crossFadeState: controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
       firstChild: const SizedBox(),
       secondChild: Container(
           padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
@@ -191,8 +182,7 @@ class SearchWidget extends StatelessWidget {
 class NsgPeriodFilter extends StatefulWidget {
   final NsgDataController controller;
   final Function(String)? onConfirm;
-  const NsgPeriodFilter({Key? key, required this.controller, this.onConfirm})
-      : super(key: key);
+  const NsgPeriodFilter({Key? key, required this.controller, this.onConfirm}) : super(key: key);
   @override
   State<NsgPeriodFilter> createState() => _NsgPeriodFilterState();
 }
@@ -200,15 +190,13 @@ class NsgPeriodFilter extends StatefulWidget {
 class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   @override
   Widget build(BuildContext context) {
-    void showPopup(BuildContext context, int hours, int minutes,
-        Function(DateTime endDate) onClose) {
+    void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
       DateTime _today = DateTime.now();
-      DateTime selectedDate =
-          DateTime(_today.year, _today.month, _today.day, hours, minutes);
+      DateTime selectedDate = DateTime(_today.year, _today.month, _today.day, hours, minutes);
 
       Get.dialog(
           NsgPopUp(
-              height: 540,
+              height: 440,
               title: 'Выберите период',
               getContent: () => [const NsgPeriodFilterContent()],
               onConfirm: () {
@@ -227,9 +215,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
     int minutes = 0;
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 500),
-      crossFadeState: widget.controller.controllerFilter.isOpen == true
-          ? CrossFadeState.showSecond
-          : CrossFadeState.showFirst,
+      crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
       firstChild: const SizedBox(),
       secondChild: Center(
         child: Padding(
@@ -247,15 +233,11 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
               decoration: BoxDecoration(
                   color: ControlOptions.instance.colorInverted,
                   borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                      width: 2, color: ControlOptions.instance.colorMain)),
+                  border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Center(
                 child: Text('С: 01.12.2020    По: 12.12.2020',
-                    style: TextStyle(
-                        color: ControlOptions.instance.colorText,
-                        fontSize: ControlOptions.instance.sizeM,
-                        fontWeight: FontWeight.bold)),
+                    style: TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.bold)),
               ),
             ),
           ),
@@ -307,37 +289,37 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Row(
                           children: [
-                            Expanded(
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        color: ControlOptions
-                                            .instance.colorInverted,
-                                        borderRadius: BorderRadius.circular(15),
-                                        border: Border.all(
-                                            width: 2,
-                                            color: ControlOptions
-                                                .instance.colorMain)),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: Center(child: Text(date.dateText)))),
-                            const SizedBox(width: 5),
                             SizedBox(
-                                width: 60,
-                                height: 50,
+                                width: 44,
+                                height: 44,
                                 child: NsgButton(
+                                    margin: 0,
+                                    padding: const EdgeInsets.all(0),
                                     style: "widget",
-                                    widget: const Icon(Icons.remove),
+                                    widget: const Center(child: Icon(Icons.remove)),
                                     onPressed: () {
                                       date.minus();
                                       date.setDateText();
                                       setState(() {});
                                     })),
+                            const SizedBox(width: 6),
+                            Expanded(
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        color: ControlOptions.instance.colorInverted,
+                                        borderRadius: BorderRadius.circular(15),
+                                        border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    child: Center(child: Text(date.dateText)))),
+                            const SizedBox(width: 6),
                             SizedBox(
-                                width: 60,
-                                height: 50,
+                                width: 44,
+                                height: 44,
                                 child: NsgButton(
+                                    margin: 0,
+                                    padding: const EdgeInsets.all(0),
                                     style: "widget",
-                                    widget: const Icon(Icons.add),
+                                    widget: const Center(child: Icon(Icons.add)),
                                     onPressed: () {
                                       date.plus();
                                       date.setDateText();
@@ -350,56 +332,118 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              //NsgCheckBox(label: 'Сегодня', value: false, onPressed: () {}),
+
+                              Row(
                                 children: [
-                                  //NsgCheckBox(label: 'Сегодня', value: false, onPressed: () {}),
-                                  NsgCheckBox(
-                                      radio: true,
-                                      label: 'Год ',
-                                      value: _selected == 1 ? true : false,
-                                      onPressed: () {
-                                        _selected = 1;
-                                        date.setToYear(date.beginDate);
-                                        setState(() {});
-                                      }),
-                                  NsgCheckBox(
-                                      radio: true,
-                                      label: 'Квартал',
-                                      value: _selected == 2 ? true : false,
-                                      onPressed: () {
-                                        _selected = 2;
-                                        date.setToQuarter(date.beginDate);
-                                        setState(() {});
-                                      }),
-                                  NsgCheckBox(
-                                      radio: true,
-                                      label: 'Месяц',
-                                      value: _selected == 3 ? true : false,
-                                      onPressed: () {
-                                        _selected = 3;
-                                        date.setToMonth(date.beginDate);
-                                        setState(() {});
-                                      }),
-                                  NsgCheckBox(
-                                      radio: true,
-                                      label: 'Неделя',
-                                      value: _selected == 4 ? true : false,
-                                      onPressed: () {
-                                        _selected = 4;
-                                        date.setToWeek(date.beginDate);
-                                        setState(() {});
-                                      }),
-                                  NsgCheckBox(
-                                      radio: true,
-                                      label: 'День',
-                                      value: _selected == 5 ? true : false,
-                                      onPressed: () {
-                                        _selected = 5;
-                                        date.setToDay(date.beginDate);
-                                        setState(() {});
-                                      }),
-                                ]),
+                                  Expanded(
+                                    child: NsgCheckBox(
+                                        radio: true,
+                                        label: 'Год ',
+                                        value: _selected == 1 ? true : false,
+                                        onPressed: () {
+                                          _selected = 1;
+                                          date.setToYear(date.beginDate);
+                                          setState(() {});
+                                        }),
+                                  ),
+                                  Expanded(
+                                    child: NsgCheckBox(
+                                        radio: true,
+                                        label: 'Квартал',
+                                        value: _selected == 2 ? true : false,
+                                        onPressed: () {
+                                          _selected = 2;
+                                          date.setToQuarter(date.beginDate);
+                                          setState(() {});
+                                        }),
+                                  ),
+                                ],
+                              ),
+
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: NsgCheckBox(
+                                        radio: true,
+                                        label: 'Месяц',
+                                        value: _selected == 3 ? true : false,
+                                        onPressed: () {
+                                          _selected = 3;
+                                          date.setToMonth(date.beginDate);
+                                          setState(() {});
+                                        }),
+                                  ),
+                                  Expanded(
+                                    child: NsgCheckBox(
+                                        radio: true,
+                                        label: 'Неделя',
+                                        value: _selected == 4 ? true : false,
+                                        onPressed: () {
+                                          _selected = 4;
+                                          date.setToWeek(date.beginDate);
+                                          setState(() {});
+                                        }),
+                                  ),
+                                ],
+                              ),
+
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: NsgCheckBox(
+                                        radio: true,
+                                        label: 'День',
+                                        value: _selected == 5 ? true : false,
+                                        onPressed: () {
+                                          _selected = 5;
+                                          date.setToDay(date.beginDate);
+                                          setState(() {});
+                                        }),
+                                  ),
+                                  Expanded(
+                                      child: NsgButton(
+                                          margin: 0,
+                                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                          text: 'Сегодня',
+                                          //color: ControlOptions.instance.colorText,
+                                          //backColor: ControlOptions.instance.colorInverted,
+                                          onPressed: () {
+                                            date.beginDate = date.dateZeroTime(DateTime.now());
+                                            date.endDate = date.dateZeroTime(DateTime.now());
+                                            switch (_selected) {
+                                              case 1:
+                                                date.setToYear(date.beginDate);
+                                                break;
+                                              case 2:
+                                                date.setToQuarter(date.beginDate);
+                                                break;
+                                              case 3:
+                                                date.setToMonth(date.beginDate);
+                                                break;
+                                              case 4:
+                                                date.setToWeek(date.beginDate);
+                                                break;
+                                              case 5:
+                                                date.setToDay(date.beginDate);
+                                                break;
+                                              case 6:
+                                                date.setToPeriod(date);
+                                                break;
+                                              case 7:
+                                                date.setToPeriodWithTime(date);
+                                                break;
+
+                                              default:
+                                                print("добавление - ошибка");
+                                            }
+                                            date.setDateText();
+                                            setState(() {});
+                                          }))
+                                ],
+                              ),
+                            ]),
                           ),
                         ],
                       ),
@@ -409,129 +453,103 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
-                                  flex: 2,
                                   child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                    child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          NsgCheckBox(
-                                              radio: true,
-                                              label: 'Другой период',
-                                              value:
-                                                  _selected == 6 ? true : false,
-                                              onPressed: () {
-                                                _selected = 6;
-                                                date.setToPeriod(
-                                                    date.beginDate);
-                                                setState(() {});
-                                              }),
-                                          Opacity(
-                                            opacity: _selected == 6 ? 1 : 0.3,
-                                            child: NsgTimePicker(
-                                              disabled: !_timeselected == true
-                                                  ? true
-                                                  : false,
-                                              margin: const EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 10),
-                                              initialTime:
-                                                  NsgDateFormat.timeToDuration(
-                                                      time1),
-                                              onClose: (value) {
-                                                time1 = DateTime(time1.year,
-                                                        time1.month, time1.day)
-                                                    .add(value);
-                                                setState(() {});
-                                              },
-                                            ),
-                                          ),
-                                          Opacity(
-                                            opacity: _selected == 6 ? 1 : 0.3,
-                                            child: NsgTimePicker(
-                                              disabled: !_timeselected == true
-                                                  ? true
-                                                  : false,
-                                              margin: const EdgeInsets.all(0),
-                                              initialTime:
-                                                  NsgDateFormat.timeToDuration(
-                                                      time1),
-                                              onClose: (value) {
-                                                time1 = DateTime(time1.year,
-                                                        time1.month, time1.day)
-                                                    .add(value);
-                                                setState(() {});
-                                              },
-                                            ),
-                                          ),
-                                        ]),
-                                  )),
+                                padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                                  NsgCheckBox(
+                                      radio: true,
+                                      label: 'Другой период',
+                                      value: _selected == 6 ? true : false,
+                                      onPressed: () {
+                                        _selected = 6;
+                                        date.setToPeriod(date);
+                                        setState(() {});
+                                      }),
+                                  Opacity(
+                                    opacity: _selected == 6 ? 1 : 0.3,
+                                    child: NsgDatePicker(
+                                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                      initialTime: date.beginDate,
+                                      onClose: (value) {
+                                        if (value.difference(date.endDate) > const Duration(minutes: 0)) {
+                                          date.beginDate = value;
+                                          date.endDate = value;
+                                        } else {
+                                          date.beginDate = value;
+                                        }
+                                        date.setToPeriod(date);
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
+                                  Opacity(
+                                    opacity: _selected == 6 ? 1 : 0.3,
+                                    child: NsgDatePicker(
+                                      margin: const EdgeInsets.all(0),
+                                      initialTime: date.endDate,
+                                      onClose: (value) {
+                                        if (value.difference(date.beginDate) < const Duration(minutes: 0)) {
+                                          date.beginDate = value;
+                                          date.endDate = value;
+                                        } else {
+                                          date.endDate = value;
+                                        }
+                                        date.setToPeriodWithTime(date);
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
+                                ]),
+                              )),
                               Expanded(
                                   child: Opacity(
                                 opacity: _selected == 6 ? 1 : 0.3,
-                                child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      NsgCheckBox(
-                                          label: 'Время',
-                                          value: _timeselected == true
-                                              ? true
-                                              : false,
-                                          onPressed: _selected == 6
-                                              ? () {
-                                                  date.setToPeriodWithTime(
-                                                      date.beginDate);
-                                                  _timeselected =
-                                                      !_timeselected;
-                                                  setState(() {});
-                                                }
-                                              : () {}),
-                                      Opacity(
-                                        opacity: _timeselected == true
+                                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                                  NsgCheckBox(
+                                      label: 'Время',
+                                      value: _timeselected == true ? true : false,
+                                      onPressed: _selected == 6
+                                          ? () {
+                                              date.beginDate = date.dateZeroTime(date.beginDate).add(Duration(hours: time1.hour, minutes: time1.minute));
+                                              date.endDate = date.dateZeroTime(date.endDate).add(Duration(hours: time2.hour, minutes: time2.minute));
+                                              date.setToPeriodWithTime(date);
+                                              _timeselected = !_timeselected;
+                                              setState(() {});
+                                            }
+                                          : () {}),
+                                  Opacity(
+                                    opacity: _timeselected == true
+                                        ? 1
+                                        : _selected != 6
                                             ? 1
-                                            : _selected != 6
-                                                ? 1
-                                                : 0.3,
-                                        child: NsgTimePicker(
-                                          disabled: !_timeselected == true
-                                              ? true
-                                              : false,
-                                          margin: const EdgeInsets.fromLTRB(
-                                              0, 0, 0, 10),
-                                          initialTime:
-                                              NsgDateFormat.timeToDuration(
-                                                  time1),
-                                          onClose: (value) {
-                                            time1 = DateTime(time1.year,
-                                                    time1.month, time1.day)
-                                                .add(value);
-                                            setState(() {});
-                                          },
-                                        ),
-                                      ),
-                                      Opacity(
-                                        opacity: _timeselected == true
+                                            : 0.3,
+                                    child: NsgTimePicker(
+                                      disabled: !_timeselected == true ? true : false,
+                                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                      initialTime: NsgDateFormat.timeToDuration(time1),
+                                      onClose: (value) {
+                                        time1 = DateTime(time1.year, time1.month, time1.day).add(value);
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
+                                  Opacity(
+                                    opacity: _timeselected == true
+                                        ? 1
+                                        : _selected != 6
                                             ? 1
-                                            : _selected != 6
-                                                ? 1
-                                                : 0.3,
-                                        child: NsgTimePicker(
-                                          disabled: !_timeselected == true
-                                              ? true
-                                              : false,
-                                          margin: const EdgeInsets.all(0),
-                                          initialTime:
-                                              NsgDateFormat.timeToDuration(
-                                                  time2),
-                                          onClose: (value) {
-                                            time2 = DateTime(time2.year,
-                                                    time2.month, time2.day)
-                                                .add(value);
-                                            setState(() {});
-                                          },
-                                        ),
-                                      ),
-                                    ]),
+                                            : 0.3,
+                                    child: NsgTimePicker(
+                                      disabled: !_timeselected == true ? true : false,
+                                      margin: const EdgeInsets.all(0),
+                                      initialTime: NsgDateFormat.timeToDuration(time2),
+                                      onClose: (value) {
+                                        time2 = DateTime(time2.year, time2.month, time2.day).add(value);
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
+                                ]),
                               ))
                             ],
                           ),
