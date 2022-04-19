@@ -258,7 +258,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
   int _selected = 1;
   bool _timeselected = false;
   DateTime time1 = DateTime(0);
-  DateTime time2 = DateTime(0);
+  DateTime time2 = DateTime(0).add(const Duration(hours: 23, minutes: 59));
   NsgPeriod date = NsgPeriod();
 
   @override

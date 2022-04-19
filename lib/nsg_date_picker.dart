@@ -62,33 +62,35 @@ class NsgDatePicker extends StatelessWidget {
               });
             }
           : null,
-      child: Container(
-          constraints: const BoxConstraints(minHeight: 50),
-          margin: margin,
-          decoration: BoxDecoration(
-              color: ControlOptions.instance.colorInverted,
-              border: Border.all(width: 2, color: ControlOptions.instance.colorMain),
-              borderRadius: BorderRadius.circular(15)),
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (label != null)
-                  Text(
-                    "$label".toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                Text(
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Container(
+              constraints: const BoxConstraints(minHeight: 50),
+              margin: margin,
+              decoration: BoxDecoration(
+                  color: ControlOptions.instance.colorInverted,
+                  border: Border.all(width: 2, color: ControlOptions.instance.colorMain),
+                  borderRadius: BorderRadius.circular(15)),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+              child: Center(
+                child: Text(
                   NsgDateFormat.dateFormat(initialTime, 'd MMM yy'),
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16),
                 ),
-              ],
+              )),
+          Container(
+            padding: const EdgeInsets.fromLTRB(10, 4, 10, 0),
+            decoration: BoxDecoration(color: ControlOptions.instance.colorInverted),
+            child: Text(
+              label != null ? label!.toUpperCase() : '',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
             ),
-          )),
+          ),
+        ],
+      ),
     );
   }
 }
