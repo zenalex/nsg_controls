@@ -458,7 +458,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                                   NsgCheckBox(
                                       radio: true,
-                                      label: 'Другой период',
+                                      label: 'Период',
                                       value: _selected == 6 ? true : false,
                                       onPressed: () {
                                         _selected = 6;
