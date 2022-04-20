@@ -103,16 +103,16 @@ class NsgPeriod {
         dateText = NsgDateFormat.dateFormat(beginDate, 'MMM yyyy г.');
         break;
       case 4:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMM yy - ') + NsgDateFormat.dateFormat(endDate, 'd MMM yy');
+        dateText = NsgDateFormat.dateFormat(beginDate, 'dd.MM.yy - ') + NsgDateFormat.dateFormat(endDate, 'dd.MM.yy');
         break;
       case 5:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMMM yyyy г.');
+        dateText = NsgDateFormat.dateFormat(beginDate, 'dd MMMM yyyy г.');
         break;
       case 6:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMM yy - ') + NsgDateFormat.dateFormat(endDate, 'd MMM yy');
+        dateText = NsgDateFormat.dateFormat(beginDate, 'dd.MM.yy - ') + NsgDateFormat.dateFormat(endDate, 'dd.MM.yy');
         break;
       case 7:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'd MMM yy - ') + NsgDateFormat.dateFormat(endDate, 'd MMM yy');
+        dateText = NsgDateFormat.dateFormat(beginDate, 'dd.MM.yy - ') + NsgDateFormat.dateFormat(endDate, 'dd.MM.yy');
         break;
 
       default:

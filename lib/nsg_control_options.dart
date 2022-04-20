@@ -37,7 +37,7 @@ class ControlOptions {
   int fadeSpeed = 500;
 
   /// Форматирование даты по умолчанию
-  String dateformat = 'dd.MM.YY';
+  String dateformat = 'dd.MM.yy';
 
   ControlOptions({
     this.colorMain = const Color.fromRGBO(233, 200, 45, 1),

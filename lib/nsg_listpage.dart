@@ -6,13 +6,6 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'components/nsg_period.dart';
-import 'nsg_checkbox.dart';
-import 'nsg_date_picker.dart';
-import 'widgets/body_wrap.dart';
-import 'widgets/nsg_appbar.dart';
-import 'widgets/nsg_progressbar.dart';
-
 class NsgListPage extends StatelessWidget {
   final String text;
   final String title;
@@ -64,6 +57,11 @@ class NsgListPage extends StatelessWidget {
               controller.obx(
                   (state) => NsgPeriodFilter(
                         controller: controller,
+                        onConfirm: (value) {
+                          controller.controllerFilter.beginDate = value.beginDate;
+                          controller.controllerFilter.endDate = value.endDate;
+                          controller.update();
+                        },
                       ),
                   onLoading: NsgPeriodFilter(
                     controller: controller,
@@ -181,38 +179,52 @@ class SearchWidget extends StatelessWidget {
 
 class NsgPeriodFilter extends StatefulWidget {
   final NsgDataController controller;
-  final Function(String)? onConfirm;
+  final Function(NsgPeriod)? onConfirm;
   const NsgPeriodFilter({Key? key, required this.controller, this.onConfirm}) : super(key: key);
   @override
   State<NsgPeriodFilter> createState() => _NsgPeriodFilterState();
 }
 
+/// Выбранная дата
+NsgPeriod selectedDate = NsgPeriod();
+
 class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   @override
-  Widget build(BuildContext context) {
-    void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
-      DateTime _today = DateTime.now();
-      DateTime selectedDate = DateTime(_today.year, _today.month, _today.day, hours, minutes);
+  void initState() {
+    super.initState();
+    selectedDate.beginDate = widget.controller.controllerFilter.beginDate;
+    selectedDate.endDate = widget.controller.controllerFilter.endDate;
+  }
 
+  String _showPeriod() {
+    selectedDate.type = NsgPeriodType(widget.controller.controllerFilter.periodSelected);
+    selectedDate.setDateText();
+    return ' ${selectedDate.dateText} ';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    void showPopup(BuildContext context, Function(NsgPeriod date) onClose) {
       Get.dialog(
           NsgPopUp(
               height: 440,
               title: 'Выберите период',
-              getContent: () => [const NsgPeriodFilterContent()],
+              getContent: () => [
+                    NsgPeriodFilterContent(
+                        onSelect: (value) {
+                          selectedDate = value;
+                        },
+                        controller: widget.controller,
+                        periodSelected: widget.controller.controllerFilter.periodSelected,
+                        periodTimeEnabled: widget.controller.controllerFilter.periodTimeEnabled)
+                  ],
               onConfirm: () {
-                //print(widget.imageList.indexOf(_selected));
-                //onConfirm(_selected);
-                //widget.dataItem.setFieldValue(widget.fieldName, widget.imageList.indexOf(_selected));
-
-                //if (widget.onConfirm != null) widget.onConfirm!();
-                //setState(() {});
+                widget.onConfirm!(selectedDate);
                 Get.back();
               }),
           barrierDismissible: false);
     }
 
-    int hours = 0;
-    int minutes = 0;
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 500),
       crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
@@ -222,11 +234,8 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: GestureDetector(
             onTap: () {
-              showPopup(context, hours, minutes, (value) {
-                DateTime now = DateTime.now();
-                DateTime date = DateTime(now.year, now.month, now.day);
-                Duration duration = value.difference(date);
-                //onClose(duration);
+              showPopup(context, (value) {
+                selectedDate = value;
               });
             },
             child: Container(
@@ -236,7 +245,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                   border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Center(
-                child: Text('С: 01.12.2020    По: 12.12.2020',
+                child: Text(_showPeriod(),
                     style: TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.bold)),
               ),
             ),
@@ -248,7 +257,11 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
 }
 
 class NsgPeriodFilterContent extends StatefulWidget {
-  const NsgPeriodFilterContent({Key? key}) : super(key: key);
+  final NsgDataController controller;
+  final int periodSelected;
+  final bool periodTimeEnabled;
+  final Function(NsgPeriod)? onSelect;
+  const NsgPeriodFilterContent({Key? key, this.onSelect, this.periodSelected = 1, this.periodTimeEnabled = false, required this.controller}) : super(key: key);
 
   @override
   State<NsgPeriodFilterContent> createState() => NsgPeriodFilterContentState();
@@ -264,18 +277,55 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
   @override
   void initState() {
     super.initState();
+    date.beginDate = widget.controller.controllerFilter.beginDate;
     date.setDateText();
+    _selected = widget.periodSelected;
+    _timeselected = widget.periodTimeEnabled;
+  }
+
+  void _setToSelected(int _selected) {
+    switch (_selected) {
+      case 1:
+        date.setToYear(date.beginDate);
+        break;
+      case 2:
+        date.setToQuarter(date.beginDate);
+        break;
+      case 3:
+        date.setToMonth(date.beginDate);
+        break;
+      case 4:
+        date.setToWeek(date.beginDate);
+        break;
+      case 5:
+        date.setToDay(date.beginDate);
+        break;
+      case 6:
+        date.setToPeriod(date);
+        break;
+      case 7:
+        date.setToPeriodWithTime(date);
+        break;
+
+      default:
+        print("Кнопка 'Сегодня' - ошибка");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    widget.controller.controllerFilter.periodSelected = _selected;
+    widget.controller.controllerFilter.periodTimeEnabled = _timeselected;
+    _setToSelected(_selected);
+    widget.onSelect!(date);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          constraints: const BoxConstraints(maxWidth: 340),
+          constraints: const BoxConstraints(maxWidth: 360),
           child: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -302,16 +352,27 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       date.setDateText();
                                       setState(() {});
                                     })),
-                            const SizedBox(width: 6),
                             Expanded(
+                                child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 6),
+                              child: GestureDetector(
+                                onTap: () {
+                                  NsgDatePicker(initialTime: date.beginDate, onClose: (value) {}).showPopup(context, date.beginDate, (value) {
+                                    date.beginDate = value;
+                                    _setToSelected(_selected);
+                                    date.setDateText();
+                                    setState(() {});
+                                  });
+                                },
                                 child: Container(
                                     decoration: BoxDecoration(
                                         color: ControlOptions.instance.colorInverted,
                                         borderRadius: BorderRadius.circular(15),
                                         border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
                                     padding: const EdgeInsets.symmetric(vertical: 10),
-                                    child: Center(child: Text(date.dateText)))),
-                            const SizedBox(width: 6),
+                                    child: Center(child: Text(date.dateText))),
+                              ),
+                            )),
                             SizedBox(
                                 width: 44,
                                 height: 44,
@@ -405,39 +466,13 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   Expanded(
                                       child: NsgButton(
                                           margin: 0,
-                                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
                                           text: 'Сегодня',
-                                          //color: ControlOptions.instance.colorText,
-                                          //backColor: ControlOptions.instance.colorInverted,
+                                          borderRadius: 10,
                                           onPressed: () {
                                             date.beginDate = date.dateZeroTime(DateTime.now());
                                             date.endDate = date.dateZeroTime(DateTime.now());
-                                            switch (_selected) {
-                                              case 1:
-                                                date.setToYear(date.beginDate);
-                                                break;
-                                              case 2:
-                                                date.setToQuarter(date.beginDate);
-                                                break;
-                                              case 3:
-                                                date.setToMonth(date.beginDate);
-                                                break;
-                                              case 4:
-                                                date.setToWeek(date.beginDate);
-                                                break;
-                                              case 5:
-                                                date.setToDay(date.beginDate);
-                                                break;
-                                              case 6:
-                                                date.setToPeriod(date);
-                                                break;
-                                              case 7:
-                                                date.setToPeriodWithTime(date);
-                                                break;
-
-                                              default:
-                                                print("добавление - ошибка");
-                                            }
+                                            _setToSelected(_selected);
                                             date.setDateText();
                                             setState(() {});
                                           }))
@@ -462,6 +497,10 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       value: _selected == 6 ? true : false,
                                       onPressed: () {
                                         _selected = 6;
+                                        if (_timeselected == true) {
+                                          date.beginDate = date.dateZeroTime(date.beginDate).add(Duration(hours: time1.hour, minutes: time1.minute));
+                                          date.endDate = date.dateZeroTime(date.endDate).add(Duration(hours: time2.hour, minutes: time2.minute));
+                                        }
                                         date.setToPeriod(date);
                                         setState(() {});
                                       }),
@@ -510,8 +549,13 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       value: _timeselected == true ? true : false,
                                       onPressed: _selected == 6
                                           ? () {
-                                              date.beginDate = date.dateZeroTime(date.beginDate).add(Duration(hours: time1.hour, minutes: time1.minute));
-                                              date.endDate = date.dateZeroTime(date.endDate).add(Duration(hours: time2.hour, minutes: time2.minute));
+                                              if (_timeselected == true) {
+                                                date.beginDate = date.dateZeroTime(date.beginDate).add(Duration(hours: time1.hour, minutes: time1.minute));
+                                                date.endDate = date.dateZeroTime(date.endDate).add(Duration(hours: time2.hour, minutes: time2.minute));
+                                              } else {
+                                                date.beginDate = date.dateZeroTime(date.beginDate);
+                                                date.endDate = date.dateZeroTime(date.endDate);
+                                              }
                                               date.setToPeriodWithTime(date);
                                               _timeselected = !_timeselected;
                                               setState(() {});

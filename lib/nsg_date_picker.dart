@@ -75,14 +75,14 @@ class NsgDatePicker extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
               child: Center(
                 child: Text(
-                  NsgDateFormat.dateFormat(initialTime, 'd MMM yy'),
+                  NsgDateFormat.dateFormat(initialTime, 'dd.MM.yy'),
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16),
                 ),
               )),
           Container(
             padding: const EdgeInsets.fromLTRB(10, 4, 10, 0),
-            decoration: BoxDecoration(color: ControlOptions.instance.colorInverted),
+            decoration: BoxDecoration(color: label != null ? ControlOptions.instance.colorInverted : Colors.transparent),
             child: Text(
               label != null ? label!.toUpperCase() : '',
               textAlign: TextAlign.center,
