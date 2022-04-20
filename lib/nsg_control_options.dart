@@ -36,6 +36,9 @@ class ControlOptions {
   /// Скорость анимации появления блоков в миллисекундах
   int fadeSpeed = 500;
 
+  /// Форматирование даты по умолчанию
+  String dateformat = 'dd.MM.YY';
+
   ControlOptions({
     this.colorMain = const Color.fromRGBO(233, 200, 45, 1),
     this.colorText = const Color.fromARGB(255, 70, 59, 11),

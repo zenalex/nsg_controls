@@ -1,8 +1,9 @@
 import 'package:intl/intl.dart';
+import 'package:nsg_controls/nsg_controls.dart';
 
 abstract class NsgDateFormat {
-  static dateFormat(DateTime datetime, String format) {
-    return DateFormat(format, 'ru_RU').format(datetime);
+  static dateFormat(DateTime datetime, String? format) {
+    return DateFormat(format ?? ControlOptions.instance.dateformat, 'ru_RU').format(datetime);
   }
 
   static Duration timeToDuration(DateTime datetime) {
