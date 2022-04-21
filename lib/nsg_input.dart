@@ -14,6 +14,7 @@ class NsgInput extends StatefulWidget {
   final EdgeInsets? margin;
   final String? hint;
   final Widget? widget;
+  final double borderRadius;
   final Function(NsgDataItem)? onChanged;
   final VoidCallback? onPressed;
   final VoidCallback? onEditingComplete;
@@ -51,6 +52,7 @@ class NsgInput extends StatefulWidget {
       this.imagesList,
       this.disabled,
       this.fontSize = 16,
+      this.borderRadius = 15,
       this.margin = const EdgeInsets.fromLTRB(0, 10, 0, 5),
       this.gesture,
       this.hint,
@@ -105,8 +107,7 @@ class NsgInput extends StatefulWidget {
 class _NsgInputState extends State<NsgInput> {
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
   Widget _gestureWrap(Widget interactiveWidget, bool noIcon) {
-    if (widget.inputType == NsgInputType.stringValue &&
-        widget.onPressed == null) {
+    if (widget.inputType == NsgInputType.stringValue && widget.onPressed == null) {
       return interactiveWidget;
     }
     return GestureDetector(
@@ -143,14 +144,11 @@ class _NsgInputState extends State<NsgInput> {
         Container(
             height: 50,
             margin: widget.margin,
-            padding: widget.widget == null
-                ? const EdgeInsets.fromLTRB(30, 0, 30, 0)
-                : const EdgeInsets.fromLTRB(10, 5, 10, 5),
+            padding: widget.widget == null ? const EdgeInsets.fromLTRB(30, 0, 30, 0) : const EdgeInsets.fromLTRB(10, 5, 10, 5),
             decoration: BoxDecoration(
                 color: ControlOptions.instance.colorInverted,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                    width: 2, color: ControlOptions.instance.colorMain)),
+                borderRadius: BorderRadius.circular(widget.borderRadius),
+                border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
             child: Center(
               child: widget.widget ??
                   TextFormField(
@@ -174,42 +172,31 @@ class _NsgInputState extends State<NsgInput> {
                         widget.onChanged!(widget.dataItem);
                       }
                     },
-                    style: TextStyle(
-                        color: ControlOptions.instance.colorText,
-                        fontSize: widget.fontSize,
-                        height: 1),
+                    style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize, height: 1),
                     //requestController.requestNew.requestSubjectName.toUpperCase(),
                     readOnly: (widget.disabled == null) ? false : true,
                     decoration: InputDecoration(
                       fillColor: ControlOptions.instance.colorInverted,
                       filled: true,
                       alignLabelWithHint: true,
-                      hintText: widget.hint != null
-                          ? '${widget.hint}'.toUpperCase()
-                          : '',
+                      hintText: widget.hint != null ? '${widget.hint}'.toUpperCase() : '',
                       label: Center(
                           child: Text(
-                        widget.label != null
-                            ? '   ${widget.label!.toUpperCase()}   '
-                            : '',
+                        widget.label != null ? '   ${widget.label!.toUpperCase()}   ' : '',
                       )),
                       //labelText: label != null ? '$label'.toUpperCase() : '',
-                      labelStyle: TextStyle(
-                          color: ControlOptions.instance.colorMainDarker,
-                          backgroundColor:
-                              ControlOptions.instance.colorInverted),
+                      labelStyle: TextStyle(color: ControlOptions.instance.colorMainDarker, backgroundColor: ControlOptions.instance.colorInverted),
 
                       //labelText: '$title'.toUpperCase(),
-                      contentPadding: const EdgeInsets.only(
-                          left: 20.0, bottom: 10.0, top: 10.0, right: 20.0),
+                      contentPadding: const EdgeInsets.only(left: 20.0, bottom: 10.0, top: 10.0, right: 20.0),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.transparent),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(widget.borderRadius),
                       ),
                       //floatingLabelBehavior: FloatingLabelBehavior.always,
                       focusedBorder: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.transparent),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(widget.borderRadius),
                       ),
                     ),
                   ),
@@ -219,18 +206,13 @@ class _NsgInputState extends State<NsgInput> {
 
   void _onPressed() {
     if (widget.inputType == NsgInputType.reference) {
-      widget.selectionController!.selectedItem =
-          widget.dataItem.getReferent(widget.fieldName);
+      widget.selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       widget.selectionController!.refreshData();
-      var form = NsgSelection(
-          inputType: widget.inputType,
-          controller: widget.selectionController!,
-          rowWidget: widget.rowWidget);
+      var form = NsgSelection(inputType: widget.inputType, controller: widget.selectionController!, rowWidget: widget.rowWidget);
       form.selectFromArray(
         widget.label ?? '',
         (item) {
-          widget.dataItem.setFieldValue(
-              widget.fieldName, widget.selectionController!.selectedItem);
+          widget.dataItem.setFieldValue(widget.fieldName, widget.selectionController!.selectedItem);
           if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
           setState(() {});
           return null;
@@ -238,11 +220,7 @@ class _NsgInputState extends State<NsgInput> {
       );
     } else if (widget.inputType == NsgInputType.enumReference) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
-      var form = NsgSelection(
-          allValues: enumItem.getAll(),
-          selectedElement: enumItem,
-          rowWidget: widget.rowWidget,
-          inputType: NsgInputType.enumReference);
+      var form = NsgSelection(allValues: enumItem.getAll(), selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
       form.selectFromArray(
         widget.label ?? '',
         (item) {
@@ -261,9 +239,8 @@ class _NsgInputState extends State<NsgInput> {
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         decoration: BoxDecoration(
             color: ControlOptions.instance.colorInverted,
-            borderRadius: BorderRadius.circular(15),
-            border:
-                Border.all(width: 2, color: ControlOptions.instance.colorMain)),
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+            border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: SizedBox(
             height: 38,
             child: Row(
@@ -273,8 +250,7 @@ class _NsgInputState extends State<NsgInput> {
                     value: fieldValue,
                     activeColor: ControlOptions.instance.colorMain,
                     onChanged: (value) {
-                      widget.dataItem
-                          .setFieldValue(widget.fieldName, !fieldValue);
+                      widget.dataItem.setFieldValue(widget.fieldName, !fieldValue);
                       if (widget.updateController != null) {
                         widget.updateController!.update();
                       }

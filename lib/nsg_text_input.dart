@@ -9,6 +9,7 @@ class NsgTextInput extends StatelessWidget {
   final EdgeInsets? margin;
   final String? hint;
   final String initial;
+  final double borderRadius;
   final VoidCallback? onPressed;
   final Function(String)? onChanged;
   final int? maxlines;
@@ -27,6 +28,7 @@ class NsgTextInput extends StatelessWidget {
       this.gesture,
       this.hint,
       this.initial = '',
+      this.borderRadius = 15,
       this.onPressed,
       this.onChanged,
       this.maxlines})
@@ -61,7 +63,7 @@ class NsgTextInput extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         decoration: BoxDecoration(
             color: ControlOptions.instance.colorInverted,
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: TextFormField(
           textAlign: TextAlign.center,
@@ -87,19 +89,18 @@ class NsgTextInput extends StatelessWidget {
               label != null ? '   $label   '.toUpperCase() : '',
             )),
             //labelText: label != null ? '$label'.toUpperCase() : '',
-            labelStyle: TextStyle(
-                color: ControlOptions.instance.colorMainDarker, backgroundColor: ControlOptions.instance.colorInverted),
+            labelStyle: TextStyle(color: ControlOptions.instance.colorMainDarker, backgroundColor: ControlOptions.instance.colorInverted),
 
             //labelText: '$title'.toUpperCase(),
             contentPadding: const EdgeInsets.only(left: 10.0, bottom: 0.0, top: 0.0, right: 10.0),
             enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
             //floatingLabelBehavior: FloatingLabelBehavior.always,
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
           ),
         )));
