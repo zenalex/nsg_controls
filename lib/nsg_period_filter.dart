@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+/// Виджет фильтра периода по датам (времени) + метод открытия диалогового окна с виджетом контента фильтра
 class NsgPeriodFilter extends StatefulWidget {
   final NsgDataController controller;
   final Function(NsgPeriod)? onConfirm;
@@ -36,7 +37,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   String _showPeriod() {
     selectedDate.type = NsgPeriodType(widget.controller.controllerFilter.periodSelected);
     selectedDate.setDateText();
-    return ' ${selectedDate.dateText} ';
+    return '${selectedDate.dateWidgetText}';
   }
 
   void showPopup(BuildContext context, Function(NsgPeriod date) onClose) {
@@ -62,6 +63,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
 
   @override
   Widget build(BuildContext context) {
+    /// Тело виджета
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 500),
       crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
@@ -109,6 +111,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   }
 }
 
+/// Контент фильтра в диалоговом окне
 class NsgPeriodFilterContent extends StatefulWidget {
   final NsgDataController controller;
   final int periodSelected;
@@ -347,7 +350,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   NsgCheckBox(
                                       radio: true,
                                       label: 'Период',
-                                      value: _selected == 6 ? true : false,
+                                      value: _selected == 6 || _selected == 7 ? true : false,
                                       onPressed: () {
                                         _selected = 6;
                                         if (_timeselected == true) {
@@ -358,7 +361,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         setState(() {});
                                       }),
                                   Opacity(
-                                    opacity: _selected == 6 ? 1 : 0.3,
+                                    opacity: _selected == 6 || _selected == 7 ? 1 : 0.3,
                                     child: NsgDatePicker(
                                       margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                                       initialTime: date.beginDate,
@@ -375,7 +378,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     ),
                                   ),
                                   Opacity(
-                                    opacity: _selected == 6 ? 1 : 0.3,
+                                    opacity: _selected == 6 || _selected == 7 ? 1 : 0.3,
                                     child: NsgDatePicker(
                                       margin: const EdgeInsets.all(0),
                                       initialTime: date.endDate,
@@ -395,19 +398,21 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                               )),
                               Expanded(
                                   child: Opacity(
-                                opacity: _selected == 6 ? 1 : 0.3,
+                                opacity: _selected == 6 || _selected == 7 ? 1 : 0.3,
                                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                                   NsgCheckBox(
                                       label: 'Время',
                                       value: _timeselected == true ? true : false,
-                                      onPressed: _selected == 6
+                                      onPressed: _selected == 6 || _selected == 7
                                           ? () {
-                                              if (_timeselected == true) {
+                                              if (_timeselected == false) {
                                                 date.beginDate = date.dateZeroTime(date.beginDate).add(Duration(hours: time1.hour, minutes: time1.minute));
                                                 date.endDate = date.dateZeroTime(date.endDate).add(Duration(hours: time2.hour, minutes: time2.minute));
+                                                _selected = 7;
                                               } else {
                                                 date.beginDate = date.dateZeroTime(date.beginDate);
                                                 date.endDate = date.dateZeroTime(date.endDate);
+                                                _selected = 6;
                                               }
                                               date.setToPeriodWithTime(date);
                                               _timeselected = !_timeselected;

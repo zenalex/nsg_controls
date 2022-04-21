@@ -17,6 +17,7 @@ class NsgPeriod {
   DateTime endDate = DateTime.now();
   DateTime beginDate = Jiffy(DateTime.now()).subtract(months: 3).dateTime;
   String dateText = '';
+  String dateWidgetText = '';
   NsgPeriodType type = NsgPeriodType.year;
 
   void plus() {
@@ -94,25 +95,26 @@ class NsgPeriod {
   void setDateText() {
     switch (type.type) {
       case 1:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'yyyy г.');
+        dateText = dateWidgetText = NsgDateFormat.dateFormat(beginDate, 'yyyy г.');
         break;
       case 2:
-        dateText = NsgDateFormat.dateFormat(beginDate, getKvartal(beginDate).toString() + ' квартал yyyy г.');
+        dateText = dateWidgetText = NsgDateFormat.dateFormat(beginDate, getKvartal(beginDate).toString() + ' квартал yyyy г.');
         break;
       case 3:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'MMM yyyy г.');
+        dateText = dateWidgetText = NsgDateFormat.dateFormat(beginDate, 'MMM yyyy г.');
         break;
       case 4:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'dd.MM.yy - ') + NsgDateFormat.dateFormat(endDate, 'dd.MM.yy');
+        dateText = dateWidgetText = NsgDateFormat.dateFormat(beginDate, 'dd.MM.yy - ') + NsgDateFormat.dateFormat(endDate, 'dd.MM.yy');
         break;
       case 5:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'dd MMMM yyyy г.');
+        dateText = dateWidgetText = NsgDateFormat.dateFormat(beginDate, 'dd MMMM yyyy г.');
         break;
       case 6:
-        dateText = NsgDateFormat.dateFormat(beginDate, 'dd.MM.yy - ') + NsgDateFormat.dateFormat(endDate, 'dd.MM.yy');
+        dateText = dateWidgetText = NsgDateFormat.dateFormat(beginDate, 'dd.MM.yy - ') + NsgDateFormat.dateFormat(endDate, 'dd.MM.yy');
         break;
       case 7:
         dateText = NsgDateFormat.dateFormat(beginDate, 'dd.MM.yy - ') + NsgDateFormat.dateFormat(endDate, 'dd.MM.yy');
+        dateWidgetText = NsgDateFormat.dateFormat(beginDate, 'dd.MM.yy (HH:mm) - ') + NsgDateFormat.dateFormat(endDate, 'dd.MM.yy (HH:mm)');
         break;
 
       default:
