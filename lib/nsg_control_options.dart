@@ -21,8 +21,8 @@ class ControlOptions {
   final Color colorConfirmed;
   final Color colorBlue;
 
-  double sizeL = 18;
-  double sizeM = 16;
+  double sizeL = 16;
+  double sizeM = 14;
   double sizeS = 12;
 
   double get screenWidth => Get.width;
