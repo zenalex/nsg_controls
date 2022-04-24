@@ -61,9 +61,9 @@ class NsgListPage extends StatelessWidget {
                         label: 'Фильтр по датам',
                         controller: controller,
                         onConfirm: (value) {
-                          controller.controllerFilter.beginDate = value.beginDate;
-                          controller.controllerFilter.endDate = value.endDate;
-                          controller.update();
+                          controller.controllerFilter.nsgPeriod.beginDate = value.beginDate;
+                          controller.controllerFilter.nsgPeriod.endDate = value.endDate;
+                          controller.refreshData();
                         },
                       ),
                   onLoading: NsgPeriodFilter(

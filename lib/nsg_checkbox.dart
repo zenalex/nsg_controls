@@ -8,7 +8,7 @@ class NsgCheckBox extends StatefulWidget {
   final bool? radio;
   final bool value;
   final VoidCallback onPressed;
-  NsgCheckBox({Key? key, required this.label, this.disabled, this.radio, required this.value, required this.onPressed})
+  const NsgCheckBox({Key? key, required this.label, this.disabled, this.radio, required this.value, required this.onPressed})
       : super(key: key);
 
   @override
@@ -28,7 +28,7 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
         widget.onPressed();
         setState(() {});
       },
-      child: Container(
+      child: SizedBox(
         height: 40,
         child: Row(
           children: [

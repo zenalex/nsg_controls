@@ -38,11 +38,11 @@ class NsgInput extends StatefulWidget {
   ///Функция прорисовки строки
   final Widget Function(NsgDataItem)? rowWidget;
 
-  ///Тип поля ввода. Если тип не задан, он будет выбран автоматически,
+  ///Тип поля ввода. Если тип не задан (NsgInputType.autoselect), он будет выбран автоматически,
   ///исходя из типа данных поля объекта
-  late NsgInputType inputType;
+  final NsgInputType inputType;
 
-  NsgInput(
+  const NsgInput(
       {Key? key,
       required this.dataItem,
       required this.fieldName,
@@ -62,49 +62,59 @@ class NsgInput extends StatefulWidget {
       this.maxlines,
       this.widget,
       this.rowWidget,
-      NsgInputType? userInputType})
-      : super(key: key) {
-    //Проверяем, выбран ли тип инпута пользователем
-    if (userInputType == null) {
+      this.inputType = NsgInputType.autoselect})
+      : super(key: key);
+
+  @override
+  State<NsgInput> createState() => _NsgInputState();
+
+  NsgInputType selectInputType(){
+    if (inputType == NsgInputType.autoselect) {
       //Если не выбран, задаем его автоматически, исходя из типа данных fieldName
       if (dataItem.getField(fieldName) is NsgDataReferenceField) {
-        inputType = NsgInputType.reference;
+        return NsgInputType.reference;
       } else if (dataItem.getField(fieldName) is NsgDataEnumReferenceField) {
-        inputType = NsgInputType.enumReference;
+        return NsgInputType.enumReference;
       } else if (dataItem.getField(fieldName) is NsgDataBoolField) {
-        inputType = NsgInputType.boolValue;
+        return NsgInputType.boolValue;
       } else if (dataItem.getField(fieldName) is NsgDataStringField ||
           dataItem.getField(fieldName) is NsgDataIntField ||
           dataItem.getField(fieldName) is NsgDataDoubleField) {
-        inputType = NsgInputType.stringValue;
+        return NsgInputType.stringValue;
       } else {
         throw Exception("Не указан тип поля ввода, тип данных неизвестен");
       }
     } else {
       //Если выбран, проверяем на допустимость типа данный fieldName
-      if (userInputType == NsgInputType.reference) {
+      if (inputType == NsgInputType.reference) {
         assert(dataItem.getField(fieldName) is NsgDataReferenceField);
-      } else if (userInputType == NsgInputType.enumReference) {
+      } else if (inputType == NsgInputType.enumReference) {
         assert(dataItem.getField(fieldName) is NsgDataReferenceField);
-      } else if (userInputType == NsgInputType.boolValue) {
+      } else if (inputType == NsgInputType.boolValue) {
         assert(dataItem.getField(fieldName) is NsgDataBoolField);
-      } else if (userInputType == NsgInputType.stringValue) {
+      } else if (inputType == NsgInputType.stringValue) {
         assert(dataItem.getField(fieldName) is NsgDataStringField);
       }
 
-      inputType = userInputType;
-    }
-    //Проверяем заполненность ключевых полей для выбранного типа данных
-    if (inputType == NsgInputType.reference) {
-      assert(selectionController != null);
+      return inputType;
     }
   }
-
-  @override
-  State<NsgInput> createState() => _NsgInputState();
 }
 
 class _NsgInputState extends State<NsgInput> {
+  late NsgInputType inputType;
+
+  @override
+  void initState() {
+    super.initState();
+    //Проверяем, выбран ли тип инпута пользователем
+    inputType = widget.selectInputType();
+    //Проверяем заполненность ключевых полей для выбранного типа данных
+    if (inputType == NsgInputType.reference) {
+      assert(widget.selectionController != null);
+    }
+  }
+
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
   Widget _gestureWrap(Widget interactiveWidget, bool noIcon) {
     if (widget.inputType == NsgInputType.stringValue && widget.onPressed == null) {

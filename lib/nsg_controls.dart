@@ -14,5 +14,3 @@ export 'nsg_checkbox.dart';
 export 'widgets/nsg_progressbar.dart';
 export 'widgets/body_wrap.dart';
 export 'widgets/nsg_appbar.dart';
-export 'components/nsg_period.dart';
-export 'components/nsg_data_format.dart';

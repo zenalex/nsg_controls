@@ -1,4 +1,5 @@
 enum NsgInputType {
+  autoselect,
   reference,
   referenceList,
   enumReference,

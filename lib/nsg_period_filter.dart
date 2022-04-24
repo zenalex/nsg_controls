@@ -30,14 +30,14 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   @override
   void initState() {
     super.initState();
-    selectedDate.beginDate = widget.controller.controllerFilter.beginDate;
-    selectedDate.endDate = widget.controller.controllerFilter.endDate;
+    selectedDate.beginDate = widget.controller.controllerFilter.nsgPeriod.beginDate;
+    selectedDate.endDate = widget.controller.controllerFilter.nsgPeriod.endDate;
   }
 
   String _showPeriod() {
     selectedDate.type = NsgPeriodType(widget.controller.controllerFilter.periodSelected);
     selectedDate.setDateText();
-    return '${selectedDate.dateWidgetText}';
+    return selectedDate.dateWidgetText;
   }
 
   void showPopup(BuildContext context, Function(NsgPeriod date) onClose) {
@@ -133,7 +133,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
   @override
   void initState() {
     super.initState();
-    date.beginDate = widget.controller.controllerFilter.beginDate;
+    date.beginDate = widget.controller.controllerFilter.nsgPeriod.beginDate;
     date.setDateText();
     _selected = widget.periodSelected;
     _timeselected = widget.periodTimeEnabled;
@@ -164,7 +164,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
         break;
 
       default:
-        print("Кнопка 'Сегодня' - ошибка");
+        throw Exception('Ошибка в задании периода');
     }
   }
 
