@@ -64,6 +64,7 @@ class NsgListPage extends StatelessWidget {
                           onConfirm: (value) {
                             controller.controllerFilter.nsgPeriod.beginDate = value.beginDate;
                             controller.controllerFilter.nsgPeriod.endDate = value.endDate;
+                            controller.controllerFilter.nsgPeriod.type = value.type;
                             controller.refreshData();
                           },
                         )
@@ -79,7 +80,7 @@ class NsgListPage extends StatelessWidget {
                         NsgPeriod period = NsgPeriod();
                         period.beginDate = controller.controllerFilter.nsgPeriod.beginDate;
                         period.endDate = controller.controllerFilter.nsgPeriod.beginDate;
-                        period.type = controller.controllerFilter.nsgPeriod.type;
+                        period.type = NsgPeriodType(controller.controllerFilter.periodSelected);
                         period.setDateText();
                         return AnimatedCrossFade(
                             duration: const Duration(milliseconds: 500),
@@ -92,6 +93,7 @@ class NsgListPage extends StatelessWidget {
                                   child: Text(
                                     'Фильтр по датам: ' + period.dateWidgetText,
                                     textAlign: TextAlign.center,
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   )),
                             ));
                       } else {
