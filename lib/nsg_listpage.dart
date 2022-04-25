@@ -97,24 +97,24 @@ class NsgListPage extends StatelessWidget {
                       } else {
                         return const SizedBox();
                       }
-                    }),
-                    controller.obx(
-                        (state) => Expanded(
-                              child: Container(
-                                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                  child: SmartRefresher(
-                                    key: _refresherKey,
-                                    enablePullDown: true,
-                                    controller: refreshController,
-                                    onRefresh: _onRefresh,
-                                    child: ListView(
-                                      children: [
-                                        FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: _showItems()),
-                                      ],
-                                    ),
-                                  )),
-                            ),
-                        onLoading: const NsgProgressBar()),
+                    }, onLoading: const SizedBox()),
+                    Expanded(
+                      child: controller.obx(
+                          (state) => Container(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: SmartRefresher(
+                                key: _refresherKey,
+                                enablePullDown: true,
+                                controller: refreshController,
+                                onRefresh: _onRefresh,
+                                child: ListView(
+                                  children: [
+                                    FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: _showItems()),
+                                  ],
+                                ),
+                              )),
+                          onLoading: const NsgProgressBar()),
+                    ),
                   ],
                 ),
               ),
