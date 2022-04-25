@@ -57,34 +57,66 @@ class NsgListPage extends StatelessWidget {
                     controller: controller,
                   )),
               controller.obx(
-                  (state) => NsgPeriodFilter(
-                        label: 'Фильтр по датам',
-                        controller: controller,
-                        onConfirm: (value) {
-                          controller.controllerFilter.nsgPeriod.beginDate = value.beginDate;
-                          controller.controllerFilter.nsgPeriod.endDate = value.endDate;
-                          controller.refreshData();
-                        },
-                      ),
+                  (state) => controller.controllerFilter.isAllowed == true
+                      ? NsgPeriodFilter(
+                          label: 'Фильтр по датам',
+                          controller: controller,
+                          onConfirm: (value) {
+                            controller.controllerFilter.nsgPeriod.beginDate = value.beginDate;
+                            controller.controllerFilter.nsgPeriod.endDate = value.endDate;
+                            controller.refreshData();
+                          },
+                        )
+                      : const SizedBox(),
                   onLoading: NsgPeriodFilter(
                     controller: controller,
                   )),
               Expanded(
-                child: controller.obx(
-                    (state) => Container(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                        child: SmartRefresher(
-                          key: _refresherKey,
-                          enablePullDown: true,
-                          controller: refreshController,
-                          onRefresh: _onRefresh,
-                          child: ListView(
-                            children: [
-                              FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: _showItems()),
-                            ],
-                          ),
-                        )),
-                    onLoading: const NsgProgressBar()),
+                child: Column(
+                  children: [
+                    controller.obx((state) {
+                      if (controller.controllerFilter.isAllowed == true) {
+                        NsgPeriod period = NsgPeriod();
+                        period.beginDate = controller.controllerFilter.nsgPeriod.beginDate;
+                        period.endDate = controller.controllerFilter.nsgPeriod.beginDate;
+                        period.type = controller.controllerFilter.nsgPeriod.type;
+                        period.setDateText();
+                        return AnimatedCrossFade(
+                            duration: const Duration(milliseconds: 500),
+                            crossFadeState: controller.controllerFilter.isOpen != true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                            firstChild: const SizedBox(width: double.infinity),
+                            secondChild: Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
+                              child: SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    'Фильтр по датам: ' + period.dateWidgetText,
+                                    textAlign: TextAlign.center,
+                                  )),
+                            ));
+                      } else {
+                        return const SizedBox();
+                      }
+                    }),
+                    controller.obx(
+                        (state) => Expanded(
+                              child: Container(
+                                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                  child: SmartRefresher(
+                                    key: _refresherKey,
+                                    enablePullDown: true,
+                                    controller: refreshController,
+                                    onRefresh: _onRefresh,
+                                    child: ListView(
+                                      children: [
+                                        FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: _showItems()),
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                        onLoading: const NsgProgressBar()),
+                  ],
+                ),
               ),
             ],
           ),
