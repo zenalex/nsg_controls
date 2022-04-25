@@ -6,12 +6,12 @@ import 'package:nsg_data/nsg_data.dart';
 
 class NsgDatePicker extends StatelessWidget {
   final String? label;
-  final EdgeInsets? margin;
+  final EdgeInsets margin;
   final DateTime initialTime;
   final bool? disabled;
   final Function(DateTime endDate) onClose;
   const NsgDatePicker(
-      {Key? key, required this.initialTime, required this.onClose, this.label, this.disabled, this.margin = const EdgeInsets.fromLTRB(0, 10, 0, 5)})
+      {Key? key, required this.initialTime, required this.onClose, this.label, this.disabled, this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
       : super(key: key);
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
@@ -63,34 +63,37 @@ class NsgDatePicker extends StatelessWidget {
               });
             }
           : null,
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Container(
-              constraints: const BoxConstraints(minHeight: 50),
-              margin: margin,
-              decoration: BoxDecoration(
-                  color: ControlOptions.instance.colorInverted,
-                  border: Border.all(width: 2, color: ControlOptions.instance.colorMain),
-                  borderRadius: BorderRadius.circular(15)),
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-              child: Center(
-                child: Text(
-                  NsgDateFormat.dateFormat(initialTime, 'dd.MM.yy'),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              )),
-          Container(
-            padding: const EdgeInsets.fromLTRB(10, 4, 10, 0),
-            decoration: BoxDecoration(color: label != null ? ControlOptions.instance.colorInverted : Colors.transparent),
-            child: Text(
-              label != null ? label!.toUpperCase() : '',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+      child: Padding(
+        padding: margin,
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+                constraints: const BoxConstraints(minHeight: 50),
+                margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                decoration: BoxDecoration(
+                    color: ControlOptions.instance.colorInverted,
+                    border: Border.all(width: 2, color: ControlOptions.instance.colorMain),
+                    borderRadius: BorderRadius.circular(15)),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+                child: Center(
+                  child: Text(
+                    NsgDateFormat.dateFormat(initialTime, 'dd.MM.yy'),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                )),
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              decoration: BoxDecoration(color: label != null ? ControlOptions.instance.colorInverted : Colors.transparent),
+              child: Text(
+                label != null ? label!.toUpperCase() : '',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
