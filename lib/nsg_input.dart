@@ -68,7 +68,7 @@ class NsgInput extends StatefulWidget {
   @override
   State<NsgInput> createState() => _NsgInputState();
 
-  NsgInputType selectInputType(){
+  NsgInputType selectInputType() {
     if (inputType == NsgInputType.autoselect) {
       //Если не выбран, задаем его автоматически, исходя из типа данных fieldName
       if (dataItem.getField(fieldName) is NsgDataReferenceField) {
@@ -117,7 +117,7 @@ class _NsgInputState extends State<NsgInput> {
 
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
   Widget _gestureWrap(Widget interactiveWidget, bool noIcon) {
-    if (widget.inputType == NsgInputType.stringValue && widget.onPressed == null) {
+    if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
       return interactiveWidget;
     }
     return GestureDetector(
@@ -147,7 +147,7 @@ class _NsgInputState extends State<NsgInput> {
       var refItem = widget.dataItem.getReferent(widget.fieldName)!;
       fieldValue = refItem.toString();
     }
-    if (widget.inputType == NsgInputType.boolValue) {
+    if (inputType == NsgInputType.boolValue) {
       return _buildBoolWidget(fieldValue);
     }
     return _gestureWrap(
@@ -175,7 +175,7 @@ class _NsgInputState extends State<NsgInput> {
                       }
                     },
                     onChanged: (String value) {
-                      if (widget.inputType == NsgInputType.stringValue) {
+                      if (inputType == NsgInputType.stringValue) {
                         widget.dataItem.setFieldValue(widget.fieldName, value);
                       }
                       if (widget.onChanged != null) {
@@ -215,10 +215,10 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   void _onPressed() {
-    if (widget.inputType == NsgInputType.reference) {
+    if (inputType == NsgInputType.reference) {
       widget.selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       widget.selectionController!.refreshData();
-      var form = NsgSelection(inputType: widget.inputType, controller: widget.selectionController!, rowWidget: widget.rowWidget);
+      var form = NsgSelection(inputType: inputType, controller: widget.selectionController!, rowWidget: widget.rowWidget);
       form.selectFromArray(
         widget.label ?? '',
         (item) {
@@ -228,7 +228,7 @@ class _NsgInputState extends State<NsgInput> {
           return null;
         },
       );
-    } else if (widget.inputType == NsgInputType.enumReference) {
+    } else if (inputType == NsgInputType.enumReference) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var form = NsgSelection(allValues: enumItem.getAll(), selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
       form.selectFromArray(
