@@ -64,7 +64,6 @@ class NsgListPage extends StatelessWidget {
                           onConfirm: (value) {
                             controller.controllerFilter.nsgPeriod.beginDate = value.beginDate;
                             controller.controllerFilter.nsgPeriod.endDate = value.endDate;
-                            controller.controllerFilter.nsgPeriod.type = value.type;
                             controller.refreshData();
                           },
                         )
@@ -77,11 +76,8 @@ class NsgListPage extends StatelessWidget {
                   children: [
                     controller.obx((state) {
                       if (controller.controllerFilter.isAllowed == true) {
-                        NsgPeriod period = NsgPeriod();
-                        period.beginDate = controller.controllerFilter.nsgPeriod.beginDate;
-                        period.endDate = controller.controllerFilter.nsgPeriod.beginDate;
-                        period.type = NsgPeriodType(controller.controllerFilter.periodSelected);
-                        period.setDateText();
+                        controller.controllerFilter.nsgPeriod.setDateText();
+
                         return AnimatedCrossFade(
                             duration: const Duration(milliseconds: 500),
                             crossFadeState: controller.controllerFilter.isOpen != true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
@@ -91,7 +87,7 @@ class NsgListPage extends StatelessWidget {
                               child: SizedBox(
                                   width: double.infinity,
                                   child: Text(
-                                    'Фильтр по датам: ' + period.dateWidgetText,
+                                    'Фильтр по датам: ' + controller.controllerFilter.nsgPeriod.dateWidgetText,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(fontWeight: FontWeight.bold),
                                   )),

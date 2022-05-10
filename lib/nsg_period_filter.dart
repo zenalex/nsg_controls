@@ -1,6 +1,7 @@
 // импорт
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 
@@ -32,11 +33,10 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
     super.initState();
     selectedDate.beginDate = widget.controller.controllerFilter.nsgPeriod.beginDate;
     selectedDate.endDate = widget.controller.controllerFilter.nsgPeriod.endDate;
+    selectedDate.setDateText();
   }
 
   String _showPeriod() {
-    selectedDate.type = NsgPeriodType(widget.controller.controllerFilter.periodSelected);
-    selectedDate.setDateText();
     return selectedDate.dateWidgetText;
   }
 
@@ -134,6 +134,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
   void initState() {
     super.initState();
     date.beginDate = widget.controller.controllerFilter.nsgPeriod.beginDate;
+    date.endDate = widget.controller.controllerFilter.nsgPeriod.endDate;
     date.setDateText();
     _selected = widget.periodSelected;
     _timeselected = widget.periodTimeEnabled;
@@ -326,8 +327,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                           text: 'Сегодня',
                                           borderRadius: 10,
                                           onPressed: () {
-                                            date.beginDate = date.dateZeroTime(DateTime.now());
-                                            date.endDate = date.dateZeroTime(DateTime.now());
+                                            date.setToDay(DateTime.now());
                                             _setToSelected(_selected);
                                             date.setDateText();
                                             setState(() {});
@@ -353,9 +353,13 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       value: _selected == 6 || _selected == 7 ? true : false,
                                       onPressed: () {
                                         _selected = 6;
-                                        if (_timeselected == true) {
-                                          date.beginDate = date.dateZeroTime(date.beginDate).add(Duration(hours: time1.hour, minutes: time1.minute));
-                                          date.endDate = date.dateZeroTime(date.endDate).add(Duration(hours: time2.hour, minutes: time2.minute));
+                                        if (_timeselected) {
+                                          date.beginDate = Jiffy(date.beginDate)
+                                              .startOf(Units.DAY)
+                                              .add(duration: Duration(hours: time1.hour, minutes: time1.minute))
+                                              .dateTime;
+                                          date.endDate =
+                                              Jiffy(date.endDate).startOf(Units.DAY).add(duration: Duration(hours: time2.hour, minutes: time2.minute)).dateTime;
                                         }
                                         date.setToPeriod(date);
                                         setState(() {});
@@ -405,13 +409,19 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       value: _timeselected == true ? true : false,
                                       onPressed: _selected == 6 || _selected == 7
                                           ? () {
-                                              if (_timeselected == false) {
-                                                date.beginDate = date.dateZeroTime(date.beginDate).add(Duration(hours: time1.hour, minutes: time1.minute));
-                                                date.endDate = date.dateZeroTime(date.endDate).add(Duration(hours: time2.hour, minutes: time2.minute));
+                                              if (_timeselected) {
+                                                date.beginDate = Jiffy(date.beginDate)
+                                                    .startOf(Units.DAY)
+                                                    .add(duration: Duration(hours: time1.hour, minutes: time1.minute))
+                                                    .dateTime;
+                                                date.endDate = Jiffy(date.endDate)
+                                                    .startOf(Units.DAY)
+                                                    .add(duration: Duration(hours: time2.hour, minutes: time2.minute))
+                                                    .dateTime;
                                                 _selected = 7;
                                               } else {
-                                                date.beginDate = date.dateZeroTime(date.beginDate);
-                                                date.endDate = date.dateZeroTime(date.endDate);
+                                                date.beginDate = Jiffy(date.beginDate).startOf(Units.DAY).dateTime;
+                                                date.endDate = Jiffy(date.endDate).startOf(Units.DAY).dateTime;
                                                 _selected = 6;
                                               }
                                               date.setToPeriodWithTime(date);
