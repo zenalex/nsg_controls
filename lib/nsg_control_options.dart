@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nsg_data/nsg_data.dart';
+
+import 'widgets/nsg_error_widget.dart';
 
 class ControlOptions {
   final Color colorMain;
@@ -53,7 +56,9 @@ class ControlOptions {
     this.colorWarning = const Color.fromARGB(255, 199, 101, 10),
     this.colorConfirmed = const Color.fromARGB(255, 31, 138, 75),
     this.colorBlue = const Color.fromRGBO(0, 88, 163, 1),
-  });
+  }) {
+    NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
+  }
 
   static ControlOptions instance = ControlOptions();
 }
