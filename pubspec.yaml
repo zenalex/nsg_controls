@@ -22,7 +22,8 @@ dependencies:
   jiffy: ^5.0.0 
   flutter_svg: ^1.0.3
   flutter_calendar_carousel: ^2.1.0
-
+  share_plus: ^4.0.4
+  another_flushbar: ^1.10.28
 
 dev_dependencies:
   flutter_test:

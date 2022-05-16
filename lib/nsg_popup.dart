@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'nsg_control_options.dart';
-import 'nsg_button.dart';
 
 class NsgPopUp extends StatefulWidget {
   final String title;
@@ -18,6 +17,7 @@ class NsgPopUp extends StatefulWidget {
   final VoidCallback? onConfirm;
   final List<Widget> Function()? getContent;
   final List<Widget>? contentSecondary;
+  final Widget? contentBottom;
   final double? height;
   final double? width;
   final NsgBaseController? dataController;
@@ -35,6 +35,7 @@ class NsgPopUp extends StatefulWidget {
       this.height,
       this.width,
       this.contentSecondary,
+      this.contentBottom,
       this.dataController})
       : super(key: key);
 
@@ -151,17 +152,19 @@ class _NsgPopUpState extends State<NsgPopUp> {
                   padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
                   child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText.withOpacity(0.5))),
                 ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    bottomRight: Radius.circular(10),
-                    bottomLeft: Radius.circular(10),
+              if (widget.contentBottom != null)
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomRight: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
+                    ),
+                    color: ControlOptions.instance.colorText.withOpacity(0.05),
                   ),
-                  color: ControlOptions.instance.colorText.withOpacity(0.05),
-                ),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                  child: widget.contentBottom!,
+                  /*Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                   if (widget.cancelText != null)
                     Expanded(
                       child: NsgButton(
@@ -170,8 +173,8 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         onPressed: widget.onCancel,
                       ),
                     ),
-                ]),
-              ),
+                ]),*/
+                ),
             ])));
   }
 
