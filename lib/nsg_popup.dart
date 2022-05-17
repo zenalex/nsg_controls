@@ -21,7 +21,8 @@ class NsgPopUp extends StatefulWidget {
   final double? height;
   final double? width;
   final NsgBaseController? dataController;
-  const NsgPopUp(
+  Color? colorText;
+  NsgPopUp(
       {Key? key,
       this.title = '',
       this.title2 = '',
@@ -36,7 +37,8 @@ class NsgPopUp extends StatefulWidget {
       this.width,
       this.contentSecondary,
       this.contentBottom,
-      this.dataController})
+      this.dataController,
+      this.colorText = Colors.black})
       : super(key: key);
 
   @override
@@ -44,6 +46,12 @@ class NsgPopUp extends StatefulWidget {
 }
 
 class _NsgPopUpState extends State<NsgPopUp> {
+  @override
+  void initState() {
+    widget.colorText ??= ControlOptions.instance.colorText;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -85,16 +93,16 @@ class _NsgPopUpState extends State<NsgPopUp> {
                 child: Row(
                   children: [
                     IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new, color: ControlOptions.instance.colorText, size: 24), // set your color here
+                        icon: Icon(Icons.arrow_back_ios_new, color: widget.colorText, size: 24), // set your color here
                         onPressed: () {
                           Get.back();
                         }),
                     Expanded(
-                      child: Text(widget.title,
-                          textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText, fontWeight: FontWeight.bold, fontSize: 18)),
+                      child:
+                          Text(widget.title, textAlign: TextAlign.center, style: TextStyle(color: widget.colorText, fontWeight: FontWeight.bold, fontSize: 18)),
                     ),
                     IconButton(
-                        icon: Icon(Icons.check, color: ControlOptions.instance.colorText, size: 24), // set your color here
+                        icon: Icon(Icons.check, color: widget.colorText, size: 24), // set your color here
                         onPressed: () {
                           widget.onConfirm!();
                         }),
@@ -127,7 +135,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                           padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
                           child: Text(
                             widget.title2,
-                            style: TextStyle(color: ControlOptions.instance.colorText, fontWeight: FontWeight.bold, fontSize: 18),
+                            style: TextStyle(color: widget.colorText, fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                         ),
                         Expanded(
@@ -145,12 +153,12 @@ class _NsgPopUpState extends State<NsgPopUp> {
               if (widget.text != null)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-                  child: Text('${widget.text}', style: TextStyle(color: ControlOptions.instance.colorText)),
+                  child: Text('${widget.text}', style: TextStyle(color: widget.colorText)),
                 ),
               if (widget.hint != null)
                 Container(
                   padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
-                  child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText.withOpacity(0.5))),
+                  child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: widget.colorText?.withOpacity(0.5))),
                 ),
               if (widget.contentBottom != null)
                 Container(

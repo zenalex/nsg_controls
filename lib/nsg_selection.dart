@@ -12,13 +12,10 @@ class NsgSelection {
   //В принципе, можно заменить на StatefullBuilder
   _SelectionController? selectionController;
   Widget Function(NsgDataItem)? rowWidget;
+  Color? textColor;
+  Color? colorInverted;
 
-  NsgSelection(
-      {required this.inputType,
-      this.controller,
-      this.rowWidget,
-      this.allValues,
-      this.selectedElement}) {
+  NsgSelection({required this.inputType, this.controller, this.rowWidget, this.allValues, this.selectedElement, this.textColor, this.colorInverted}) {
     if (inputType == NsgInputType.reference) {
       assert(controller != null);
     }
@@ -26,6 +23,8 @@ class NsgSelection {
       assert(allValues != null);
       selectionController = _SelectionController();
     }
+    textColor ??= ControlOptions.instance.colorText;
+    colorInverted ??= ControlOptions.instance.colorInverted;
   }
 
   List<Widget> _listArray() {
@@ -62,9 +61,7 @@ class NsgSelection {
     return Container(
         //key: GlobalKey(),
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        color: element == selectedElement
-            ? ControlOptions.instance.colorMain
-            : Colors.transparent,
+        color: element == selectedElement ? ControlOptions.instance.colorMain : Colors.transparent,
         height: 50,
         child: Center(child: _showRowWidget(element)));
   }
@@ -75,10 +72,7 @@ class NsgSelection {
     } else {
       return Text(
         element.toString(),
-        style: TextStyle(
-            color: element == selectedElement
-                ? ControlOptions.instance.colorText
-                : ControlOptions.instance.colorText),
+        style: TextStyle(color: element == selectedElement ? colorInverted : textColor),
       );
     }
   }
