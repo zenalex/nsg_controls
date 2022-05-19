@@ -27,7 +27,13 @@ class NsgSimpleTableColumn {
 
 /// Виджет отображения таблицы
 class NsgSimpleTable extends StatefulWidget {
-  const NsgSimpleTable({Key? key, required this.columns, this.header, required this.rows, this.rowOnTap}) : super(key: key);
+  const NsgSimpleTable(
+      {Key? key,
+      required this.columns,
+      this.header,
+      required this.rows,
+      this.rowOnTap})
+      : super(key: key);
 
   /// Параметры колонок
   final List<NsgSimpleTableColumn> columns;
@@ -55,7 +61,11 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     }
   }
 
-  Widget showCell({bool? borderRight, Color? backColor, required Widget widget, double? width}) {
+  Widget showCell(
+      {bool? borderRight,
+      Color? backColor,
+      required Widget widget,
+      double? width}) {
     Widget showCell;
     showCell = Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
@@ -64,11 +74,16 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
             color: backColor,
             border: borderRight == true
                 ? Border(
-                    left: BorderSide(width: 2, color: ControlOptions.instance.colorMain),
-                    top: BorderSide(width: 2, color: ControlOptions.instance.colorMain),
-                    bottom: BorderSide(width: 0, color: ControlOptions.instance.colorMain),
-                    right: BorderSide(width: 2, color: ControlOptions.instance.colorMainDark))
-                : Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+                    left: BorderSide(
+                        width: 2, color: ControlOptions.instance.colorMain),
+                    top: BorderSide(
+                        width: 2, color: ControlOptions.instance.colorMain),
+                    bottom: BorderSide(
+                        width: 0, color: ControlOptions.instance.colorMain),
+                    right: BorderSide(
+                        width: 2, color: ControlOptions.instance.colorMainDark))
+                : Border.all(
+                    width: 1, color: ControlOptions.instance.colorMain)),
         child: widget);
     return showCell;
   }
@@ -104,13 +119,17 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
               ? wrapExpanded(
                   widget: GestureDetector(
                       onTap: () {
-                        widget.rowOnTap!(widget.rows[rowIndex].item, widget.header![index].name!);
+                        widget.rowOnTap!(widget.rows[rowIndex].item,
+                            widget.header![index].name!);
                       },
-                      child: showCell(width: widget.columns[index].width, widget: cell.widget)),
+                      child: showCell(
+                          width: widget.columns[index].width,
+                          widget: cell.widget)),
                   expanded: widget.columns[index].expanded,
                   flex: widget.columns[index].flex)
               : wrapExpanded(
-                  widget: showCell(width: widget.columns[index].width, widget: cell.widget),
+                  widget: showCell(
+                      width: widget.columns[index].width, widget: cell.widget),
                   expanded: widget.columns[index].expanded,
                   flex: widget.columns[index].flex),
         );
@@ -122,8 +141,13 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         child: SingleChildScrollView(
             child: Container(
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
-                decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1, color: ControlOptions.instance.colorMain)),
                 child: Column(children: tableBody)))));
-    return Container(clipBehavior: Clip.hardEdge, decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)), child: Column(children: table));
+    return Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
+        child: Column(children: table));
   }
 }
