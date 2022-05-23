@@ -16,12 +16,14 @@ dependencies:
     path: 
       ../nsg_data
   flutter_fadein: ^2.0.0
-  pull_to_refresh: ^2.0.0
+  pull_to_refresh: # ^2.0.0
+    git:
+      https://github.com/ymback/flutter_pulltorefresh.git
   jiffy: ^5.0.0 
   flutter_svg: ^1.0.3
   flutter_calendar_carousel: ^2.1.0
   share_plus: ^4.0.4
-  another_flushbar: ^1.10.28
+  another_flushbar: ^1.10.29
 
 dev_dependencies:
   flutter_test:
