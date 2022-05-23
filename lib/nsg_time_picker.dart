@@ -76,33 +76,23 @@ class NsgTimePicker extends StatelessWidget {
           : null,
       child: Padding(
         padding: margin,
-        child: Stack(
-          alignment: Alignment.topCenter,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-                constraints: const BoxConstraints(minHeight: 50),
-                margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                decoration: BoxDecoration(
-                    color: ControlOptions.instance.colorInverted,
-                    border: Border.all(width: 2, color: ControlOptions.instance.colorMain),
-                    borderRadius: BorderRadius.circular(15)),
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                child: Center(
-                  child: Text(
-                    "$hours:$minutesString",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                )),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              decoration: BoxDecoration(color: label != null ? ControlOptions.instance.colorInverted : Colors.transparent),
-              child: Text(
-                label != null ? label!.toUpperCase() : '',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
-              ),
+            Text(
+              label != null ? label! : '',
+              textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
             ),
+            Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
+                padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+                child: Text(
+                  "$hours:$minutesString",
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(fontSize: 16),
+                )),
           ],
         ),
       ),

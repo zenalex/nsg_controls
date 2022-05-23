@@ -65,33 +65,24 @@ class NsgDatePicker extends StatelessWidget {
           : null,
       child: Padding(
         padding: margin,
-        child: Stack(
-          alignment: Alignment.topCenter,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-                constraints: const BoxConstraints(minHeight: 50),
-                margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                decoration: BoxDecoration(
-                    color: ControlOptions.instance.colorInverted,
-                    border: Border.all(width: 2, color: ControlOptions.instance.colorMain),
-                    borderRadius: BorderRadius.circular(15)),
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                child: Center(
-                  child: Text(
-                    NsgDateFormat.dateFormat(initialTime, format: 'dd.MM.yy'),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                )),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              decoration: BoxDecoration(color: label != null ? ControlOptions.instance.colorInverted : Colors.transparent),
-              child: Text(
-                label != null ? label!.toUpperCase() : '',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
-              ),
+            Text(
+              label != null ? label! : '',
+              textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
             ),
+            Container(
+                //constraints: const BoxConstraints(minHeight: 40),
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
+                padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+                child: Text(
+                  NsgDateFormat.dateFormat(initialTime, format: 'dd.MM.yy'),
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(fontSize: 16),
+                )),
           ],
         ),
       ),

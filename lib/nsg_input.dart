@@ -18,7 +18,11 @@ class NsgInput extends StatefulWidget {
   final Function(NsgDataItem)? onChanged;
   final VoidCallback? onPressed;
   final VoidCallback? onEditingComplete;
-  final int? maxlines;
+  final int? maxLines;
+  final int? minLines;
+
+  // Высота
+  final double? height;
 
   /// Картинки для выводя рядом с текстом
   final List<String>? imagesList;
@@ -53,13 +57,15 @@ class NsgInput extends StatefulWidget {
       this.disabled,
       this.fontSize = 16,
       this.borderRadius = 15,
-      this.margin = const EdgeInsets.fromLTRB(0, 10, 0, 5),
+      this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 5),
       this.gesture,
       this.hint,
       this.onChanged,
       this.onPressed,
       this.onEditingComplete,
-      this.maxlines,
+      this.maxLines = 1,
+      this.minLines = 1,
+      this.height = 50,
       this.widget,
       this.rowWidget,
       this.inputType = NsgInputType.autoselect})
@@ -127,7 +133,7 @@ class _NsgInputState extends State<NsgInput> {
           AbsorbPointer(child: interactiveWidget),
           if (noIcon == false)
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 4, 10, 0),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Icon(
                 Icons.unfold_more,
                 size: 24,
@@ -152,65 +158,85 @@ class _NsgInputState extends State<NsgInput> {
     }
     return _gestureWrap(
         Container(
-            height: 50,
+            //height: widget.height,
             margin: widget.margin,
-            padding: widget.widget == null ? const EdgeInsets.fromLTRB(30, 0, 30, 0) : const EdgeInsets.fromLTRB(10, 5, 10, 5),
-            decoration: BoxDecoration(
+            padding: widget.widget == null ? const EdgeInsets.fromLTRB(0, 0, 0, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            /* decoration: BoxDecoration(
                 color: ControlOptions.instance.colorInverted,
                 borderRadius: BorderRadius.circular(widget.borderRadius),
-                border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
-            child: Center(
-              child: widget.widget ??
-                  TextFormField(
-                    key: GlobalKey(),
-                    textAlign: TextAlign.center,
-                    textAlignVertical: TextAlignVertical.center,
-                    maxLines: widget.maxlines ?? 1,
-                    cursorColor: ControlOptions.instance.colorText,
+                border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),*/
+            child: widget.widget ??
+                TextFormField(
+                    maxLines: widget.maxLines,
+                    minLines: widget.minLines,
+                    keyboardType: TextInputType.multiline,
+                    //maxLines: null,
+                    //expands: true,
                     initialValue: fieldValue.toString(),
-                    onEditingComplete: () {
-                      FocusScope.of(context).unfocus();
-                      if (widget.onEditingComplete != null) {
-                        widget.onEditingComplete!();
-                      }
-                    },
-                    onChanged: (String value) {
-                      if (inputType == NsgInputType.stringValue) {
-                        widget.dataItem.setFieldValue(widget.fieldName, value);
-                      }
-                      if (widget.onChanged != null) {
-                        widget.onChanged!(widget.dataItem);
-                      }
-                    },
-                    style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize, height: 1),
-                    //requestController.requestNew.requestSubjectName.toUpperCase(),
-                    readOnly: (widget.disabled == null) ? false : true,
+                    //keyboardType: TextInputType.number,
+                    cursorColor: ControlOptions.instance.colorText,
                     decoration: InputDecoration(
-                      fillColor: ControlOptions.instance.colorInverted,
-                      filled: true,
-                      alignLabelWithHint: true,
-                      hintText: widget.hint != null ? '${widget.hint}'.toUpperCase() : '',
-                      label: Center(
-                          child: Text(
-                        widget.label != null ? '   ${widget.label!.toUpperCase()}   ' : '',
-                      )),
-                      //labelText: label != null ? '$label'.toUpperCase() : '',
-                      labelStyle: TextStyle(color: ControlOptions.instance.colorMainDarker, backgroundColor: ControlOptions.instance.colorInverted),
+                      labelText: widget.label != null ? widget.label! : '',
+                      //hintText: "Phone number",
+                      // alignLabelWithHint: true,
+                      contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
+                      isDense: true,
+                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+                      labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                    )
+                    /*
+                  key: GlobalKey(),
+                  //textAlign: TextAlign.left,
+                  //textAlignVertical: TextAlignVertical.center,
+                  maxLines: widget.maxlines ?? 1,
+                  cursorColor: ControlOptions.instance.colorText,
+                  initialValue: fieldValue.toString(),
+                  onEditingComplete: () {
+                    FocusScope.of(context).unfocus();
+                    if (widget.onEditingComplete != null) {
+                      widget.onEditingComplete!();
+                    }
+                  },
+                  onChanged: (String value) {
+                    if (inputType == NsgInputType.stringValue) {
+                      widget.dataItem.setFieldValue(widget.fieldName, value);
+                    }
+                    if (widget.onChanged != null) {
+                      widget.onChanged!(widget.dataItem);
+                    }
+                  },
+                  style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
+                  //requestController.requestNew.requestSubjectName.toUpperCase(),
+                  readOnly: (widget.disabled == null) ? false : true,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                    //fillColor: ControlOptions.instance.colorInverted,
+                    //filled: true,
+                    alignLabelWithHint: true,
+                    hintText: widget.hint != null ? '${widget.hint}'.toUpperCase() : '',
+                    /*label: Text(
+                      widget.label != null ? widget.label!.toUpperCase() : '',
+                    ),*/
+                    //labelText: label != null ? '$label'.toUpperCase() : '',
+                    labelStyle: TextStyle(color: ControlOptions.instance.colorMainDarker, backgroundColor: ControlOptions.instance.colorInverted),
 
-                      //labelText: '$title'.toUpperCase(),
-                      contentPadding: const EdgeInsets.only(left: 20.0, bottom: 10.0, top: 10.0, right: 20.0),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.transparent),
-                        borderRadius: BorderRadius.circular(widget.borderRadius),
-                      ),
-                      //floatingLabelBehavior: FloatingLabelBehavior.always,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.transparent),
-                        borderRadius: BorderRadius.circular(widget.borderRadius),
-                      ),
+                    //labelText: '$title'.toUpperCase(),
+                    contentPadding: const EdgeInsets.all(5),
+                    /*enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(widget.borderRadius),
                     ),
+                    //floatingLabelBehavior: FloatingLabelBehavior.always,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(widget.borderRadius),
+                    ),*/
                   ),
-            )),
+               */
+                    )),
         widget.widget == null ? false : true);
   }
 
@@ -246,7 +272,7 @@ class _NsgInputState extends State<NsgInput> {
   Widget _buildBoolWidget(bool fieldValue) {
     return Container(
         margin: widget.margin,
-        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         decoration: BoxDecoration(
             color: ControlOptions.instance.colorInverted,
             borderRadius: BorderRadius.circular(widget.borderRadius),
