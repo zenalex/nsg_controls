@@ -164,7 +164,7 @@ class NsgListPage extends StatelessWidget {
       /// Новый объект
       icon2: Icons.add,
       onPressed2: () {
-        controller.currentItem = controller.createNewItem();
+        controller.createNewItem();
         Get.toNamed(elementEditPage);
       },
 
