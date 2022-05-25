@@ -6,12 +6,19 @@ import 'package:nsg_data/nsg_data.dart';
 
 class NsgDatePicker extends StatelessWidget {
   final String? label;
+  TextAlign? textAlign;
   final EdgeInsets margin;
   final DateTime initialTime;
   final bool? disabled;
   final Function(DateTime endDate) onClose;
-  const NsgDatePicker(
-      {Key? key, required this.initialTime, required this.onClose, this.label, this.disabled, this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
+  NsgDatePicker(
+      {Key? key,
+      required this.initialTime,
+      required this.onClose,
+      this.label,
+      this.textAlign = TextAlign.center,
+      this.disabled,
+      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
       : super(key: key);
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
@@ -70,7 +77,7 @@ class NsgDatePicker extends StatelessWidget {
           children: [
             Text(
               label != null ? label! : '',
-              textAlign: TextAlign.left,
+              textAlign: textAlign,
               style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
             ),
             Container(
@@ -80,7 +87,7 @@ class NsgDatePicker extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                 child: Text(
                   NsgDateFormat.dateFormat(initialTime, format: 'dd.MM.yy'),
-                  textAlign: TextAlign.left,
+                  textAlign: textAlign,
                   style: const TextStyle(fontSize: 16),
                 )),
           ],
