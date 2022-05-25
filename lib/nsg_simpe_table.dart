@@ -58,6 +58,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   Widget showCell({bool? borderRight, Color? backColor, Color? color, required Widget widget, double? width}) {
     Widget showCell;
     showCell = Container(
+        alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         width: width,
         decoration: BoxDecoration(color: backColor, border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
@@ -70,6 +71,13 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   List<Widget> tableBody = [];
   ScrollController scrollController = ScrollController();
   ScrollController scrollController2 = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    scrollController2.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +120,12 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       });
       tableBody.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
     });
-    if (widget.header != null) table.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader)));
+    if (widget.header != null) {
+      table.add(IntrinsicHeight(
+          child: Container(
+              decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+              child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader))));
+    }
     table.add(Expanded(
         child: Scrollbar(
       scrollbarOrientation: ScrollbarOrientation.left,
