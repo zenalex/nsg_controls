@@ -60,15 +60,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     showCell = Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         width: width,
-        decoration: BoxDecoration(
-            color: backColor,
-            border: borderRight == true
-                ? Border(
-                    left: BorderSide(width: 2, color: ControlOptions.instance.colorMain),
-                    top: BorderSide(width: 2, color: ControlOptions.instance.colorMain),
-                    bottom: BorderSide(width: 0, color: ControlOptions.instance.colorMain),
-                    right: BorderSide(width: 2, color: ControlOptions.instance.colorMainDark))
-                : Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+        decoration: BoxDecoration(color: backColor, border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
         child: widget);
     return showCell;
   }
@@ -143,6 +135,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         thumbVisibility: true,
         trackVisibility: true,
         scrollbarOrientation: ScrollbarOrientation.top,
-        child: SingleChildScrollView(controller: scrollController, scrollDirection: Axis.horizontal, child: Column(children: table)));
+        child: SingleChildScrollView(
+            controller: scrollController, scrollDirection: Axis.horizontal, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: table)));
   }
 }
