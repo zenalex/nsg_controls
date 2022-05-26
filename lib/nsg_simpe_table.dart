@@ -127,28 +127,32 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
               child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader))));
     }
     table.add(Expanded(
-        child: Scrollbar(
-      scrollbarOrientation: ScrollbarOrientation.left,
-      controller: scrollController2,
-      thickness: 5,
-      thumbVisibility: true,
-      trackVisibility: true,
-      child: SingleChildScrollView(
+      child: Scrollbar(
         controller: scrollController2,
-        scrollDirection: Axis.vertical,
-        child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
-            decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-            child: Column(children: tableBody)),
-      ),
-    )));
-    return Scrollbar(
-        controller: scrollController,
-        thickness: 5,
+        thickness: 8,
         thumbVisibility: true,
         trackVisibility: true,
-        scrollbarOrientation: ScrollbarOrientation.top,
+        interactive: true,
         child: SingleChildScrollView(
-            controller: scrollController, scrollDirection: Axis.horizontal, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: table)));
+          controller: scrollController2,
+          scrollDirection: Axis.vertical,
+          child: Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+              decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+              child: Column(children: tableBody)),
+        ),
+      ),
+    ));
+
+    return Scrollbar(
+        controller: scrollController,
+        thickness: 8,
+        thumbVisibility: true,
+        trackVisibility: true,
+        interactive: true,
+        child: SingleChildScrollView(
+            controller: scrollController,
+            scrollDirection: Axis.horizontal,
+            child: Container(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: table))));
   }
 }
