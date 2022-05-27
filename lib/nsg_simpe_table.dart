@@ -73,6 +73,11 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   ScrollController scrollController2 = ScrollController();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     scrollController.dispose();
     scrollController2.dispose();
@@ -151,8 +156,6 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         trackVisibility: true,
         interactive: true,
         child: SingleChildScrollView(
-            controller: scrollController,
-            scrollDirection: Axis.horizontal,
-            child: Container(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: table))));
+            controller: scrollController, scrollDirection: Axis.horizontal, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: table)));
   }
 }
