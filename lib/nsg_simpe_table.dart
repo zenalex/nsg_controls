@@ -79,9 +79,9 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
   @override
   void dispose() {
+    super.dispose();
     scrollController.dispose();
     scrollController2.dispose();
-    super.dispose();
   }
 
   @override
