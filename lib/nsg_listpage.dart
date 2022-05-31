@@ -8,27 +8,31 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'nsg_period_filter.dart';
 
+///Страница, отображающая данные из контроллера в форме списка
+///Имеет функционал добавления и удаления элементов
 class NsgListPage extends StatelessWidget {
-  final String text;
+  ///Заголовок для AppBar
   final String title;
+
+  ///Подзаголовок для AppBar
   final String? subtitle;
+
+  ///Текст для отображения в случае отсутствия элементов
   final String textNoItems;
+
+  ///Страница для создания нового элемента
   final String elementEditPage;
-  final NsgDataItem nsgdataitem;
+
+  ///Функция, вызываемая для прорисовки кадого элемента списка
   final Widget Function(NsgDataItem) widget;
+
+  ///Контроллер, содержащий отображаемые данные
   final NsgDataController controller;
-  final RefreshController refreshController = RefreshController();
+
+  final RefreshController _refreshController = RefreshController();
 
   NsgListPage(
-      {Key? key,
-      this.text = '',
-      required this.controller,
-      required this.title,
-      this.subtitle,
-      required this.textNoItems,
-      required this.nsgdataitem,
-      required this.widget,
-      required this.elementEditPage})
+      {Key? key, required this.controller, required this.title, this.subtitle, required this.textNoItems, required this.widget, required this.elementEditPage})
       : super(key: key);
 
   @override
@@ -103,7 +107,7 @@ class NsgListPage extends StatelessWidget {
                               child: SmartRefresher(
                                 key: _refresherKey,
                                 enablePullDown: true,
-                                controller: refreshController,
+                                controller: _refreshController,
                                 onRefresh: _onRefresh,
                                 child: ListView(
                                   children: [
@@ -127,7 +131,7 @@ class NsgListPage extends StatelessWidget {
     // monitor network fetch
     await Future.delayed(const Duration(milliseconds: 100));
     controller.refreshData();
-    refreshController.refreshCompleted();
+    _refreshController.refreshCompleted();
   }
 
   Widget _showItems() {
