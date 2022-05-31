@@ -10,6 +10,7 @@ import 'nsg_period_filter.dart';
 
 ///Страница, отображающая данные из контроллера в форме списка
 ///Имеет функционал добавления и удаления элементов
+///В качестве виджетов для отображения элементов, можно использовать стандартные, например, NsgTextBlock
 class NsgListPage extends StatelessWidget {
   ///Заголовок для AppBar
   final String title;
