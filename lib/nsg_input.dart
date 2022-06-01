@@ -117,7 +117,7 @@ class _NsgInputState extends State<NsgInput> {
     inputType = widget.selectInputType();
     //Проверяем заполненность ключевых полей для выбранного типа данных
     if (inputType == NsgInputType.reference) {
-      assert(widget.selectionController != null);
+      assert(widget.selectionController != null, '${widget.fieldName}');
     }
   }
 

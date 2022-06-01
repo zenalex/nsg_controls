@@ -29,13 +29,13 @@ class NsgSimpleTableColumn {
 
 /// Виджет отображения таблицы
 class NsgSimpleTable extends StatefulWidget {
-  const NsgSimpleTable({Key? key, required this.columns, this.header, required this.rows, this.rowOnTap, this.columnsEditMore = false}) : super(key: key);
+  NsgSimpleTable({Key? key, required this.columns, this.header, required this.rows, this.rowOnTap, this.columnsEditMore = false}) : super(key: key);
 
   /// Режим редактирования ширины колонок
   final bool columnsEditMore;
 
   /// Параметры колонок
-  final List<NsgSimpleTableColumn> columns;
+  List<NsgSimpleTableColumn> columns;
 
   /// Набор значений ячеек для заголовка таблицы
   final List<NsgSimpleTableCell>? header;
@@ -147,7 +147,15 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: widget.columnsEditMore == true
-            ? Stack(alignment: Alignment.topLeft, children: [Column(children: table), ResizeLines(columns: widget.columns)])
+            ? Stack(alignment: Alignment.topLeft, children: [
+                Column(children: table),
+                ResizeLines(
+                    columnsOnResize: (resizedColumns) {
+                      widget.columns = resizedColumns;
+                      setState(() {});
+                    },
+                    columns: widget.columns)
+              ])
             : Column(children: table));
   }
 }
@@ -182,15 +190,18 @@ class ColumnLineResizer extends StatelessWidget {
 }
 
 class ResizeLines extends StatefulWidget {
+  final Function(List<NsgSimpleTableColumn>) columnsOnResize;
+
   /// Параметры колонок
   final List<NsgSimpleTableColumn> columns;
-  const ResizeLines({Key? key, required this.columns}) : super(key: key);
+  const ResizeLines({Key? key, required this.columns, required this.columnsOnResize}) : super(key: key);
 
   @override
   State<ResizeLines> createState() => _ResizeLinesState();
 }
 
 class _ResizeLinesState extends State<ResizeLines> {
+  /// Вывод вертикальных линий, меняющих ширину колонки
   Widget showLines() {
     List<Widget> list = [];
     //double dx = widget.columns[0].width! - 7;
@@ -200,9 +211,9 @@ class _ResizeLinesState extends State<ResizeLines> {
         child: ColumnLineResizer(
             onDrag: (details, number) {
               double dif = widget.columns[number].width! + details.primaryDelta!;
-
               if (dif > 50 && dif < 300) widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
-              setState(() {});
+              widget.columnsOnResize(widget.columns);
+              //setState(() {});
             },
             number: index),
       ));
