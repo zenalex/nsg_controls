@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'dart:math' as math;
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -30,7 +29,10 @@ class NsgSimpleTableColumn {
 
 /// Виджет отображения таблицы
 class NsgSimpleTable extends StatefulWidget {
-  const NsgSimpleTable({Key? key, required this.columns, this.header, required this.rows, this.rowOnTap}) : super(key: key);
+  const NsgSimpleTable({Key? key, required this.columns, this.header, required this.rows, this.rowOnTap, this.columnsEditMore = false}) : super(key: key);
+
+  /// Режим редактирования ширины колонок
+  final bool columnsEditMore;
 
   /// Параметры колонок
   final List<NsgSimpleTableColumn> columns;
@@ -144,7 +146,38 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Stack(alignment: Alignment.topLeft, children: [Column(children: table), ResizeLines(columns: widget.columns)]));
+        child: widget.columnsEditMore == true
+            ? Stack(alignment: Alignment.topLeft, children: [Column(children: table), ResizeLines(columns: widget.columns)])
+            : Column(children: table));
+  }
+}
+
+class ColumnLineResizer extends StatelessWidget {
+  final int number;
+  Function(DragUpdateDetails, int) onDrag;
+  ColumnLineResizer({Key? key, required this.number, required this.onDrag}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onHorizontalDragUpdate: (details) {
+        onDrag(details, number);
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+            border: Border(
+          right: BorderSide(
+            color: Colors.red,
+            width: 2.0,
+          ),
+        )),
+        width: 30,
+        child: Transform.translate(
+            offset: const Offset(15, 20),
+            child: Transform.rotate(angle: -math.pi / 2, child: const SizedBox(width: 16, child: Icon(Icons.compress_outlined, color: Colors.red)))),
+      ),
+    );
   }
 }
 
@@ -160,29 +193,20 @@ class ResizeLines extends StatefulWidget {
 class _ResizeLinesState extends State<ResizeLines> {
   Widget showLines() {
     List<Widget> list = [];
-    double dx = widget.columns[0].width! - 7;
+    //double dx = widget.columns[0].width! - 7;
     widget.columns.asMap().forEach((index, column) {
-      list.add(Transform.translate(
-        offset: Offset(dx, 0),
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Transform.translate(
-                offset: const Offset(0, 20),
-                child: Transform.rotate(angle: -math.pi / 2, child: SizedBox(width: 16, child: Icon(Icons.compress_outlined, color: Colors.red)))),
-            Container(
-                decoration: const BoxDecoration(
-                    border: Border(
-                  right: BorderSide(
-                    color: Colors.red,
-                    width: 2.0,
-                  ),
-                )),
-                width: 1),
-          ],
-        ),
+      list.add(Padding(
+        padding: EdgeInsets.only(left: widget.columns[index].width! - 30),
+        child: ColumnLineResizer(
+            onDrag: (details, number) {
+              double dif = widget.columns[number].width! + details.primaryDelta!;
+
+              if (dif > 50 && dif < 300) widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
+              setState(() {});
+            },
+            number: index),
       ));
-      dx += widget.columns[index].width! - 16;
+      //dx += widget.columns[index].width! - 16;
     });
     return Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: list);
   }
