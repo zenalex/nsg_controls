@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'dart:math' as math;
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart';
 import 'package:nsg_data/nsg_data_item.dart';
 
 /// Класс ячейки NsgSimpleTable
@@ -69,8 +72,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   List<Widget> table = [];
   List<Widget> tableHeader = [];
   List<Widget> tableBody = [];
-  ScrollController scrollController = ScrollController();
-  ScrollController scrollController2 = ScrollController();
+  //ScrollController scrollController = ScrollController();
+  //ScrollController scrollController2 = ScrollController();
 
   @override
   void initState() {
@@ -80,8 +83,6 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   @override
   void dispose() {
     super.dispose();
-    scrollController.dispose();
-    scrollController2.dispose();
   }
 
   @override
@@ -132,30 +133,62 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
               child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader))));
     }
     table.add(Expanded(
-      child: Scrollbar(
-        controller: scrollController2,
-        thickness: 8,
-        thumbVisibility: true,
-        trackVisibility: true,
-        interactive: true,
-        child: SingleChildScrollView(
-          controller: scrollController2,
-          scrollDirection: Axis.vertical,
-          child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
-              decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-              child: Column(children: tableBody)),
-        ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+            decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+            child: Column(children: tableBody)),
       ),
     ));
 
-    return Scrollbar(
-        controller: scrollController,
-        thickness: 8,
-        thumbVisibility: true,
-        trackVisibility: true,
-        interactive: true,
-        child: SingleChildScrollView(
-            controller: scrollController, scrollDirection: Axis.horizontal, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: table)));
+    return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Stack(alignment: Alignment.topLeft, children: [Column(children: table), ResizeLines(columns: widget.columns)]));
+  }
+}
+
+class ResizeLines extends StatefulWidget {
+  /// Параметры колонок
+  final List<NsgSimpleTableColumn> columns;
+  const ResizeLines({Key? key, required this.columns}) : super(key: key);
+
+  @override
+  State<ResizeLines> createState() => _ResizeLinesState();
+}
+
+class _ResizeLinesState extends State<ResizeLines> {
+  Widget showLines() {
+    List<Widget> list = [];
+    double dx = widget.columns[0].width! - 7;
+    widget.columns.asMap().forEach((index, column) {
+      list.add(Transform.translate(
+        offset: Offset(dx, 0),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Transform.translate(
+                offset: const Offset(0, 20),
+                child: Transform.rotate(angle: -math.pi / 2, child: SizedBox(width: 16, child: Icon(Icons.compress_outlined, color: Colors.red)))),
+            Container(
+                decoration: const BoxDecoration(
+                    border: Border(
+                  right: BorderSide(
+                    color: Colors.red,
+                    width: 2.0,
+                  ),
+                )),
+                width: 1),
+          ],
+        ),
+      ));
+      dx += widget.columns[index].width! - 16;
+    });
+    return Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: list);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return showLines();
   }
 }
