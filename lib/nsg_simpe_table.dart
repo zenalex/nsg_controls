@@ -29,10 +29,15 @@ class NsgSimpleTableColumn {
 
 /// Виджет отображения таблицы
 class NsgSimpleTable extends StatefulWidget {
-  NsgSimpleTable({Key? key, required this.columns, this.header, required this.rows, this.rowOnTap, this.columnsEditMore = false}) : super(key: key);
+  NsgSimpleTable(
+      {Key? key, this.horizontalScrollEnabled = true, required this.columns, this.header, required this.rows, this.rowOnTap, this.columnsEditMode = false})
+      : super(key: key);
+
+  /// Разрешён ли горизонтальный скролл
+  bool horizontalScrollEnabled;
 
   /// Режим редактирования ширины колонок
-  final bool columnsEditMore;
+  final bool columnsEditMode;
 
   /// Параметры колонок
   List<NsgSimpleTableColumn> columns;
@@ -51,31 +56,32 @@ class NsgSimpleTable extends StatefulWidget {
 }
 
 class _NsgSimpleTableState extends State<NsgSimpleTable> {
+  List<Widget> table = [];
+  List<Widget> tableHeader = [];
+  List<Widget> tableBody = [];
+  //ScrollController scrollController = ScrollController();
+  //ScrollController scrollController2 = ScrollController();
+
   /// Оборачивание виджета в Expanded
-  Widget wrapExpanded({required Widget widget, bool? expanded, int? flex}) {
+  Widget wrapExpanded({required Widget child, bool? expanded, int? flex}) {
+    widget.horizontalScrollEnabled = false;
     if (expanded == true) {
-      return Expanded(flex: flex ?? 1, child: widget);
+      return Expanded(flex: flex ?? 1, child: child);
     } else {
-      return widget;
+      return child;
     }
   }
 
-  Widget showCell({bool? borderRight, Color? backColor, Color? color, required Widget widget, double? width}) {
+  Widget showCell({bool? borderRight, Color? backColor, Color? color, required Widget child, double? width}) {
     Widget showCell;
     showCell = Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         width: width,
         decoration: BoxDecoration(color: backColor, border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-        child: widget);
+        child: child);
     return showCell;
   }
-
-  List<Widget> table = [];
-  List<Widget> tableHeader = [];
-  List<Widget> tableBody = [];
-  //ScrollController scrollController = ScrollController();
-  //ScrollController scrollController2 = ScrollController();
 
   @override
   void initState() {
@@ -93,12 +99,12 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     if (widget.header != null) {
       widget.columns.asMap().forEach((index, column) {
         tableHeader.add(wrapExpanded(
-            widget: showCell(
+            child: showCell(
                 borderRight: index != widget.columns.length - 1 ? true : false,
                 backColor: ControlOptions.instance.colorMainDark,
                 color: ControlOptions.instance.colorInverted,
                 width: widget.columns[index].width,
-                widget: widget.header![index].widget),
+                child: widget.header![index].widget),
             expanded: widget.columns[index].expanded,
             flex: widget.columns[index].flex));
       });
@@ -113,50 +119,55 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         tableRow.add(
           widget.rowOnTap != null
               ? wrapExpanded(
-                  widget: GestureDetector(
+                  child: GestureDetector(
                       onTap: () {
                         widget.rowOnTap!(widget.rows[rowIndex].item, widget.header![index].name!);
                       },
-                      child: showCell(width: widget.columns[index].width, widget: cell.widget)),
+                      child: showCell(width: widget.columns[index].width, child: cell.widget)),
                   expanded: widget.columns[index].expanded,
                   flex: widget.columns[index].flex)
               : wrapExpanded(
-                  widget: showCell(width: widget.columns[index].width, widget: cell.widget),
+                  child: showCell(width: widget.columns[index].width, child: cell.widget),
                   expanded: widget.columns[index].expanded,
                   flex: widget.columns[index].flex),
         );
       });
-      tableBody.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
+      tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
     });
     if (widget.header != null) {
       table.add(IntrinsicHeight(
           child: Container(
               decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-              child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader))));
+              child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader))));
     }
-    table.add(Expanded(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
-            decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-            child: Column(children: tableBody)),
-      ),
+    table.add(SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Container(
+          margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+          decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+          child: Column(mainAxisSize: MainAxisSize.min, children: tableBody)),
     ));
 
-    return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: widget.columnsEditMore == true
-            ? Stack(alignment: Alignment.topLeft, children: [
-                Column(children: table),
-                ResizeLines(
-                    columnsOnResize: (resizedColumns) {
-                      widget.columns = resizedColumns;
-                      setState(() {});
-                    },
-                    columns: widget.columns)
-              ])
-            : Column(children: table));
+    Widget horizontalScrollWrap(Widget child) {
+      if (widget.horizontalScrollEnabled == true) {
+        return SingleChildScrollView(scrollDirection: Axis.horizontal, child: child);
+      } else {
+        print("horizontalScrollEnabled false");
+        return child;
+      }
+    }
+
+    return horizontalScrollWrap(widget.columnsEditMode == true
+        ? Stack(alignment: Alignment.topLeft, children: [
+            Column(mainAxisSize: MainAxisSize.min, children: table),
+            ResizeLines(
+                columnsOnResize: (resizedColumns) {
+                  widget.columns = resizedColumns;
+                  setState(() {});
+                },
+                columns: widget.columns)
+          ])
+        : Column(mainAxisSize: MainAxisSize.min, children: table));
   }
 }
 
@@ -219,7 +230,7 @@ class _ResizeLinesState extends State<ResizeLines> {
       ));
       //dx += widget.columns[index].width! - 16;
     });
-    return Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: list);
+    return Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: list);
   }
 
   @override
