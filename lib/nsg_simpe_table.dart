@@ -91,22 +91,32 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     }
   }
 
-  Widget showCell({bool? borderRight, Color? backColor, Color? color, required Widget child, double? width, NsgSimpleTableColumnSort? sort}) {
+  Widget showCell(
+      {bool? borderRight,
+      Color? backColor,
+      Color? color,
+      required Widget child,
+      double? width,
+      NsgSimpleTableColumnSort? sort,
+      EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 5, vertical: 5)}) {
     Widget showCell;
     if (sort != null) {
-      child = Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      child = Stack(alignment: Alignment.center, children: [
         Expanded(child: Center(child: child)),
-        sort == NsgSimpleTableColumnSort.forward
-            ? Icon(
-                Icons.arrow_downward_outlined,
-                size: 16,
-              )
-            : Icon(Icons.arrow_upward_outlined, size: 16)
+        Align(
+            alignment: Alignment.centerRight,
+            child: IgnorePointer(
+                child: sort == NsgSimpleTableColumnSort.forward
+                    ? const Icon(
+                        Icons.arrow_downward_outlined,
+                        size: 16,
+                      )
+                    : const Icon(Icons.arrow_upward_outlined, size: 16)))
       ]);
     }
     showCell = Container(
+        padding: padding,
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         width: width,
         decoration: BoxDecoration(color: backColor, border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
         child: child);
@@ -142,6 +152,12 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
               /// Переключение сортировки
               onTap: () {
                 NsgSimpleTableColumnSort? sortElement = widget.columns[index].sort;
+
+                /// Удаляем все сортировки
+                widget.columns.asMap().forEach((index2, column2) {
+                  widget.columns[index2].sort = null;
+                });
+
                 if (sortElement == null) {
                   widget.columns[index].sort = NsgSimpleTableColumnSort.forward;
                 } else if (sortElement == NsgSimpleTableColumnSort.forward) {
@@ -151,12 +167,13 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                 }
                 setState(() {});
               },
-              child: child,
+              child: Padding(padding: EdgeInsets.symmetric(vertical: 10), child: child),
             )
           ]);
         }
         Widget cell = wrapExpanded(
             child: showCell(
+                padding: EdgeInsets.all(0),
                 borderRight: index != widget.columns.length - 1 ? true : false,
                 backColor: ControlOptions.instance.colorMainDark,
                 color: ControlOptions.instance.colorInverted,
@@ -176,21 +193,20 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
       /// Цикл построения ячеек таблицы (колонки)
       row.row.asMap().forEach((index, cell) {
-        tableRow.add(
-          widget.rowOnTap != null
-              ? wrapExpanded(
-                  child: GestureDetector(
-                      onTap: () {
-                        widget.rowOnTap!(widget.rows[rowIndex].item, widget.header![index].name!);
-                      },
-                      child: showCell(width: widget.columns[index].width, child: cell.widget)),
-                  expanded: widget.columns[index].expanded,
-                  flex: widget.columns[index].flex)
-              : wrapExpanded(
-                  child: showCell(width: widget.columns[index].width, child: cell.widget),
-                  expanded: widget.columns[index].expanded,
-                  flex: widget.columns[index].flex),
-        );
+        tableRow.add(widget.rowOnTap != null
+            ? wrapExpanded(
+                child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      widget.rowOnTap!(widget.rows[rowIndex].item, widget.header![index].name!);
+                    },
+                    child: showCell(width: widget.columns[index].width, child: cell.widget)),
+                expanded: widget.columns[index].expanded,
+                flex: widget.columns[index].flex)
+            : wrapExpanded(
+                child: showCell(width: widget.columns[index].width, child: cell.widget),
+                expanded: widget.columns[index].expanded,
+                flex: widget.columns[index].flex));
       });
       tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
     });
@@ -212,7 +228,6 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       if (widget.horizontalScrollEnabled == true) {
         return SingleChildScrollView(scrollDirection: Axis.horizontal, child: child);
       } else {
-        print("horizontalScrollEnabled false");
         return child;
       }
     }
