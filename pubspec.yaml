@@ -1,7 +1,7 @@
 name: nsg_controls
-description: A new Flutter package project.
+description: Set of widgets to use with nsg_data package
 version: 0.0.1
-homepage:
+homepage: https://github.com/zenalex/nsg_controls.git
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
@@ -12,11 +12,11 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.6.5
-  nsg_data:
+  nsg_data: #^0.1.0
     path: 
       ../nsg_data
   flutter_fadein: ^2.0.0
-  pull_to_refresh: # ^2.0.0
+  pull_to_refresh: #^2.0.0
     git:
       https://github.com/ymback/flutter_pulltorefresh.git
   jiffy: ^5.0.0 
