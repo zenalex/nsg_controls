@@ -24,17 +24,36 @@ class NsgSimpleTableColumn {
   bool? expanded = false;
   int? flex = 1;
   double? width;
-  NsgSimpleTableColumn({this.expanded, this.flex, this.width});
+  NsgSimpleTableColumnSort? sort;
+  NsgSimpleTableColumn({this.expanded, this.flex, this.width, this.sort});
+}
+
+/// Класс колонки NsgSimpleTable
+class NsgSimpleTableColumnSort {
+  String name;
+  NsgSimpleTableColumnSort(this.name);
+  static NsgSimpleTableColumnSort forward = NsgSimpleTableColumnSort('forward');
+  static NsgSimpleTableColumnSort backward = NsgSimpleTableColumnSort('backward');
 }
 
 /// Виджет отображения таблицы
 class NsgSimpleTable extends StatefulWidget {
   NsgSimpleTable(
-      {Key? key, this.horizontalScrollEnabled = true, required this.columns, this.header, required this.rows, this.rowOnTap, this.columnsEditMode = false})
+      {Key? key,
+      this.sortingClickEnabled = true,
+      this.horizontalScrollEnabled = true,
+      required this.columns,
+      this.header,
+      required this.rows,
+      this.rowOnTap,
+      this.columnsEditMode = false})
       : super(key: key);
 
   /// Разрешён ли горизонтальный скролл
   bool horizontalScrollEnabled;
+
+  /// Разрешена ли сортировка колонок по клику в хедере
+  bool sortingClickEnabled;
 
   /// Режим редактирования ширины колонок
   final bool columnsEditMode;
@@ -72,14 +91,26 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     }
   }
 
-  Widget showCell({bool? borderRight, Color? backColor, Color? color, required Widget child, double? width}) {
+  Widget showCell({bool? borderRight, Color? backColor, Color? color, required Widget child, double? width, NsgSimpleTableColumnSort? sort}) {
     Widget showCell;
+    if (sort != null) {
+      child = Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Expanded(child: Center(child: child)),
+        sort == NsgSimpleTableColumnSort.forward
+            ? Icon(
+                Icons.arrow_downward_outlined,
+                size: 16,
+              )
+            : Icon(Icons.arrow_upward_outlined, size: 16)
+      ]);
+    }
     showCell = Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         width: width,
         decoration: BoxDecoration(color: backColor, border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
         child: child);
+
     return showCell;
   }
 
@@ -95,18 +126,47 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
   @override
   Widget build(BuildContext context) {
+    table = [];
+    tableHeader = [];
+    tableBody = [];
+
     /// Цикл построения заголовка таблицы
     if (widget.header != null) {
       widget.columns.asMap().forEach((index, column) {
-        tableHeader.add(wrapExpanded(
+        Widget child = Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [Center(child: widget.header![index].widget)]);
+        if (widget.sortingClickEnabled == true) {
+          child = Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+
+              /// Переключение сортировки
+              onTap: () {
+                NsgSimpleTableColumnSort? sortElement = widget.columns[index].sort;
+                if (sortElement == null) {
+                  widget.columns[index].sort = NsgSimpleTableColumnSort.forward;
+                } else if (sortElement == NsgSimpleTableColumnSort.forward) {
+                  widget.columns[index].sort = NsgSimpleTableColumnSort.backward;
+                } else if (sortElement == NsgSimpleTableColumnSort.backward) {
+                  widget.columns[index].sort = null;
+                }
+                setState(() {});
+              },
+              child: child,
+            )
+          ]);
+        }
+        Widget cell = wrapExpanded(
             child: showCell(
                 borderRight: index != widget.columns.length - 1 ? true : false,
                 backColor: ControlOptions.instance.colorMainDark,
                 color: ControlOptions.instance.colorInverted,
                 width: widget.columns[index].width,
-                child: widget.header![index].widget),
+                sort: widget.columns[index].sort,
+                child: child),
             expanded: widget.columns[index].expanded,
-            flex: widget.columns[index].flex));
+            flex: widget.columns[index].flex);
+
+        tableHeader.add(cell);
       });
     }
 
