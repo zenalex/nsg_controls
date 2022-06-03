@@ -135,13 +135,13 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         NsgSimpleTableColumnSort? sortElement = widget.columns[index].sort;
         if (sortElement != null) {
           subchild = Row(children: [
-            Expanded(child: Center(child: Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: widget.header![index].widget))),
+            Expanded(child: Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget))),
             sortElement == NsgSimpleTableColumnSort.forward
                 ? Icon(Icons.arrow_downward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
                 : Icon(Icons.arrow_upward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
           ]);
         } else {
-          subchild = Center(child: Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: widget.header![index].widget));
+          subchild = Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget));
         }
         if (widget.sortingClickEnabled == true && widget.columnsEditMode != true) {
           child = InkWell(
@@ -254,29 +254,32 @@ class ColumnLineResizer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onHorizontalDragUpdate: (details) {
-        onDrag(details, number);
-      },
-      child: Container(
-        alignment: Alignment.topCenter,
-        width: 30,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onHorizontalDragUpdate: (details) {
+          onDrag(details, number);
+        },
         child: Container(
           alignment: Alignment.topCenter,
-          decoration: BoxDecoration(
-              border: Border(
-            right: BorderSide(
-              color: isSelected == true ? Colors.red : Colors.yellow,
-              width: 2.0,
-            ),
-          )),
-          width: 15,
-          child: isSelected == true
-              ? Transform.translate(
-                  offset: Offset(7, touchY - 5),
-                  child: Transform.rotate(angle: -math.pi / 2, child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
-              : SizedBox(),
+          width: 30,
+          child: Container(
+            alignment: Alignment.topCenter,
+            decoration: BoxDecoration(
+                border: Border(
+              right: BorderSide(
+                color: isSelected == true ? Colors.red : Colors.yellow,
+                width: 2.0,
+              ),
+            )),
+            width: 15,
+            child: isSelected == true
+                ? Transform.translate(
+                    offset: Offset(7, touchY - 5),
+                    child: Transform.rotate(angle: -math.pi / 2, child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
+                : SizedBox(),
+          ),
         ),
       ),
     );
