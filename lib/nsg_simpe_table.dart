@@ -83,8 +83,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
   /// Оборачивание виджета в Expanded
   Widget wrapExpanded({required Widget child, bool? expanded, int? flex}) {
-    widget.horizontalScrollEnabled = false;
     if (expanded == true) {
+      widget.horizontalScrollEnabled = false;
       return Expanded(flex: flex ?? 1, child: child);
     } else {
       return child;
@@ -100,20 +100,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       NsgSimpleTableColumnSort? sort,
       EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 5, vertical: 5)}) {
     Widget showCell;
-    if (sort != null) {
-      child = Stack(alignment: Alignment.center, children: [
-        Expanded(child: Center(child: child)),
-        Align(
-            alignment: Alignment.centerRight,
-            child: IgnorePointer(
-                child: sort == NsgSimpleTableColumnSort.forward
-                    ? const Icon(
-                        Icons.arrow_downward_outlined,
-                        size: 16,
-                      )
-                    : const Icon(Icons.arrow_upward_outlined, size: 16)))
-      ]);
-    }
+
     showCell = Container(
         padding: padding,
         alignment: Alignment.center,
@@ -143,33 +130,43 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     /// Цикл построения заголовка таблицы
     if (widget.header != null) {
       widget.columns.asMap().forEach((index, column) {
-        Widget child = Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [Center(child: widget.header![index].widget)]);
-        if (widget.sortingClickEnabled == true) {
-          child = Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-
-              /// Переключение сортировки
-              onTap: () {
-                NsgSimpleTableColumnSort? sortElement = widget.columns[index].sort;
-
-                /// Удаляем все сортировки
-                widget.columns.asMap().forEach((index2, column2) {
-                  widget.columns[index2].sort = null;
-                });
-
-                if (sortElement == null) {
-                  widget.columns[index].sort = NsgSimpleTableColumnSort.forward;
-                } else if (sortElement == NsgSimpleTableColumnSort.forward) {
-                  widget.columns[index].sort = NsgSimpleTableColumnSort.backward;
-                } else if (sortElement == NsgSimpleTableColumnSort.backward) {
-                  widget.columns[index].sort = null;
-                }
-                setState(() {});
-              },
-              child: Padding(padding: EdgeInsets.symmetric(vertical: 10), child: child),
-            )
+        Widget child;
+        Widget subchild;
+        NsgSimpleTableColumnSort? sortElement = widget.columns[index].sort;
+        if (sortElement != null) {
+          subchild = Row(children: [
+            Expanded(child: Center(child: Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: widget.header![index].widget))),
+            sortElement == NsgSimpleTableColumnSort.forward
+                ? Icon(Icons.arrow_downward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
+                : Icon(Icons.arrow_upward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
           ]);
+        } else {
+          subchild = Center(child: Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: widget.header![index].widget));
+        }
+        if (widget.sortingClickEnabled == true && widget.columnsEditMode != true) {
+          child = InkWell(
+            /// Переключение сортировки
+            onTap: () {
+              /// Удаляем все сортировки
+              widget.columns.asMap().forEach((index2, column2) {
+                widget.columns[index2].sort = null;
+              });
+
+              if (sortElement == null) {
+                widget.columns[index].sort = NsgSimpleTableColumnSort.forward;
+              } else if (sortElement == NsgSimpleTableColumnSort.forward) {
+                widget.columns[index].sort = NsgSimpleTableColumnSort.backward;
+              } else if (sortElement == NsgSimpleTableColumnSort.backward) {
+                widget.columns[index].sort = null;
+              }
+              print(sortElement);
+
+              setState(() {});
+            },
+            child: subchild,
+          );
+        } else {
+          child = subchild;
         }
         Widget cell = wrapExpanded(
             child: showCell(
@@ -216,12 +213,14 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
               decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
               child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader))));
     }
-    table.add(SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Container(
-          margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
-          decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-          child: Column(mainAxisSize: MainAxisSize.min, children: tableBody)),
+    table.add(Expanded(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+            decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+            child: Column(mainAxisSize: MainAxisSize.min, children: tableBody)),
+      ),
     ));
 
     Widget horizontalScrollWrap(Widget child) {
@@ -248,8 +247,10 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
 class ColumnLineResizer extends StatelessWidget {
   final int number;
-  Function(DragUpdateDetails, int) onDrag;
-  ColumnLineResizer({Key? key, required this.number, required this.onDrag}) : super(key: key);
+  final bool? isSelected;
+  final double touchY;
+  final Function(DragUpdateDetails, int) onDrag;
+  const ColumnLineResizer({Key? key, required this.number, this.touchY = 0, this.isSelected, required this.onDrag}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -259,17 +260,24 @@ class ColumnLineResizer extends StatelessWidget {
         onDrag(details, number);
       },
       child: Container(
-        decoration: const BoxDecoration(
-            border: Border(
-          right: BorderSide(
-            color: Colors.red,
-            width: 2.0,
-          ),
-        )),
+        alignment: Alignment.topCenter,
         width: 30,
-        child: Transform.translate(
-            offset: const Offset(15, 20),
-            child: Transform.rotate(angle: -math.pi / 2, child: const SizedBox(width: 16, child: Icon(Icons.compress_outlined, color: Colors.red)))),
+        child: Container(
+          alignment: Alignment.topCenter,
+          decoration: BoxDecoration(
+              border: Border(
+            right: BorderSide(
+              color: isSelected == true ? Colors.red : Colors.yellow,
+              width: 2.0,
+            ),
+          )),
+          width: 15,
+          child: isSelected == true
+              ? Transform.translate(
+                  offset: Offset(7, touchY - 5),
+                  child: Transform.rotate(angle: -math.pi / 2, child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
+              : SizedBox(),
+        ),
       ),
     );
   }
@@ -287,23 +295,28 @@ class ResizeLines extends StatefulWidget {
 }
 
 class _ResizeLinesState extends State<ResizeLines> {
+  int selectedColumn = -1;
+  double touchY = 0;
+
   /// Вывод вертикальных линий, меняющих ширину колонки
   Widget showLines() {
-    List<Widget> list = [];
-    //double dx = widget.columns[0].width! - 7;
+    List<Widget> list = [const Padding(padding: EdgeInsets.only(left: 10))];
     widget.columns.asMap().forEach((index, column) {
       list.add(Padding(
         padding: EdgeInsets.only(left: widget.columns[index].width! - 30),
         child: ColumnLineResizer(
+            isSelected: selectedColumn == index ? true : false,
+            touchY: touchY,
             onDrag: (details, number) {
               double dif = widget.columns[number].width! + details.primaryDelta!;
-              if (dif > 50 && dif < 300) widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
+              if (dif > 50 && dif < 500) widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
               widget.columnsOnResize(widget.columns);
+              selectedColumn = number;
+              touchY = details.localPosition.dy;
               //setState(() {});
             },
             number: index),
       ));
-      //dx += widget.columns[index].width! - 16;
     });
     return Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: list);
   }
