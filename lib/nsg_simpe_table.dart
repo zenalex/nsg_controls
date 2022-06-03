@@ -248,18 +248,33 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 class ColumnLineResizer extends StatelessWidget {
   final int number;
   final bool? isSelected;
+  final bool? showIcon;
   final double touchY;
   final Function(DragUpdateDetails, int) onDrag;
-  const ColumnLineResizer({Key? key, required this.number, this.touchY = 0, this.isSelected, required this.onDrag}) : super(key: key);
+  final Function(int) onDragEnd;
+  final Function(int) onHover;
+  const ColumnLineResizer(
+      {Key? key, required this.number, this.touchY = 0, this.isSelected, this.showIcon, required this.onDrag, required this.onDragEnd, required this.onHover})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
+      onHover: (event) {
+        onHover(number);
+      },
+      onExit: (event) {
+        onHover(-1);
+      },
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onHorizontalDragUpdate: (details) {
           onDrag(details, number);
+        },
+        onHorizontalDragEnd: (details) {
+          print("DRAG END");
+          onDragEnd(number);
         },
         child: Container(
           alignment: Alignment.topCenter,
@@ -274,11 +289,11 @@ class ColumnLineResizer extends StatelessWidget {
               ),
             )),
             width: 15,
-            child: isSelected == true
+            child: showIcon == true
                 ? Transform.translate(
                     offset: Offset(7, touchY - 5),
                     child: Transform.rotate(angle: -math.pi / 2, child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
-                : SizedBox(),
+                : const SizedBox(),
           ),
         ),
       ),
@@ -300,6 +315,7 @@ class ResizeLines extends StatefulWidget {
 class _ResizeLinesState extends State<ResizeLines> {
   int selectedColumn = -1;
   double touchY = 0;
+  int showIcon = -2;
 
   /// Вывод вертикальных линий, меняющих ширину колонки
   Widget showLines() {
@@ -310,14 +326,23 @@ class _ResizeLinesState extends State<ResizeLines> {
         child: ColumnLineResizer(
             isSelected: selectedColumn == index ? true : false,
             touchY: touchY,
+            onHover: (number) {
+              selectedColumn = number;
+              setState(() {});
+            },
             onDrag: (details, number) {
               double dif = widget.columns[number].width! + details.primaryDelta!;
               if (dif > 50 && dif < 500) widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
               widget.columnsOnResize(widget.columns);
               selectedColumn = number;
+              showIcon = number;
               touchY = details.localPosition.dy;
               //setState(() {});
             },
+            onDragEnd: (number) {
+              showIcon = -2;
+            },
+            showIcon: showIcon == selectedColumn ? true : false,
             number: index),
       ));
     });
