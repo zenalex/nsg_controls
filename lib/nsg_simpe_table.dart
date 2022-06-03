@@ -273,7 +273,6 @@ class ColumnLineResizer extends StatelessWidget {
           onDrag(details, number);
         },
         onHorizontalDragEnd: (details) {
-          print("DRAG END");
           onDragEnd(number);
         },
         child: Container(
@@ -321,6 +320,8 @@ class _ResizeLinesState extends State<ResizeLines> {
   Widget showLines() {
     List<Widget> list = [const Padding(padding: EdgeInsets.only(left: 10))];
     widget.columns.asMap().forEach((index, column) {
+      //print("INDEX $index showIcon $showIcon");
+      //print("selectedColumn $selectedColumn");
       list.add(Padding(
         padding: EdgeInsets.only(left: widget.columns[index].width! - 30),
         child: ColumnLineResizer(
@@ -342,7 +343,7 @@ class _ResizeLinesState extends State<ResizeLines> {
             onDragEnd: (number) {
               showIcon = -2;
             },
-            showIcon: showIcon == selectedColumn ? true : false,
+            showIcon: showIcon == index ? true : false,
             number: index),
       ));
     });
