@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
+import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
+import 'package:cross_scroll/cross_scroll.dart';
 import 'dart:math' as math;
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -136,7 +138,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     if (widget.horizontalScrollEnabled == true) {
       return Scrollbar(
           thumbVisibility: true,
-          thickness: 10,
+          thickness: 15,
           controller: scrollHor,
           child: SingleChildScrollView(controller: scrollHor, scrollDirection: Axis.horizontal, child: child));
     } else {
@@ -154,7 +156,23 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
   Widget vertScrollWrap(Widget child) {
     if (widget.horizontalScrollEnabled == true) {
-      return SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child);
+      return Scrollbar(
+          thumbVisibility: true,
+          thickness: 15,
+          controller: scrollVert,
+          child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
+    } else {
+      return child;
+    }
+  }
+
+  Widget vertScrollAddWrap(Widget child) {
+    if (widget.horizontalScrollEnabled == true) {
+      return Scrollbar(
+          thumbVisibility: true,
+          thickness: 15,
+          controller: scrollVertRight,
+          child: SingleChildScrollView(controller: scrollVertRight, scrollDirection: Axis.vertical, child: child));
     } else {
       return child;
     }
@@ -256,7 +274,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       child: Container(
           margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
           decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-          child: horScrollWrap(vertScrollWrap(Column(mainAxisSize: MainAxisSize.min, children: tableBody)))),
+          child: CrossScroll(
+              verticalScrollController: scrollVert, horizontalScrollController: scrollHor, child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
     ));
 
     return widget.columnsEditMode == true

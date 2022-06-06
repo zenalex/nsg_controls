@@ -30,3 +30,5 @@ build/
 .flutter-plugins
 .flutter-plugins-dependencies
 .gitignore
+.flutter-plugins-dependencies
+.gitignore
