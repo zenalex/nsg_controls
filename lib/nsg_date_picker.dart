@@ -6,12 +6,12 @@ import 'package:nsg_data/nsg_data.dart';
 
 class NsgDatePicker extends StatelessWidget {
   final String? label;
-  TextAlign? textAlign;
+  final TextAlign? textAlign;
   final EdgeInsets margin;
   final DateTime initialTime;
   final bool? disabled;
   final Function(DateTime endDate) onClose;
-  NsgDatePicker(
+  const NsgDatePicker(
       {Key? key,
       required this.initialTime,
       required this.onClose,

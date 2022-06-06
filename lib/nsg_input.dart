@@ -117,7 +117,7 @@ class _NsgInputState extends State<NsgInput> {
     inputType = widget.selectInputType();
     //Проверяем заполненность ключевых полей для выбранного типа данных
     if (inputType == NsgInputType.reference) {
-      assert(widget.selectionController != null, '${widget.fieldName}');
+      assert(widget.selectionController != null, widget.fieldName);
     }
   }
 
@@ -179,7 +179,7 @@ class _NsgInputState extends State<NsgInput> {
                       labelText: widget.label != null ? widget.label! : '',
                       //hintText: "Phone number",
                       // alignLabelWithHint: true,
-                      contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
+                      contentPadding: EdgeInsets.fromLTRB(0, 10, widget.selectionController != null ? 25 : 0, 10), //  <- you can it to 0.0 for no space
                       isDense: true,
                       enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
                       focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),

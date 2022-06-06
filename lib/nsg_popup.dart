@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'nsg_control_options.dart';
 
+// ignore: must_be_immutable
 class NsgPopUp extends StatefulWidget {
   final String title;
   final String title2;

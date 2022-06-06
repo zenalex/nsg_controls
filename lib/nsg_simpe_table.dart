@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'dart:math' as math;
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -78,8 +79,12 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   List<Widget> table = [];
   List<Widget> tableHeader = [];
   List<Widget> tableBody = [];
-  //ScrollController scrollController = ScrollController();
-  //ScrollController scrollController2 = ScrollController();
+  ScrollController scrollHor = ScrollController();
+  ScrollController scrollHorHeader = ScrollController();
+  ScrollController scrollVert = ScrollController();
+  ScrollController scrollVertRight = ScrollController();
+  LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
+  LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
 
   /// Оборачивание виджета в Expanded
   Widget wrapExpanded({required Widget child, bool? expanded, int? flex}) {
@@ -114,11 +119,45 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   @override
   void initState() {
     super.initState();
+    LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
+    LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
+    scrollHor = scrollHorizontalGroup.addAndGet();
+    scrollHorHeader = scrollHorizontalGroup.addAndGet();
+    scrollVert = scrollVerticalGroup.addAndGet();
+    scrollVertRight = scrollVerticalGroup.addAndGet();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Widget horScrollWrap(Widget child) {
+    if (widget.horizontalScrollEnabled == true) {
+      return Scrollbar(
+          thumbVisibility: true,
+          thickness: 10,
+          controller: scrollHor,
+          child: SingleChildScrollView(controller: scrollHor, scrollDirection: Axis.horizontal, child: child));
+    } else {
+      return child;
+    }
+  }
+
+  Widget horScrollHeaderWrap(Widget child) {
+    if (widget.horizontalScrollEnabled == true) {
+      return SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child);
+    } else {
+      return child;
+    }
+  }
+
+  Widget vertScrollWrap(Widget child) {
+    if (widget.horizontalScrollEnabled == true) {
+      return SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child);
+    } else {
+      return child;
+    }
   }
 
   @override
@@ -211,27 +250,16 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       table.add(IntrinsicHeight(
           child: Container(
               decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-              child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader))));
+              child: horScrollHeaderWrap(Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader)))));
     }
     table.add(Expanded(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
-            decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-            child: Column(mainAxisSize: MainAxisSize.min, children: tableBody)),
-      ),
+      child: Container(
+          margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+          decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+          child: horScrollWrap(vertScrollWrap(Column(mainAxisSize: MainAxisSize.min, children: tableBody)))),
     ));
 
-    Widget horizontalScrollWrap(Widget child) {
-      if (widget.horizontalScrollEnabled == true) {
-        return SingleChildScrollView(scrollDirection: Axis.horizontal, child: child);
-      } else {
-        return child;
-      }
-    }
-
-    return horizontalScrollWrap(widget.columnsEditMode == true
+    return widget.columnsEditMode == true
         ? Stack(alignment: Alignment.topLeft, children: [
             Column(mainAxisSize: MainAxisSize.min, children: table),
             ResizeLines(
@@ -241,7 +269,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                 },
                 columns: widget.columns)
           ])
-        : Column(mainAxisSize: MainAxisSize.min, children: table));
+        : Column(mainAxisSize: MainAxisSize.min, children: table);
   }
 }
 

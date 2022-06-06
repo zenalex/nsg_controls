@@ -24,6 +24,7 @@ dependencies:
   flutter_calendar_carousel: ^2.1.0
   share_plus: ^4.0.4
   another_flushbar: ^1.10.29
+  linked_scroll_controller: ^0.2.0
 
 dev_dependencies:
   flutter_test:

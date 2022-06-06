@@ -5,12 +5,12 @@ import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgTimePicker extends StatelessWidget {
   final String? label;
-  TextAlign? textAlign;
+  final TextAlign? textAlign;
   final EdgeInsets margin;
   final Duration initialTime;
   final bool? disabled;
   final Function(Duration endDate) onClose;
-  NsgTimePicker(
+  const NsgTimePicker(
       {Key? key,
       required this.initialTime,
       required this.onClose,
