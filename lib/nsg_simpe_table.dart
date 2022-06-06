@@ -88,6 +88,9 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
   LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
 
+  CrossScrollBar crossScrollBar =
+      const CrossScrollBar(thumb: ScrollThumb.alwaysShow, track: ScrollTrack.show, thickness: 8, hoverThickness: 8, thumbRadius: Radius.circular(0));
+
   /// Оборачивание виджета в Expanded
   Widget wrapExpanded({required Widget child, bool? expanded, int? flex}) {
     if (expanded == true) {
@@ -268,12 +271,19 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       table.add(IntrinsicHeight(
           child: Container(
               decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-              child: horScrollHeaderWrap(Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader)))));
+              child: horScrollHeaderWrap(Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: tableHeader)))));
     }
     table.add(Expanded(
       child: Container(
           margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
           child: CrossScroll(
+              normalColor: ControlOptions.instance.colorMain,
+              verticalBar: crossScrollBar,
+              horizontalBar: crossScrollBar,
               verticalScrollController: scrollVert,
               horizontalScrollController: scrollHor,
               child: Container(
@@ -283,7 +293,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
     return widget.columnsEditMode == true
         ? Stack(alignment: Alignment.topLeft, children: [
-            Column(mainAxisSize: MainAxisSize.min, children: table),
+            Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
             ResizeLines(
                 columnsOnResize: (resizedColumns) {
                   widget.columns = resizedColumns;
