@@ -81,12 +81,12 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   List<Widget> table = [];
   List<Widget> tableHeader = [];
   List<Widget> tableBody = [];
-  ScrollController scrollHor = ScrollController();
-  ScrollController scrollHorHeader = ScrollController();
-  ScrollController scrollVert = ScrollController();
-  ScrollController scrollVertRight = ScrollController();
-  LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
-  LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
+  late ScrollController scrollHor;
+  late ScrollController scrollHorHeader;
+  late ScrollController scrollVert;
+  //late ScrollController scrollVertRight;
+  // LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
+  // LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
 
   CrossScrollBar crossScrollBar =
       const CrossScrollBar(thumb: ScrollThumb.alwaysShow, track: ScrollTrack.show, thickness: 8, hoverThickness: 8, thumbRadius: Radius.circular(0));
@@ -124,12 +124,14 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   @override
   void initState() {
     super.initState();
-    LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
-    LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
+    var scrollHorizontalGroup = LinkedScrollControllerGroup();
+    var scrollVerticalGroup = LinkedScrollControllerGroup();
+    // LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
+    // LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
     scrollHor = scrollHorizontalGroup.addAndGet();
     scrollHorHeader = scrollHorizontalGroup.addAndGet();
     scrollVert = scrollVerticalGroup.addAndGet();
-    scrollVertRight = scrollVerticalGroup.addAndGet();
+    // scrollVertRight = scrollVerticalGroup.addAndGet();
   }
 
   @override
