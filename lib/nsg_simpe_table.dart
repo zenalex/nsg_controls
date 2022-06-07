@@ -84,7 +84,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   late ScrollController scrollHor;
   late ScrollController scrollHorHeader;
   late ScrollController scrollVert;
-  //late ScrollController scrollVertRight;
+  late ScrollController scrollVertRight;
   // LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
   // LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
 
@@ -131,7 +131,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     scrollHor = scrollHorizontalGroup.addAndGet();
     scrollHorHeader = scrollHorizontalGroup.addAndGet();
     scrollVert = scrollVerticalGroup.addAndGet();
-    // scrollVertRight = scrollVerticalGroup.addAndGet();
+    scrollVertRight = scrollVerticalGroup.addAndGet();
   }
 
   @override
