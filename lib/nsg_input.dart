@@ -167,31 +167,26 @@ class _NsgInputState extends State<NsgInput> {
                 border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),*/
             child: widget.widget ??
                 TextFormField(
-                    maxLines: widget.maxLines,
-                    minLines: widget.minLines,
-                    keyboardType: TextInputType.multiline,
-                    //maxLines: null,
-                    //expands: true,
-                    initialValue: fieldValue.toString(),
-                    //keyboardType: TextInputType.number,
-                    cursorColor: ControlOptions.instance.colorText,
-                    decoration: InputDecoration(
-                      labelText: widget.label != null ? widget.label! : '',
-                      //hintText: "Phone number",
-                      // alignLabelWithHint: true,
-                      contentPadding: EdgeInsets.fromLTRB(0, 10, widget.selectionController != null ? 25 : 0, 10), //  <- you can it to 0.0 for no space
-                      isDense: true,
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
-                      labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                    )
-                    /*
-                  key: GlobalKey(),
-                  //textAlign: TextAlign.left,
-                  //textAlignVertical: TextAlignVertical.center,
-                  maxLines: widget.maxlines ?? 1,
-                  cursorColor: ControlOptions.instance.colorText,
+                  maxLines: widget.maxLines,
+                  minLines: widget.minLines,
+                  keyboardType: TextInputType.multiline,
+                  //maxLines: null,
+                  //expands: true,
                   initialValue: fieldValue.toString(),
+                  //keyboardType: TextInputType.number,
+                  cursorColor: ControlOptions.instance.colorText,
+                  decoration: InputDecoration(
+                    labelText: widget.label != null ? widget.label! : '',
+                    //hintText: "Phone number",
+                    // alignLabelWithHint: true,
+                    contentPadding: EdgeInsets.fromLTRB(0, 10, widget.selectionController != null ? 25 : 0, 10), //  <- you can it to 0.0 for no space
+                    isDense: true,
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
+                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+                    labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                  ),
+
+                  key: GlobalKey(),
                   onEditingComplete: () {
                     FocusScope.of(context).unfocus();
                     if (widget.onEditingComplete != null) {
@@ -207,36 +202,8 @@ class _NsgInputState extends State<NsgInput> {
                     }
                   },
                   style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
-                  //requestController.requestNew.requestSubjectName.toUpperCase(),
                   readOnly: (widget.disabled == null) ? false : true,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.red)),
-                    //fillColor: ControlOptions.instance.colorInverted,
-                    //filled: true,
-                    alignLabelWithHint: true,
-                    hintText: widget.hint != null ? '${widget.hint}'.toUpperCase() : '',
-                    /*label: Text(
-                      widget.label != null ? widget.label!.toUpperCase() : '',
-                    ),*/
-                    //labelText: label != null ? '$label'.toUpperCase() : '',
-                    labelStyle: TextStyle(color: ControlOptions.instance.colorMainDarker, backgroundColor: ControlOptions.instance.colorInverted),
-
-                    //labelText: '$title'.toUpperCase(),
-                    contentPadding: const EdgeInsets.all(5),
-                    /*enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(widget.borderRadius),
-                    ),
-                    //floatingLabelBehavior: FloatingLabelBehavior.always,
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(widget.borderRadius),
-                    ),*/
-                  ),
-               */
-                    )),
+                )),
         widget.widget == null ? false : true);
   }
 
