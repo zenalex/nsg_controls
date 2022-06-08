@@ -277,11 +277,11 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       table.add(IntrinsicHeight(
           child: Container(
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-              child: horScrollHeaderWrap(Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: tableHeader)))));
+              child: horScrollHeaderWrap(Container(
+        padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 510) : null,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader),
+      )))));
     }
     table.add(Expanded(
       child: CrossScroll(
@@ -291,7 +291,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
           verticalScrollController: scrollVert,
           horizontalScrollController: scrollHor,
           child: Container(
-              padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 490) : null,
+              padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 510) : null,
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
               child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
     ));
