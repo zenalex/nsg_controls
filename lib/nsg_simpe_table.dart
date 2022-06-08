@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:cross_scroll/cross_scroll.dart';
 import 'dart:math' as math;
 import 'package:nsg_controls/nsg_controls.dart';
@@ -31,7 +30,7 @@ class NsgSimpleTableColumn {
   NsgSimpleTableColumn({this.expanded, this.flex, this.width, this.sort});
 }
 
-/// Класс колонки NsgSimpleTable
+/// Класс статуса сортировки колонки NsgSimpleTable
 class NsgSimpleTableColumnSort {
   String name;
   NsgSimpleTableColumnSort(this.name);
@@ -40,6 +39,7 @@ class NsgSimpleTableColumnSort {
 }
 
 /// Виджет отображения таблицы
+// ignore: must_be_immutable
 class NsgSimpleTable extends StatefulWidget {
   NsgSimpleTable(
       {Key? key,
@@ -49,7 +49,8 @@ class NsgSimpleTable extends StatefulWidget {
       this.header,
       required this.rows,
       this.rowOnTap,
-      this.columnsEditMode = false})
+      this.columnsEditMode = false,
+      this.onColumnsChange})
       : super(key: key);
 
   /// Разрешён ли горизонтальный скролл
@@ -64,6 +65,9 @@ class NsgSimpleTable extends StatefulWidget {
   /// Параметры колонок
   List<NsgSimpleTableColumn> columns;
 
+  /// Функция возврата колонок
+  final Function(List<NsgSimpleTableColumn>)? onColumnsChange;
+
   /// Набор значений ячеек для заголовка таблицы
   final List<NsgSimpleTableCell>? header;
 
@@ -71,7 +75,7 @@ class NsgSimpleTable extends StatefulWidget {
   final List<NsgSimpleTableRow> rows;
 
   /// Функция, срабатывающая при нажатии на строку
-  final void Function(NsgDataItem?, String)? rowOnTap;
+  final Function(NsgDataItem?, String)? rowOnTap;
 
   @override
   State<NsgSimpleTable> createState() => _NsgSimpleTableState();
@@ -291,7 +295,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
           verticalScrollController: scrollVert,
           horizontalScrollController: scrollHor,
           child: Container(
-              padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 510) : null,
+              padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 510) : EdgeInsets.only(bottom: 10, right: 10),
+              //margin: EdgeInsets.only(bottom: 10, right: 10),
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
               child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
     ));
@@ -300,11 +305,12 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         ? Stack(alignment: Alignment.topLeft, children: [
             Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
             Container(
-              margin: const EdgeInsets.only(right: 10, bottom: 10),
+              padding: const EdgeInsets.only(right: 10, bottom: 10),
               child: SingleChildScrollView(
                 controller: scrollHorResizers,
                 scrollDirection: Axis.horizontal,
                 child: ResizeLines(
+                    onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(widget.columns) : null,
                     columnsEditMode: widget.columnsEditMode,
                     columnsOnResize: (resizedColumns) {
                       widget.columns = resizedColumns;
@@ -322,10 +328,14 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 class ResizeLines extends StatefulWidget {
   final Function(List<NsgSimpleTableColumn>) columnsOnResize;
 
+  /// Функция возврата колонок
+  final Function(List<NsgSimpleTableColumn>)? onColumnsChange;
+
   /// Параметры колонок
   final List<NsgSimpleTableColumn> columns;
   final bool columnsEditMode;
-  const ResizeLines({Key? key, required this.columns, required this.columnsOnResize, required this.columnsEditMode}) : super(key: key);
+  const ResizeLines({Key? key, required this.columns, required this.columnsOnResize, required this.columnsEditMode, required this.onColumnsChange})
+      : super(key: key);
 
   @override
   State<ResizeLines> createState() => _ResizeLinesState();
@@ -344,7 +354,7 @@ class _ResizeLinesState extends State<ResizeLines> {
       list.add(Row(
         children: [
           SizedBox(
-            width: widget.columns[index].width! - 30,
+            width: widget.columns[index].width! - 32,
           ),
           ColumnLineResizer(
               isSelected: selectedColumn == index ? true : false,
@@ -364,6 +374,7 @@ class _ResizeLinesState extends State<ResizeLines> {
               },
               onDragEnd: (number) {
                 showIcon = -2;
+                if (widget.onColumnsChange != null) widget.onColumnsChange!(widget.columns);
               },
               showIcon: showIcon == index ? true : false,
               number: index),
@@ -420,7 +431,7 @@ class ColumnLineResizer extends StatelessWidget {
         },
         child: Container(
           alignment: Alignment.topCenter,
-          width: 30,
+          width: 32,
           child: Container(
             alignment: Alignment.topCenter,
             decoration: BoxDecoration(
