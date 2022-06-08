@@ -285,7 +285,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
             mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader),
       )))));
     }
-    table.add(Expanded(
+    table.add(Flexible(
       child: CrossScroll(
           normalColor: ControlOptions.instance.colorMain,
           verticalBar: crossScrollBar,
@@ -293,7 +293,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
           verticalScrollController: scrollVert,
           horizontalScrollController: scrollHor,
           child: Container(
-              padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 510) : EdgeInsets.only(bottom: 10, right: 10),
+              padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 510, bottom: 10) : EdgeInsets.only(bottom: 10, right: 10),
               //margin: EdgeInsets.only(bottom: 10, right: 10),
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
               child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
