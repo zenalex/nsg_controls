@@ -89,6 +89,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   late ScrollController scrollHorHeader;
   late ScrollController scrollHorResizers;
   late ScrollController scrollVert;
+
+  late List<NsgSimpleTableColumn> tableColumns;
   //late ScrollController scrollVertRight;
   // LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
   // LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
@@ -131,13 +133,11 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     super.initState();
     var scrollHorizontalGroup = LinkedScrollControllerGroup();
     var scrollVerticalGroup = LinkedScrollControllerGroup();
-    // LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
-    // LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
     scrollHor = scrollHorizontalGroup.addAndGet();
     scrollHorHeader = scrollHorizontalGroup.addAndGet();
     scrollHorResizers = scrollHorizontalGroup.addAndGet();
     scrollVert = scrollVerticalGroup.addAndGet();
-    //scrollVertRight = scrollVerticalGroup.addAndGet();
+    tableColumns = List.from(widget.columns);
   }
 
   @override
@@ -185,10 +185,10 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
     /// Цикл построения заголовка таблицы
     if (widget.header != null) {
-      widget.columns.asMap().forEach((index, column) {
+      tableColumns.asMap().forEach((index, column) {
         Widget child;
         Widget subchild;
-        NsgSimpleTableColumnSort? sortElement = widget.columns[index].sort;
+        NsgSimpleTableColumnSort? sortElement = tableColumns[index].sort;
         if (sortElement != null) {
           subchild = Row(children: [
             Expanded(child: Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget))),
@@ -204,16 +204,16 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
             /// Переключение сортировки
             onTap: () {
               /// Удаляем все сортировки
-              widget.columns.asMap().forEach((index2, column2) {
-                widget.columns[index2].sort = null;
+              tableColumns.asMap().forEach((index2, column2) {
+                tableColumns[index2].sort = null;
               });
 
               if (sortElement == null) {
-                widget.columns[index].sort = NsgSimpleTableColumnSort.forward;
+                tableColumns[index].sort = NsgSimpleTableColumnSort.forward;
               } else if (sortElement == NsgSimpleTableColumnSort.forward) {
-                widget.columns[index].sort = NsgSimpleTableColumnSort.backward;
+                tableColumns[index].sort = NsgSimpleTableColumnSort.backward;
               } else if (sortElement == NsgSimpleTableColumnSort.backward) {
-                widget.columns[index].sort = null;
+                tableColumns[index].sort = null;
               }
               print(sortElement);
 
@@ -227,14 +227,14 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         Widget cell = wrapExpanded(
             child: showCell(
                 padding: EdgeInsets.all(0),
-                borderRight: index != widget.columns.length - 1 ? true : false,
+                borderRight: index != tableColumns.length - 1 ? true : false,
                 backColor: ControlOptions.instance.colorMainDark,
                 color: ControlOptions.instance.colorInverted,
-                width: widget.columns[index].width,
-                sort: widget.columns[index].sort,
+                width: tableColumns[index].width,
+                sort: tableColumns[index].sort,
                 child: child),
-            expanded: widget.columns[index].expanded,
-            flex: widget.columns[index].flex);
+            expanded: tableColumns[index].expanded,
+            flex: tableColumns[index].flex);
 
         tableHeader.add(cell);
       });
@@ -267,13 +267,11 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                     onTap: () {
                       widget.rowOnTap!(widget.rows[rowIndex].item, widget.header![index].name!);
                     },
-                    child: showCell(width: widget.columns[index].width, child: cell.widget)),
-                expanded: widget.columns[index].expanded,
-                flex: widget.columns[index].flex)
+                    child: showCell(width: tableColumns[index].width, child: cell.widget)),
+                expanded: tableColumns[index].expanded,
+                flex: tableColumns[index].flex)
             : wrapExpanded(
-                child: showCell(width: widget.columns[index].width, child: cell.widget),
-                expanded: widget.columns[index].expanded,
-                flex: widget.columns[index].flex));
+                child: showCell(width: tableColumns[index].width, child: cell.widget), expanded: tableColumns[index].expanded, flex: tableColumns[index].flex));
       });
       tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
     });
@@ -310,13 +308,13 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                 controller: scrollHorResizers,
                 scrollDirection: Axis.horizontal,
                 child: ResizeLines(
-                    onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(widget.columns) : null,
+                    onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
                     columnsEditMode: widget.columnsEditMode,
                     columnsOnResize: (resizedColumns) {
-                      widget.columns = resizedColumns;
+                      tableColumns = resizedColumns;
                       setState(() {});
                     },
-                    columns: widget.columns),
+                    columns: tableColumns),
               ),
             )
           ])
