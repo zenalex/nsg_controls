@@ -83,8 +83,9 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   List<Widget> tableBody = [];
   late ScrollController scrollHor;
   late ScrollController scrollHorHeader;
+  late ScrollController scrollHorResizers;
   late ScrollController scrollVert;
-  late ScrollController scrollVertRight;
+  //late ScrollController scrollVertRight;
   // LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
   // LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
 
@@ -130,8 +131,9 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     // LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
     scrollHor = scrollHorizontalGroup.addAndGet();
     scrollHorHeader = scrollHorizontalGroup.addAndGet();
+    scrollHorResizers = scrollHorizontalGroup.addAndGet();
     scrollVert = scrollVerticalGroup.addAndGet();
-    scrollVertRight = scrollVerticalGroup.addAndGet();
+    //scrollVertRight = scrollVerticalGroup.addAndGet();
   }
 
   @override
@@ -166,18 +168,6 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
           thickness: 15,
           controller: scrollVert,
           child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
-    } else {
-      return child;
-    }
-  }
-
-  Widget vertScrollAddWrap(Widget child) {
-    if (widget.horizontalScrollEnabled == true) {
-      return Scrollbar(
-          thumbVisibility: true,
-          thickness: 15,
-          controller: scrollVertRight,
-          child: SingleChildScrollView(controller: scrollVertRight, scrollDirection: Axis.vertical, child: child));
     } else {
       return child;
     }
@@ -244,6 +234,20 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
         tableHeader.add(cell);
       });
+
+      /// В режиме редактирования ширины колонок,
+      /// добавляем ещё одну дополнительную колонку справа,
+      /// чтобы позволить редактировать ширину последней колонки
+      /*    if (widget.columnsEditMode == true) {
+        Widget cell = wrapExpanded(
+            child: showCell(
+                padding: EdgeInsets.all(0),
+                backColor: ControlOptions.instance.colorMainDark,
+                color: ControlOptions.instance.colorInverted,
+                width: 100,
+                child: SizedBox()));
+        tableHeader.add(cell);
+      }*/
     }
 
     /// Цикл построения ячеек таблицы (строки)
@@ -272,7 +276,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
     if (widget.header != null) {
       table.add(IntrinsicHeight(
           child: Container(
-              decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+              //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
               child: horScrollHeaderWrap(Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -280,33 +284,110 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                   children: tableHeader)))));
     }
     table.add(Expanded(
-      child: Container(
-          margin: const EdgeInsets.fromLTRB(0, 0, 0, 15),
-          child: CrossScroll(
-              normalColor: ControlOptions.instance.colorMain,
-              verticalBar: crossScrollBar,
-              horizontalBar: crossScrollBar,
-              verticalScrollController: scrollVert,
-              horizontalScrollController: scrollHor,
-              child: Container(
-                  decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: tableBody)))),
+      child: CrossScroll(
+          normalColor: ControlOptions.instance.colorMain,
+          verticalBar: crossScrollBar,
+          horizontalBar: crossScrollBar,
+          verticalScrollController: scrollVert,
+          horizontalScrollController: scrollHor,
+          child: Container(
+              padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 490) : null,
+              //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+              child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
     ));
 
     return widget.columnsEditMode == true
         ? Stack(alignment: Alignment.topLeft, children: [
             Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
-            ResizeLines(
-                columnsOnResize: (resizedColumns) {
-                  widget.columns = resizedColumns;
-                  setState(() {});
-                },
-                columns: widget.columns)
+            Container(
+              margin: const EdgeInsets.only(right: 10, bottom: 10),
+              child: SingleChildScrollView(
+                controller: scrollHorResizers,
+                scrollDirection: Axis.horizontal,
+                child: ResizeLines(
+                    columnsEditMode: widget.columnsEditMode,
+                    columnsOnResize: (resizedColumns) {
+                      widget.columns = resizedColumns;
+                      setState(() {});
+                    },
+                    columns: widget.columns),
+              ),
+            )
           ])
         : Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table);
   }
 }
 
+/// Виджет блока вертикальных линий, меняющих ширины колонок
+class ResizeLines extends StatefulWidget {
+  final Function(List<NsgSimpleTableColumn>) columnsOnResize;
+
+  /// Параметры колонок
+  final List<NsgSimpleTableColumn> columns;
+  final bool columnsEditMode;
+  const ResizeLines({Key? key, required this.columns, required this.columnsOnResize, required this.columnsEditMode}) : super(key: key);
+
+  @override
+  State<ResizeLines> createState() => _ResizeLinesState();
+}
+
+class _ResizeLinesState extends State<ResizeLines> {
+  int selectedColumn = -1;
+  double touchY = 0;
+  int showIcon = -2;
+
+  Widget showLines() {
+    List<Widget> list = [const Padding(padding: EdgeInsets.only(left: 10))];
+    widget.columns.asMap().forEach((index, column) {
+      //print("INDEX $index showIcon $showIcon");
+      //print("selectedColumn $selectedColumn");
+      list.add(Row(
+        children: [
+          SizedBox(
+            width: widget.columns[index].width! - 30,
+          ),
+          ColumnLineResizer(
+              isSelected: selectedColumn == index ? true : false,
+              touchY: touchY,
+              onHover: (number) {
+                selectedColumn = number;
+                setState(() {});
+              },
+              onDrag: (details, number) {
+                double dif = widget.columns[number].width! + details.primaryDelta!;
+                if (dif > 50 && dif < 500) widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
+                widget.columnsOnResize(widget.columns);
+                selectedColumn = number;
+                showIcon = number;
+                touchY = details.localPosition.dy;
+                //setState(() {});
+              },
+              onDragEnd: (number) {
+                showIcon = -2;
+              },
+              showIcon: showIcon == index ? true : false,
+              number: index),
+        ],
+      ));
+    });
+    if (widget.columnsEditMode == true) {
+      list.add(
+        Container(
+          //decoration: BoxDecoration(color: Colors.red),
+          width: 500,
+        ),
+      );
+    }
+    return Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: list);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return showLines();
+  }
+}
+
+/// Виджет вертикальной линий, меняющей ширину колонки
 class ColumnLineResizer extends StatelessWidget {
   final int number;
   final bool? isSelected;
@@ -359,61 +440,5 @@ class ColumnLineResizer extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class ResizeLines extends StatefulWidget {
-  final Function(List<NsgSimpleTableColumn>) columnsOnResize;
-
-  /// Параметры колонок
-  final List<NsgSimpleTableColumn> columns;
-  const ResizeLines({Key? key, required this.columns, required this.columnsOnResize}) : super(key: key);
-
-  @override
-  State<ResizeLines> createState() => _ResizeLinesState();
-}
-
-class _ResizeLinesState extends State<ResizeLines> {
-  int selectedColumn = -1;
-  double touchY = 0;
-  int showIcon = -2;
-
-  /// Вывод вертикальных линий, меняющих ширину колонки
-  Widget showLines() {
-    List<Widget> list = [const Padding(padding: EdgeInsets.only(left: 10))];
-    widget.columns.asMap().forEach((index, column) {
-      //print("INDEX $index showIcon $showIcon");
-      //print("selectedColumn $selectedColumn");
-      list.add(Padding(
-        padding: EdgeInsets.only(left: widget.columns[index].width! - 30),
-        child: ColumnLineResizer(
-            isSelected: selectedColumn == index ? true : false,
-            touchY: touchY,
-            onHover: (number) {
-              selectedColumn = number;
-              setState(() {});
-            },
-            onDrag: (details, number) {
-              double dif = widget.columns[number].width! + details.primaryDelta!;
-              if (dif > 50 && dif < 500) widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
-              widget.columnsOnResize(widget.columns);
-              selectedColumn = number;
-              showIcon = number;
-              touchY = details.localPosition.dy;
-              //setState(() {});
-            },
-            onDragEnd: (number) {
-              showIcon = -2;
-            },
-            showIcon: showIcon == index ? true : false,
-            number: index),
-      ));
-    });
-    return Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: list);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return showLines();
   }
 }
