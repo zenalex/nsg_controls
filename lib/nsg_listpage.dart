@@ -91,11 +91,13 @@ class NsgListPage extends StatelessWidget {
                               padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
                               child: SizedBox(
                                   width: double.infinity,
-                                  child: Text(
-                                    'Фильтр по датам: ' + controller.controllerFilter.nsgPeriod.dateWidgetText,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
-                                  )),
+                                  child: controller.controllerFilter.isPeriodAllowed
+                                      ? Text(
+                                          'Фильтр по датам: ' + controller.controllerFilter.nsgPeriod.dateWidgetText,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        )
+                                      : const SizedBox()),
                             ));
                       } else {
                         return const SizedBox();
@@ -148,7 +150,7 @@ class NsgListPage extends StatelessWidget {
     } else {
       List<Widget> list = [];
       for (var element in controller.items) {
-        list.add(widget(element));
+        list.add(InkWell(onTap: () => _elementTap(element), child: widget(element)));
       }
       return Column(children: list);
     }
@@ -186,6 +188,10 @@ class NsgListPage extends StatelessWidget {
         //});
       },
     );
+  }
+
+  void _elementTap(NsgDataItem element) {
+    controller.itemPageOpen(element, elementEditPage, needRefreshSelectedItem: true);
   }
 }
 
