@@ -32,8 +32,18 @@ class NsgListPage extends StatelessWidget {
 
   final RefreshController _refreshController = RefreshController();
 
+  ///Реакция на нажатие на элемент. Если не задан, то будет вывана функция контроллера controller.itemPageOpen
+  final void Function(NsgDataItem)? onElementTap;
+
   NsgListPage(
-      {Key? key, required this.controller, required this.title, this.subtitle, required this.textNoItems, required this.widget, required this.elementEditPage})
+      {Key? key,
+      required this.controller,
+      required this.title,
+      this.subtitle,
+      required this.textNoItems,
+      required this.widget,
+      required this.elementEditPage,
+      this.onElementTap})
       : super(key: key);
 
   @override
@@ -191,7 +201,9 @@ class NsgListPage extends StatelessWidget {
   }
 
   void _elementTap(NsgDataItem element) {
-    controller.itemPageOpen(element, elementEditPage, needRefreshSelectedItem: true);
+    if (onElementTap == null) {
+      controller.itemPageOpen(element, elementEditPage, needRefreshSelectedItem: true);
+    }
   }
 }
 
