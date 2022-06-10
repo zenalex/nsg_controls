@@ -62,7 +62,7 @@ class NsgListPage extends StatelessWidget {
                     controller: controller,
                   )),
               controller.obx(
-                  (state) => controller.controllerFilter.isAllowed == true
+                  (state) => controller.controllerFilter.isAllowed && controller.controllerFilter.isPeriodAllowed
                       ? NsgPeriodFilter(
                           label: 'Фильтр по датам',
                           controller: controller,
