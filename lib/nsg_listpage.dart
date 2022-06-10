@@ -116,7 +116,7 @@ class NsgListPage extends StatelessWidget {
                                   ],
                                 ),
                               )),
-                          onLoading: const NsgProgressBar()),
+                          onLoading: NsgProgressBar()),
                     ),
                   ],
                 ),
