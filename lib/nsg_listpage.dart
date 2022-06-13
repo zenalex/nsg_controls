@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -221,8 +222,16 @@ class NsgListPage extends StatelessWidget {
 
   void _elementTap(NsgDataItem element) {
     if (onElementTap == null) {
-      controller.itemPageOpen(element, elementEditPage,
-          needRefreshSelectedItem: true);
+      if (controller.regime == NsgControllerRegime.view) {
+        controller.itemPageOpen(element, elementEditPage,
+            needRefreshSelectedItem: true);
+      } else {
+        if (controller.onSelected != null) {
+          controller.onSelected!(element);
+        } else {
+          Get.back();
+        }
+      }
     }
   }
 }
