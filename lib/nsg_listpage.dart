@@ -232,6 +232,8 @@ class NsgListPage extends StatelessWidget {
           Get.back();
         }
       }
+    } else {
+      onElementTap!(element);
     }
   }
 }
