@@ -27,6 +27,7 @@ class ControlOptions {
   double sizeL = 16;
   double sizeM = 14;
   double sizeS = 12;
+  double sizeSM = 10;
 
   double get screenWidth => Get.width;
 
