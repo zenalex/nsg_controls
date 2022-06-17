@@ -34,9 +34,14 @@ class NsgListPage extends StatelessWidget {
   ///Реакция на нажатие на элемент. Если не задан, то будет вывана функция контроллера controller.itemPageOpen
   final void Function(NsgDataItem)? onElementTap;
 
-  //Цвета appbar
-  Color? appBarColor;
-  Color? appBarBackColor;
+  ///Цвета Appbar
+  Color? appBarColor, appBarBackColor;
+
+  ///Иконки Appbar
+  IconData? appBarIcon, appBarIcon2, appBarIcon3;
+
+  ///Функции иконок
+  final VoidCallback? appBarOnPressed, appBarOnPressed2, appBarOnPressed3;
 
   final RefreshController _refreshController = RefreshController();
 
@@ -50,6 +55,12 @@ class NsgListPage extends StatelessWidget {
       required this.elementEditPage,
       this.appBarColor,
       this.appBarBackColor,
+      this.appBarIcon,
+      this.appBarIcon2,
+      this.appBarIcon3,
+      this.appBarOnPressed,
+      this.appBarOnPressed2,
+      this.appBarOnPressed3,
       this.onElementTap})
       : super(key: key);
 
@@ -181,30 +192,33 @@ class NsgListPage extends StatelessWidget {
       text2: subtitle,
       colorsInverted: true,
       bottomCircular: true,
-      icon: Icons.arrow_back_ios_new,
-      onPressed: () {
-        Get.back();
-      },
+      icon: appBarIcon == null ? null : Icons.arrow_back_ios_new,
+      onPressed: appBarOnPressed() ??
+          () {
+            Get.back();
+          },
 
       /// Новый объект
-      icon2: Icons.add,
-      onPressed2: () {
-        controller.createNewItem();
-        Get.toNamed(elementEditPage);
-      },
+      icon2: appBarIcon2 == null ? null : Icons.add,
+      onPressed2: appBarOnPressed2() ??
+          () {
+            controller.createNewItem();
+            Get.toNamed(elementEditPage);
+          },
 
       /// Фильтр
-      icon3: controller.controllerFilter.isAllowed == true
+      icon3: appBarIcon3 ?? controller.controllerFilter.isAllowed == true
           ? controller.controllerFilter.isOpen == true
               ? Icons.filter_alt_off
               : Icons.filter_alt
           : null,
-      onPressed3: () {
-        //setState(() {
-        controller.controllerFilter.isOpen = !controller.controllerFilter.isOpen;
-        controller.update();
-        //});
-      },
+      onPressed3: appBarOnPressed3() ??
+          () {
+            //setState(() {
+            controller.controllerFilter.isOpen = !controller.controllerFilter.isOpen;
+            controller.update();
+            //});
+          },
     );
   }
 
