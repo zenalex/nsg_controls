@@ -13,9 +13,10 @@ class ControlOptions {
 
   final Color colorMainOpacity;
   final Color colorMainDark;
-  final Color colorMainLight;
-
   final Color colorMainDarker;
+
+  final Color colorMainLight;
+  final Color colorMainLighter;
 
   final Color colorSecondary;
   final Color colorNormal;
@@ -23,6 +24,10 @@ class ControlOptions {
   final Color colorWarning;
   final Color colorConfirmed;
   final Color colorBlue;
+
+  final Color colorGrey;
+  final Color colorGreyLight;
+  final Color colorGreyLighter;
 
   double sizeL = 16;
   double sizeM = 14;
@@ -49,14 +54,18 @@ class ControlOptions {
     this.colorInverted = const Color.fromRGBO(255, 255, 255, 1),
     this.colorMainOpacity = const Color.fromRGBO(242, 239, 253, 1),
     this.colorMainDark = const Color.fromARGB(255, 192, 163, 34),
-    this.colorMainLight = const Color.fromARGB(255, 255, 245, 201),
     this.colorMainDarker = const Color.fromARGB(255, 153, 128, 16),
+    this.colorMainLight = const Color.fromARGB(255, 255, 245, 201),
+    this.colorMainLighter = const Color.fromARGB(255, 255, 245, 201),
     this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
     this.colorNormal = const Color.fromARGB(255, 29, 180, 95),
     this.colorError = const Color.fromRGBO(208, 8, 8, 1),
     this.colorWarning = const Color.fromARGB(255, 199, 101, 10),
     this.colorConfirmed = const Color.fromARGB(255, 31, 138, 75),
     this.colorBlue = const Color.fromRGBO(0, 88, 163, 1),
+    this.colorGrey = const Color.fromARGB(255, 77, 77, 77),
+    this.colorGreyLight = const Color.fromARGB(255, 145, 145, 145),
+    this.colorGreyLighter = const Color.fromARGB(255, 196, 196, 196),
   }) {
     NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
   }
