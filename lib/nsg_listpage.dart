@@ -34,6 +34,10 @@ class NsgListPage extends StatelessWidget {
   ///Реакция на нажатие на элемент. Если не задан, то будет вывана функция контроллера controller.itemPageOpen
   final void Function(NsgDataItem)? onElementTap;
 
+  //Цвета appbar
+  Color? appBarColor;
+  Color? appBarBackColor;
+
   final RefreshController _refreshController = RefreshController();
 
   NsgListPage(
@@ -44,6 +48,8 @@ class NsgListPage extends StatelessWidget {
       required this.textNoItems,
       required this.widget,
       required this.elementEditPage,
+      this.appBarColor,
+      this.appBarBackColor,
       this.onElementTap})
       : super(key: key);
 
@@ -168,6 +174,8 @@ class NsgListPage extends StatelessWidget {
 
   Widget _getNsgAppBar(BuildContext context) {
     return NsgAppBar(
+      color: appBarColor,
+      backColor: appBarBackColor,
       key: GlobalKey(),
       text: title,
       text2: subtitle,
