@@ -15,3 +15,4 @@ export 'nsg_multi_selection.dart';
 export 'widgets/nsg_progressbar.dart';
 export 'widgets/body_wrap.dart';
 export 'widgets/nsg_appbar.dart';
+export 'widgets/nsg_image.dart';
