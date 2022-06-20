@@ -25,7 +25,7 @@ class NsgButton extends StatelessWidget {
       this.icon,
       this.onPressed,
       this.disabled,
-      this.borderRadius = 15,
+      this.borderRadius,
       this.width,
       this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       this.color,
@@ -47,7 +47,7 @@ class NsgButton extends StatelessWidget {
                   height: 50,
                   width: width,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(borderRadius!),
+                    borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
                     boxShadow: shadow != null
                         ? <BoxShadow>[
                             BoxShadow(
@@ -62,7 +62,7 @@ class NsgButton extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(borderRadius!),
+                          borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
                         ),
                         primary: backColor ?? ControlOptions.instance.colorMain,
                         padding: padding,
@@ -93,7 +93,10 @@ class NsgButton extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: <Color>[ControlOptions.instance.colorText.withOpacity(0.0), ControlOptions.instance.colorText.withOpacity(0.3)],
+                    colors: <Color>[
+                      ControlOptions.instance.colorText.withOpacity(0.0),
+                      ControlOptions.instance.colorText.withOpacity(0.3)
+                    ],
                   ),
                   borderRadius: BorderRadius.circular(25),
                 ),
@@ -104,7 +107,9 @@ class NsgButton extends StatelessWidget {
     } else // Маленькая кнопка
     if (style == 'small') {
       return Padding(
-          padding: margin == null ? const EdgeInsets.fromLTRB(5, 5, 5, 5) : EdgeInsets.fromLTRB(margin!, margin!, margin!, margin!),
+          padding: margin == null
+              ? const EdgeInsets.fromLTRB(5, 5, 5, 5)
+              : EdgeInsets.fromLTRB(margin!, margin!, margin!, margin!),
           child: Container(
               height: 40,
               decoration: BoxDecoration(
@@ -126,7 +131,9 @@ class NsgButton extends StatelessWidget {
     } else // Кнопка с виджетом внутри
     if (style == 'widget') {
       return Padding(
-          padding: margin == null ? const EdgeInsets.fromLTRB(5, 5, 5, 5) : EdgeInsets.fromLTRB(margin!, margin!, margin!, margin!),
+          padding: margin == null
+              ? const EdgeInsets.fromLTRB(5, 5, 5, 5)
+              : EdgeInsets.fromLTRB(margin!, margin!, margin!, margin!),
           child: Container(
               height: 50,
               decoration: BoxDecoration(
@@ -147,10 +154,12 @@ class NsgButton extends StatelessWidget {
     } else {
       // Кнопка обычная
       return Container(
-          padding: margin == null ? const EdgeInsets.fromLTRB(5, 5, 5, 5) : EdgeInsets.fromLTRB(margin!, margin!, margin!, margin!),
+          padding: margin == null
+              ? const EdgeInsets.fromLTRB(5, 5, 5, 5)
+              : EdgeInsets.fromLTRB(margin!, margin!, margin!, margin!),
           width: width ?? double.infinity,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(borderRadius!),
+            borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
             boxShadow: shadow != null
                 ? <BoxShadow>[
                     BoxShadow(
@@ -164,7 +173,7 @@ class NsgButton extends StatelessWidget {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadius!),
+                  borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
                 ),
                 elevation: 0,
                 side: BorderSide(width: 2, color: ControlOptions.instance.colorMain),
@@ -176,7 +185,8 @@ class NsgButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (icon != null) SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorText)),
+                if (icon != null)
+                  SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorText)),
                 if (text != '' && icon != null) const SizedBox(width: 0),
                 Flexible(
                   fit: FlexFit.loose,

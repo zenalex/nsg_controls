@@ -34,6 +34,8 @@ class ControlOptions {
   double sizeS = 12;
   double sizeSM = 10;
 
+  final double borderRadius;
+
   double get screenWidth => Get.width;
 
   /// Размер одного блока с иконкой у сдвигающегося влево блока
@@ -49,6 +51,7 @@ class ControlOptions {
   String dateformat = 'dd.MM.yy';
 
   ControlOptions({
+    this.borderRadius = 15.0,
     this.colorMain = const Color.fromRGBO(233, 200, 45, 1),
     this.colorText = const Color.fromARGB(255, 70, 59, 11),
     this.colorInverted = const Color.fromRGBO(255, 255, 255, 1),
