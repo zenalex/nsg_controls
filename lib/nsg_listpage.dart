@@ -198,14 +198,14 @@ class NsgListPage extends StatelessWidget {
       text2: subtitle,
       colorsInverted: true,
       bottomCircular: true,
-      icon: appBarIcon == null ? null : Icons.arrow_back_ios_new,
+      icon: appBarIcon ?? Icons.arrow_back_ios_new,
       onPressed: appBarOnPressed ??
           () {
             Get.back();
           },
 
       /// Новый объект
-      icon2: appBarIcon2 == null ? null : Icons.add,
+      icon2: appBarIcon2 ?? Icons.add,
       onPressed2: appBarOnPressed2 ??
           () {
             controller.createNewItem();

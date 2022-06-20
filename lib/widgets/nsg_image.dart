@@ -109,21 +109,29 @@ class NsgImage extends StatelessWidget {
   ///    options.
   final FilterQuality filterQuality;
 
-  const NsgImage({
-    Key? key,
-    required this.item,
-    required this.fieldName,
-    required this.controller,
-    this.width,
-    this.height,
-    this.color,
-    this.fit,
-    this.alignment = Alignment.center,
-    this.repeat = ImageRepeat.noRepeat,
-    this.centerSlice,
-    this.isAntiAlias = false,
-    this.filterQuality = FilterQuality.low,
-  }) : super(key: key);
+  /// Виджет на время загрузки картинки
+  final Widget? child;
+
+  /// Виджет, если картинка не задана
+  final Widget? noImage;
+
+  const NsgImage(
+      {Key? key,
+      required this.item,
+      required this.fieldName,
+      required this.controller,
+      this.width,
+      this.height,
+      this.color,
+      this.fit,
+      this.alignment = Alignment.center,
+      this.repeat = ImageRepeat.noRepeat,
+      this.centerSlice,
+      this.isAntiAlias = false,
+      this.filterQuality = FilterQuality.low,
+      this.child,
+      this.noImage})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -132,10 +140,11 @@ class NsgImage extends StatelessWidget {
     return controller.obxBase((state) {
       var data = item[fieldName] as Uint8List;
       if (data.isEmpty) {
-        return SizedBox(
-          width: width,
-          height: height,
-        );
+        return noImage ??
+            SizedBox(
+              width: width,
+              height: height,
+            );
       } else {
         return Image.memory(
           data,
@@ -150,6 +159,6 @@ class NsgImage extends StatelessWidget {
           filterQuality: filterQuality,
         );
       }
-    });
+    }, onLoading: child);
   }
 }
