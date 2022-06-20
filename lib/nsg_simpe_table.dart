@@ -43,6 +43,8 @@ class NsgSimpleTableColumnSort {
 class NsgSimpleTable extends StatefulWidget {
   NsgSimpleTable(
       {Key? key,
+      this.headerBackColor,
+      this.headerColor,
       this.sortingClickEnabled = true,
       this.horizontalScrollEnabled = true,
       required this.columns,
@@ -52,6 +54,9 @@ class NsgSimpleTable extends StatefulWidget {
       this.columnsEditMode = false,
       this.onColumnsChange})
       : super(key: key);
+
+  /// Цвет и цвет фона в header таблицы
+  Color? headerBackColor, headerColor;
 
   /// Разрешён ли горизонтальный скролл
   bool horizontalScrollEnabled;
@@ -95,12 +100,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
   // LinkedScrollControllerGroup scrollHorizontalGroup = LinkedScrollControllerGroup();
   // LinkedScrollControllerGroup scrollVerticalGroup = LinkedScrollControllerGroup();
 
-  CrossScrollBar crossScrollBar = const CrossScrollBar(
-      thumb: ScrollThumb.alwaysShow,
-      track: ScrollTrack.show,
-      thickness: 8,
-      hoverThickness: 8,
-      thumbRadius: Radius.circular(0));
+  CrossScrollBar crossScrollBar =
+      const CrossScrollBar(thumb: ScrollThumb.alwaysShow, track: ScrollTrack.show, thickness: 8, hoverThickness: 8, thumbRadius: Radius.circular(0));
 
   /// Оборачивание виджета в Expanded
   Widget wrapExpanded({required Widget child, bool? expanded, int? flex}) {
@@ -126,8 +127,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         padding: padding,
         alignment: Alignment.center,
         width: width,
-        decoration:
-            BoxDecoration(color: backColor, border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+        decoration: BoxDecoration(color: backColor, border: Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
         child: child);
 
     return showCell;
@@ -202,20 +202,13 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         NsgSimpleTableColumnSort? sortElement = tableColumns[index].sort;
         if (sortElement != null) {
           subchild = Row(children: [
-            Expanded(
-                child: Center(
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                        child: widget.header![index].widget))),
+            Expanded(child: Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget))),
             sortElement == NsgSimpleTableColumnSort.forward
                 ? Icon(Icons.arrow_downward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
                 : Icon(Icons.arrow_upward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
           ]);
         } else {
-          subchild = Center(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                  child: widget.header![index].widget));
+          subchild = Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget));
         }
         if (widget.sortingClickEnabled == true && widget.columnsEditMode != true) {
           child = InkWell(
@@ -246,8 +239,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
             child: showCell(
                 padding: const EdgeInsets.all(0),
                 borderRight: index != tableColumns.length - 1 ? true : false,
-                backColor: ControlOptions.instance.colorMainDark,
-                color: ControlOptions.instance.colorInverted,
+                backColor: widget.headerBackColor ?? ControlOptions.instance.colorMainDark,
+                color: widget.headerColor ?? ControlOptions.instance.colorInverted,
                 width: tableColumns[index].width,
                 sort: tableColumns[index].sort,
                 child: child),
@@ -289,13 +282,9 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                 expanded: tableColumns[index].expanded,
                 flex: tableColumns[index].flex)
             : wrapExpanded(
-                child: showCell(width: tableColumns[index].width, child: cell.widget),
-                expanded: tableColumns[index].expanded,
-                flex: tableColumns[index].flex));
+                child: showCell(width: tableColumns[index].width, child: cell.widget), expanded: tableColumns[index].expanded, flex: tableColumns[index].flex));
       });
-      tableBody.add(IntrinsicHeight(
-          child:
-              Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
+      tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
     });
     if (widget.header != null) {
       table.add(IntrinsicHeight(
@@ -304,10 +293,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
               child: horScrollHeaderWrap(Container(
         padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 510) : null,
         child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: tableHeader),
+            mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader),
       )))));
     }
     table.add(Flexible(
@@ -353,12 +339,7 @@ class ResizeLines extends StatefulWidget {
   /// Параметры колонок
   final List<NsgSimpleTableColumn> columns;
   final bool columnsEditMode;
-  const ResizeLines(
-      {Key? key,
-      required this.columns,
-      required this.columnsOnResize,
-      required this.columnsEditMode,
-      required this.onColumnsChange})
+  const ResizeLines({Key? key, required this.columns, required this.columnsOnResize, required this.columnsEditMode, required this.onColumnsChange})
       : super(key: key);
 
   @override
@@ -436,14 +417,7 @@ class ColumnLineResizer extends StatelessWidget {
   final Function(int) onDragEnd;
   final Function(int) onHover;
   const ColumnLineResizer(
-      {Key? key,
-      required this.number,
-      this.touchY = 0,
-      this.isSelected,
-      this.showIcon,
-      required this.onDrag,
-      required this.onDragEnd,
-      required this.onHover})
+      {Key? key, required this.number, this.touchY = 0, this.isSelected, this.showIcon, required this.onDrag, required this.onDragEnd, required this.onHover})
       : super(key: key);
 
   @override
@@ -480,9 +454,7 @@ class ColumnLineResizer extends StatelessWidget {
             child: showIcon == true
                 ? Transform.translate(
                     offset: Offset(7, touchY - 5),
-                    child: Transform.rotate(
-                        angle: -math.pi / 2,
-                        child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
+                    child: Transform.rotate(angle: -math.pi / 2, child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
                 : const SizedBox(),
           ),
         ),
