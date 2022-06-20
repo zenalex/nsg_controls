@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:nsg_data/controllers/nsgImageController.dart';
 import 'package:nsg_data/nsg_data.dart';
 
@@ -146,17 +147,21 @@ class NsgImage extends StatelessWidget {
               height: height,
             );
       } else {
-        return Image.memory(
-          data,
-          width: width,
-          height: height,
-          color: color,
-          fit: fit,
-          alignment: alignment,
-          repeat: repeat,
-          centerSlice: centerSlice,
-          isAntiAlias: isAntiAlias,
-          filterQuality: filterQuality,
+        return FadeIn(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          child: Image.memory(
+            data,
+            width: width,
+            height: height,
+            color: color,
+            fit: fit,
+            alignment: alignment,
+            repeat: repeat,
+            centerSlice: centerSlice,
+            isAntiAlias: isAntiAlias,
+            filterQuality: filterQuality,
+          ),
         );
       }
     }, onLoading: child);

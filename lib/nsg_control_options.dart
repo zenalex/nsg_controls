@@ -64,8 +64,8 @@ class ControlOptions {
     this.colorConfirmed = const Color.fromARGB(255, 31, 138, 75),
     this.colorBlue = const Color.fromRGBO(0, 88, 163, 1),
     this.colorGrey = const Color.fromARGB(255, 77, 77, 77),
-    this.colorGreyLight = const Color.fromARGB(255, 145, 145, 145),
-    this.colorGreyLighter = const Color.fromARGB(255, 196, 196, 196),
+    this.colorGreyLight = const Color.fromARGB(255, 150, 150, 150),
+    this.colorGreyLighter = const Color.fromARGB(255, 230, 230, 230),
   }) {
     NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
   }
