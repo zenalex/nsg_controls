@@ -29,6 +29,9 @@ class ControlOptions {
   final Color colorGreyLight;
   final Color colorGreyLighter;
 
+  final Color tableHeaderColor;
+  final Color tableHeaderLinesColor;
+
   double sizeL = 16;
   double sizeM = 14;
   double sizeS = 12;
@@ -57,6 +60,8 @@ class ControlOptions {
     this.colorInverted = const Color.fromRGBO(255, 255, 255, 1),
     this.colorMainOpacity = const Color.fromRGBO(242, 239, 253, 1),
     this.colorMainDark = const Color.fromARGB(255, 192, 163, 34),
+    this.tableHeaderColor = const Color.fromARGB(255, 192, 163, 34),
+    this.tableHeaderLinesColor = const Color.fromRGBO(233, 200, 45, 1),
     this.colorMainDarker = const Color.fromARGB(255, 153, 128, 16),
     this.colorMainLight = const Color.fromARGB(255, 255, 245, 201),
     this.colorMainLighter = const Color.fromARGB(255, 255, 245, 201),
