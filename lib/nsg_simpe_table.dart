@@ -9,9 +9,10 @@ import 'package:nsg_data/nsg_data_item.dart';
 /// Класс ячейки NsgSimpleTable
 class NsgSimpleTableCell {
   Function()? onTap;
+  bool isSelected;
   Widget widget;
   String? name;
-  NsgSimpleTableCell({this.onTap, required this.widget, this.name});
+  NsgSimpleTableCell({this.onTap, this.isSelected = false, required this.widget, this.name});
 }
 
 /// Класс строки NsgSimpleTable
@@ -43,6 +44,7 @@ class NsgSimpleTableColumnSort {
 class NsgSimpleTable extends StatefulWidget {
   NsgSimpleTable(
       {Key? key,
+      this.selectCellOnHover = false,
       this.headerBackColor,
       this.headerColor,
       this.sortingClickEnabled = true,
@@ -54,6 +56,9 @@ class NsgSimpleTable extends StatefulWidget {
       this.columnsEditMode = false,
       this.onColumnsChange})
       : super(key: key);
+
+  /// При Hover выделять только ячейку, а не весь ряд
+  bool selectCellOnHover;
 
   /// Цвет и цвет фона в header таблицы
   Color? headerBackColor, headerColor;
@@ -119,6 +124,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
   Widget showCell(
       {bool? borderRight,
+      bool? isSelected,
       Color? backColor,
       Color? color,
       required Widget child,
@@ -132,7 +138,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         alignment: Alignment.center,
         width: width,
         decoration: BoxDecoration(
-            color: backColor, border: Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
+            color: isSelected == true ? ControlOptions.instance.colorMain.withOpacity(0.2) : backColor,
+            border: Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
         child: child);
 
     return showCell;
@@ -271,12 +278,23 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       row.row.asMap().forEach((index, cell) {
         tableRow.add(widget.rowOnTap != null
             ? wrapExpanded(
-                child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
+                child: InkWell(
                     onTap: () {
                       widget.rowOnTap!(widget.rows[rowIndex].item, widget.header![index].name!);
                     },
-                    child: showCell(width: tableColumns[index].width, child: cell.widget)),
+                    onHover: (bool) {
+                      if (widget.selectCellOnHover == true) {
+                        // Ячейке присваиваем isSelected
+                        cell.isSelected = bool;
+                      } else {
+                        // Всем ячейкам в ряде присваиваем isSelected
+                        for (var el in row.row) {
+                          el.isSelected = bool;
+                        }
+                      }
+                      setState(() {});
+                    },
+                    child: showCell(width: tableColumns[index].width, child: cell.widget, isSelected: cell.isSelected)),
                 expanded: tableColumns[index].expanded,
                 flex: tableColumns[index].flex)
             : wrapExpanded(
