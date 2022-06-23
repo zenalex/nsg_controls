@@ -13,7 +13,7 @@ class NsgImage extends StatelessWidget {
   final String fieldName;
 
   ///Контроллер загрузки картинок
-  final NsgImageController controller;
+  final NsgDataController controller;
 
   /// If non-null, require the image to have this width.
   ///
