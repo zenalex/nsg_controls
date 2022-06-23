@@ -32,10 +32,11 @@ class ControlOptions {
   final Color tableHeaderColor;
   final Color tableHeaderLinesColor;
 
+  double sizeXL = 18;
   double sizeL = 16;
   double sizeM = 14;
   double sizeS = 12;
-  double sizeSM = 10;
+  double sizeXS = 10;
 
   final double borderRadius;
 
