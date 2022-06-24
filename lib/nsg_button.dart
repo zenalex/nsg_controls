@@ -5,7 +5,7 @@ import 'nsg_control_options.dart';
 class NsgButton extends StatelessWidget {
   final String? style;
   final String? text;
-  final double? margin;
+  final EdgeInsets margin;
   final IconData? icon;
   final VoidCallback? onPressed;
   final bool? disabled;
@@ -14,14 +14,14 @@ class NsgButton extends StatelessWidget {
   final EdgeInsets padding;
   final Color? color, borderColor;
   final Color? backColor;
-  final double fontSize;
+  double? fontSize;
   final Widget? widget;
   final BoxShadow? shadow;
-  const NsgButton(
+  NsgButton(
       {Key? key,
       this.style,
       this.text = '',
-      this.margin,
+      this.margin = const EdgeInsets.fromLTRB(5, 5, 5, 5),
       this.icon,
       this.onPressed,
       this.disabled,
@@ -31,13 +31,14 @@ class NsgButton extends StatelessWidget {
       this.color,
       this.borderColor,
       this.backColor,
-      this.fontSize = 16,
+      this.fontSize,
       this.widget,
       this.shadow})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    fontSize ??= ControlOptions.instance.sizeM;
     // Кнопка с плюсом слева
     if (style == 'plus') {
       return Padding(
@@ -94,7 +95,10 @@ class NsgButton extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: <Color>[ControlOptions.instance.colorText.withOpacity(0.0), ControlOptions.instance.colorText.withOpacity(0.3)],
+                    colors: <Color>[
+                      ControlOptions.instance.colorText.withOpacity(0.0),
+                      ControlOptions.instance.colorText.withOpacity(0.3)
+                    ],
                   ),
                   borderRadius: BorderRadius.circular(25),
                 ),
@@ -105,7 +109,7 @@ class NsgButton extends StatelessWidget {
     } else // Маленькая кнопка
     if (style == 'small') {
       return Padding(
-          padding: margin == null ? const EdgeInsets.fromLTRB(5, 5, 5, 5) : EdgeInsets.fromLTRB(margin!, margin!, margin!, margin!),
+          padding: margin,
           child: Container(
               height: 40,
               decoration: BoxDecoration(
@@ -127,7 +131,7 @@ class NsgButton extends StatelessWidget {
     } else // Кнопка с виджетом внутри
     if (style == 'widget') {
       return Padding(
-          padding: margin == null ? const EdgeInsets.fromLTRB(5, 5, 5, 5) : EdgeInsets.fromLTRB(margin!, margin!, margin!, margin!),
+          padding: margin,
           child: Container(
               height: 50,
               decoration: BoxDecoration(
@@ -148,16 +152,18 @@ class NsgButton extends StatelessWidget {
     } else {
       // Кнопка обычная
       return Container(
-          margin: margin == null ? const EdgeInsets.fromLTRB(5, 5, 5, 5) : EdgeInsets.fromLTRB(margin!, margin!, margin!, margin!),
+          margin: margin,
           width: width ?? double.infinity,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius), boxShadow: <BoxShadow>[
-            shadow ??
-                BoxShadow(
-                  color: ControlOptions.instance.colorMain.withOpacity(0.2),
-                  blurRadius: 2,
-                  offset: const Offset(0, 2),
-                )
-          ]),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
+              boxShadow: <BoxShadow>[
+                shadow ??
+                    BoxShadow(
+                      color: ControlOptions.instance.colorMain.withOpacity(0.2),
+                      blurRadius: 2,
+                      offset: const Offset(0, 2),
+                    )
+              ]),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -173,7 +179,8 @@ class NsgButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (icon != null) SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorText)),
+                if (icon != null)
+                  SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorText)),
                 if (text != '' && icon != null) const SizedBox(width: 0),
                 Flexible(
                   fit: FlexFit.loose,

@@ -23,17 +23,34 @@ class NsgTextStyle {
 }
 
 class NsgText extends StatelessWidget {
-  String text = '';
-  NsgTextType? type = NsgTextType.text;
-  NsgTextStyle? style = NsgTextStyle.normal;
-  NsgText(this.text, {Key? key, this.type, this.style}) : super(key: key);
+  final Color? color;
+  final Color? backColor;
+  final String text;
+  final NsgTextType? type;
+  final NsgTextStyle? style;
+  NsgText(this.text, {Key? key, this.color, this.backColor, this.type, this.style}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var mergedStyle = style?.style.merge(type?.style);
-    return Text(
-      text,
-      style: mergedStyle,
-    );
+    NsgTextType _type = type ?? NsgTextType.text;
+    TextStyle mergedStyle = TextStyle();
+
+    mergedStyle = mergedStyle.merge(_type.style);
+    if (style != null) mergedStyle = mergedStyle.merge(style!.style);
+    mergedStyle = mergedStyle.merge(TextStyle(color: color));
+    return backColor == null
+        ? Text(
+            text,
+            style: mergedStyle,
+          )
+        : Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(color: backColor),
+            child: Text(
+              text,
+              overflow: TextOverflow.visible,
+              maxLines: 2,
+              style: mergedStyle,
+            ));
   }
 }

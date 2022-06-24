@@ -66,7 +66,8 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
     /// Тело виджета
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 500),
-      crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+      crossFadeState:
+          widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
       firstChild: const SizedBox(),
       secondChild: Padding(
         padding: widget.margin,
@@ -90,13 +91,17 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                   padding: widget.padding,
                   child: Center(
                     child: Text(_showPeriod(),
-                        style: TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            color: ControlOptions.instance.colorText,
+                            fontSize: ControlOptions.instance.sizeM,
+                            fontWeight: FontWeight.bold)),
                   ),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                decoration: BoxDecoration(color: widget.label != '' ? ControlOptions.instance.colorInverted : Colors.transparent),
+                decoration: BoxDecoration(
+                    color: widget.label != '' ? ControlOptions.instance.colorInverted : Colors.transparent),
                 child: Text(
                   widget.label != '' ? widget.label.toUpperCase() : '',
                   textAlign: TextAlign.center,
@@ -117,7 +122,9 @@ class NsgPeriodFilterContent extends StatefulWidget {
   final int periodSelected;
   final bool periodTimeEnabled;
   final Function(NsgPeriod)? onSelect;
-  const NsgPeriodFilterContent({Key? key, this.onSelect, this.periodSelected = 1, this.periodTimeEnabled = false, required this.controller}) : super(key: key);
+  const NsgPeriodFilterContent(
+      {Key? key, this.onSelect, this.periodSelected = 1, this.periodTimeEnabled = false, required this.controller})
+      : super(key: key);
 
   @override
   State<NsgPeriodFilterContent> createState() => NsgPeriodFilterContentState();
@@ -200,7 +207,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 width: 44,
                                 height: 44,
                                 child: NsgButton(
-                                    margin: 0,
+                                    margin: EdgeInsets.all(0),
                                     padding: const EdgeInsets.all(0),
                                     style: "widget",
                                     widget: const Center(child: Icon(Icons.remove)),
@@ -214,7 +221,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                               padding: const EdgeInsets.symmetric(horizontal: 6),
                               child: GestureDetector(
                                 onTap: () {
-                                  NsgDatePicker(initialTime: date.beginDate, onClose: (value) {}).showPopup(context, date.beginDate, (value) {
+                                  NsgDatePicker(initialTime: date.beginDate, onClose: (value) {})
+                                      .showPopup(context, date.beginDate, (value) {
                                     date.beginDate = value;
                                     _setToSelected(_selected);
                                     date.setDateText();
@@ -234,7 +242,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 width: 44,
                                 height: 44,
                                 child: NsgButton(
-                                    margin: 0,
+                                    margin: const EdgeInsets.all(0),
                                     padding: const EdgeInsets.all(0),
                                     style: "widget",
                                     widget: const Center(child: Icon(Icons.add)),
@@ -322,7 +330,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   ),
                                   Expanded(
                                       child: NsgButton(
-                                          margin: 0,
+                                          margin: const EdgeInsets.all(0),
                                           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
                                           text: 'Сегодня',
                                           borderRadius: 10,
@@ -358,8 +366,10 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                               .startOf(Units.DAY)
                                               .add(duration: Duration(hours: time1.hour, minutes: time1.minute))
                                               .dateTime;
-                                          date.endDate =
-                                              Jiffy(date.endDate).startOf(Units.DAY).add(duration: Duration(hours: time2.hour, minutes: time2.minute)).dateTime;
+                                          date.endDate = Jiffy(date.endDate)
+                                              .startOf(Units.DAY)
+                                              .add(duration: Duration(hours: time2.hour, minutes: time2.minute))
+                                              .dateTime;
                                         }
                                         date.setToPeriod(date);
                                         setState(() {});

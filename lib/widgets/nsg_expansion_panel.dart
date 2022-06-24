@@ -4,12 +4,34 @@ import 'package:nsg_controls/nsg_controls.dart';
 // ignore: must_be_immutable
 class NsgExpansionPanel extends StatefulWidget {
   NsgExpansionPanel(
-      {Key? key, this.collapsed = true, required this.widgetTop, required this.widgetBottom, this.margin, this.isSimple, this.isExpanded, this.linkedPanels})
+      {Key? key,
+      this.widgetTopColor,
+      this.widgetTopBackColor,
+      this.borderColor,
+      this.collapsed = true,
+      required this.widgetTop,
+      this.widgetTopActive,
+      required this.widgetBottom,
+      this.margin,
+      this.widgetTopPadding = const EdgeInsets.fromLTRB(10, 5, 5, 5),
+      this.isSimple,
+      this.isExpanded,
+      this.linkedPanels})
       : super(key: key);
+
+  /// Фон верхнего виджета
+  final Color? widgetTopColor;
+  final Color? widgetTopBackColor;
+  final Color? borderColor;
+
+  final EdgeInsets? widgetTopPadding;
+
+  /// Свёрнуто
   final bool collapsed;
 
   /// Виджет в верхней части блока
   final Widget widgetTop;
+  final Widget? widgetTopActive;
 
   /// Нижний виджет в раскрытой панели
   final Widget widgetBottom;
@@ -82,22 +104,26 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                 });
               },
               child: Container(
-                padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                padding: widget.widgetTopPadding,
                 decoration: BoxDecoration(
-                    color: _expanded == true ? ControlOptions.instance.colorMain : ControlOptions.instance.colorInverted,
-                    border: Border.all(width: 2, color: ControlOptions.instance.colorMain),
+                    color: _expanded == true
+                        ? widget.widgetTopBackColor ?? ControlOptions.instance.colorMain
+                        : widget.widgetTopBackColor ?? ControlOptions.instance.colorInverted,
+                    border: Border.all(width: 2, color: widget.borderColor ?? ControlOptions.instance.colorMain),
                     borderRadius: _expanded == true
-                        ? const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
+                        ? BorderRadius.only(
+                            topLeft: Radius.circular(ControlOptions.instance.borderRadius),
+                            topRight: Radius.circular(ControlOptions.instance.borderRadius),
                           )
-                        : BorderRadius.circular(10)),
+                        : BorderRadius.circular(ControlOptions.instance.borderRadius)),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   Expanded(
                     child: widget.widgetTop,
                   ),
                   Icon(_expanded == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                      color: _expanded == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorText)
+                      color: _expanded == true
+                          ? widget.widgetTopColor ?? ControlOptions.instance.colorText
+                          : widget.widgetTopColor ?? ControlOptions.instance.colorText)
                 ]),
               ),
             ),
@@ -121,14 +147,16 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                         SizedBox(
                           height: 20,
                           child: IconButton(
-                              padding: const EdgeInsets.all(0), onPressed: null, icon: Icon(Icons.expand_more, color: ControlOptions.instance.colorText)),
+                              padding: const EdgeInsets.all(0),
+                              onPressed: null,
+                              icon: Icon(Icons.expand_more, color: ControlOptions.instance.colorText)),
                         ),
-                        Container(
+                        /* Container(
                           height: 1,
                           decoration: BoxDecoration(
                             border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
                           ),
-                        ),
+                        ),*/
                       ]),
                     )
                   : const SizedBox(width: double.infinity, height: 0),
@@ -149,13 +177,13 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                           child: Stack(
                             alignment: Alignment.topCenter,
                             children: [
-                              Container(
+                              /*   Container(
                                 height: 1,
                                 margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                                 decoration: BoxDecoration(
                                   border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
                                 ),
-                              ),
+                              ),*/
                               Container(
                                 padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
                                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -183,10 +211,10 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       width: double.infinity,
                       decoration: BoxDecoration(
-                          border: Border.all(width: 2, color: ControlOptions.instance.colorMain),
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10),
+                          border: Border.all(width: 2, color: widget.borderColor ?? ControlOptions.instance.colorMain),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(ControlOptions.instance.borderRadius),
+                            bottomRight: Radius.circular(ControlOptions.instance.borderRadius),
                           )),
                       //contentPadding: EdgeInsets.all(0),
                       child: widget.widgetBottom))
