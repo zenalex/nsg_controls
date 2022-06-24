@@ -93,38 +93,41 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (widget.isSimple != true)
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _expanded = !_expanded;
-                  if (_expanded) widget.collapseOtherPanels();
-                  if (widget.isExpanded != null) {
-                    widget.isExpanded!(_expanded);
-                  }
-                });
-              },
-              child: Container(
-                padding: widget.widgetTopPadding,
-                decoration: BoxDecoration(
-                    color: _expanded == true
-                        ? widget.widgetTopBackColor ?? ControlOptions.instance.colorMain
-                        : widget.widgetTopBackColor ?? ControlOptions.instance.colorInverted,
-                    border: Border.all(width: 2, color: widget.borderColor ?? ControlOptions.instance.colorMain),
-                    borderRadius: _expanded == true
-                        ? BorderRadius.only(
-                            topLeft: Radius.circular(ControlOptions.instance.borderRadius),
-                            topRight: Radius.circular(ControlOptions.instance.borderRadius),
-                          )
-                        : BorderRadius.circular(ControlOptions.instance.borderRadius)),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Expanded(
-                    child: widget.widgetTop,
-                  ),
-                  Icon(_expanded == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _expanded = !_expanded;
+                    if (_expanded) widget.collapseOtherPanels();
+                    if (widget.isExpanded != null) {
+                      widget.isExpanded!(_expanded);
+                    }
+                  });
+                },
+                child: Container(
+                  padding: widget.widgetTopPadding,
+                  decoration: BoxDecoration(
                       color: _expanded == true
-                          ? widget.widgetTopColor ?? ControlOptions.instance.colorText
-                          : widget.widgetTopColor ?? ControlOptions.instance.colorText)
-                ]),
+                          ? widget.widgetTopBackColor ?? ControlOptions.instance.colorMain
+                          : widget.widgetTopBackColor ?? ControlOptions.instance.colorInverted,
+                      border: Border.all(width: 2, color: widget.borderColor ?? ControlOptions.instance.colorMain),
+                      borderRadius: _expanded == true
+                          ? BorderRadius.only(
+                              topLeft: Radius.circular(ControlOptions.instance.borderRadius),
+                              topRight: Radius.circular(ControlOptions.instance.borderRadius),
+                            )
+                          : BorderRadius.circular(ControlOptions.instance.borderRadius)),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Expanded(
+                      child: widget.widgetTop,
+                    ),
+                    Icon(_expanded == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                        color: _expanded == true
+                            ? widget.widgetTopColor ?? ControlOptions.instance.colorText
+                            : widget.widgetTopColor ?? ControlOptions.instance.colorText)
+                  ]),
+                ),
               ),
             ),
           AnimatedCrossFade(
@@ -132,77 +135,83 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
               duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed),
               crossFadeState: _expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
               firstChild: widget.isSimple == true
-                  ? GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _expanded = !_expanded;
-                          if (_expanded) widget.collapseOtherPanels();
-                          if (widget.isExpanded != null) {
-                            widget.isExpanded!(_expanded);
-                          }
-                        });
-                      },
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                        Padding(padding: const EdgeInsets.fromLTRB(0, 5, 0, 0), child: widget.widgetTop),
-                        SizedBox(
-                          height: 20,
-                          child: IconButton(
-                              padding: const EdgeInsets.all(0),
-                              onPressed: null,
-                              icon: Icon(Icons.expand_more, color: ControlOptions.instance.colorText)),
-                        ),
-                        /* Container(
-                          height: 1,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
+                  ? MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _expanded = !_expanded;
+                            if (_expanded) widget.collapseOtherPanels();
+                            if (widget.isExpanded != null) {
+                              widget.isExpanded!(_expanded);
+                            }
+                          });
+                        },
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                          Padding(padding: const EdgeInsets.fromLTRB(0, 5, 0, 0), child: widget.widgetTop),
+                          SizedBox(
+                            height: 20,
+                            child: IconButton(
+                                padding: const EdgeInsets.all(0),
+                                onPressed: null,
+                                icon: Icon(Icons.expand_more, color: ControlOptions.instance.colorText)),
                           ),
-                        ),*/
-                      ]),
+                          /* Container(
+                            height: 1,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
+                            ),
+                          ),*/
+                        ]),
+                      ),
                     )
                   : const SizedBox(width: double.infinity, height: 0),
               secondChild: widget.isSimple == true
                   ? Column(
                       children: [
                         widget.widgetBottom,
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _expanded = !_expanded;
-                              if (_expanded) widget.collapseOtherPanels();
-                              if (widget.isExpanded != null) {
-                                widget.isExpanded!(_expanded);
-                              }
-                            });
-                          },
-                          child: Stack(
-                            alignment: Alignment.topCenter,
-                            children: [
-                              /*   Container(
-                                height: 1,
-                                margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
-                                ),
-                              ),*/
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
-                                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                                  SizedBox(
-                                    height: 20,
-                                    child: IconButton(
-                                        padding: const EdgeInsets.all(0),
-                                        onPressed: null,
-                                        icon: Icon(Icons.expand_less, color: ControlOptions.instance.colorText)),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _expanded = !_expanded;
+                                if (_expanded) widget.collapseOtherPanels();
+                                if (widget.isExpanded != null) {
+                                  widget.isExpanded!(_expanded);
+                                }
+                              });
+                            },
+                            child: Stack(
+                              alignment: Alignment.topCenter,
+                              children: [
+                                /*   Container(
+                                  height: 1,
+                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
                                   ),
-                                  const Padding(
-                                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                      child: Text(
-                                        'Свернуть',
-                                        textAlign: TextAlign.center,
-                                      )),
-                                ]),
-                              ),
-                            ],
+                                ),*/
+                                Container(
+                                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
+                                  child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                                    SizedBox(
+                                      height: 20,
+                                      child: IconButton(
+                                          padding: const EdgeInsets.all(0),
+                                          onPressed: null,
+                                          icon: Icon(Icons.expand_less, color: ControlOptions.instance.colorText)),
+                                    ),
+                                    const Padding(
+                                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        child: Text(
+                                          'Свернуть',
+                                          textAlign: TextAlign.center,
+                                        )),
+                                  ]),
+                                ),
+                              ],
+                            ),
                           ),
                         )
                       ],
