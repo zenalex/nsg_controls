@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart';
 
 class NsgTimePicker extends StatelessWidget {
   final String? label;
@@ -41,6 +43,41 @@ class NsgTimePicker extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    Container(
+                      height: 40,
+                      width: 120,
+                      child: TextFormField(
+                        inputFormatters: [
+                          MaskTextInputFormatter(
+                            mask: "##:##",
+                            filter: {
+                              "#": RegExp(r'\d+|-|/'),
+                            },
+                          )
+                        ],
+                        initialValue: minutes > 9 ? '$hours:$minutes' : '$hours:0$minutes',
+                        keyboardType: TextInputType.number,
+                        cursorColor: ControlOptions.instance.colorText,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          labelText: '',
+                          contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
+                          isDense: true,
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
+                          focusedBorder:
+                              UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+                          labelStyle: TextStyle(
+                              color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                        ),
+                        key: GlobalKey(),
+                        onEditingComplete: () {
+                          FocusScope.of(context).unfocus();
+                        },
+                        onChanged: (String value) {},
+                        style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
+                      ),
+                    ),
                     SizedBox(
                       width: 300,
                       height: 300,
@@ -93,7 +130,8 @@ class NsgTimePicker extends StatelessWidget {
             ),
             Container(
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
+                decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
                 padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                 child: Text(
                   "$hours:$minutesString",

@@ -26,6 +26,7 @@ dependencies:
   share_plus: ^4.0.4
   another_flushbar: ^1.10.29
   linked_scroll_controller: ^0.2.0
+  mask_text_input_formatter: ^2.3.0
 
 dev_dependencies:
   flutter_test:

@@ -167,9 +167,8 @@ class _NsgInputState extends State<NsgInput> {
         Container(
             //height: widget.height,
             margin: widget.margin,
-            padding: widget.widget == null
-                ? const EdgeInsets.fromLTRB(0, 0, 0, 0)
-                : const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            padding:
+                widget.widget == null ? const EdgeInsets.fromLTRB(0, 0, 0, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
             /* decoration: BoxDecoration(
                 color: ControlOptions.instance.colorInverted,
                 borderRadius: BorderRadius.circular(widget.borderRadius),
@@ -189,20 +188,14 @@ class _NsgInputState extends State<NsgInput> {
                     //hintText: "Phone number",
                     // alignLabelWithHint: true,
                     contentPadding: EdgeInsets.fromLTRB(
-                        0,
-                        10,
-                        widget.selectionController != null ? 25 : 0,
-                        10), //  <- you can it to 0.0 for no space
+                        0, 10, widget.selectionController != null ? 25 : 0, 10), //  <- you can it to 0.0 for no space
                     isDense: true,
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: ControlOptions.instance.colorMainDark)),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: ControlOptions.instance.colorText)),
-                    labelStyle: TextStyle(
-                        color: ControlOptions.instance.colorMainDark,
-                        backgroundColor: Colors.transparent),
+                    enabledBorder:
+                        UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
+                    focusedBorder:
+                        UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+                    labelStyle:
+                        TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                   ),
 
                   key: GlobalKey(),
@@ -220,9 +213,7 @@ class _NsgInputState extends State<NsgInput> {
                       widget.onChanged!(widget.dataItem);
                     }
                   },
-                  style: TextStyle(
-                      color: ControlOptions.instance.colorText,
-                      fontSize: widget.fontSize),
+                  style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
                   readOnly: (widget.disabled == null) ? false : true,
                 )),
         widget.widget == null ? false : true);
@@ -230,20 +221,16 @@ class _NsgInputState extends State<NsgInput> {
 
   void _onPressed() {
     if (inputType == NsgInputType.reference) {
-      widget.selectionController!.selectedItem =
-          widget.dataItem.getReferent(widget.fieldName);
+      widget.selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       widget.selectionController!.refreshData();
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        var form = NsgSelection(
-            inputType: inputType,
-            controller: widget.selectionController!,
-            rowWidget: widget.rowWidget);
+        var form =
+            NsgSelection(inputType: inputType, controller: widget.selectionController!, rowWidget: widget.rowWidget);
         form.selectFromArray(
           widget.label ?? '',
           (item) {
-            widget.dataItem.setFieldValue(
-                widget.fieldName, widget.selectionController!.selectedItem);
+            widget.dataItem.setFieldValue(widget.fieldName, widget.selectionController!.selectedItem);
             if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
             setState(() {});
             return null;
@@ -289,8 +276,7 @@ class _NsgInputState extends State<NsgInput> {
         decoration: BoxDecoration(
             color: ControlOptions.instance.colorInverted,
             borderRadius: BorderRadius.circular(widget.borderRadius),
-            border:
-                Border.all(width: 2, color: ControlOptions.instance.colorMain)),
+            border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: SizedBox(
             height: 38,
             child: Row(
@@ -300,8 +286,7 @@ class _NsgInputState extends State<NsgInput> {
                     value: fieldValue,
                     activeColor: ControlOptions.instance.colorMain,
                     onChanged: (value) {
-                      widget.dataItem
-                          .setFieldValue(widget.fieldName, !fieldValue);
+                      widget.dataItem.setFieldValue(widget.fieldName, !fieldValue);
                       if (widget.updateController != null) {
                         widget.updateController!.update();
                       }
