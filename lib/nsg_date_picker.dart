@@ -49,72 +49,17 @@ class NsgDatePicker extends StatelessWidget {
               onCancel: () {
                 Get.back();
               },
-              getContent: () => [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      height: 40,
-                      width: 120,
-                      child: TextFormField(
-                        inputFormatters: [
-                          MaskTextInputFormatter(
-                            mask: "##.##.##",
-                            filter: {
-                              "#": RegExp(r'\d+|-|/'),
-                            },
-                          )
-                        ],
-                        initialValue: NsgDateFormat.dateFormat(initialTime),
-                        keyboardType: TextInputType.number,
-                        cursorColor: ControlOptions.instance.colorText,
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          labelText: '',
-                          contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
-                          isDense: true,
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-                          focusedBorder:
-                              UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
-                          labelStyle: TextStyle(
-                              color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                        ),
-                        key: GlobalKey(),
-                        onEditingComplete: () {
-                          FocusScope.of(context).unfocus();
-                        },
-                        onChanged: (String value) {},
-                        style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 300,
-                      height: 300,
-                      child: CupertinoDatePicker(
-                        mode: CupertinoDatePickerMode.date,
-                        initialDateTime: initialTime,
-                        onDateTimeChanged: (DateTime value) {
-                          selectedDate = value;
-                        },
-                        use24hFormat: true,
-                        minuteInterval: 1,
-                      ),
-                    )
-                  ],
-                )
-              ],
+              getContent: () => [DatePickerContent(initialTime: initialTime)],
             ));
   }
 
   @override
   Widget build(BuildContext context) {
+    DateTime _initTime = initialTime;
     return GestureDetector(
       onTap: disabled != true
           ? () {
-              NsgDatePicker(initialTime: initialTime, onClose: (value) {}).showPopup(context, initialTime, (value) {
+              NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
                 onClose(value);
               });
             }
@@ -136,13 +81,116 @@ class NsgDatePicker extends StatelessWidget {
                     border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
                 padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                 child: Text(
-                  NsgDateFormat.dateFormat(initialTime, format: 'dd.MM.yy'),
+                  NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
                   textAlign: textAlign,
                   style: const TextStyle(fontSize: 16),
                 )),
           ],
         ),
       ),
+    );
+  }
+}
+
+class DatePickerContent extends StatefulWidget {
+  DateTime initialTime;
+  DatePickerContent({Key? key, required this.initialTime}) : super(key: key);
+
+  @override
+  State<DatePickerContent> createState() => _DatePickerContentState();
+}
+
+class _DatePickerContentState extends State<DatePickerContent> {
+  String _initialTime = '';
+  DateTime _initialTime2 = DateTime.now();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy');
+    _initialTime2 = widget.initialTime;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          height: 40,
+          width: 150,
+          child: TextFormField(
+            inputFormatters: [
+              MaskTextInputFormatter(
+                initialText: _initialTime,
+                mask: "##.##.####",
+                /*filter: {
+                              "#": RegExp(r'\d+|-|/'),
+                            }*/
+              )
+            ],
+            initialValue: _initialTime,
+            keyboardType: TextInputType.number,
+            cursorColor: ControlOptions.instance.colorText,
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              labelText: '',
+              contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
+              isDense: true,
+              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+              labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+            ),
+            key: GlobalKey(),
+            onEditingComplete: () {
+              FocusScope.of(context).unfocus();
+            },
+            onChanged: (String value) {
+              // TODO переделать под контроллер
+              print("----");
+              for (var i = 0; i < _initialTime.length - 1 && i < value.length - 1; i++) {
+                print('${_initialTime[i]} ${value[i]}');
+                if (_initialTime[i] != value[i]) {
+                  _initialTime = value.substring(0, i + 1) + _initialTime.substring(i + 1);
+                  print('1   > ${value.substring(0, i + 1)}');
+                  print('2   > ${_initialTime.substring(i + 1)}');
+                  print('1+2 > ${_initialTime}');
+                  // value.substring(0, i) + value.substring(i + 2);
+                  DateTime? _initialTimeNew = DateTime.tryParse(_initialTime);
+                  if (_initialTimeNew != null) {
+                    _initialTime2 = _initialTimeNew;
+                    setState(() {});
+                  }
+                  break;
+                }
+              }
+              //_initialTime = DateTime.tryParse(value) ?? _initialTime;
+              //setState(() {});
+            },
+            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
+          ),
+        ),
+        SizedBox(
+          width: 300,
+          height: 300,
+          child: CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.date,
+            initialDateTime: _initialTime2,
+            onDateTimeChanged: (DateTime value) {
+              //print(value);
+              _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy');
+              _initialTime2 = value;
+              ;
+              //_initialTime2= value;
+              setState(() {});
+            },
+            use24hFormat: true,
+            minuteInterval: 1,
+          ),
+        )
+      ],
     );
   }
 }
