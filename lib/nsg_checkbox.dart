@@ -48,7 +48,7 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
               const SizedBox(width: 4),
               Text(
                 widget.label,
-                style: TextStyle(color: ControlOptions.instance.colorText),
+                style: TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
               )
             ],
           ),
