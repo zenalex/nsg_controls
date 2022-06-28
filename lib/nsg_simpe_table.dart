@@ -138,6 +138,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         alignment: Alignment.center,
         width: width,
         decoration: BoxDecoration(
+
+            /// Меняем цвет ячейки при наведении мыши
             color: isSelected == true ? ControlOptions.instance.colorMain.withOpacity(0.2) : backColor,
             border: Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
         child: child);
@@ -171,6 +173,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
           child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
     } else {
       return CrossScroll(
+          // TODO тянется во всю доступную ширину, что неправильно. Плюс добавляется фоновый цвет
           normalColor: ControlOptions.instance.colorMain,
           verticalBar: crossScrollBar,
           horizontalBar: crossScrollBar,
@@ -320,13 +323,15 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       )))));
     }
     table.add(Flexible(
-      child: crossWrap(Container(
-          padding: widget.columnsEditMode == true
-              ? const EdgeInsets.only(right: 510, bottom: 10)
-              : EdgeInsets.only(bottom: 10, right: widget.horizontalScrollEnabled == true ? 10 : 0),
-          //margin: EdgeInsets.only(bottom: 10, right: 10),
-          //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-          child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
+      child: Container(
+        child: crossWrap(Container(
+            padding: widget.columnsEditMode == true
+                ? const EdgeInsets.only(right: 510, bottom: 10)
+                : EdgeInsets.only(bottom: 10, right: widget.horizontalScrollEnabled == true ? 10 : 0),
+            //margin: EdgeInsets.only(bottom: 10, right: 10),
+            //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+            child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
+      ),
     ));
 
     return widget.columnsEditMode == true
@@ -348,7 +353,11 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
               ),
             )
           ])
-        : Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table);
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: table);
   }
 }
 
