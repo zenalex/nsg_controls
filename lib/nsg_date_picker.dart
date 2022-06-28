@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -13,23 +15,11 @@ class NsgDatePicker extends StatelessWidget {
   final bool? disabled;
   final Function(DateTime endDate) onClose;
 
-  /// Контроллер, которому будет подаваться update при изменении значения в Input
-  //final NsgDataController? updateController;
-
-  /// Поле для отображения и задания значения
-  //final String fieldName;
-
-  /// Объект, значение поля которого отображается
-  //final NsgDataItem dataItem;
-
-  NsgDatePicker(
+  const NsgDatePicker(
       {Key? key,
       required this.initialTime,
       required this.onClose,
       this.label,
-      //required this.fieldName,
-      //required this.updateController,
-      //required this.dataItem,
       this.textAlign = TextAlign.center,
       this.disabled,
       this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
@@ -77,8 +67,7 @@ class NsgDatePicker extends StatelessWidget {
             Container(
                 //constraints: const BoxConstraints(minHeight: 40),
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
                 padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                 child: Text(
                   NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
@@ -93,8 +82,8 @@ class NsgDatePicker extends StatelessWidget {
 }
 
 class DatePickerContent extends StatefulWidget {
-  DateTime initialTime;
-  DatePickerContent({Key? key, required this.initialTime}) : super(key: key);
+  final DateTime initialTime;
+  const DatePickerContent({Key? key, required this.initialTime}) : super(key: key);
 
   @override
   State<DatePickerContent> createState() => _DatePickerContentState();
@@ -103,12 +92,59 @@ class DatePickerContent extends StatefulWidget {
 class _DatePickerContentState extends State<DatePickerContent> {
   String _initialTime = '';
   DateTime _initialTime2 = DateTime.now();
+  final textController = TextEditingController();
 
   @override
   void initState() {
-    // TODO: implement initState
     _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy');
     _initialTime2 = widget.initialTime;
+    textController.text = _initialTime;
+    textController.addListener(textChanged);
+    super.initState();
+  }
+
+  bool _ignoreChange = false;
+  void textChanged() {
+    if (_ignoreChange) return;
+    var value = textController.text;
+    print('initialTime = ' + _initialTime);
+    print('value = ' + value);
+    if (value.length < _initialTime.length) {
+      _initialTime = value;
+      return;
+    } else if (value.length == _initialTime.length) {
+      var start = textController.selection.start;
+      if (start < _initialTime.length) {
+        _initialTime = value.substring(0, start) + _initialTime.substring(start);
+      } else {
+        _initialTime = value;
+      }
+
+      DateTime? _initialTimeNew;
+      try {
+        _initialTimeNew = DateFormat('dd.MM.yyyy').parse(_initialTime);
+      } catch (e) {}
+      if (_initialTimeNew != null) {
+        _initialTime2 = _initialTimeNew;
+        datepicker!.setState(_initialTime2);
+      }
+      if (textController.text != _initialTime) {
+        var start = textController.selection.start;
+        _ignoreChange = true;
+        textController.text = _initialTime;
+
+        textController.selection = TextSelection.fromPosition(TextPosition(offset: start));
+        _ignoreChange = false;
+      }
+    } else {
+      _initialTime = value;
+    }
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
   }
 
   @override
@@ -118,7 +154,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Container(
+        SizedBox(
           height: 40,
           width: 150,
           child: TextFormField(
@@ -126,18 +162,15 @@ class _DatePickerContentState extends State<DatePickerContent> {
               MaskTextInputFormatter(
                 initialText: _initialTime,
                 mask: "##.##.####",
-                /*filter: {
-                              "#": RegExp(r'\d+|-|/'),
-                            }*/
               )
             ],
-            initialValue: _initialTime,
             keyboardType: TextInputType.number,
             cursorColor: ControlOptions.instance.colorText,
             textAlign: TextAlign.center,
+            controller: textController,
             decoration: InputDecoration(
               labelText: '',
-              contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
+              contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
               isDense: true,
               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
               focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
@@ -147,50 +180,77 @@ class _DatePickerContentState extends State<DatePickerContent> {
             onEditingComplete: () {
               FocusScope.of(context).unfocus();
             },
-            onChanged: (String value) {
-              // TODO переделать под контроллер
-              print("----");
-              for (var i = 0; i < _initialTime.length - 1 && i < value.length - 1; i++) {
-                print('${_initialTime[i]} ${value[i]}');
-                if (_initialTime[i] != value[i]) {
-                  _initialTime = value.substring(0, i + 1) + _initialTime.substring(i + 1);
-                  print('1   > ${value.substring(0, i + 1)}');
-                  print('2   > ${_initialTime.substring(i + 1)}');
-                  print('1+2 > ${_initialTime}');
-                  // value.substring(0, i) + value.substring(i + 2);
-                  DateTime? _initialTimeNew = DateTime.tryParse(_initialTime);
-                  if (_initialTimeNew != null) {
-                    _initialTime2 = _initialTimeNew;
-                    setState(() {});
-                  }
-                  break;
-                }
-              }
-              //_initialTime = DateTime.tryParse(value) ?? _initialTime;
-              //setState(() {});
-            },
+            onChanged: (String value) {},
             style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
           ),
         ),
         SizedBox(
           width: 300,
           height: 300,
-          child: CupertinoDatePicker(
-            mode: CupertinoDatePickerMode.date,
-            initialDateTime: _initialTime2,
-            onDateTimeChanged: (DateTime value) {
-              //print(value);
-              _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy');
-              _initialTime2 = value;
-              ;
-              //_initialTime2= value;
-              setState(() {});
-            },
-            use24hFormat: true,
-            minuteInterval: 1,
-          ),
+          child: getCupertinoPicker(),
         )
       ],
+    );
+  }
+
+  NsgCupertinoDatePicker? datepicker;
+  Widget getCupertinoPicker() {
+    datepicker = NsgCupertinoDatePicker(
+      initialDateTime: _initialTime2,
+      onDateTimeChanged: (DateTime value) {
+        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy');
+        var start = textController.selection.start;
+        _ignoreChange = true;
+        textController.text = _initialTime;
+        print('new value = ' + textController.text);
+        textController.selection = TextSelection.fromPosition(TextPosition(offset: 0));
+        _ignoreChange = false;
+      },
+    );
+    return datepicker!;
+  }
+}
+
+// ignore: must_be_immutable
+class NsgCupertinoDatePicker extends StatefulWidget {
+  DateTime initialDateTime;
+  final ValueChanged<DateTime> onDateTimeChanged;
+
+  NsgCupertinoDatePicker({Key? key, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
+
+  @override
+  State<NsgCupertinoDatePicker> createState() => NsgCupertinoDateState();
+
+  NsgCupertinoDateState? currentState;
+
+  void setState(DateTime date) {
+    if (currentState != null) {
+      initialDateTime = date;
+      currentState!.externalSetState();
+    }
+  }
+}
+
+class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
+  @override
+  void initState() {
+    widget.currentState = this;
+    super.initState();
+  }
+
+  void externalSetState() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoDatePicker(
+      key: GlobalKey(),
+      mode: CupertinoDatePickerMode.date,
+      initialDateTime: widget.initialDateTime,
+      onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
+      use24hFormat: true,
+      minuteInterval: 1,
     );
   }
 }
