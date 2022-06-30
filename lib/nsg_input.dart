@@ -19,9 +19,9 @@ class NsgInput extends StatefulWidget {
   final double borderRadius;
   final Function(NsgDataItem)? onChanged;
   final VoidCallback? onPressed;
-  final VoidCallback? onEditingComplete;
-  final int? maxLines;
-  final int? minLines;
+  final Function(NsgDataItem, String)? onEditingComplete;
+  final int maxLines;
+  final int minLines;
 
   // Высота
   final double? height;
@@ -163,63 +163,66 @@ class _NsgInputState extends State<NsgInput> {
     if (inputType == NsgInputType.boolValue) {
       return _buildBoolWidget(fieldValue);
     }
+
     return _gestureWrap(
         Container(
             //height: widget.height,
             margin: widget.margin,
-            padding:
-                widget.widget == null ? const EdgeInsets.fromLTRB(0, 0, 0, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            padding: widget.widget == null ? const EdgeInsets.fromLTRB(0, 0, 0, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
             /* decoration: BoxDecoration(
                 color: ControlOptions.instance.colorInverted,
                 borderRadius: BorderRadius.circular(widget.borderRadius),
                 border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),*/
             child: widget.widget ??
-                TextFormField(
-                  maxLines: widget.maxLines,
-                  minLines: widget.minLines,
-                  keyboardType: TextInputType.multiline,
-                  //maxLines: null,
-                  //expands: true,
-                  initialValue: fieldValue.toString(),
-                  //keyboardType: TextInputType.number,
-                  cursorColor: ControlOptions.instance.colorText,
-                  decoration: InputDecoration(
-                    labelText: widget.label != null
-                        ? widget.disabled == null
-                            ? '${widget.label!}'
-                            : '🔒 ${widget.label!}'
-                        : ' ',
-                    //hintText: "Phone number",
-                    alignLabelWithHint: true,
-                    contentPadding: EdgeInsets.fromLTRB(
-                        0, 10, widget.selectionController != null ? 25 : 0, 10), //  <- you can it to 0.0 for no space
-                    isDense: true,
-                    enabledBorder:
-                        UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-                    focusedBorder:
-                        UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
-                    labelStyle:
-                        TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                  ),
+                Focus(
+                    canRequestFocus: false,
+                    // ↓ Focus widget handler e.g. user taps elsewhere
+                    onFocusChange: (hasFocus) {
+                      hasFocus ? print('Name GAINED focus') : widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                    },
+                    child: TextFormField(
+                      autofocus: true,
+                      maxLines: widget.maxLines,
+                      minLines: widget.minLines,
+                      keyboardType: TextInputType.multiline,
+                      //maxLines: null,
+                      //expands: true,
+                      initialValue: fieldValue.toString(),
+                      //keyboardType: TextInputType.number,
+                      cursorColor: ControlOptions.instance.colorText,
+                      decoration: InputDecoration(
+                        labelText: widget.label != null
+                            ? widget.disabled == null
+                                ? '${widget.label!}'
+                                : '🔒 ${widget.label!}'
+                            : ' ',
+                        //hintText: "Phone number",
+                        alignLabelWithHint: true,
+                        contentPadding: EdgeInsets.fromLTRB(0, 10, widget.selectionController != null ? 25 : 0, 10), //  <- you can it to 0.0 for no space
+                        isDense: true,
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+                        labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                      ),
 
-                  key: GlobalKey(),
-                  onEditingComplete: () {
-                    FocusScope.of(context).unfocus();
-                    if (widget.onEditingComplete != null) {
-                      widget.onEditingComplete!();
-                    }
-                  },
-                  onChanged: (String value) {
-                    if (inputType == NsgInputType.stringValue) {
-                      widget.dataItem.setFieldValue(widget.fieldName, value);
-                    }
-                    if (widget.onChanged != null) {
-                      widget.onChanged!(widget.dataItem);
-                    }
-                  },
-                  style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
-                  readOnly: widget.disabled == null ? false : true,
-                )),
+                      key: GlobalKey(),
+                      onEditingComplete: () {
+                        FocusScope.of(context).nextFocus();
+                        if (widget.onEditingComplete != null) {
+                          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                        }
+                      },
+                      onChanged: (String value) {
+                        if (inputType == NsgInputType.stringValue) {
+                          widget.dataItem.setFieldValue(widget.fieldName, value);
+                        }
+                        if (widget.onChanged != null) {
+                          widget.onChanged!(widget.dataItem);
+                        }
+                      },
+                      style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
+                      readOnly: widget.disabled == null ? false : true,
+                    ))),
         widget.widget == null ? false : true);
   }
 
@@ -229,13 +232,13 @@ class _NsgInputState extends State<NsgInput> {
       widget.selectionController!.refreshData();
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        var form =
-            NsgSelection(inputType: inputType, controller: widget.selectionController!, rowWidget: widget.rowWidget);
+        var form = NsgSelection(inputType: inputType, controller: widget.selectionController!, rowWidget: widget.rowWidget);
         form.selectFromArray(
           widget.label ?? '',
           (item) {
             widget.dataItem.setFieldValue(widget.fieldName, widget.selectionController!.selectedItem);
             if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+            if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
             setState(() {});
             return null;
           },
@@ -250,22 +253,20 @@ class _NsgInputState extends State<NsgInput> {
           widget.selectionController!.onSelected = null;
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+          if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
           setState(() {});
         };
         Get.toNamed(widget.selectionForm);
       }
     } else if (inputType == NsgInputType.enumReference && widget.disabled != true) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
-      var form = NsgSelection(
-          allValues: enumItem.getAll(),
-          selectedElement: enumItem,
-          rowWidget: widget.rowWidget,
-          inputType: NsgInputType.enumReference);
+      var form = NsgSelection(allValues: enumItem.getAll(), selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
       form.selectFromArray(
         widget.label ?? '',
         (item) {
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+          if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
           setState(() {});
           return null;
         },

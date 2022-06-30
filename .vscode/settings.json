@@ -1,0 +1,16 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#004b04",
+        "titleBar.activeBackground": "#0a6b01",
+        "titleBar.activeForeground": "#e9e9e9",
+    },
+    "editor.wordWrap": "wordWrapColumn",
+"editor.wordWrapColumn": 160,
+"dart.lineLength": 160,
+"[dart]": {
+    "editor.rulers": [
+        160
+    ],
+},
+"window.title": "CONTROLS",
+}
