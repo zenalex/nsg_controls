@@ -19,7 +19,7 @@ class NsgTimePicker extends StatelessWidget {
       this.label,
       this.textAlign = TextAlign.center,
       this.disabled,
-      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
+      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 4)})
       : super(key: key);
 
   void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
@@ -120,25 +120,36 @@ class NsgTimePicker extends StatelessWidget {
           : null,
       child: Padding(
         padding: margin,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              label != null ? label! : '',
-              textAlign: textAlign,
-              style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
-            ),
-            Container(
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
-                padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 3.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                height: 14,
                 child: Text(
-                  "$hours:$minutesString",
+                  label != null
+                      ? disabled != true
+                          ? '${label!}'
+                          : '🔒 ${label!}'
+                      : '',
                   textAlign: textAlign,
-                  style: const TextStyle(fontSize: 16),
-                )),
-          ],
+                  style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+                ),
+              ),
+              Container(
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain.withOpacity(0.6)))),
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+                  child: Text(
+                    "$hours:$minutesString",
+                    textAlign: textAlign,
+                    style: const TextStyle(fontSize: 16),
+                  )),
+            ],
+          ),
         ),
       ),
     );

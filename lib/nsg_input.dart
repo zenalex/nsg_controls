@@ -140,11 +140,11 @@ class _NsgInputState extends State<NsgInput> {
           AbsorbPointer(child: interactiveWidget),
           if (noIcon == false)
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
               child: Icon(
                 Icons.unfold_more,
                 size: 24,
-                color: ControlOptions.instance.colorText,
+                color: ControlOptions.instance.colorMain,
               ),
             )
         ],
@@ -184,9 +184,13 @@ class _NsgInputState extends State<NsgInput> {
                   //keyboardType: TextInputType.number,
                   cursorColor: ControlOptions.instance.colorText,
                   decoration: InputDecoration(
-                    labelText: widget.label != null ? widget.label! : '',
+                    labelText: widget.label != null
+                        ? widget.disabled == null
+                            ? '${widget.label!}'
+                            : '🔒 ${widget.label!}'
+                        : ' ',
                     //hintText: "Phone number",
-                    // alignLabelWithHint: true,
+                    alignLabelWithHint: true,
                     contentPadding: EdgeInsets.fromLTRB(
                         0, 10, widget.selectionController != null ? 25 : 0, 10), //  <- you can it to 0.0 for no space
                     isDense: true,
@@ -214,13 +218,13 @@ class _NsgInputState extends State<NsgInput> {
                     }
                   },
                   style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
-                  readOnly: (widget.disabled == null) ? false : true,
+                  readOnly: widget.disabled == null ? false : true,
                 )),
         widget.widget == null ? false : true);
   }
 
   void _onPressed() {
-    if (inputType == NsgInputType.reference) {
+    if (inputType == NsgInputType.reference && widget.disabled != true) {
       widget.selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       widget.selectionController!.refreshData();
       if (widget.selectionForm == '') {
@@ -250,7 +254,7 @@ class _NsgInputState extends State<NsgInput> {
         };
         Get.toNamed(widget.selectionForm);
       }
-    } else if (inputType == NsgInputType.enumReference) {
+    } else if (inputType == NsgInputType.enumReference && widget.disabled != true) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var form = NsgSelection(
           allValues: enumItem.getAll(),

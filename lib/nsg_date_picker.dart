@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -22,7 +23,7 @@ class NsgDatePicker extends StatelessWidget {
       this.label,
       this.textAlign = TextAlign.center,
       this.disabled,
-      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
+      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 4)})
       : super(key: key);
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
@@ -56,25 +57,34 @@ class NsgDatePicker extends StatelessWidget {
           : null,
       child: Padding(
         padding: margin,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              label != null ? label! : '',
-              textAlign: textAlign,
-              style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
-            ),
-            Container(
-                //constraints: const BoxConstraints(minHeight: 40),
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
-                padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
-                child: Text(
-                  NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
-                  textAlign: textAlign,
-                  style: const TextStyle(fontSize: 16),
-                )),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 3.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                label != null
+                    ? disabled == null
+                        ? '${label!}'
+                        : '🔒 ${label!}'
+                    : '',
+                textAlign: textAlign,
+                style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+              ),
+              Container(
+                  //constraints: const BoxConstraints(minHeight: 40),
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain.withOpacity(0.6)))),
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+                  child: Text(
+                    NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
+                    textAlign: textAlign,
+                    style: const TextStyle(fontSize: 16),
+                  )),
+            ],
+          ),
         ),
       ),
     );
