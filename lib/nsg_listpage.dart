@@ -81,8 +81,7 @@ class NsgListPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              controller.obx((state) => _getNsgAppBar(Get.context!),
-                  onLoading: SimpleBuilder(builder: (context) => _getNsgAppBar(context))),
+              controller.obx((state) => _getNsgAppBar(Get.context!), onLoading: SimpleBuilder(builder: (context) => _getNsgAppBar(context))),
               controller.obx(
                   (state) => SearchWidget(
                         controller: controller,
@@ -113,9 +112,7 @@ class NsgListPage extends StatelessWidget {
                         controller.controllerFilter.nsgPeriod.setDateText();
                         return AnimatedCrossFade(
                             duration: const Duration(milliseconds: 500),
-                            crossFadeState: controller.controllerFilter.isOpen != true
-                                ? CrossFadeState.showSecond
-                                : CrossFadeState.showFirst,
+                            crossFadeState: controller.controllerFilter.isOpen != true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                             firstChild: const SizedBox(width: double.infinity),
                             secondChild: Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -144,10 +141,7 @@ class NsgListPage extends StatelessWidget {
                                 onRefresh: _onRefresh,
                                 child: ListView(
                                   children: [
-                                    FadeIn(
-                                        duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed),
-                                        curve: Curves.easeIn,
-                                        child: _showItems()),
+                                    FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: _showItems()),
                                   ],
                                 ),
                               )),
