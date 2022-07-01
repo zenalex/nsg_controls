@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 
+import 'nsg_icon_button.dart';
 import 'nsg_input_type.dart';
 import 'nsg_selection.dart';
 import 'package:flutter/material.dart';
@@ -129,35 +130,39 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
-  Widget _gestureWrap(Widget interactiveWidget, bool noIcon) {
+  Widget _gestureWrap(Widget interactiveWidget, bool clearIcon) {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
-      return interactiveWidget;
+      return clearIcon == true ? _addClearIcon(interactiveWidget) : interactiveWidget;
+    } else {
+      return clearIcon == true
+          ? _addClearIcon(InkWell(onTap: _onPressed, child: AbsorbPointer(child: interactiveWidget)))
+          : InkWell(onTap: _onPressed, child: AbsorbPointer(child: interactiveWidget));
     }
-    return GestureDetector(
-      child: Stack(
-        alignment: Alignment.centerRight,
-        children: [
-          AbsorbPointer(child: interactiveWidget),
-          if (noIcon == false)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-              child: Icon(
-                Icons.unfold_more,
-                size: 24,
-                color: ControlOptions.instance.colorMain,
-              ),
-            )
-        ],
-      ),
-      onTap: _onPressed,
-    );
+  }
+
+  /// Оборачиваем Stack и добавляем иконку "очистить поле"
+  Widget _addClearIcon(Widget child) {
+    return Stack(alignment: Alignment.centerRight, children: [
+      child,
+      if (widget.disabled != true)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 14, 0, 0),
+          child: NsgIconButton(
+              onPressed: () {
+                widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
+                setState(() {});
+              },
+              icon: Icons.close_outlined),
+        )
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     var fieldValue = widget.dataItem.getFieldValue(widget.fieldName);
+    NsgDataItem? refItem;
     if (widget.dataItem.isReferenceField(widget.fieldName)) {
-      var refItem = widget.dataItem.getReferent(widget.fieldName)!;
+      refItem = widget.dataItem.getReferent(widget.fieldName)!;
       fieldValue = refItem.toString();
     }
     if (inputType == NsgInputType.boolValue) {
@@ -177,13 +182,14 @@ class _NsgInputState extends State<NsgInput> {
                 Focus(
                     canRequestFocus: false,
                     // ↓ Focus widget handler e.g. user taps elsewhere
+                    autofocus: false,
                     onFocusChange: (hasFocus) {
                       if (widget.onEditingComplete != null) {
                         hasFocus ? print('') : widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                       }
                     },
                     child: TextFormField(
-                      autofocus: true,
+                      autofocus: false,
                       maxLines: widget.maxLines,
                       minLines: widget.minLines,
                       keyboardType: TextInputType.multiline,
@@ -225,7 +231,7 @@ class _NsgInputState extends State<NsgInput> {
                       style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
                       readOnly: widget.disabled == null ? false : true,
                     ))),
-        widget.widget == null ? false : true);
+        fieldValue.toString() != '');
   }
 
   void _onPressed() {
