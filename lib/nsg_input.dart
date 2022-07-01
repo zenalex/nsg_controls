@@ -178,7 +178,9 @@ class _NsgInputState extends State<NsgInput> {
                     canRequestFocus: false,
                     // ↓ Focus widget handler e.g. user taps elsewhere
                     onFocusChange: (hasFocus) {
-                      hasFocus ? print('Name GAINED focus') : widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                      if (widget.onEditingComplete != null) {
+                        hasFocus ? print('') : widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                      }
                     },
                     child: TextFormField(
                       autofocus: true,
