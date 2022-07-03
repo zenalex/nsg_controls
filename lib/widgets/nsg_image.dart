@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
-import 'package:nsg_data/controllers/nsgImageController.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgImage extends StatelessWidget {

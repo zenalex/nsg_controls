@@ -12,7 +12,8 @@ class NsgSimpleTableCell {
   bool isSelected;
   Widget widget;
   String? name;
-  NsgSimpleTableCell({this.onTap, this.isSelected = false, required this.widget, this.name});
+  NsgSimpleTableCell(
+      {this.onTap, this.isSelected = false, required this.widget, this.name});
 }
 
 /// Класс строки NsgSimpleTable
@@ -36,7 +37,8 @@ class NsgSimpleTableColumnSort {
   String name;
   NsgSimpleTableColumnSort(this.name);
   static NsgSimpleTableColumnSort forward = NsgSimpleTableColumnSort('forward');
-  static NsgSimpleTableColumnSort backward = NsgSimpleTableColumnSort('backward');
+  static NsgSimpleTableColumnSort backward =
+      NsgSimpleTableColumnSort('backward');
 }
 
 /// Виджет отображения таблицы
@@ -130,7 +132,8 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       required Widget child,
       double? width,
       NsgSimpleTableColumnSort? sort,
-      EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 5, vertical: 5)}) {
+      EdgeInsets padding =
+          const EdgeInsets.symmetric(horizontal: 5, vertical: 5)}) {
     Widget showCell;
 
     showCell = Container(
@@ -140,8 +143,11 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         decoration: BoxDecoration(
 
             /// Меняем цвет ячейки при наведении мыши
-            color: isSelected == true ? ControlOptions.instance.colorMain.withOpacity(0.2) : backColor,
-            border: Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
+            color: isSelected == true
+                ? ControlOptions.instance.colorMain.withOpacity(0.2)
+                : backColor,
+            border: Border.all(
+                width: 1, color: color ?? ControlOptions.instance.colorMain)),
         child: child);
 
     return showCell;
@@ -170,7 +176,10 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
           thumbVisibility: true,
           thickness: 10,
           controller: scrollVert,
-          child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
+          child: SingleChildScrollView(
+              controller: scrollVert,
+              scrollDirection: Axis.vertical,
+              child: child));
     } else {
       return CrossScroll(
           // TODO тянется во всю доступную ширину, что неправильно. Плюс добавляется фоновый цвет
@@ -185,7 +194,10 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
 
   Widget horScrollHeaderWrap(Widget child) {
     if (widget.horizontalScrollEnabled == true) {
-      return SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child);
+      return SingleChildScrollView(
+          controller: scrollHorHeader,
+          scrollDirection: Axis.horizontal,
+          child: child);
     } else {
       return child;
     }
@@ -220,19 +232,24 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
             Expanded(
                 child: Center(
                     child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 10),
                         child: widget.header![index].widget))),
             sortElement == NsgSimpleTableColumnSort.forward
-                ? Icon(Icons.arrow_downward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
-                : Icon(Icons.arrow_upward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
+                ? Icon(Icons.arrow_downward_outlined,
+                    size: 16, color: ControlOptions.instance.colorInverted)
+                : Icon(Icons.arrow_upward_outlined,
+                    size: 16, color: ControlOptions.instance.colorInverted)
           ]);
         } else {
           subchild = Center(
               child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                   child: widget.header![index].widget));
         }
-        if (widget.sortingClickEnabled == true && widget.columnsEditMode != true) {
+        if (widget.sortingClickEnabled == true &&
+            widget.columnsEditMode != true) {
           child = InkWell(
             /// Переключение сортировки
             onTap: () {
@@ -261,8 +278,10 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
             child: showCell(
                 padding: const EdgeInsets.all(0),
                 borderRight: index != tableColumns.length - 1 ? true : false,
-                backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-                color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+                backColor: widget.headerBackColor ??
+                    ControlOptions.instance.tableHeaderColor,
+                color: widget.headerColor ??
+                    ControlOptions.instance.tableHeaderLinesColor,
                 width: tableColumns[index].width,
                 sort: tableColumns[index].sort,
                 child: child),
@@ -283,38 +302,47 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
             ? wrapExpanded(
                 child: InkWell(
                     onTap: () {
-                      widget.rowOnTap!(widget.rows[rowIndex].item, widget.header![index].name!);
+                      widget.rowOnTap!(widget.rows[rowIndex].item,
+                          widget.header![index].name!);
                     },
-                    onHover: (bool) {
+                    onHover: (b) {
                       if (widget.selectCellOnHover == true) {
                         // Ячейке присваиваем isSelected
-                        cell.isSelected = bool;
+                        cell.isSelected = b;
                       } else {
                         // Всем ячейкам в ряде присваиваем isSelected
                         for (var el in row.row) {
-                          el.isSelected = bool;
+                          el.isSelected = b;
                         }
                       }
                       setState(() {});
                     },
-                    child: showCell(width: tableColumns[index].width, child: cell.widget, isSelected: cell.isSelected)),
+                    child: showCell(
+                        width: tableColumns[index].width,
+                        child: cell.widget,
+                        isSelected: cell.isSelected)),
                 expanded: tableColumns[index].expanded,
                 flex: tableColumns[index].flex)
             : wrapExpanded(
-                child: showCell(width: tableColumns[index].width, child: cell.widget),
+                child: showCell(
+                    width: tableColumns[index].width, child: cell.widget),
                 expanded: tableColumns[index].expanded,
                 flex: tableColumns[index].flex));
       });
       tableBody.add(IntrinsicHeight(
-          child:
-              Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
+          child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: tableRow)));
     });
     if (widget.header != null) {
       table.add(IntrinsicHeight(
           child: Container(
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
               child: horScrollHeaderWrap(Container(
-        padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 510) : null,
+        padding: widget.columnsEditMode == true
+            ? const EdgeInsets.only(right: 510)
+            : null,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -327,23 +355,31 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         child: crossWrap(Container(
             padding: widget.columnsEditMode == true
                 ? const EdgeInsets.only(right: 510, bottom: 10)
-                : EdgeInsets.only(bottom: 10, right: widget.horizontalScrollEnabled == true ? 10 : 0),
+                : EdgeInsets.only(
+                    bottom: 10,
+                    right: widget.horizontalScrollEnabled == true ? 10 : 0),
             //margin: EdgeInsets.only(bottom: 10, right: 10),
             //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-            child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
+            child:
+                Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
       ),
     ));
 
     return widget.columnsEditMode == true
         ? Stack(alignment: Alignment.topLeft, children: [
-            Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
+            Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: table),
             Container(
               padding: const EdgeInsets.only(right: 10, bottom: 10),
               child: SingleChildScrollView(
                 controller: scrollHorResizers,
                 scrollDirection: Axis.horizontal,
                 child: ResizeLines(
-                    onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
+                    onColumnsChange: widget.onColumnsChange != null
+                        ? widget.onColumnsChange!(tableColumns)
+                        : null,
                     columnsEditMode: widget.columnsEditMode,
                     columnsOnResize: (resizedColumns) {
                       tableColumns = resizedColumns;
@@ -406,9 +442,11 @@ class _ResizeLinesState extends State<ResizeLines> {
                 setState(() {});
               },
               onDrag: (details, number) {
-                double dif = widget.columns[number].width! + details.primaryDelta!;
+                double dif =
+                    widget.columns[number].width! + details.primaryDelta!;
                 if (dif > 50 && dif < 500) {
-                  widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
+                  widget.columns[number].width =
+                      widget.columns[number].width! + details.primaryDelta!;
                 }
                 widget.columnsOnResize(widget.columns);
                 selectedColumn = number;
@@ -435,7 +473,10 @@ class _ResizeLinesState extends State<ResizeLines> {
         ),
       );
     }
-    return Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: list);
+    return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: list);
   }
 
   @override
@@ -500,7 +541,10 @@ class ColumnLineResizer extends StatelessWidget {
                     offset: Offset(7, touchY - 5),
                     child: Transform.rotate(
                         angle: -math.pi / 2,
-                        child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
+                        child: const SizedBox(
+                            width: 17,
+                            child: Icon(Icons.unfold_more_outlined,
+                                color: Colors.red))))
                 : const SizedBox(),
           ),
         ),

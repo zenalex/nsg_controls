@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/nsg_controls.dart';
-import 'package:nsg_data/nsg_data.dart';
 
 class NsgTimePicker extends StatelessWidget {
   final String? label;
@@ -22,9 +21,11 @@ class NsgTimePicker extends StatelessWidget {
       this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 4)})
       : super(key: key);
 
-  void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
+  void showPopup(BuildContext context, int hours, int minutes,
+      Function(DateTime endDate) onClose) {
     DateTime _today = DateTime.now();
-    DateTime selectedDate = DateTime(_today.year, _today.month, _today.day, hours, minutes);
+    DateTime selectedDate =
+        DateTime(_today.year, _today.month, _today.day, hours, minutes);
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
@@ -43,7 +44,7 @@ class NsgTimePicker extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
+                    SizedBox(
                       height: 40,
                       width: 120,
                       child: TextFormField(
@@ -55,27 +56,36 @@ class NsgTimePicker extends StatelessWidget {
                             },
                           )
                         ],
-                        initialValue: minutes > 9 ? '$hours:$minutes' : '$hours:0$minutes',
+                        initialValue: minutes > 9
+                            ? '$hours:$minutes'
+                            : '$hours:0$minutes',
                         keyboardType: TextInputType.number,
                         cursorColor: ControlOptions.instance.colorText,
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           labelText: '',
-                          contentPadding: EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
+                          contentPadding: const EdgeInsets.fromLTRB(0, 10, 0,
+                              10), //  <- you can it to 0.0 for no space
                           isDense: true,
                           enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-                          focusedBorder:
-                              UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+                              borderSide: BorderSide(
+                                  color:
+                                      ControlOptions.instance.colorMainDark)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: ControlOptions.instance.colorText)),
                           labelStyle: TextStyle(
-                              color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                              color: ControlOptions.instance.colorMainDark,
+                              backgroundColor: Colors.transparent),
                         ),
                         key: GlobalKey(),
                         onEditingComplete: () {
                           FocusScope.of(context).unfocus();
                         },
                         onChanged: (String value) {},
-                        style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
+                        style: TextStyle(
+                            color: ControlOptions.instance.colorText,
+                            fontSize: 24),
                       ),
                     ),
                     SizedBox(
@@ -83,7 +93,8 @@ class NsgTimePicker extends StatelessWidget {
                       height: 300,
                       child: CupertinoDatePicker(
                         mode: CupertinoDatePickerMode.time,
-                        initialDateTime: DateTime(_today.year, _today.month, _today.day, hours, minutes),
+                        initialDateTime: DateTime(_today.year, _today.month,
+                            _today.day, hours, minutes),
                         onDateTimeChanged: (DateTime value) {
                           selectedDate = value;
                         },
@@ -110,7 +121,8 @@ class NsgTimePicker extends StatelessWidget {
     return GestureDetector(
       onTap: disabled != true
           ? () {
-              NsgTimePicker(initialTime: initialTime, onClose: (value) {}).showPopup(context, hours, minutes, (value) {
+              NsgTimePicker(initialTime: initialTime, onClose: (value) {})
+                  .showPopup(context, hours, minutes, (value) {
                 DateTime now = DateTime.now();
                 DateTime date = DateTime(now.year, now.month, now.day);
                 Duration duration = value.difference(date);
@@ -125,23 +137,28 @@ class NsgTimePicker extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
+              SizedBox(
                 height: 14,
                 child: Text(
                   label != null
                       ? disabled != true
-                          ? '${label!}'
+                          ? label!
                           : '🔒 ${label!}'
                       : '',
                   textAlign: textAlign,
-                  style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: ControlOptions.instance.colorMainDark),
                 ),
               ),
               Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   decoration: BoxDecoration(
                       border: Border(
-                          bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain.withOpacity(0.6)))),
+                          bottom: BorderSide(
+                              width: 2,
+                              color: ControlOptions.instance.colorMain
+                                  .withOpacity(0.6)))),
                   padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                   child: Text(
                     "$hours:$minutesString",

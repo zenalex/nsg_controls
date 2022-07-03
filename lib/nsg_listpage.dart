@@ -12,6 +12,7 @@ import 'nsg_period_filter.dart';
 ///Страница, отображающая данные из контроллера в форме списка
 ///Имеет функционал добавления и удаления элементов
 ///В качестве виджетов для отображения элементов, можно использовать стандартные, например, NsgTextBlock
+// ignore: must_be_immutable
 class NsgListPage extends StatelessWidget {
   ///Заголовок для AppBar
   final String title;
@@ -82,7 +83,8 @@ class NsgListPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               controller.obx((state) => _getNsgAppBar(Get.context!),
-                  onLoading: SimpleBuilder(builder: (context) => _getNsgAppBar(context))),
+                  onLoading: SimpleBuilder(
+                      builder: (context) => _getNsgAppBar(context))),
               controller.obx(
                   (state) => SearchWidget(
                         controller: controller,
@@ -91,13 +93,16 @@ class NsgListPage extends StatelessWidget {
                     controller: controller,
                   )),
               controller.obx(
-                  (state) => controller.controllerFilter.isAllowed && controller.controllerFilter.isPeriodAllowed
+                  (state) => controller.controllerFilter.isAllowed &&
+                          controller.controllerFilter.isPeriodAllowed
                       ? NsgPeriodFilter(
                           label: 'Фильтр по датам',
                           controller: controller,
                           onConfirm: (value) {
-                            controller.controllerFilter.nsgPeriod.beginDate = value.beginDate;
-                            controller.controllerFilter.nsgPeriod.endDate = value.endDate;
+                            controller.controllerFilter.nsgPeriod.beginDate =
+                                value.beginDate;
+                            controller.controllerFilter.nsgPeriod.endDate =
+                                value.endDate;
                             controller.refreshData();
                           },
                         )
@@ -113,19 +118,24 @@ class NsgListPage extends StatelessWidget {
                         controller.controllerFilter.nsgPeriod.setDateText();
                         return AnimatedCrossFade(
                             duration: const Duration(milliseconds: 500),
-                            crossFadeState: controller.controllerFilter.isOpen != true
-                                ? CrossFadeState.showSecond
-                                : CrossFadeState.showFirst,
+                            crossFadeState:
+                                controller.controllerFilter.isOpen != true
+                                    ? CrossFadeState.showSecond
+                                    : CrossFadeState.showFirst,
                             firstChild: const SizedBox(width: double.infinity),
                             secondChild: Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                               child: SizedBox(
                                   width: double.infinity,
-                                  child: controller.controllerFilter.isPeriodAllowed
+                                  child: controller
+                                          .controllerFilter.isPeriodAllowed
                                       ? Text(
-                                          'Фильтр по датам: ' + controller.controllerFilter.nsgPeriod.dateWidgetText,
+                                          'Фильтр по датам: ' +
+                                              controller.controllerFilter
+                                                  .nsgPeriod.dateWidgetText,
                                           textAlign: TextAlign.center,
-                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
                                         )
                                       : const SizedBox()),
                             ));
@@ -145,7 +155,9 @@ class NsgListPage extends StatelessWidget {
                                 child: ListView(
                                   children: [
                                     FadeIn(
-                                        duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed),
+                                        duration: Duration(
+                                            milliseconds: ControlOptions
+                                                .instance.fadeSpeed),
                                         curve: Curves.easeIn,
                                         child: _showItems()),
                                   ],
@@ -183,7 +195,8 @@ class NsgListPage extends StatelessWidget {
     } else {
       List<Widget> list = [];
       for (var element in controller.items) {
-        list.add(InkWell(onTap: () => _elementTap(element), child: widget(element)));
+        list.add(
+            InkWell(onTap: () => _elementTap(element), child: widget(element)));
       }
       return Column(children: list);
     }
@@ -208,7 +221,7 @@ class NsgListPage extends StatelessWidget {
       icon2: appBarIcon2 ?? Icons.add,
       onPressed2: appBarOnPressed2 ??
           () {
-            controller.createNewItem();
+            controller.createNewItemAsync();
             Get.toNamed(elementEditPage);
           },
 
@@ -223,7 +236,8 @@ class NsgListPage extends StatelessWidget {
       onPressed3: appBarOnPressed3 ??
           () {
             //setState(() {
-            controller.controllerFilter.isOpen = !controller.controllerFilter.isOpen;
+            controller.controllerFilter.isOpen =
+                !controller.controllerFilter.isOpen;
             controller.update();
             //});
           },
@@ -233,7 +247,8 @@ class NsgListPage extends StatelessWidget {
   void _elementTap(NsgDataItem element) {
     if (onElementTap == null) {
       if (controller.regime == NsgControllerRegime.view) {
-        controller.itemPageOpen(element, elementEditPage, needRefreshSelectedItem: true);
+        controller.itemPageOpen(element, elementEditPage,
+            needRefreshSelectedItem: true);
       } else {
         if (controller.onSelected != null) {
           controller.onSelected!(element);
@@ -256,7 +271,9 @@ class SearchWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 500),
-      crossFadeState: controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+      crossFadeState: controller.controllerFilter.isOpen == true
+          ? CrossFadeState.showSecond
+          : CrossFadeState.showFirst,
       firstChild: const SizedBox(),
       secondChild: Container(
           padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),

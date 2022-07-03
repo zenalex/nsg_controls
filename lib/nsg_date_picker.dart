@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -26,7 +24,8 @@ class NsgDatePicker extends StatelessWidget {
       this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 4)})
       : super(key: key);
 
-  void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
+  void showPopup(
+      BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
     DateTime selectedDate = date;
     showDialog(
         context: context,
@@ -50,7 +49,8 @@ class NsgDatePicker extends StatelessWidget {
     return GestureDetector(
       onTap: disabled != true
           ? () {
-              NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
+              NsgDatePicker(initialTime: _initTime, onClose: (value) {})
+                  .showPopup(context, _initTime, (value) {
                 onClose(value);
               });
             }
@@ -65,18 +65,22 @@ class NsgDatePicker extends StatelessWidget {
               Text(
                 label != null
                     ? disabled == null
-                        ? '${label!}'
+                        ? label!
                         : '🔒 ${label!}'
                     : '',
                 textAlign: textAlign,
-                style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+                style: TextStyle(
+                    fontSize: 12, color: ControlOptions.instance.colorMainDark),
               ),
               Container(
                   //constraints: const BoxConstraints(minHeight: 40),
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   decoration: BoxDecoration(
                       border: Border(
-                          bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain.withOpacity(0.6)))),
+                          bottom: BorderSide(
+                              width: 2,
+                              color: ControlOptions.instance.colorMain
+                                  .withOpacity(0.6)))),
                   padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                   child: Text(
                     NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
@@ -93,7 +97,8 @@ class NsgDatePicker extends StatelessWidget {
 
 class DatePickerContent extends StatefulWidget {
   final DateTime initialTime;
-  const DatePickerContent({Key? key, required this.initialTime}) : super(key: key);
+  const DatePickerContent({Key? key, required this.initialTime})
+      : super(key: key);
 
   @override
   State<DatePickerContent> createState() => _DatePickerContentState();
@@ -106,7 +111,8 @@ class _DatePickerContentState extends State<DatePickerContent> {
 
   @override
   void initState() {
-    _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy');
+    _initialTime =
+        NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy');
     _initialTime2 = widget.initialTime;
     textController.text = _initialTime;
     textController.addListener(textChanged);
@@ -125,7 +131,8 @@ class _DatePickerContentState extends State<DatePickerContent> {
     } else if (value.length == _initialTime.length) {
       var start = textController.selection.start;
       if (start < _initialTime.length) {
-        _initialTime = value.substring(0, start) + _initialTime.substring(start);
+        _initialTime =
+            value.substring(0, start) + _initialTime.substring(start);
       } else {
         _initialTime = value;
       }
@@ -133,6 +140,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       DateTime? _initialTimeNew;
       try {
         _initialTimeNew = DateFormat('dd.MM.yyyy').parse(_initialTime);
+        // ignore: empty_catches
       } catch (e) {}
       if (_initialTimeNew != null) {
         _initialTime2 = _initialTimeNew;
@@ -143,7 +151,8 @@ class _DatePickerContentState extends State<DatePickerContent> {
         _ignoreChange = true;
         textController.text = _initialTime;
 
-        textController.selection = TextSelection.fromPosition(TextPosition(offset: start));
+        textController.selection =
+            TextSelection.fromPosition(TextPosition(offset: start));
         _ignoreChange = false;
       }
     } else {
@@ -182,16 +191,23 @@ class _DatePickerContentState extends State<DatePickerContent> {
               labelText: '',
               contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
               isDense: true,
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
-              labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+              enabledBorder: UnderlineInputBorder(
+                  borderSide:
+                      BorderSide(color: ControlOptions.instance.colorMainDark)),
+              focusedBorder: UnderlineInputBorder(
+                  borderSide:
+                      BorderSide(color: ControlOptions.instance.colorText)),
+              labelStyle: TextStyle(
+                  color: ControlOptions.instance.colorMainDark,
+                  backgroundColor: Colors.transparent),
             ),
             key: GlobalKey(),
             onEditingComplete: () {
               FocusScope.of(context).unfocus();
             },
             onChanged: (String value) {},
-            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
+            style: TextStyle(
+                color: ControlOptions.instance.colorText, fontSize: 24),
           ),
         ),
         SizedBox(
@@ -209,11 +225,10 @@ class _DatePickerContentState extends State<DatePickerContent> {
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy');
-        var start = textController.selection.start;
         _ignoreChange = true;
         textController.text = _initialTime;
-        print('new value = ' + textController.text);
-        textController.selection = TextSelection.fromPosition(TextPosition(offset: 0));
+        textController.selection =
+            TextSelection.fromPosition(const TextPosition(offset: 0));
         _ignoreChange = false;
       },
     );
@@ -226,7 +241,11 @@ class NsgCupertinoDatePicker extends StatefulWidget {
   DateTime initialDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  NsgCupertinoDatePicker({Key? key, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
+  NsgCupertinoDatePicker(
+      {Key? key,
+      required this.initialDateTime,
+      required this.onDateTimeChanged})
+      : super(key: key);
 
   @override
   State<NsgCupertinoDatePicker> createState() => NsgCupertinoDateState();

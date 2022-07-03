@@ -2,8 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 
-import 'nsg_border.dart';
-
 class NsgCheckBox extends StatefulWidget {
   final String label;
   final bool? disabled;
@@ -53,19 +51,27 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
             child: Row(
               children: [
                 if (widget.radio == true)
-                  Icon(widget.value == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
+                  Icon(
+                      widget.value == true
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked_outlined,
                       color: widget.value == true
                           ? ControlOptions.instance.colorMainDark
                           : ControlOptions.instance.colorMainDark)
                 else
-                  Icon(widget.value == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                  Icon(
+                      widget.value == true
+                          ? Icons.check_box_outlined
+                          : Icons.check_box_outline_blank,
                       color: widget.value == true
                           ? ControlOptions.instance.colorMainDark
                           : ControlOptions.instance.colorMainDark),
                 const SizedBox(width: 4),
                 Text(
                   widget.label,
-                  style: TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
+                  style: TextStyle(
+                      color: ControlOptions.instance.colorText,
+                      fontSize: ControlOptions.instance.sizeM),
                 )
               ],
             ),
