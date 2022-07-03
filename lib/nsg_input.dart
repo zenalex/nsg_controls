@@ -201,7 +201,7 @@ class _NsgInputState extends State<NsgInput> {
                       decoration: InputDecoration(
                         labelText: widget.label != null
                             ? widget.disabled == null
-                                ? '${widget.label!}'
+                                ? widget.label!
                                 : '🔒 ${widget.label!}'
                             : ' ',
                         //hintText: "Phone number",

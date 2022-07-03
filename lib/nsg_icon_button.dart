@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 
 class NsgIconButton extends StatefulWidget {
-  VoidCallback onPressed;
-  IconData icon;
-  double size;
-  NsgIconButton({Key? key, required this.icon, required this.onPressed, this.size = 16}) : super(key: key);
+  final VoidCallback onPressed;
+  final IconData icon;
+  final double size;
+  const NsgIconButton({Key? key, required this.icon, required this.onPressed, this.size = 16}) : super(key: key);
 
   @override
   State<NsgIconButton> createState() => _NsgIconButtonState();
