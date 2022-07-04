@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:cross_scroll/cross_scroll.dart';
+import 'package:nsg_controls/nsg_border.dart';
 import 'dart:math' as math;
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -13,7 +14,8 @@ class NsgSimpleTableCell {
   Widget widget;
   String? name;
   Color? backColor;
-  NsgSimpleTableCell({this.onTap, this.isSelected = false, required this.widget, this.name, this.backColor});
+  AlignmentGeometry? align;
+  NsgSimpleTableCell({this.onTap, this.isSelected = false, required this.widget, this.name, this.backColor, this.align = Alignment.center});
 }
 
 /// Класс строки NsgSimpleTable
@@ -31,16 +33,11 @@ class NsgSimpleTableColumn {
   double? width;
   NsgSimpleTableColumnSort? sort;
   String? name;
-  NsgSimpleTableColumn({this.expanded, this.flex, this.width, this.sort, this.name});
+  NsgSimpleTableColumn({this.expanded, this.flex, this.width, this.sort = NsgSimpleTableColumnSort.nosort, this.name});
 }
 
-/// Класс статуса сортировки колонки NsgSimpleTable
-class NsgSimpleTableColumnSort {
-  String name;
-  NsgSimpleTableColumnSort(this.name);
-  static NsgSimpleTableColumnSort forward = NsgSimpleTableColumnSort('forward');
-  static NsgSimpleTableColumnSort backward = NsgSimpleTableColumnSort('backward');
-}
+/// Типы сортировок колонки NsgSimpleTable
+enum NsgSimpleTableColumnSort { nosort, forward, backward }
 
 /// Виджет отображения таблицы
 // ignore: must_be_immutable
@@ -127,14 +124,15 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
       Color? backColor,
       Color? color,
       required Widget child,
+      AlignmentGeometry? align = Alignment.center,
       double? width,
-      NsgSimpleTableColumnSort? sort,
+      NsgSimpleTableColumnSort? sort = NsgSimpleTableColumnSort.nosort,
       EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 5, vertical: 5)}) {
     Widget showCell;
 
     showCell = Container(
         padding: padding,
-        alignment: Alignment.center,
+        alignment: align,
         width: width,
         decoration: BoxDecoration(
 
@@ -214,15 +212,30 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         Widget child;
         Widget subchild;
         NsgSimpleTableColumnSort? sortElement = tableColumns[index].sort;
-        if (sortElement != null) {
+        if (sortElement != NsgSimpleTableColumnSort.nosort) {
           subchild = Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget)),
-            sortElement == NsgSimpleTableColumnSort.forward
-                ? Icon(Icons.arrow_downward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
-                : Icon(Icons.arrow_upward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
+            Expanded(
+                child: Align(
+                    alignment: widget.header![index].align!,
+                    child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget))),
+            Align(
+              alignment: widget.header![index].align!,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Icon(sortElement == NsgSimpleTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
+                    size: 16, color: ControlOptions.instance.colorInverted),
+              ),
+            )
           ]);
         } else {
-          subchild = Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget);
+          subchild = Row(
+            children: [
+              Expanded(
+                  child: Align(
+                      alignment: widget.header![index].align!,
+                      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget))),
+            ],
+          );
         }
         if (widget.sortingClickEnabled == true && widget.columnsEditMode != true) {
           child = InkWell(
@@ -230,17 +243,16 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
             onTap: () {
               /// Удаляем все сортировки
               tableColumns.asMap().forEach((index2, column2) {
-                tableColumns[index2].sort = null;
+                tableColumns[index2].sort = NsgSimpleTableColumnSort.nosort;
               });
 
-              if (sortElement == null) {
+              if (sortElement == NsgSimpleTableColumnSort.nosort) {
                 tableColumns[index].sort = NsgSimpleTableColumnSort.forward;
               } else if (sortElement == NsgSimpleTableColumnSort.forward) {
                 tableColumns[index].sort = NsgSimpleTableColumnSort.backward;
               } else if (sortElement == NsgSimpleTableColumnSort.backward) {
-                tableColumns[index].sort = null;
+                tableColumns[index].sort = NsgSimpleTableColumnSort.nosort;
               }
-              print(sortElement);
 
               setState(() {});
             },
@@ -249,8 +261,11 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         } else {
           child = subchild;
         }
+
+        // Собираем ячейку для header
         Widget cell = wrapExpanded(
             child: showCell(
+                align: widget.header![index].align!,
                 padding: const EdgeInsets.all(0),
                 borderRight: index != tableColumns.length - 1 ? true : false,
                 backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
