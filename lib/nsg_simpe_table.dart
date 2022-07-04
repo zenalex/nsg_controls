@@ -305,11 +305,16 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                       setState(() {});
                     },
                     child: showCell(
-                        backColor: cell.backColor ?? row.backColor, width: tableColumns[index].width, child: cell.widget, isSelected: cell.isSelected)),
+                        align: widget.header![index].align!,
+                        backColor: cell.backColor ?? row.backColor,
+                        width: tableColumns[index].width,
+                        child: cell.widget,
+                        isSelected: cell.isSelected)),
                 expanded: tableColumns[index].expanded,
                 flex: tableColumns[index].flex)
             : wrapExpanded(
-                child: showCell(backColor: cell.backColor ?? row.backColor, width: tableColumns[index].width, child: cell.widget),
+                child: showCell(
+                    align: widget.header![index].align!, backColor: cell.backColor ?? row.backColor, width: tableColumns[index].width, child: cell.widget),
                 expanded: tableColumns[index].expanded,
                 flex: tableColumns[index].flex));
       });
