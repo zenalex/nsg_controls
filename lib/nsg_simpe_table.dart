@@ -30,7 +30,8 @@ class NsgSimpleTableColumn {
   int? flex = 1;
   double? width;
   NsgSimpleTableColumnSort? sort;
-  NsgSimpleTableColumn({this.expanded, this.flex, this.width, this.sort});
+  String? name;
+  NsgSimpleTableColumn({this.expanded, this.flex, this.width, this.sort, this.name});
 }
 
 /// Класс статуса сортировки колонки NsgSimpleTable
@@ -214,14 +215,14 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
         Widget subchild;
         NsgSimpleTableColumnSort? sortElement = tableColumns[index].sort;
         if (sortElement != null) {
-          subchild = Row(children: [
-            Expanded(child: Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget))),
+          subchild = Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget)),
             sortElement == NsgSimpleTableColumnSort.forward
                 ? Icon(Icons.arrow_downward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
                 : Icon(Icons.arrow_upward_outlined, size: 16, color: ControlOptions.instance.colorInverted)
           ]);
         } else {
-          subchild = Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget));
+          subchild = Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: widget.header![index].widget);
         }
         if (widget.sortingClickEnabled == true && widget.columnsEditMode != true) {
           child = InkWell(
