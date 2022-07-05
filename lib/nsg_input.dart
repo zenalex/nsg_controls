@@ -169,6 +169,14 @@ class _NsgInputState extends State<NsgInput> {
       return _buildBoolWidget(fieldValue);
     }
 
+    int? _maxLength;
+    if (widget.dataItem.getField(widget.fieldName) is NsgDataStringField) {
+      _maxLength = (widget.dataItem.getField(widget.fieldName) as NsgDataStringField).maxLength;
+      if (_maxLength == 0) {
+        _maxLength = null;
+      }
+    }
+
     return _gestureWrap(
         Container(
             //height: widget.height,
@@ -189,6 +197,7 @@ class _NsgInputState extends State<NsgInput> {
                       }
                     },
                     child: TextFormField(
+                      maxLength: _maxLength,
                       autofocus: false,
                       maxLines: widget.maxLines,
                       minLines: widget.minLines,
