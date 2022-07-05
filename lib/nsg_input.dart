@@ -225,6 +225,7 @@ class _NsgInputState extends State<NsgInput> {
                       //keyboardType: TextInputType.number,
                       cursorColor: ControlOptions.instance.colorText,
                       decoration: InputDecoration(
+                        counterText: "",
                         labelText: widget.label != null
                             ? widget.disabled == null
                                 ? widget.label!
