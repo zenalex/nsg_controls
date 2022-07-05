@@ -56,8 +56,8 @@ class NsgListPage extends StatelessWidget {
       required this.elementEditPage,
       this.appBarColor,
       this.appBarBackColor,
-      this.appBarIcon,
-      this.appBarIcon2,
+      this.appBarIcon = Icons.arrow_back_ios_new,
+      this.appBarIcon2 = Icons.add,
       this.appBarIcon3,
       this.appBarOnPressed,
       this.appBarOnPressed2,
@@ -193,19 +193,23 @@ class NsgListPage extends StatelessWidget {
       text2: subtitle,
       colorsInverted: true,
       bottomCircular: true,
-      icon: appBarIcon ?? Icons.arrow_back_ios_new,
-      onPressed: appBarOnPressed ??
-          () {
-            Get.back();
-          },
+      icon: appBarIcon,
+      onPressed: appBarIcon == null
+          ? null
+          : appBarOnPressed ??
+              () {
+                Get.back();
+              },
 
       /// Новый объект
-      icon2: appBarIcon2 ?? Icons.add,
-      onPressed2: appBarOnPressed2 ??
-          () {
-            controller.createNewItemAsync();
-            Get.toNamed(elementEditPage);
-          },
+      icon2: appBarIcon2,
+      onPressed2: appBarIcon2 == null
+          ? null
+          : appBarOnPressed2 ??
+              () {
+                controller.createNewItemAsync();
+                Get.toNamed(elementEditPage);
+              },
 
       /// Фильтр
       icon3: appBarIcon3 != null
@@ -216,12 +220,12 @@ class NsgListPage extends StatelessWidget {
                   : Icons.filter_alt
               : null,
       onPressed3: appBarOnPressed3 ??
-          () {
-            //setState(() {
-            controller.controllerFilter.isOpen = !controller.controllerFilter.isOpen;
-            controller.update();
-            //});
-          },
+          (controller.controllerFilter.isAllowed == true
+              ? () {
+                  controller.controllerFilter.isOpen = !controller.controllerFilter.isOpen;
+                  controller.update();
+                }
+              : null),
     );
   }
 
