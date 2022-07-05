@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 
 import 'nsg_icon_button.dart';
@@ -42,16 +43,22 @@ class NsgInput extends StatefulWidget {
   /// Контроллер, которому будет подаваться update при изменении значения в Input
   final NsgDataController? updateController;
 
-  ///Функция прорисовки строки
+  /// Функция прорисовки строки
   final Widget Function(NsgDataItem)? rowWidget;
 
-  ///Тип поля ввода. Если тип не задан (NsgInputType.autoselect), он будет выбран автоматически,
-  ///исходя из типа данных поля объекта
+  /// Тип поля ввода. Если тип не задан (NsgInputType.autoselect), он будет выбран автоматически,
+  /// исходя из типа данных поля объекта
   final NsgInputType inputType;
 
-  ///В случае задания формы для подбора значений для ссылочный полей, вместо стандартной формы будет выполнен переход
-  ///на данную форму в режиме контроллера выбор значения
+  /// В случае задания формы для подбора значений для ссылочный полей, вместо стандартной формы будет выполнен переход
+  /// на данную форму в режиме контроллера выбор значения
   final String selectionForm;
+
+  /// Тип клавиатуры
+  final TextInputType? keyboard;
+
+  /// Маска текста
+  final String? mask;
 
   const NsgInput(
       {Key? key,
@@ -76,7 +83,9 @@ class NsgInput extends StatefulWidget {
       this.widget,
       this.rowWidget,
       this.inputType = NsgInputType.autoselect,
-      this.selectionForm = ''})
+      this.selectionForm = '',
+      this.keyboard = TextInputType.multiline,
+      this.mask})
       : super(key: key);
 
   @override
@@ -197,11 +206,19 @@ class _NsgInputState extends State<NsgInput> {
                       }
                     },
                     child: TextFormField(
+                      inputFormatters: widget.mask != null
+                          ? [
+                              MaskTextInputFormatter(
+                                initialText: fieldValue.toString(),
+                                mask: widget.mask,
+                              )
+                            ]
+                          : null,
                       maxLength: _maxLength,
                       autofocus: false,
                       maxLines: widget.maxLines,
                       minLines: widget.minLines,
-                      keyboardType: TextInputType.multiline,
+                      keyboardType: widget.keyboard,
                       //maxLines: null,
                       //expands: true,
                       initialValue: fieldValue.toString(),
