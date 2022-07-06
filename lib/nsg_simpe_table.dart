@@ -305,7 +305,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                       setState(() {});
                     },
                     child: showCell(
-                        align: widget.header![index].align!,
+                        align: cell.align,
                         backColor: cell.backColor ?? row.backColor,
                         width: tableColumns[index].width,
                         child: cell.widget,
@@ -313,8 +313,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                 expanded: tableColumns[index].expanded,
                 flex: tableColumns[index].flex)
             : wrapExpanded(
-                child: showCell(
-                    align: widget.header![index].align!, backColor: cell.backColor ?? row.backColor, width: tableColumns[index].width, child: cell.widget),
+                child: showCell(align: cell.align, backColor: cell.backColor ?? row.backColor, width: tableColumns[index].width, child: cell.widget),
                 expanded: tableColumns[index].expanded,
                 flex: tableColumns[index].flex));
       });
