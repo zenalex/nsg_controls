@@ -56,6 +56,9 @@ class NsgListPage extends StatelessWidget {
   /// относительно текущего разрешения экрана, с учётом максимальной ширины приложения
   double gridCellMinWidth;
 
+  /// Вертикальные и горизонтальные отступы внутри Grid
+  double gridYSpacing, gridXSpacing;
+
   final RefreshController _refreshController = RefreshController();
 
   NsgListPage(
@@ -68,6 +71,8 @@ class NsgListPage extends StatelessWidget {
       required this.elementEditPage,
       this.type = NsgListPageMode.list,
       this.gridCellMinWidth = 160,
+      this.gridXSpacing = 10.0,
+      this.gridYSpacing = 10.0,
       this.appBar,
       this.appBarColor,
       this.appBarBackColor,
@@ -183,11 +188,14 @@ class NsgListPage extends StatelessWidget {
         ],
       );
     } else if (type == NsgListPageMode.grid) {
-      return GridView.count(
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        crossAxisCount: _crossAxisCount(),
-        children: _showItems(),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: GridView.count(
+          mainAxisSpacing: gridYSpacing,
+          crossAxisSpacing: gridXSpacing,
+          crossAxisCount: _crossAxisCount(),
+          children: _showItems(),
+        ),
       );
     } else {
       return Text('Несуществующий тип отображения NsgListPage');
