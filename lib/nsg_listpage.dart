@@ -9,6 +9,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'nsg_period_filter.dart';
 
+enum NsgListPageMode { list, grid }
+
 ///Страница, отображающая данные из контроллера в форме списка
 ///Имеет функционал добавления и удаления элементов
 ///В качестве виджетов для отображения элементов, можно использовать стандартные, например, NsgTextBlock
@@ -35,6 +37,9 @@ class NsgListPage extends StatelessWidget {
   ///Реакция на нажатие на элемент. Если не задан, то будет вывана функция контроллера controller.itemPageOpen
   final void Function(NsgDataItem)? onElementTap;
 
+  ///Виджет Appbar
+  Widget? appBar;
+
   ///Цвета Appbar
   Color? appBarColor, appBarBackColor;
 
@@ -43,6 +48,13 @@ class NsgListPage extends StatelessWidget {
 
   ///Функции иконок
   final VoidCallback? appBarOnPressed, appBarOnPressed2, appBarOnPressed3;
+
+  /// Тип отображения элементов на странице
+  NsgListPageMode? type;
+
+  /// Минимальная ширина ячейки Grid для расчёта количества элементов по горизонтали
+  /// относительно текущего разрешения экрана, с учётом максимальной ширины приложения
+  double gridCellMinWidth;
 
   final RefreshController _refreshController = RefreshController();
 
@@ -54,6 +66,9 @@ class NsgListPage extends StatelessWidget {
       required this.textNoItems,
       required this.widget,
       required this.elementEditPage,
+      this.type = NsgListPageMode.list,
+      this.gridCellMinWidth = 160,
+      this.appBar,
       this.appBarColor,
       this.appBarBackColor,
       this.appBarIcon = Icons.arrow_back_ios_new,
@@ -140,11 +155,7 @@ class NsgListPage extends StatelessWidget {
                                 enablePullDown: true,
                                 controller: _refreshController,
                                 onRefresh: _onRefresh,
-                                child: ListView(
-                                  children: [
-                                    FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: _showItems()),
-                                  ],
-                                ),
+                                child: _content(),
                               )),
                           onLoading: const NsgProgressBar()),
                     ),
@@ -158,6 +169,31 @@ class NsgListPage extends StatelessWidget {
     );
   }
 
+  int _crossAxisCount() {
+    double screenWidth = Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
+    return (screenWidth / gridCellMinWidth).toInt();
+  }
+
+  Widget _content() {
+    print(type);
+    if (type == NsgListPageMode.list) {
+      return ListView(
+        children: [
+          FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
+        ],
+      );
+    } else if (type == NsgListPageMode.grid) {
+      return GridView.count(
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        crossAxisCount: _crossAxisCount(),
+        children: _showItems(),
+      );
+    } else {
+      return Text('Несуществующий тип отображения NsgListPage');
+    }
+  }
+
   void _onRefresh() async {
     // monitor network fetch
     await Future.delayed(const Duration(milliseconds: 100));
@@ -165,68 +201,69 @@ class NsgListPage extends StatelessWidget {
     _refreshController.refreshCompleted();
   }
 
-  Widget _showItems() {
+  List<Widget> _showItems() {
+    List<Widget> list = [];
     if (controller.items.isEmpty) {
-      return Padding(
+      list.add(Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Text(
           textNoItems,
           textAlign: TextAlign.center,
           style: TextStyle(color: ControlOptions.instance.colorText),
         ),
-      );
+      ));
     } else {
-      List<Widget> list = [];
       for (var element in controller.items) {
         list.add(InkWell(onTap: () => _elementTap(element), child: widget(element)));
       }
-      return Column(children: list);
     }
+    return list;
   }
 
   Widget _getNsgAppBar(BuildContext context) {
-    return NsgAppBar(
-      color: appBarColor,
-      backColor: appBarBackColor,
-      key: GlobalKey(),
-      text: title,
-      text2: subtitle,
-      colorsInverted: true,
-      bottomCircular: true,
-      icon: appBarIcon,
-      onPressed: appBarIcon == null
-          ? null
-          : appBarOnPressed ??
-              () {
-                Get.back();
-              },
+    return appBar ??
+        NsgAppBar(
+          color: appBarColor,
+          backColor: appBarBackColor,
+          key: GlobalKey(),
+          text: title,
+          text2: subtitle,
+          colorsInverted: true,
+          bottomCircular: true,
+          icon: appBarIcon,
+          onPressed: appBarIcon == null
+              ? null
+              : appBarOnPressed ??
+                  () {
+                    Get.back();
+                  },
 
-      /// Новый объект
-      icon2: appBarIcon2,
-      onPressed2: appBarIcon2 == null
-          ? null
-          : appBarOnPressed2 ??
-              () {
-                controller.createNewItemAsync();
-                Get.toNamed(elementEditPage);
-              },
+          /// Новый объект
+          icon2: appBarIcon2,
+          onPressed2: appBarIcon2 == null
+              ? null
+              : appBarOnPressed2 ??
+                  () {
+                    controller.createNewItemAsync();
+                    Get.toNamed(elementEditPage);
+                  },
 
-      /// Фильтр
-      icon3: appBarIcon3 != null
-          ? appBarIcon3!
-          : controller.controllerFilter.isAllowed == true
-              ? controller.controllerFilter.isOpen == true
-                  ? Icons.filter_alt_off
-                  : Icons.filter_alt
-              : null,
-      onPressed3: appBarOnPressed3 ??
-          (controller.controllerFilter.isAllowed == true
-              ? () {
-                  controller.controllerFilter.isOpen = !controller.controllerFilter.isOpen;
-                  controller.update();
-                }
-              : null),
-    );
+          /// Фильтр
+          icon3: appBarIcon3 != null
+              ? appBarIcon3!
+              : controller.controllerFilter.isAllowed == true
+                  ? controller.controllerFilter.isOpen == true
+                      ? Icons.filter_alt_off
+                      : Icons.filter_alt
+                  : null,
+          onPressed3: appBarOnPressed3 ??
+              (controller.controllerFilter.isAllowed == true
+                  ? () {
+                      controller.controllerFilter.isOpen = !controller.controllerFilter.isOpen;
+                      controller.update();
+                    }
+                  : null),
+        );
   }
 
   void _elementTap(NsgDataItem element) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nsg_controls/nsg_controls.dart';
 
 class BodyWrap extends StatelessWidget {
   final Widget child;
@@ -12,7 +13,7 @@ class BodyWrap extends StatelessWidget {
           decoration: const BoxDecoration(color: Colors.white),
           child: Center(
               child: Container(
-                  constraints: const BoxConstraints(minWidth: 300, maxWidth: 640),
+                  constraints: BoxConstraints(minWidth: ControlOptions.instance.appMinWidth, maxWidth: ControlOptions.instance.appMaxWidth),
                   //padding: EdgeInsets.fromLTRB(10, 0, 10, 15),
                   child: child))),
     );
