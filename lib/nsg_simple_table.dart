@@ -28,12 +28,18 @@ class NsgSimpleTableRow {
 
 /// Класс колонки NsgSimpleTable
 class NsgSimpleTableColumn {
+  /// Растягивать колонку Expanded
   bool? expanded = false;
   int? flex = 1;
   double? width;
+
+  /// Тип сортировки
   NsgSimpleTableColumnSort? sort;
   String? name;
-  NsgSimpleTableColumn({this.expanded, this.flex, this.width, this.sort = NsgSimpleTableColumnSort.nosort, this.name});
+
+  /// Показывать итоги
+  bool? showTotals;
+  NsgSimpleTableColumn({this.expanded, this.flex, this.width, this.sort = NsgSimpleTableColumnSort.nosort, this.name, this.showTotals = false});
 }
 
 /// Типы сортировок колонки NsgSimpleTable
