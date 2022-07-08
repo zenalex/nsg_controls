@@ -39,7 +39,12 @@ class NsgSimpleTableColumn {
 
   /// Показывать итоги
   bool? showTotals;
-  NsgSimpleTableColumn({this.expanded, this.flex, this.width, this.sort = NsgSimpleTableColumnSort.nosort, this.name, this.showTotals = false});
+
+  ///Разрешить сортировку по данному столбцу
+  bool allowSort;
+
+  NsgSimpleTableColumn(
+      {this.expanded, this.flex, this.width, this.sort = NsgSimpleTableColumnSort.nosort, this.name, this.showTotals = false, this.allowSort = true});
 }
 
 /// Типы сортировок колонки NsgSimpleTable
@@ -58,7 +63,9 @@ class NsgSimpleTable extends StatefulWidget {
       required this.columns,
       this.header,
       required this.rows,
+      this.controller,
       this.rowOnTap,
+      this.headerOnTap,
       this.columnsEditMode = false,
       this.onColumnsChange})
       : super(key: key);
@@ -92,6 +99,13 @@ class NsgSimpleTable extends StatefulWidget {
 
   /// Функция, срабатывающая при нажатии на строку
   final Function(NsgDataItem?, String)? rowOnTap;
+
+  /// Функция, срабатывающая при нажатии на строку заголовка
+  final Function(String)? headerOnTap;
+
+  ///Контроллер данных. Используется для управления сортировкой
+  ///В будущем, может использоваться для построения таблицы, управлением фильтрацией
+  final NsgDataController? controller;
 
   @override
   State<NsgSimpleTable> createState() => _NsgSimpleTableState();
@@ -247,6 +261,11 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
           child = InkWell(
             /// Переключение сортировки
             onTap: () {
+              if (widget.headerOnTap != null && widget.header != null) {
+                widget.headerOnTap!(widget.header![index].name ?? '');
+                return;
+              }
+
               /// Удаляем все сортировки
               tableColumns.asMap().forEach((index2, column2) {
                 tableColumns[index2].sort = NsgSimpleTableColumnSort.nosort;
@@ -259,7 +278,15 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
               } else if (sortElement == NsgSimpleTableColumnSort.backward) {
                 tableColumns[index].sort = NsgSimpleTableColumnSort.nosort;
               }
-
+              //Если задан контроллер, то вызываем сортировку
+              if (widget.controller != null && tableColumns[index].allowSort && widget.header![index].name != null) {
+                if (tableColumns[index].sort == NsgSimpleTableColumnSort.nosort) {
+                  widget.controller!.sorting = '';
+                } else {
+                  widget.controller!.sorting = widget.header![index].name! + (tableColumns[index].sort == NsgSimpleTableColumnSort.forward ? '+' : '-');
+                }
+                widget.controller!.requestItems();
+              }
               setState(() {});
             },
             child: subchild,
