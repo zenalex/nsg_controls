@@ -62,7 +62,7 @@ class NsgTableColumn {
     this.expanded,
     this.flex,
     this.width,
-    this.visible,
+    this.visible = true,
     this.sort = NsgTableColumnSort.nosort,
     this.headerAlign,
     this.headerTextAlign,
