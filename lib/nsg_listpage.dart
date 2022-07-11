@@ -176,7 +176,7 @@ class NsgListPage extends StatelessWidget {
 
   int _crossAxisCount() {
     double screenWidth = Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
-    return (screenWidth / gridCellMinWidth).toInt();
+    return screenWidth ~/ gridCellMinWidth;
   }
 
   Widget _content() {
@@ -198,7 +198,7 @@ class NsgListPage extends StatelessWidget {
         ),
       );
     } else {
-      return Text('Несуществующий тип отображения NsgListPage');
+      return const Text('Несуществующий тип отображения NsgListPage');
     }
   }
 

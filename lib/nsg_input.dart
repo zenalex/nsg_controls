@@ -38,7 +38,7 @@ class NsgInput extends StatefulWidget {
   final String fieldName;
 
   /// Контроллер для выбора связанного значения
-  final NsgDataController? selectionController;
+  final NsgBaseController? selectionController;
 
   /// Контроллер, которому будет подаваться update при изменении значения в Input
   final NsgDataController? updateController;
@@ -126,15 +126,22 @@ class NsgInput extends StatefulWidget {
 
 class _NsgInputState extends State<NsgInput> {
   late NsgInputType inputType;
+  NsgBaseController? selectionController;
+
+  get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
 
   @override
   void initState() {
     super.initState();
     //Проверяем, выбран ли тип инпута пользователем
     inputType = widget.selectInputType();
-    //Проверяем заполненность ключевых полей для выбранного типа данных
-    if (inputType == NsgInputType.reference) {
-      assert(widget.selectionController != null, widget.fieldName);
+    if (useSelectionController) {
+      var sc = widget.selectionController ?? widget.dataItem.defaultController;
+      if (sc == null) {
+        assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
+        sc = NsgDefaultController(dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType);
+      }
+      selectionController = sc;
     }
   }
 
@@ -233,7 +240,7 @@ class _NsgInputState extends State<NsgInput> {
                             : ' ',
                         //hintText: "Phone number",
                         alignLabelWithHint: true,
-                        contentPadding: EdgeInsets.fromLTRB(0, 10, widget.selectionController != null ? 25 : 0, 10), //  <- you can it to 0.0 for no space
+                        contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 0, 10), //  <- you can it to 0.0 for no space
                         isDense: true,
                         enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
                         focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
@@ -263,15 +270,15 @@ class _NsgInputState extends State<NsgInput> {
 
   void _onPressed() {
     if (inputType == NsgInputType.reference && widget.disabled != true) {
-      widget.selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
-      widget.selectionController!.refreshData();
+      selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
+      selectionController!.refreshData();
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        var form = NsgSelection(inputType: inputType, controller: widget.selectionController!, rowWidget: widget.rowWidget);
+        var form = NsgSelection(inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
         form.selectFromArray(
           widget.label ?? '',
           (item) {
-            widget.dataItem.setFieldValue(widget.fieldName, widget.selectionController!.selectedItem);
+            widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
             if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
             if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
             setState(() {});
@@ -281,11 +288,11 @@ class _NsgInputState extends State<NsgInput> {
       } else {
         //Иначе - вызываем переданную форму для подбора
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        widget.selectionController!.regime = NsgControllerRegime.selection;
-        widget.selectionController!.onSelected = (item) {
+        selectionController!.regime = NsgControllerRegime.selection;
+        selectionController!.onSelected = (item) {
           Get.back();
-          widget.selectionController!.regime = NsgControllerRegime.view;
-          widget.selectionController!.onSelected = null;
+          selectionController!.regime = NsgControllerRegime.view;
+          selectionController!.onSelected = null;
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
           if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
