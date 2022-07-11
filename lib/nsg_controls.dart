@@ -16,3 +16,8 @@ export 'widgets/nsg_progressbar.dart';
 export 'widgets/body_wrap.dart';
 export 'widgets/nsg_appbar.dart';
 export 'widgets/nsg_image.dart';
+export 'table/nsg_table.dart';
+export 'table/nsg_table_column.dart';
+export 'table/nsg_table_column_sort.dart';
+export 'table/nsg_table_row.dart';
+export 'table/nsg_table_cell.dart';
