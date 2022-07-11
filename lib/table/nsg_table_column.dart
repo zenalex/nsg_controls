@@ -56,13 +56,23 @@ class NsgTableColumn {
   ///Разрешить сортировку по данному столбцу
   bool allowSort;
 
-  NsgTableColumn(
-      {this.expanded,
-      this.flex,
-      this.width,
-      this.sort = NsgTableColumnSort.nosort,
-      required this.name,
-      this.presentation,
-      this.showTotals = false,
-      this.allowSort = true});
+  NsgTableColumn({
+    required this.name,
+    this.presentation,
+    this.expanded,
+    this.flex,
+    this.width,
+    this.visible,
+    this.sort = NsgTableColumnSort.nosort,
+    this.headerAlign,
+    this.headerTextAlign,
+    this.headerTextStyle,
+    this.headerBackColor,
+    this.rowAlign,
+    this.rowTextAlign,
+    this.rowBackColor,
+    this.rowTextStyle,
+    this.showTotals = false,
+    this.allowSort = true,
+  });
 }
