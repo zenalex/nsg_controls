@@ -12,7 +12,7 @@ import 'nsg_control_options.dart';
 
 class NsgInput extends StatefulWidget {
   final String? label;
-  final bool? disabled;
+  final bool disabled;
   final bool? gesture;
   final double? fontSize;
   final EdgeInsets? margin;
@@ -68,7 +68,7 @@ class NsgInput extends StatefulWidget {
       this.updateController,
       this.label,
       this.imagesList,
-      this.disabled,
+      this.disabled = false,
       this.fontSize = 16,
       this.borderRadius = 15,
       this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 5),
@@ -175,6 +175,7 @@ class _NsgInputState extends State<NsgInput> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.disabled);
     var fieldValue = widget.dataItem.getFieldValue(widget.fieldName);
     NsgDataItem? refItem;
     if (widget.dataItem.isReferenceField(widget.fieldName)) {
@@ -234,7 +235,7 @@ class _NsgInputState extends State<NsgInput> {
                       decoration: InputDecoration(
                         counterText: "",
                         labelText: widget.label != null
-                            ? widget.disabled == null
+                            ? widget.disabled == false
                                 ? widget.label!
                                 : '🔒 ${widget.label!}'
                             : ' ',
@@ -263,7 +264,7 @@ class _NsgInputState extends State<NsgInput> {
                         }
                       },
                       style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
-                      readOnly: widget.disabled == null ? false : true,
+                      readOnly: widget.disabled,
                     ))),
         fieldValue.toString() != '');
   }
