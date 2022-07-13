@@ -210,7 +210,7 @@ class _NsgInputState extends State<NsgInput> {
                     autofocus: false,
                     onFocusChange: (hasFocus) {
                       if (widget.onEditingComplete != null) {
-                        hasFocus ? print('') : widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                        hasFocus ? print('Focus') : widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                       }
                     },
                     child: TextFormField(
@@ -227,10 +227,7 @@ class _NsgInputState extends State<NsgInput> {
                       maxLines: widget.maxLines,
                       minLines: widget.minLines,
                       keyboardType: widget.keyboard,
-                      //maxLines: null,
-                      //expands: true,
                       initialValue: fieldValue.toString(),
-                      //keyboardType: TextInputType.number,
                       cursorColor: ControlOptions.instance.colorText,
                       decoration: InputDecoration(
                         counterText: "",
@@ -247,10 +244,9 @@ class _NsgInputState extends State<NsgInput> {
                         focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
                         labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                       ),
-
                       key: GlobalKey(),
                       onEditingComplete: () {
-                        FocusScope.of(context).nextFocus();
+                        //FocusScope.of(context).nextFocus();
                         if (widget.onEditingComplete != null) {
                           widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                         }
