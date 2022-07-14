@@ -18,7 +18,7 @@ class NsgTimePicker extends StatefulWidget {
       this.label,
       this.textAlign = TextAlign.center,
       this.disabled,
-      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 4)})
+      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
       : super(key: key);
 
   void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
@@ -131,7 +131,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
-                height: 14,
+                height: 13,
                 child: Text(
                   widget.label != null
                       ? widget.disabled != true
