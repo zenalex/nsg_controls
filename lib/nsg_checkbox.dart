@@ -49,29 +49,20 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
           child: SizedBox(
             height: widget.height,
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (widget.radio == true)
-                  Icon(
-                      widget.value == true
-                          ? Icons.radio_button_checked
-                          : Icons.radio_button_unchecked_outlined,
-                      color: widget.value == true
-                          ? ControlOptions.instance.colorMainDark
-                          : ControlOptions.instance.colorMainDark)
+                  Icon(widget.value == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
+                      color: widget.value == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark)
                 else
-                  Icon(
-                      widget.value == true
-                          ? Icons.check_box_outlined
-                          : Icons.check_box_outline_blank,
-                      color: widget.value == true
-                          ? ControlOptions.instance.colorMainDark
-                          : ControlOptions.instance.colorMainDark),
+                  Icon(widget.value == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                      color: widget.value == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark),
                 const SizedBox(width: 4),
-                Text(
-                  widget.label,
-                  style: TextStyle(
-                      color: ControlOptions.instance.colorText,
-                      fontSize: ControlOptions.instance.sizeM),
+                Flexible(
+                  child: Text(
+                    widget.label,
+                    style: TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
+                  ),
                 )
               ],
             ),
