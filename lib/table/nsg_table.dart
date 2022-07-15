@@ -337,7 +337,7 @@ class _NsgTableState extends State<NsgTable> {
         child: crossWrap(Container(
             padding: widget.columnsEditMode == true
                 ? const EdgeInsets.only(right: 510, bottom: 10)
-                : EdgeInsets.only(bottom: 10, right: widget.horizontalScrollEnabled == true ? 10 : 0),
+                : EdgeInsets.only(bottom: 10, right: widget.horizontalScrollEnabled == true ? 0 : 0),
             //margin: EdgeInsets.only(bottom: 10, right: 10),
             //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
             child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),

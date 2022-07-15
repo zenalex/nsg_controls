@@ -20,7 +20,7 @@ class NsgDatePicker extends StatefulWidget {
       required this.onClose,
       this.label,
       this.textAlign = TextAlign.center,
-      this.disabled,
+      this.disabled = false,
       this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
       : super(key: key);
 
@@ -50,17 +50,27 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
   @override
   Widget build(BuildContext context) {
     DateTime _initTime = widget.initialTime;
-    return GestureDetector(
-      onTap: widget.disabled != true
-          ? () {
-              NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
-                widget.onClose(value);
-                print(value);
-                widget.initialTime = value;
-                setState(() {});
-              });
-            }
-          : null,
+
+    _inkWellWrapper({required Widget child}) {
+      if (widget.disabled == true) {
+        return child;
+      } else {
+        return InkWell(
+            onTap: widget.disabled != true
+                ? () {
+                    NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
+                      widget.onClose(value);
+                      print(value);
+                      widget.initialTime = value;
+                      setState(() {});
+                    });
+                  }
+                : null,
+            child: child);
+      }
+    }
+
+    return _inkWellWrapper(
       child: Padding(
         padding: widget.margin,
         child: Padding(
@@ -71,11 +81,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
               SizedBox(
                 height: 13,
                 child: Text(
-                  widget.label != null
-                      ? widget.disabled == null
-                          ? widget.label!
-                          : '🔒 ${widget.label!}'
-                      : '',
+                  widget.disabled == false ? widget.label! : '🔒 ${widget.label!}',
                   textAlign: widget.textAlign,
                   style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
                 ),
