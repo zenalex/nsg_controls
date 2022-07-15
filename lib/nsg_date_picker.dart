@@ -6,15 +6,15 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-class NsgDatePicker extends StatelessWidget {
+class NsgDatePicker extends StatefulWidget {
   final String? label;
   final TextAlign? textAlign;
   final EdgeInsets margin;
-  final DateTime initialTime;
+  DateTime initialTime;
   final bool? disabled;
   final Function(DateTime endDate) onClose;
 
-  const NsgDatePicker(
+  NsgDatePicker(
       {Key? key,
       required this.initialTime,
       required this.onClose,
@@ -43,18 +43,26 @@ class NsgDatePicker extends StatelessWidget {
   }
 
   @override
+  State<NsgDatePicker> createState() => _NsgDatePickerState();
+}
+
+class _NsgDatePickerState extends State<NsgDatePicker> {
+  @override
   Widget build(BuildContext context) {
-    DateTime _initTime = initialTime;
+    DateTime _initTime = widget.initialTime;
     return GestureDetector(
-      onTap: disabled != true
+      onTap: widget.disabled != true
           ? () {
               NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
-                onClose(value);
+                widget.onClose(value);
+                print(value);
+                widget.initialTime = value;
+                setState(() {});
               });
             }
           : null,
       child: Padding(
-        padding: margin,
+        padding: widget.margin,
         child: Padding(
           padding: const EdgeInsets.only(top: 3.0),
           child: Column(
@@ -63,12 +71,12 @@ class NsgDatePicker extends StatelessWidget {
               SizedBox(
                 height: 13,
                 child: Text(
-                  label != null
-                      ? disabled == null
-                          ? label!
-                          : '🔒 ${label!}'
+                  widget.label != null
+                      ? widget.disabled == null
+                          ? widget.label!
+                          : '🔒 ${widget.label!}'
                       : '',
-                  textAlign: textAlign,
+                  textAlign: widget.textAlign,
                   style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
                 ),
               ),
@@ -79,7 +87,7 @@ class NsgDatePicker extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                   child: Text(
                     NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
-                    textAlign: textAlign,
+                    textAlign: widget.textAlign,
                     style: const TextStyle(fontSize: 16),
                   )),
             ],

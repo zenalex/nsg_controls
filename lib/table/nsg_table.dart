@@ -7,8 +7,8 @@ import 'package:nsg_data/nsg_data.dart';
 import 'column_resizer.dart';
 
 /// Виджет отображения таблицы
-class NsgDataTable extends StatefulWidget {
-  const NsgDataTable(
+class NsgTable extends StatefulWidget {
+  const NsgTable(
       {Key? key,
       required this.controller,
       this.columns = const [],
@@ -58,10 +58,10 @@ class NsgDataTable extends StatefulWidget {
   final bool showHeader;
 
   @override
-  State<NsgDataTable> createState() => _NsgDataTableState();
+  State<NsgTable> createState() => _NsgTableState();
 }
 
-class _NsgDataTableState extends State<NsgDataTable> {
+class _NsgTableState extends State<NsgTable> {
   List<Widget> table = [];
   List<Widget> tableHeader = [];
   List<Widget> tableBody = [];

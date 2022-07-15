@@ -6,16 +6,18 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 import 'nsg_period_filter.dart';
 
-enum NsgListPageMode { list, grid }
+enum NsgListPageMode { list, grid, table }
 
 ///Страница, отображающая данные из контроллера в форме списка
 ///Имеет функционал добавления и удаления элементов
 ///В качестве виджетов для отображения элементов, можно использовать стандартные, например, NsgTextBlock
 // ignore: must_be_immutable
 class NsgListPage extends StatelessWidget {
+  /// Колонки для вывода в режиме "таблица"
+  List<NsgTableColumn>? columns;
+
   ///Заголовок для AppBar
   final String title;
 
@@ -69,6 +71,7 @@ class NsgListPage extends StatelessWidget {
       required this.textNoItems,
       required this.widget,
       required this.elementEditPage,
+      this.columns,
       this.type = NsgListPageMode.list,
       this.gridCellMinWidth = 160,
       this.gridXSpacing = 10.0,
@@ -191,6 +194,18 @@ class NsgListPage extends StatelessWidget {
           crossAxisCount: _crossAxisCount(),
           children: _showItems(),
         ),
+      );
+    } else if (type == NsgListPageMode.table) {
+      assert(columns != null, 'Колонки (columns) не заданы для таблицы');
+      return NsgTable(
+        headerColor: ControlOptions.instance.colorMain,
+        columns: columns!,
+        controller: controller,
+        rowOnTap: (item, name) {
+          if (item != null) {
+            _elementTap(item);
+          }
+        },
       );
     } else {
       return const Text('Несуществующий тип отображения NsgListPage');
