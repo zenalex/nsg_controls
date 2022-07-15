@@ -108,21 +108,31 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
     } else {
       minutesString = minutes.toString();
     }
-    return GestureDetector(
-      onTap: widget.disabled != true
-          ? () {
-              NsgTimePicker(
-                  initialTime: widget.initialTime,
-                  onClose: (value) {
-                    setState(() {});
-                  }).showPopup(context, hours, minutes, (value) {
-                DateTime now = DateTime.now();
-                DateTime date = DateTime(now.year, now.month, now.day);
-                Duration duration = value.difference(date);
-                widget.onClose(duration);
-              });
-            }
-          : null,
+
+    _inkWellWrapper({required Widget child}) {
+      if (widget.disabled == true) {
+        return child;
+      } else {
+        return InkWell(
+            onTap: widget.disabled != true
+                ? () {
+                    NsgTimePicker(
+                        initialTime: widget.initialTime,
+                        onClose: (value) {
+                          setState(() {});
+                        }).showPopup(context, hours, minutes, (value) {
+                      DateTime now = DateTime.now();
+                      DateTime date = DateTime(now.year, now.month, now.day);
+                      Duration duration = value.difference(date);
+                      widget.onClose(duration);
+                    });
+                  }
+                : null,
+            child: child);
+      }
+    }
+
+    return _inkWellWrapper(
       child: Padding(
         padding: widget.margin,
         child: Padding(
@@ -133,11 +143,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
               SizedBox(
                 height: 13,
                 child: Text(
-                  widget.label != null
-                      ? widget.disabled != true
-                          ? widget.label!
-                          : '🔒 ${widget.label!}'
-                      : '',
+                  widget.disabled == false ? widget.label! : '🔒 ${widget.label!}',
                   textAlign: widget.textAlign,
                   style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
                 ),

@@ -18,7 +18,7 @@ class NsgDatePicker extends StatefulWidget {
       {Key? key,
       required this.initialTime,
       required this.onClose,
-      this.label,
+      this.label = '',
       this.textAlign = TextAlign.center,
       this.disabled = false,
       this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
