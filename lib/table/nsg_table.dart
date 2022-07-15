@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:cross_scroll/cross_scroll.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 import 'column_resizer.dart';
@@ -65,6 +66,8 @@ class _NsgTableState extends State<NsgTable> {
   List<Widget> table = [];
   List<Widget> tableHeader = [];
   List<Widget> tableBody = [];
+  List<Widget> tableFooter = [];
+  List<dynamic> totals = [];
   late ScrollController scrollHor;
   late ScrollController scrollHorHeader;
   late ScrollController scrollHorResizers;
@@ -72,6 +75,7 @@ class _NsgTableState extends State<NsgTable> {
   late List<NsgTableColumn> tableColumns;
 
   bool horizontalScrollEnabled = true;
+  bool showTotals = false;
 
   CrossScrollBar crossScrollBar =
       const CrossScrollBar(thumb: ScrollThumb.alwaysShow, track: ScrollTrack.show, thickness: 8, hoverThickness: 8, thumbRadius: Radius.circular(0));
@@ -197,6 +201,9 @@ class _NsgTableState extends State<NsgTable> {
         Widget child;
         Widget subchild;
         NsgTableColumnSort? sortElement = column.sort;
+        if (column.totalType != NsgTableColumnTotalType.none) {
+          showTotals = true;
+        }
         if (sortElement != NsgTableColumnSort.nosort) {
           subchild = Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             Expanded(
@@ -274,7 +281,6 @@ class _NsgTableState extends State<NsgTable> {
                 child: child),
             expanded: column.expanded,
             flex: column.flex);
-
         tableHeader.add(cell);
       }
     }

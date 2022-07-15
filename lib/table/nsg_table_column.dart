@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
 import 'nsg_table_column_sort.dart';
+import 'nsg_table_column_total_type.dart';
 
 /// Класс колонки NsgSimpleTable
 class NsgTableColumn {
+  /// Типы подсчёта итогов в колонке: Нет, Суммирование значений, Кол-во элементов
+  NsgTableColumnTotalType totalType;
+
   /// Растягивать колонку Expanded
-  bool? expanded = false;
+  bool expanded;
 
   ///flex для автоподбора ширины
-  int? flex = 1;
+  int flex;
 
   ///Ширина колонки
   double? width;
 
   ///Видимость колонки
-  bool visible = true;
+  bool visible;
 
   /// Тип сортировки
   NsgTableColumnSort? sort;
@@ -58,9 +62,10 @@ class NsgTableColumn {
 
   NsgTableColumn({
     required this.name,
+    this.totalType = NsgTableColumnTotalType.none,
     this.presentation,
-    this.expanded,
-    this.flex,
+    this.expanded = false,
+    this.flex = 1,
     this.width,
     this.visible = true,
     this.sort = NsgTableColumnSort.nosort,
