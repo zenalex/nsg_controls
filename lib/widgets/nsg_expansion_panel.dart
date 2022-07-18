@@ -7,6 +7,7 @@ class NsgExpansionPanel extends StatefulWidget {
       {Key? key,
       this.widgetTopColor,
       this.widgetTopBackColor,
+      this.widgetBottomBackColor,
       this.borderColor,
       this.borderRadius,
       this.collapsed = true,
@@ -36,6 +37,9 @@ class NsgExpansionPanel extends StatefulWidget {
 
   /// Нижний виджет в раскрытой панели
   final Widget widgetBottom;
+
+  /// Фон нижнего виджета
+  final Color? widgetBottomBackColor;
 
   // Простая панель
   final bool? isSimple;
@@ -221,6 +225,7 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       width: double.infinity,
                       decoration: BoxDecoration(
+                          color: widget.widgetBottomBackColor,
                           border: Border.all(width: 2, color: widget.borderColor ?? ControlOptions.instance.colorMain),
                           borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(widget.borderRadius ?? ControlOptions.instance.borderRadius),
