@@ -318,7 +318,7 @@ class SearchWidget extends StatelessWidget {
               child: NsgTextInput(
                   onChanged: (value) {
                     controller.controllerFilter.searchString = value;
-                    controller.refreshData();
+                    controller.controllerFilter.refreshControllerWithDelay();
                   },
                   label: 'Фильтр по тексту',
                   initial: controller.controllerFilter.searchString,
