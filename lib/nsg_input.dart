@@ -240,8 +240,8 @@ class _NsgInputState extends State<NsgInput> {
                         alignLabelWithHint: true,
                         contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 0, 10), //  <- you can it to 0.0 for no space
                         isDense: true,
-                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
                         labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                       ),
                       key: GlobalKey(),

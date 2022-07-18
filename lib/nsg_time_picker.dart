@@ -150,7 +150,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
               ),
               Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain.withOpacity(0.6)))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
                   padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                   child: Text(
                     "$hours:$minutesString",

@@ -13,12 +13,14 @@ class NsgPeriodFilter extends StatefulWidget {
   final EdgeInsets padding;
   final String label;
   final bool disabled;
+  final double? width;
   final TextAlign textAlign;
   const NsgPeriodFilter(
       {Key? key,
       required this.controller,
       this.label = '',
       this.disabled = false,
+      this.width,
       this.textAlign = TextAlign.center,
       // this.onConfirm,
       this.margin = const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
@@ -72,11 +74,14 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   @override
   Widget build(BuildContext context) {
     /// Тело виджета
-    return AnimatedCrossFade(
-        duration: const Duration(milliseconds: 500),
-        crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-        firstChild: Container(),
-        secondChild: _filterWidget());
+    return SizedBox(
+      width: widget.width,
+      child: AnimatedCrossFade(
+          duration: const Duration(milliseconds: 500),
+          crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          firstChild: Container(),
+          secondChild: _filterWidget()),
+    );
   }
 
   Widget _filterWidget() {
@@ -98,7 +103,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
               ),
               Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain.withOpacity(0.6)))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
                   padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                   child: Text(
                     _showPeriod(),
@@ -124,53 +129,6 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
           },
           child: child);
     }
-  }
-
-  Widget _filterWidget2() {
-    return AnimatedCrossFade(
-      duration: const Duration(milliseconds: 500),
-      crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-      firstChild: const SizedBox(),
-      secondChild: Padding(
-        padding: widget.margin,
-        child: GestureDetector(
-          onTap: () {
-            showPopup(context, (value) {
-              selectedDate = value;
-            });
-          },
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: Container(
-                  constraints: const BoxConstraints(minHeight: 50),
-                  decoration: BoxDecoration(
-                      color: ControlOptions.instance.colorInverted,
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
-                  padding: widget.padding,
-                  child: Center(
-                    child: Text(_showPeriod(),
-                        style: TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.bold)),
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                decoration: BoxDecoration(color: widget.label != '' ? ControlOptions.instance.colorInverted : Colors.transparent),
-                child: Text(
-                  widget.label != '' ? widget.label.toUpperCase() : '',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDarker),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 

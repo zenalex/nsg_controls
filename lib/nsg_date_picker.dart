@@ -89,7 +89,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
               Container(
                   //constraints: const BoxConstraints(minHeight: 40),
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain.withOpacity(0.6)))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
                   padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                   child: Text(
                     NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
