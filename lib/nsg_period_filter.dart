@@ -12,10 +12,14 @@ class NsgPeriodFilter extends StatefulWidget {
   final EdgeInsets margin;
   final EdgeInsets padding;
   final String label;
+  final bool disabled;
+  final TextAlign textAlign;
   const NsgPeriodFilter(
       {Key? key,
       required this.controller,
       this.label = '',
+      this.disabled = false,
+      this.textAlign = TextAlign.center,
       // this.onConfirm,
       this.margin = const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
       this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10)})
@@ -68,6 +72,61 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   @override
   Widget build(BuildContext context) {
     /// Тело виджета
+    return AnimatedCrossFade(
+        duration: const Duration(milliseconds: 500),
+        crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        firstChild: Container(),
+        secondChild: _filterWidget());
+  }
+
+  Widget _filterWidget() {
+    return _inkWellWrapper(
+      child: Padding(
+        padding: widget.margin,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 3.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: 13,
+                child: Text(
+                  widget.disabled == false ? widget.label : '🔒 ${widget.label}',
+                  textAlign: widget.textAlign,
+                  style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+                ),
+              ),
+              Container(
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain.withOpacity(0.6)))),
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+                  child: Text(
+                    _showPeriod(),
+                    textAlign: widget.textAlign,
+                    style: const TextStyle(fontSize: 16),
+                  )),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _inkWellWrapper({required Widget child}) {
+    if (widget.disabled == true) {
+      return child;
+    } else {
+      return InkWell(
+          onTap: () {
+            showPopup(context, (value) {
+              selectedDate = value;
+            });
+          },
+          child: child);
+    }
+  }
+
+  Widget _filterWidget2() {
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 500),
       crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
