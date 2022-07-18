@@ -72,7 +72,11 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   @override
   Widget build(BuildContext context) {
     /// Тело виджета
-    return _filterWidget();
+    return AnimatedCrossFade(
+        duration: const Duration(milliseconds: 500),
+        crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        firstChild: Container(),
+        secondChild: _filterWidget());
   }
 
   Widget _filterWidget() {
