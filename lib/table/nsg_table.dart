@@ -12,6 +12,7 @@ class NsgTable extends StatefulWidget {
   const NsgTable(
       {Key? key,
       required this.controller,
+      this.showTotals = false,
       this.columns = const [],
       this.selectCellOnHover = false,
       this.headerBackColor,
@@ -25,7 +26,10 @@ class NsgTable extends StatefulWidget {
       this.showHeader = true})
       : super(key: key);
 
-  ///Контроллер данных.
+  /// Показывать "Итого" внизу таблицы
+  final bool showTotals;
+
+  /// Контроллер данных.
   final NsgDataController controller;
 
   /// При Hover выделять только ячейку, а не весь ряд
@@ -67,7 +71,7 @@ class _NsgTableState extends State<NsgTable> {
   List<Widget> tableHeader = [];
   List<Widget> tableBody = [];
   List<Widget> tableFooter = [];
-  List<dynamic> totals = [];
+  List<dynamic> tableTotals = [];
   late ScrollController scrollHor;
   late ScrollController scrollHorHeader;
   late ScrollController scrollHorResizers;
@@ -75,7 +79,6 @@ class _NsgTableState extends State<NsgTable> {
   late List<NsgTableColumn> tableColumns;
 
   bool horizontalScrollEnabled = true;
-  bool showTotals = false;
 
   CrossScrollBar crossScrollBar =
       const CrossScrollBar(thumb: ScrollThumb.alwaysShow, track: ScrollTrack.show, thickness: 8, hoverThickness: 8, thumbRadius: Radius.circular(0));
@@ -194,6 +197,7 @@ class _NsgTableState extends State<NsgTable> {
     table = [];
     tableHeader = [];
     tableBody = [];
+    tableTotals = [];
 
     /// Цикл построения заголовка таблицы
     if (widget.showHeader) {
@@ -201,9 +205,6 @@ class _NsgTableState extends State<NsgTable> {
         Widget child;
         Widget subchild;
         NsgTableColumnSort? sortElement = column.sort;
-        if (column.totalType != NsgTableColumnTotalType.none) {
-          showTotals = true;
-        }
         if (sortElement != NsgTableColumnSort.nosort) {
           subchild = Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             Expanded(
@@ -286,11 +287,23 @@ class _NsgTableState extends State<NsgTable> {
     }
 
     /// Цикл построения ячеек таблицы (строки)
+    print('Total rows: ${widget.controller.items.length}');
+    List<NsgTableColumn> visibleColumns = tableColumns.where((e) => e.visible).toList();
+    visibleColumns.asMap().forEach((index, column) {
+      column.totalSum = 0;
+    });
     for (var row in widget.controller.items) {
       List<Widget> tableRow = [];
 
       /// Цикл построения ячеек таблицы (колонки)
-      for (var column in tableColumns) {
+      visibleColumns.asMap().forEach((index, column) {
+        if (widget.showTotals) {
+          if (column.totalType == NsgTableColumnTotalType.sum) {
+            column.totalSum += row[column.name];
+          } else if (column.totalType == NsgTableColumnTotalType.count) {
+            column.totalSum += 1;
+          }
+        }
         tableRow.add(widget.rowOnTap != null
             ? wrapExpanded(
                 child: InkWell(
@@ -325,7 +338,7 @@ class _NsgTableState extends State<NsgTable> {
                     child: _rowWidget(row, column)),
                 expanded: column.expanded,
                 flex: column.flex));
-      }
+      });
       tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
     }
     if (widget.showHeader) {
@@ -338,6 +351,38 @@ class _NsgTableState extends State<NsgTable> {
             mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader),
       )))));
     }
+
+    /// Цикл построения "Итого" таблицы
+    if (widget.showHeader) {
+      List<Widget> totalsRow = [];
+      List<NsgTableColumn> visibleColumns = tableColumns.where((e) => e.visible).toList();
+      visibleColumns.asMap().forEach((index, column) {
+        totalsRow.add(wrapExpanded(
+            child: showCell(
+                align: column.rowAlign ?? defaultRowAlign,
+                backColor: ControlOptions.instance.tableHeaderColor,
+                width: column.width,
+                child: index == 0
+                    ? Row(
+                        children: [
+                          Text(
+                            'Итого: ',
+                            style:
+                                TextStyle(color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            column.totalSum.toString(),
+                            style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500),
+                          )
+                        ],
+                      )
+                    : Text(column.totalSum.toString(), style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500))),
+            expanded: column.expanded,
+            flex: column.flex));
+      });
+      tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: totalsRow)));
+    }
+
     table.add(Flexible(
       child: Container(
         child: crossWrap(Container(

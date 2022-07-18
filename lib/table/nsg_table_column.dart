@@ -8,6 +8,9 @@ class NsgTableColumn {
   /// Типы подсчёта итогов в колонке: Нет, Суммирование значений, Кол-во элементов
   NsgTableColumnTotalType totalType;
 
+  /// Сумма
+  dynamic totalSum;
+
   /// Растягивать колонку Expanded
   bool expanded;
 
@@ -65,6 +68,7 @@ class NsgTableColumn {
     this.totalType = NsgTableColumnTotalType.none,
     this.presentation,
     this.expanded = false,
+    this.totalSum = 0,
     this.flex = 1,
     this.width,
     this.visible = true,
