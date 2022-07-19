@@ -103,7 +103,7 @@ class NsgSimpleTable extends StatefulWidget {
 
   ///Контроллер данных. Используется для управления сортировкой
   ///В будущем, может использоваться для построения таблицы, управлением фильтрацией
-  final NsgDataController? controller;
+  final NsgBaseController? controller;
 
   @override
   State<NsgSimpleTable> createState() => _NsgSimpleTableState();
@@ -283,9 +283,9 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
                 } else {
                   widget.controller!.sorting = widget.header![index].name! + (tableColumns[index].sort == NsgSimpleTableColumnSort.forward ? '+' : '-');
                 }
-                widget.controller!.requestItems();
+                widget.controller!.controllerFilter.refreshControllerWithDelay();
               }
-              setState(() {});
+              //setState(() {});
             },
             child: subchild,
           );
