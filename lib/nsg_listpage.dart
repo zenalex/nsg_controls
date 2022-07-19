@@ -180,6 +180,18 @@ class NsgListPage extends StatelessWidget {
   Widget _content() {
     print(type);
     if (type == NsgListPageMode.list) {
+/* // TODO listview.builder
+ListView.builder(
+            primary: false,
+            shrinkWrap: true,
+            //physics: const NeverScrollableScrollPhysics(),
+            itemCount: tableBody.length,
+            itemBuilder: (BuildContext context, int index) {
+              print(index);
+              return tableBody[index];
+            },
+          )*/
+
       return ListView(
         children: [
           FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),

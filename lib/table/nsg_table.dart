@@ -13,6 +13,8 @@ class NsgTable extends StatefulWidget {
   const NsgTable(
       {Key? key,
       required this.controller,
+      this.cellMaxLines,
+      this.cellFixedLines,
       this.showTotals = false,
       this.columns = const [],
       this.selectCellOnHover = false,
@@ -26,6 +28,12 @@ class NsgTable extends StatefulWidget {
       this.onColumnsChange,
       this.showHeader = true})
       : super(key: key);
+
+  /// Максимальное количество строк в ячейке тела таблицы
+  final int? cellMaxLines;
+
+  /// Фиксированное количество строк в ячейке тела таблицы
+  final int? cellFixedLines;
 
   /// Показывать "Итого" внизу таблицы
   final bool showTotals;
@@ -437,7 +445,7 @@ class _NsgTableState extends State<NsgTable> {
                         _selectedRow = row;
                         _selectedColumn = null;
                       }
-                      setState(() {});
+                      //setState(() {});
                     },
                     child: showCell(
                         align: column.rowAlign ?? defaultRowAlign,
@@ -539,8 +547,24 @@ class _NsgTableState extends State<NsgTable> {
     return Text(textHeader, style: column.headerTextStyle ?? defaultHeaderTextStyle, textAlign: column.headerTextAlign ?? defaultHeaderTextAlign);
   }
 
+  String addLines(String text, int? count) {
+    if (count != null) {
+      String nextLineCharacters = "";
+      for (int index = 0; index < (count - 1); index++) {
+        nextLineCharacters += "\n";
+      }
+      return text + nextLineCharacters;
+    } else {
+      return text;
+    }
+  }
+
   Widget _rowWidget(NsgDataItem item, NsgTableColumn column) {
     var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(item) ?? '';
-    return Text(textValue, style: column.rowTextStyle ?? defaultRowTextStyle, textAlign: column.rowTextAlign ?? defaultRowTextAlign);
+    return Text(addLines(textValue, widget.cellFixedLines),
+        overflow: TextOverflow.ellipsis,
+        maxLines: widget.cellMaxLines ?? widget.cellFixedLines,
+        style: column.rowTextStyle ?? defaultRowTextStyle,
+        textAlign: column.rowTextAlign ?? defaultRowTextAlign);
   }
 }
