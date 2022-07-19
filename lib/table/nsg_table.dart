@@ -211,6 +211,19 @@ class _NsgTableState extends State<NsgTable> {
         }
       }
 
+      /// Удаляем все сортировки
+      _removeSort() {
+        for (var column in tableColumns.where((element) => element.visible)) {
+          column.sort = NsgTableColumnSort.nosort;
+          if (column.columns != null) {
+            for (var subcolumn in column.columns!.where((element) => element.visible)) {
+              subcolumn.sort = NsgTableColumnSort.nosort;
+            }
+          }
+        }
+      }
+
+      /// Цикл по родительским колонкам
       for (var column in tableColumns.where((element) => element.visible)) {
         Widget child;
         Widget subchild;
@@ -240,7 +253,7 @@ class _NsgTableState extends State<NsgTable> {
             ],
           );
         }
-        if (widget.sortingClickEnabled == true && widget.columnsEditMode != true) {
+        if (widget.sortingClickEnabled == true && column.columns == null && widget.columnsEditMode != true) {
           child = InkWell(
             /// Переключение сортировки
             onTap: () {
@@ -249,9 +262,7 @@ class _NsgTableState extends State<NsgTable> {
               }
               if (column.allowSort) {
                 /// Удаляем все сортировки
-                for (var column2 in tableColumns) {
-                  column2.sort = NsgTableColumnSort.nosort;
-                }
+                _removeSort();
 
                 if (sortElement == NsgTableColumnSort.nosort) {
                   column.sort = NsgTableColumnSort.forward;
@@ -302,6 +313,8 @@ class _NsgTableState extends State<NsgTable> {
         if (column.columns != null) {
           hasSubcolumns = true;
           List<Widget> list = [];
+
+          /// Цикл по sub колонкам
           for (var subcolumn in column.columns!.where((element) => element.visible)) {
             /// Добавляем sub колонку в список видимых колонок
             visibleColumns.add(subcolumn);
@@ -342,9 +355,7 @@ class _NsgTableState extends State<NsgTable> {
                   }
                   if (subcolumn.allowSort) {
                     /// Удаляем все сортировки
-                    for (var column2 in tableColumns) {
-                      column2.sort = NsgTableColumnSort.nosort;
-                    }
+                    _removeSort();
 
                     if (sortElement == NsgTableColumnSort.nosort) {
                       subcolumn.sort = NsgTableColumnSort.forward;
