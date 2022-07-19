@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:cross_scroll/cross_scroll.dart';
+import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -67,11 +68,6 @@ class NsgTable extends StatefulWidget {
 }
 
 class _NsgTableState extends State<NsgTable> {
-  List<Widget> table = [];
-  List<Widget> tableHeader = [];
-  List<Widget> tableBody = [];
-  List<Widget> tableFooter = [];
-  List<dynamic> tableTotals = [];
   late ScrollController scrollHor;
   late ScrollController scrollHorHeader;
   late ScrollController scrollHorResizers;
@@ -106,7 +102,8 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   Widget showCell(
-      {bool? borderRight,
+      {
+      //bool? borderRight,
       bool? isSelected,
       Color? backColor,
       Color? color,
@@ -194,13 +191,26 @@ class _NsgTableState extends State<NsgTable> {
 
   @override
   Widget build(BuildContext context) {
-    table = [];
-    tableHeader = [];
-    tableBody = [];
-    tableTotals = [];
+    List<Widget> table = [];
+    List<Widget> tableHeader = [];
+    List<Widget> tableBody = [];
+
+    /// Есть sub колонки
+    bool hasSubcolumns = false;
+
+    /// Массив видимых колонок (или подколонок), по которому мы строим ячейки таблицы
+    List<NsgTableColumn> visibleColumns = [];
 
     /// Цикл построения заголовка таблицы
     if (widget.showHeader) {
+      // Проверяем есть ли хоть одна sub колонка
+      for (var column in tableColumns.where((element) => element.visible)) {
+        if (column.columns != null) {
+          hasSubcolumns = true;
+          break;
+        }
+      }
+
       for (var column in tableColumns.where((element) => element.visible)) {
         Widget child;
         Widget subchild;
@@ -266,15 +276,12 @@ class _NsgTableState extends State<NsgTable> {
           child = subchild;
         }
 
-        //Номер колонки среди видимых для определения последняя она или нет
-        List<NsgTableColumn> visibleColumns = tableColumns.where((e) => e.visible).toList();
-        var index = visibleColumns.indexOf(column);
         // Собираем ячейку для header
         Widget cell = wrapExpanded(
             child: showCell(
                 align: column.headerAlign ?? defaultHeaderAlign,
                 padding: const EdgeInsets.all(0),
-                borderRight: index != visibleColumns.length - 1 ? true : false,
+                //borderRight: index != visibleColumns.length - 1 ? true : false,
                 backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
                 color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
                 width: column.width,
@@ -282,13 +289,112 @@ class _NsgTableState extends State<NsgTable> {
                 child: child),
             expanded: column.expanded,
             flex: column.flex);
-        tableHeader.add(cell);
+        // Если не заданы sub колонки, добавляем ячейку
+        if (column.columns == null) {
+          tableHeader.add(cell);
+        }
+        // Если есть sub колонки, добавляем в список колонок "главную" колонку, не имеющую sub колонки
+        if (hasSubcolumns == true && column.columns == null) {
+          visibleColumns.add(column);
+          print(visibleColumns.length);
+        }
+        // Если заданы sub колонки (для двойной йчейки в header)
+        if (column.columns != null) {
+          hasSubcolumns = true;
+          List<Widget> list = [];
+          for (var subcolumn in column.columns!.where((element) => element.visible)) {
+            /// Добавляем sub колонку в список видимых колонок
+            visibleColumns.add(subcolumn);
+            Widget child;
+            Widget subchild;
+            NsgTableColumnSort? sortElement = subcolumn.sort;
+            if (sortElement != NsgTableColumnSort.nosort) {
+              subchild = Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                Expanded(
+                    child: Align(
+                        alignment: subcolumn.headerAlign ?? defaultHeaderAlign,
+                        child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: _headerWidget(subcolumn)))),
+                Align(
+                  alignment: subcolumn.headerAlign ?? defaultHeaderAlign,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Icon(sortElement == NsgTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
+                        size: 16, color: ControlOptions.instance.colorInverted),
+                  ),
+                )
+              ]);
+            } else {
+              subchild = Row(
+                children: [
+                  Expanded(
+                      child: Align(
+                          alignment: subcolumn.headerAlign ?? defaultHeaderAlign,
+                          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: _headerWidget(subcolumn)))),
+                ],
+              );
+            }
+            if (widget.sortingClickEnabled == true && widget.columnsEditMode != true) {
+              child = InkWell(
+                /// Переключение сортировки
+                onTap: () {
+                  if (widget.headerOnTap != null) {
+                    if (widget.headerOnTap!(subcolumn.name)) return;
+                  }
+                  if (subcolumn.allowSort) {
+                    /// Удаляем все сортировки
+                    for (var column2 in tableColumns) {
+                      column2.sort = NsgTableColumnSort.nosort;
+                    }
+
+                    if (sortElement == NsgTableColumnSort.nosort) {
+                      subcolumn.sort = NsgTableColumnSort.forward;
+                    } else if (sortElement == NsgTableColumnSort.forward) {
+                      subcolumn.sort = NsgTableColumnSort.backward;
+                    } else if (sortElement == NsgTableColumnSort.backward) {
+                      subcolumn.sort = NsgTableColumnSort.nosort;
+                    }
+                    //вызываем сортировку
+                    if (subcolumn.sort == NsgTableColumnSort.nosort) {
+                      widget.controller.sorting = '';
+                    } else {
+                      widget.controller.sorting = subcolumn.name + (subcolumn.sort == NsgTableColumnSort.forward ? '+' : '-');
+                    }
+                    widget.controller.requestItems();
+                    setState(() {});
+                  }
+                },
+                child: subchild,
+              );
+            } else {
+              child = subchild;
+            }
+            // Собираем ячейку для header
+            Widget cell = wrapExpanded(
+                child: showCell(
+                    align: subcolumn.headerAlign ?? defaultHeaderAlign,
+                    padding: const EdgeInsets.all(0),
+                    backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                    color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+                    width: subcolumn.width,
+                    sort: subcolumn.sort,
+                    child: child),
+                expanded: subcolumn.expanded,
+                flex: subcolumn.flex);
+            list.add(cell);
+          }
+          tableHeader.add(Column(children: [cell, Expanded(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: list))]));
+        }
       }
     }
 
+    // Если у нас нет sub колонок
+    if (hasSubcolumns == false) {
+      visibleColumns = tableColumns.where((e) => e.visible).toList();
+    }
+
     /// Цикл построения ячеек таблицы (строки)
-    print('Total rows: ${widget.controller.items.length}');
-    List<NsgTableColumn> visibleColumns = tableColumns.where((e) => e.visible).toList();
+    //print('Total rows: ${widget.controller.items.length}');
+
     visibleColumns.asMap().forEach((index, column) {
       column.totalSum = 0;
     });
@@ -355,7 +461,7 @@ class _NsgTableState extends State<NsgTable> {
     /// Цикл построения "Итого" таблицы
     if (widget.showHeader) {
       List<Widget> totalsRow = [];
-      List<NsgTableColumn> visibleColumns = tableColumns.where((e) => e.visible).toList();
+
       visibleColumns.asMap().forEach((index, column) {
         totalsRow.add(wrapExpanded(
             child: showCell(

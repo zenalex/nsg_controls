@@ -5,6 +5,9 @@ import 'nsg_table_column_total_type.dart';
 
 /// Класс колонки NsgSimpleTable
 class NsgTableColumn {
+  /// Для sub ячеек в хедере
+  List<NsgTableColumn>? columns;
+
   /// Типы подсчёта итогов в колонке: Нет, Суммирование значений, Кол-во элементов
   NsgTableColumnTotalType totalType;
 
@@ -65,6 +68,7 @@ class NsgTableColumn {
 
   NsgTableColumn({
     required this.name,
+    this.columns,
     this.totalType = NsgTableColumnTotalType.none,
     this.presentation,
     this.expanded = false,

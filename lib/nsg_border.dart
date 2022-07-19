@@ -9,9 +9,6 @@ class NsgBorder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration:
-            BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorText.withOpacity(0.5))),
-        child: child);
+    return Container(decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.red)), child: child);
   }
 }
