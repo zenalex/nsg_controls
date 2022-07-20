@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:cross_scroll/cross_scroll.dart';
-import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -13,7 +12,7 @@ class NsgTable extends StatefulWidget {
   const NsgTable(
       {Key? key,
       required this.controller,
-      this.cellMaxLines,
+      this.cellMaxLines = 4,
       this.cellFixedLines,
       this.showTotals = false,
       this.columns = const [],
@@ -89,10 +88,10 @@ class _NsgTableState extends State<NsgTable> {
 
   //Значения стилей для заголовков и строк по умолчанию
   AlignmentGeometry defaultHeaderAlign = Alignment.center;
-  TextStyle defaultHeaderTextStyle = TextStyle(color: ControlOptions.instance.colorInverted);
+  TextStyle defaultHeaderTextStyle = TextStyle(color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM);
   TextAlign defaultHeaderTextAlign = TextAlign.center;
   AlignmentGeometry defaultRowAlign = Alignment.center;
-  TextStyle defaultRowTextStyle = TextStyle(color: ControlOptions.instance.colorText);
+  TextStyle defaultRowTextStyle = TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeS);
   TextAlign defaultRowTextAlign = TextAlign.center;
 
   //Выделенная строка и колонка
@@ -116,7 +115,7 @@ class _NsgTableState extends State<NsgTable> {
       Color? backColor,
       Color? color,
       required Widget child,
-      AlignmentGeometry? align = Alignment.center,
+      AlignmentGeometry? align,
       double? width,
       NsgTableColumnSort? sort = NsgTableColumnSort.nosort,
       EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 5, vertical: 5)}) {
@@ -312,7 +311,7 @@ class _NsgTableState extends State<NsgTable> {
         // Если есть sub колонки, добавляем в список колонок "главную" колонку, не имеющую sub колонки
         if (hasSubcolumns == true && column.columns == null) {
           visibleColumns.add(column);
-          print(visibleColumns.length);
+          //print(visibleColumns.length);
         }
         // Если заданы sub колонки (для двойной йчейки в header)
         if (column.columns != null) {
@@ -545,24 +544,83 @@ class _NsgTableState extends State<NsgTable> {
     return Text(textHeader, style: column.headerTextStyle ?? defaultHeaderTextStyle, textAlign: column.headerTextAlign ?? defaultHeaderTextAlign);
   }
 
-  String addLines(String text, int? count) {
-    if (count != null) {
-      String nextLineCharacters = "";
-      for (int index = 0; index < (count - 1); index++) {
-        nextLineCharacters += "\n";
-      }
-      return text + nextLineCharacters;
-    } else {
-      return text;
-    }
-  }
-
   Widget _rowWidget(NsgDataItem item, NsgTableColumn column) {
     var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(item) ?? '';
-    return Text(addLines(textValue, widget.cellFixedLines),
-        overflow: TextOverflow.ellipsis,
-        maxLines: widget.cellMaxLines ?? widget.cellFixedLines,
-        style: column.rowTextStyle ?? defaultRowTextStyle,
-        textAlign: column.rowTextAlign ?? defaultRowTextAlign);
+    String text = textValue;
+    TextStyle style = column.rowTextStyle ?? defaultRowTextStyle;
+    TextAlign textAlign = column.rowTextAlign ?? defaultRowTextAlign;
+    IconData? icon;
+    var fieldkey = item.getFieldValue(column.name);
+    var field = item.fieldList.fields[column.name];
+
+    //if (field != null) print('${field.name} ${field.runtimeType}');
+
+    /// Если Референс
+    if (field is NsgDataReferenceField) {
+      text = '${field.getReferent(item).toString()}';
+      textAlign = TextAlign.left;
+
+      /// Если Перечисление
+    } else if (field is NsgDataEnumReferenceField) {
+      text = '${field.getReferent(item).toString()}';
+      textAlign = TextAlign.left;
+
+      /// Если Дата
+    } else if (field is NsgDataDateField) {
+      text = '${NsgDateFormat.dateFormat(fieldkey, format: 'dd.MM.yy')}';
+      textAlign = TextAlign.center;
+
+      /// Если Double
+    } else if (field is NsgDataDoubleField) {
+      text = '${fieldkey == 0.0 ? '' : fieldkey.toStringAsFixed(2)}';
+      textAlign = TextAlign.right;
+
+      /// Если Int
+    } else if (field is NsgDataIntField) {
+      text = '${fieldkey == 0.0 ? '' : fieldkey.toString()}';
+      textAlign = TextAlign.right;
+
+      /// Если Строка
+    } else if (field is NsgDataStringField) {
+      text = '${fieldkey.toString()}';
+      textAlign = TextAlign.left;
+
+      /// Если Bool
+    } else if (field is NsgDataBoolField) {
+      if (fieldkey == true) {
+        icon = Icons.check;
+      } else if (fieldkey == false) {
+        icon = Icons.close;
+      }
+
+      /// Если другой вид поля
+    } else {
+      text = '${fieldkey}';
+      textAlign = TextAlign.center;
+      style = TextStyle(fontSize: 12);
+    }
+
+    String addLines(String text, int? count) {
+      if (count != null) {
+        String nextLineCharacters = "";
+        for (int index = 0; index < (count - 1); index++) {
+          nextLineCharacters += "\n";
+        }
+        return text + nextLineCharacters;
+      } else {
+        return text;
+      }
+    }
+
+    return icon != null
+        ? Icon(icon)
+        : SizedBox(
+            width: double.infinity,
+            child: Text(addLines(text, widget.cellFixedLines),
+                overflow: widget.cellMaxLines != null || widget.cellFixedLines != null ? TextOverflow.ellipsis : TextOverflow.visible,
+                maxLines: widget.cellMaxLines ?? widget.cellFixedLines,
+                style: style,
+                textAlign: textAlign),
+          );
   }
 }
