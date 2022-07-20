@@ -476,7 +476,7 @@ class _NsgTableState extends State<NsgTable> {
     }
 
     /// Цикл построения "Итого" таблицы
-    if (widget.showHeader) {
+    if (widget.showTotals) {
       List<Widget> totalsRow = [];
 
       visibleColumns.asMap().forEach((index, column) {
