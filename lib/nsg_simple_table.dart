@@ -278,14 +278,16 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
               }
               //Если задан контроллер, то вызываем сортировку
               if (widget.controller != null && tableColumns[index].allowSort && widget.header![index].name != null) {
-                if (tableColumns[index].sort == NsgSimpleTableColumnSort.nosort) {
-                  widget.controller!.sorting = '';
-                } else {
-                  widget.controller!.sorting = widget.header![index].name! + (tableColumns[index].sort == NsgSimpleTableColumnSort.forward ? '+' : '-');
+                widget.controller!.sorting.clear();
+                if (tableColumns[index].sort != NsgSimpleTableColumnSort.nosort) {
+                  widget.controller!.sorting.clear();
+                  widget.controller!.sorting.add(
+                      name: widget.header![index].name!,
+                      direction: tableColumns[index].sort == NsgSimpleTableColumnSort.forward ? NsgSortingDirection.ascending : NsgSortingDirection.descending);
                 }
                 widget.controller!.controllerFilter.refreshControllerWithDelay();
               }
-              //setState(() {});
+              setState(() {});
             },
             child: subchild,
           );

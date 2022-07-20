@@ -156,16 +156,12 @@ class _NsgTableState extends State<NsgTable> {
 
   void setInitialSorting() {
     if (widget.controller.sorting.isEmpty) return;
-    var fields = widget.controller.sorting.split('.');
-    for (var field in fields) {
-      var fieldName = field;
-      var directrion = '+';
-      if (fieldName[fieldName.length - 1] == '+' || fieldName[fieldName.length - 1] == '-') {
-        directrion = fieldName[fieldName.length - 1];
-        fieldName = fieldName.substring(0, fieldName.length - 1);
-      }
+    for (var param in widget.controller.sorting.paramList) {
+      var fieldName = param.parameterName;
+      var directrion = param.direction;
+
       for (var column in tableColumns.where((column) => column.name == fieldName)) {
-        column.sort = directrion == '-' ? NsgTableColumnSort.backward : NsgTableColumnSort.forward;
+        column.sort = directrion == NsgSortingDirection.descending ? NsgTableColumnSort.backward : NsgTableColumnSort.forward;
       }
     }
   }
@@ -280,12 +276,13 @@ class _NsgTableState extends State<NsgTable> {
                   column.sort = NsgTableColumnSort.nosort;
                 }
                 //вызываем сортировку
-                if (column.sort == NsgTableColumnSort.nosort) {
-                  widget.controller.sorting = '';
-                } else {
-                  widget.controller.sorting = column.name + (column.sort == NsgTableColumnSort.forward ? '+' : '-');
+                widget.controller.sorting.clear();
+                if (column.sort != NsgTableColumnSort.nosort) {
+                  widget.controller.sorting.add(
+                      name: column.name,
+                      direction: (column.sort == NsgTableColumnSort.forward ? NsgSortingDirection.ascending : NsgSortingDirection.descending));
                 }
-                widget.controller.requestItems();
+                widget.controller.controllerFilter.refreshControllerWithDelay();
                 setState(() {});
               }
             },
@@ -373,12 +370,13 @@ class _NsgTableState extends State<NsgTable> {
                       subcolumn.sort = NsgTableColumnSort.nosort;
                     }
                     //вызываем сортировку
-                    if (subcolumn.sort == NsgTableColumnSort.nosort) {
-                      widget.controller.sorting = '';
-                    } else {
-                      widget.controller.sorting = subcolumn.name + (subcolumn.sort == NsgTableColumnSort.forward ? '+' : '-');
+                    widget.controller.sorting.clear();
+                    if (subcolumn.sort != NsgTableColumnSort.nosort) {
+                      widget.controller.sorting.add(
+                          name: subcolumn.name,
+                          direction: (subcolumn.sort == NsgTableColumnSort.forward ? NsgSortingDirection.ascending : NsgSortingDirection.descending));
                     }
-                    widget.controller.requestItems();
+                    widget.controller.controllerFilter.refreshControllerWithDelay();
                     setState(() {});
                   }
                 },
