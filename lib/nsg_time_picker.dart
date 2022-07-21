@@ -98,10 +98,18 @@ class NsgTimePicker extends StatefulWidget {
 }
 
 class _NsgTimePickerState extends State<NsgTimePicker> {
+  Duration _initialTime = const Duration();
+
+  @override
+  void initState() {
+    super.initState();
+    _initialTime = widget.initialTime;
+  }
+
   @override
   Widget build(BuildContext context) {
-    int hours = widget.initialTime.inHours;
-    int minutes = widget.initialTime.inMinutes - hours * 60;
+    int hours = _initialTime.inHours;
+    int minutes = _initialTime.inMinutes - hours * 60;
     String minutesString;
     if (minutes < 10) {
       minutesString = '0' + minutes.toString();
@@ -117,14 +125,17 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
             onTap: widget.disabled != true
                 ? () {
                     NsgTimePicker(
-                        initialTime: widget.initialTime,
+                        initialTime: _initialTime,
                         onClose: (value) {
+                          _initialTime = value;
                           setState(() {});
                         }).showPopup(context, hours, minutes, (value) {
                       DateTime now = DateTime.now();
                       DateTime date = DateTime(now.year, now.month, now.day);
                       Duration duration = value.difference(date);
                       widget.onClose(duration);
+                      _initialTime = duration;
+                      setState(() {});
                     });
                   }
                 : null,
