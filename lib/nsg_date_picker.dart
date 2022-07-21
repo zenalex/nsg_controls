@@ -38,7 +38,13 @@ class NsgDatePicker extends StatefulWidget {
               onCancel: () {
                 Get.back();
               },
-              getContent: () => [DatePickerContent(initialTime: initialTime)],
+              getContent: () => [
+                DatePickerContent(
+                    initialTime: initialTime,
+                    onChange: (endDate) {
+                      selectedDate = endDate;
+                    })
+              ],
             ));
   }
 
@@ -47,10 +53,16 @@ class NsgDatePicker extends StatefulWidget {
 }
 
 class _NsgDatePickerState extends State<NsgDatePicker> {
+  DateTime _initTime = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _initTime = widget.initialTime;
+  }
+
   @override
   Widget build(BuildContext context) {
-    DateTime _initTime = widget.initialTime;
-
     _inkWellWrapper({required Widget child}) {
       if (widget.disabled == true) {
         return child;
@@ -60,8 +72,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                 ? () {
                     NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
                       widget.onClose(value);
-                      print(value);
-                      widget.initialTime = value;
+                      _initTime = value;
                       setState(() {});
                     });
                   }
@@ -106,7 +117,8 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
 
 class DatePickerContent extends StatefulWidget {
   final DateTime initialTime;
-  const DatePickerContent({Key? key, required this.initialTime}) : super(key: key);
+  Function(DateTime endDate) onChange;
+  DatePickerContent({Key? key, required this.initialTime, required this.onChange}) : super(key: key);
 
   @override
   State<DatePickerContent> createState() => _DatePickerContentState();
@@ -151,6 +163,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       if (_initialTimeNew != null) {
         _initialTime2 = _initialTimeNew;
         datepicker!.setState(_initialTime2);
+        widget.onChange(_initialTime2);
       }
       if (textController.text != _initialTime) {
         var start = textController.selection.start;
@@ -222,6 +235,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
     datepicker = NsgCupertinoDatePicker(
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
+        widget.onChange(value);
         _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy');
         _ignoreChange = true;
         textController.text = _initialTime;
