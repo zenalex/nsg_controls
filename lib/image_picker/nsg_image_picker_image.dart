@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-class NsgImagePickerImage {
-  Image image;
+class NsgImagePickerObject {
+  Image? image;
+  File? file;
+  String? fileType = '';
   String description = '';
-  NsgImagePickerImage({required this.image, required this.description});
+  NsgImagePickerObject({this.image, this.fileType, this.file, required this.description});
 }
