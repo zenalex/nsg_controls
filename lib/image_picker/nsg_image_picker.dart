@@ -21,7 +21,7 @@ class NsgImagePicker extends StatefulWidget {
   final Function(List<NsgImagePickerObject>) callback;
   const NsgImagePicker(
       {Key? key,
-      this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bpm'],
+      this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
       this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
       this.images,
       this.showAsWidget = false,
@@ -257,11 +257,10 @@ class _ImagePickerState extends State<NsgImagePicker> {
               backColor: ControlOptions.instance.colorError.withOpacity(0.2),
             ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: _getImages(),
-            ),
-          ),
+              child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: _getImages(),
+          )),
         ],
       );
     } else {
