@@ -175,7 +175,6 @@ class _NsgInputState extends State<NsgInput> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.disabled);
     var fieldValue = widget.dataItem.getFieldValue(widget.fieldName);
     NsgDataItem? refItem;
     if (widget.dataItem.isReferenceField(widget.fieldName)) {

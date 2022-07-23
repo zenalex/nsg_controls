@@ -3,18 +3,17 @@ import 'package:flutter/material.dart';
 /// Виджет Grid без Aspect Ratio
 class NsgGrid extends StatelessWidget {
   /// List виджетов
-  List<Widget> children;
+  final List<Widget> children;
 
   /// Количество виджетов по горизонтали
-  int crossAxisCount;
-  NsgGrid({Key? key, required this.children, this.crossAxisCount = 3}) : super(key: key);
-
-  List<Widget> list = [];
-  List<Widget> row = [];
+  final int crossAxisCount;
+  const NsgGrid({Key? key, required this.children, this.crossAxisCount = 3}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     int count = 0;
+    List<Widget> list = [];
+    List<Widget> row = [];
     for (var element in children) {
       row.add(Expanded(child: element));
       count++;

@@ -557,12 +557,12 @@ class _NsgTableState extends State<NsgTable> {
 
     /// Если Референс
     if (field is NsgDataReferenceField) {
-      text = '${field.getReferent(item).toString()}';
+      text = field.getReferent(item).toString();
       textAlign = TextAlign.left;
 
       /// Если Перечисление
     } else if (field is NsgDataEnumReferenceField) {
-      text = '${field.getReferent(item).toString()}';
+      text = field.getReferent(item).toString();
       textAlign = TextAlign.left;
 
       /// Если Дата
@@ -577,12 +577,12 @@ class _NsgTableState extends State<NsgTable> {
 
       /// Если Int
     } else if (field is NsgDataIntField) {
-      text = '${fieldkey == 0.0 ? '' : fieldkey.toString()}';
+      text = fieldkey == 0.0 ? '' : fieldkey.toString();
       textAlign = TextAlign.right;
 
       /// Если Строка
     } else if (field is NsgDataStringField) {
-      text = '${fieldkey.toString()}';
+      text = fieldkey.toString();
       textAlign = TextAlign.left;
 
       /// Если Bool
@@ -595,9 +595,9 @@ class _NsgTableState extends State<NsgTable> {
 
       /// Если другой вид поля
     } else {
-      text = '${fieldkey}';
+      text = '$fieldkey';
       textAlign = TextAlign.center;
-      style = TextStyle(fontSize: 12);
+      style = const TextStyle(fontSize: 12);
     }
 
     String addLines(String text, int? count) {

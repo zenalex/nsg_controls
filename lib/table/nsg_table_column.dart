@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import '../nsg_control_options.dart';
 import 'nsg_table_column_sort.dart';
 import 'nsg_table_column_total_type.dart';
 

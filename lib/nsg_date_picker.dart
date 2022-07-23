@@ -10,11 +10,11 @@ class NsgDatePicker extends StatefulWidget {
   final String? label;
   final TextAlign? textAlign;
   final EdgeInsets margin;
-  DateTime initialTime;
+  final DateTime initialTime;
   final bool? disabled;
   final Function(DateTime endDate) onClose;
 
-  NsgDatePicker(
+  const NsgDatePicker(
       {Key? key,
       required this.initialTime,
       required this.onClose,
@@ -117,8 +117,8 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
 
 class DatePickerContent extends StatefulWidget {
   final DateTime initialTime;
-  Function(DateTime endDate) onChange;
-  DatePickerContent({Key? key, required this.initialTime, required this.onChange}) : super(key: key);
+  final Function(DateTime endDate) onChange;
+  const DatePickerContent({Key? key, required this.initialTime, required this.onChange}) : super(key: key);
 
   @override
   State<DatePickerContent> createState() => _DatePickerContentState();
@@ -142,8 +142,6 @@ class _DatePickerContentState extends State<DatePickerContent> {
   void textChanged() {
     if (_ignoreChange) return;
     var value = textController.text;
-    print('initialTime = ' + _initialTime);
-    print('value = ' + value);
     if (value.length < _initialTime.length) {
       _initialTime = value;
       return;

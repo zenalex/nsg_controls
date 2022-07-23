@@ -178,7 +178,6 @@ class NsgListPage extends StatelessWidget {
   }
 
   Widget _content() {
-    print(type);
     if (type == NsgListPageMode.list) {
 /* // TODO listview.builder
 ListView.builder(

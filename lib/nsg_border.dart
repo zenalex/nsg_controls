@@ -1,6 +1,5 @@
 // импорт
 import 'package:flutter/material.dart';
-import 'nsg_control_options.dart';
 
 /// Виджет для вывода обводки вокруг виджета для правок дизайна
 class NsgBorder extends StatelessWidget {
