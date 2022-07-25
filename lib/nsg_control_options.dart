@@ -7,8 +7,16 @@ import 'package:nsg_data/nsg_data.dart';
 import 'widgets/nsg_error_widget.dart';
 
 class ControlOptions {
+  // Главный цвет приложения
   final Color colorMain;
+
+  // Цвет текста который хорошо видно на фоне главного цвета приложения colorMain
+  final Color colorMainText;
+
+  // Цвет текста на всех светлых фонах (в тёмной теме на тёмных фонах)
   final Color colorText;
+
+  // Цвет текста на всех тёмных фонах (в тёмной теме на светлых фонах)
   final Color colorInverted;
 
   final Color colorMainOpacity;
@@ -18,13 +26,27 @@ class ControlOptions {
   final Color colorMainLight;
   final Color colorMainLighter;
 
+  // Второй главный цвет приложения
   final Color colorSecondary;
+  // Цвет текста который хорошо видно на фоне второго главного цвета приложения colorSecondary
+  final Color colorSecondaryText;
+
+  // Цвет нормального состояния (хорошо)
   final Color colorNormal;
+
+  // Цвет ошибки
   final Color colorError;
+
+  // Цвет предупреждения
   final Color colorWarning;
+
+  // Цвет подтверждённого состояния
   final Color colorConfirmed;
+
+  // Синий цвет для статусов
   final Color colorBlue;
 
+  // Оттенки серого цвета
   final Color colorGrey;
   final Color colorGreyLight;
   final Color colorGreyLighter;
@@ -61,6 +83,7 @@ class ControlOptions {
   ControlOptions({
     this.borderRadius = 15.0,
     this.colorMain = const Color.fromRGBO(233, 200, 45, 1),
+    this.colorMainText = const Color.fromARGB(255, 70, 59, 11),
     this.colorText = const Color.fromARGB(255, 70, 59, 11),
     this.colorInverted = const Color.fromRGBO(255, 255, 255, 1),
     this.colorMainOpacity = const Color.fromRGBO(242, 239, 253, 1),
@@ -72,6 +95,7 @@ class ControlOptions {
     this.colorMainLight = const Color.fromARGB(255, 255, 245, 201),
     this.colorMainLighter = const Color.fromARGB(255, 255, 245, 201),
     this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
+    this.colorSecondaryText = const Color.fromARGB(255, 70, 59, 11),
     this.colorNormal = const Color.fromARGB(255, 29, 180, 95),
     this.colorError = const Color.fromRGBO(208, 8, 8, 1),
     this.colorWarning = const Color.fromARGB(255, 199, 101, 10),
