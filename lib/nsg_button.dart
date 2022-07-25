@@ -1,6 +1,7 @@
 // импорт
 import 'package:flutter/material.dart';
 import 'nsg_control_options.dart';
+import 'nsg_controls.dart';
 
 // ignore: must_be_immutable
 class NsgButton extends StatelessWidget {
@@ -16,10 +17,11 @@ class NsgButton extends StatelessWidget {
   final EdgeInsets padding;
   final Color? color, borderColor;
   final Color? backColor;
-  double? fontSize;
+  final Color? backHoverColor;
+  final double? fontSize;
   final Widget? widget;
   final BoxShadow? shadow;
-  NsgButton(
+  const NsgButton(
       {Key? key,
       this.style,
       this.text = '',
@@ -34,6 +36,7 @@ class NsgButton extends StatelessWidget {
       this.color,
       this.borderColor,
       this.backColor,
+      this.backHoverColor,
       this.fontSize,
       this.widget,
       this.shadow})
@@ -41,7 +44,12 @@ class NsgButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    fontSize ??= ControlOptions.instance.sizeM;
+    Color _backColor = backColor ?? ControlOptions.instance.colorMain;
+    Color _backHoverColor = backHoverColor ?? ControlOptions.instance.colorMainDarker;
+    double _fontSize = fontSize ?? ControlOptions.instance.sizeM;
+    // fontSize ??= ControlOptions.instance.sizeM;
+    //backColor ??= ControlOptions.instance.colorMain;
+    //backHoverColor ??= ControlOptions.instance.colorMainDarker;
     // Кнопка с плюсом слева
     if (style == 'plus') {
       return Padding(
@@ -69,9 +77,9 @@ class NsgButton extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
                         ),
-                        primary: backColor ?? ControlOptions.instance.colorMain,
+                        primary: _backColor,
                         padding: padding,
-                        textStyle: TextStyle(fontSize: fontSize)),
+                        textStyle: TextStyle(fontSize: _fontSize)),
                     onPressed: onPressed,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -124,7 +132,7 @@ class NsgButton extends StatelessWidget {
                     ),
                     primary: ControlOptions.instance.colorMain,
                     padding: padding,
-                    textStyle: TextStyle(fontSize: fontSize)),
+                    textStyle: TextStyle(fontSize: _fontSize)),
                 onPressed: onPressed,
                 child: Text('$text', style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 14)),
               )));
@@ -136,20 +144,19 @@ class NsgButton extends StatelessWidget {
               height: height,
               width: width,
               decoration: BoxDecoration(
+                border: Border.all(width: 2.0, color: ControlOptions.instance.colorMain),
                 borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
               ),
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      side: BorderSide(width: 2.0, color: ControlOptions.instance.colorMain),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-                      ),
-                      primary: backColor ?? ControlOptions.instance.colorMain,
+              child: Material(
+                color: _backColor,
+                child: InkWell(
+                    hoverColor: _backHoverColor,
+                    onTap: onPressed,
+                    child: Padding(
                       padding: padding,
-                      textStyle: TextStyle(fontSize: fontSize)),
-                  onPressed: onPressed,
-                  child: widget)));
+                      child: widget,
+                    )),
+              )));
     } else {
       // Кнопка обычная
       return Container(
@@ -169,10 +176,10 @@ class NsgButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
                 ),
                 elevation: 0,
-                side: BorderSide(width: 2, color: borderColor ?? backColor ?? ControlOptions.instance.colorMain),
-                primary: backColor ?? ControlOptions.instance.colorMain,
+                side: BorderSide(width: 2, color: borderColor ?? _backColor),
+                primary: _backColor,
                 padding: padding,
-                textStyle: TextStyle(fontSize: fontSize)),
+                textStyle: TextStyle(fontSize: _fontSize)),
             onPressed: onPressed,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

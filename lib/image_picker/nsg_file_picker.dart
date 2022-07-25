@@ -10,15 +10,16 @@ import 'package:path/path.dart';
 import '../nsg_progress_dialog.dart';
 import '../nsg_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'nsg_image_picker_image.dart';
+import 'nsg_file_picker_object.dart';
 
-class NsgImagePicker extends StatefulWidget {
-  final List<NsgImagePickerObject>? images;
+/// Пикер и загрузчик изображений и файлов заданных форматов
+class NsgFilePicker extends StatefulWidget {
+  final List<NsgFilePickerObject>? images;
   final bool showAsWidget;
   final List<String> allowedImageFormats;
   final List<String> allowedFileFormats;
-  final Function(List<NsgImagePickerObject>) callback;
-  const NsgImagePicker(
+  final Function(List<NsgFilePickerObject>) callback;
+  const NsgFilePicker(
       {Key? key,
       this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
       this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
@@ -28,13 +29,13 @@ class NsgImagePicker extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<NsgImagePicker> createState() => _ImagePickerState();
+  State<NsgFilePicker> createState() => _NsgFilePickerState();
 }
 
-class _ImagePickerState extends State<NsgImagePicker> {
+class _NsgFilePickerState extends State<NsgFilePicker> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   String error = '';
-  List<NsgImagePickerObject> images = [];
+  List<NsgFilePickerObject> images = [];
   bool galleryPage = true;
   //Function(List<XFile>) callback = Get.arguments;
 
@@ -71,7 +72,7 @@ class _ImagePickerState extends State<NsgImagePicker> {
         setState(() {
           galleryPage = true;
           for (var element in result) {
-            images.add(NsgImagePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path)));
+            images.add(NsgFilePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path)));
           }
         });
       }
@@ -87,10 +88,10 @@ class _ImagePickerState extends State<NsgImagePicker> {
           for (var element in result) {
             String? fileType = extension(element.path).replaceAll('.', '');
 
-            if (widget.allowedImageFormats.contains(fileType)) {
-              images.add(NsgImagePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType));
-            } else if (widget.allowedFileFormats.contains(fileType)) {
-              images.add(NsgImagePickerObject(file: File(element.path), description: basenameWithoutExtension(element.path), fileType: fileType));
+            if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
+              images.add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType));
+            } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
+              images.add(NsgFilePickerObject(file: File(element.path), description: basenameWithoutExtension(element.path), fileType: fileType));
             } else {
               error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
               setState(() {});
@@ -109,7 +110,7 @@ class _ImagePickerState extends State<NsgImagePicker> {
         setState(() {
           galleryPage = true;
           for (var element in result) {
-            images.add(NsgImagePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path)));
+            images.add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path)));
           }
         });
       }
@@ -126,7 +127,7 @@ class _ImagePickerState extends State<NsgImagePicker> {
       progress.hide(Get.context);
       //Get.offAndToNamed(Routes.imagePickerGalleryPage, arguments: [image]);
       setState(() {
-        images.add(NsgImagePickerObject(image: Image.file(File(image.path)), description: basenameWithoutExtension(image.path)));
+        images.add(NsgFilePickerObject(image: Image.file(File(image.path)), description: basenameWithoutExtension(image.path)));
       });
     } else {
       progress.hide(Get.context);
@@ -136,7 +137,7 @@ class _ImagePickerState extends State<NsgImagePicker> {
     }
   }
 
-  Widget _showFileType(NsgImagePickerObject element) {
+  Widget _showFileType(NsgFilePickerObject element) {
     return Container(
         decoration: BoxDecoration(
           color: ControlOptions.instance.colorMain.withOpacity(0.2),

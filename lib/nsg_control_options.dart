@@ -60,6 +60,7 @@ class ControlOptions {
 
   final Map<String, List<Color>> gradients;
 
+  double sizeXXL = 20;
   double sizeXL = 18;
   double sizeL = 16;
   double sizeM = 14;

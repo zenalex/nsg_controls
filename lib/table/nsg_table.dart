@@ -16,6 +16,7 @@ class NsgTable extends StatefulWidget {
       this.cellFixedLines,
       this.showTotals = false,
       this.columns = const [],
+      this.showBoolIconsWithMonochromeColors = false,
       this.selectCellOnHover = false,
       this.headerBackColor,
       this.headerColor,
@@ -63,6 +64,9 @@ class NsgTable extends StatefulWidget {
 
   /// Функция, срабатывающая при нажатии на строку
   final Function(NsgDataItem?, String)? rowOnTap;
+
+  /// Отображать цвета иконок булов в Ч/Б
+  final bool showBoolIconsWithMonochromeColors;
 
   /// Функция, срабатывающая при нажатии на строку заголовка
   /// Если обработчик вернет true - это остановит дальнейшую обработку события
@@ -549,7 +553,7 @@ class _NsgTableState extends State<NsgTable> {
     String text = textValue;
     TextStyle style = column.rowTextStyle ?? defaultRowTextStyle;
     TextAlign textAlign = column.rowTextAlign ?? defaultRowTextAlign;
-    IconData? icon;
+    Widget? icon;
     var fieldkey = item.getFieldValue(column.name);
     var field = item.fieldList.fields[column.name];
 
@@ -588,9 +592,11 @@ class _NsgTableState extends State<NsgTable> {
       /// Если Bool
     } else if (field is NsgDataBoolField) {
       if (fieldkey == true) {
-        icon = Icons.check;
+        icon = Icon(Icons.check,
+            color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorConfirmed, size: 24);
       } else if (fieldkey == false) {
-        icon = Icons.close;
+        icon = Icon(Icons.close,
+            color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorError, size: 24);
       }
 
       /// Если другой вид поля
@@ -612,15 +618,14 @@ class _NsgTableState extends State<NsgTable> {
       }
     }
 
-    return icon != null
-        ? Icon(icon)
-        : SizedBox(
-            width: double.infinity,
-            child: Text(addLines(text, widget.cellFixedLines),
-                overflow: widget.cellMaxLines != null || widget.cellFixedLines != null ? TextOverflow.ellipsis : TextOverflow.visible,
-                maxLines: widget.cellMaxLines ?? widget.cellFixedLines,
-                style: style,
-                textAlign: textAlign),
-          );
+    return icon ??
+        SizedBox(
+          width: double.infinity,
+          child: Text(addLines(text, widget.cellFixedLines),
+              overflow: widget.cellMaxLines != null || widget.cellFixedLines != null ? TextOverflow.ellipsis : TextOverflow.visible,
+              maxLines: widget.cellMaxLines ?? widget.cellFixedLines,
+              style: style,
+              textAlign: textAlign),
+        );
   }
 }
