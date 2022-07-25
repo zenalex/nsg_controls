@@ -248,7 +248,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                         barBlur: 0,
                         overlayBlur: 0,
                         colorText: ControlOptions.instance.colorMainText,
-                        backgroundColor: ControlOptions.instance.colorMain);
+                        backgroundColor: ControlOptions.instance.colorMainDark);
                   }
                 },
                 child: Stack(
