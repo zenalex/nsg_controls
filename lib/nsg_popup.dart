@@ -13,6 +13,7 @@ class NsgPopUp extends StatefulWidget {
   final String? text;
   final String? hint;
   final String? cancelText;
+  final EdgeInsets margin;
   final String? confirmText;
   final VoidCallback? onCancel;
   final VoidCallback? onConfirm;
@@ -30,6 +31,7 @@ class NsgPopUp extends StatefulWidget {
       this.text,
       this.hint,
       this.cancelText,
+      this.margin = const EdgeInsets.all(0),
       this.confirmText,
       this.onCancel,
       this.onConfirm,
@@ -69,13 +71,13 @@ class _NsgPopUpState extends State<NsgPopUp> {
     return Center(
         child: Container(
             padding: EdgeInsets.zero,
-            margin: const EdgeInsets.all(0),
+            margin: widget.margin,
             //margin: MediaQuery.of(context).viewInsets,
             width: widget.width,
             height: widget.height,
-            constraints: const BoxConstraints(
-              maxWidth: 640,
-              maxHeight: 400,
+            constraints: BoxConstraints(
+              maxWidth: widget.width ?? 640,
+              maxHeight: widget.height ?? 400,
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),

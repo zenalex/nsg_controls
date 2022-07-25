@@ -96,7 +96,6 @@ class _NsgTableState extends State<NsgTable> {
   TextAlign defaultHeaderTextAlign = TextAlign.center;
   AlignmentGeometry defaultRowAlign = Alignment.center;
   TextStyle defaultRowTextStyle = TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeS);
-  TextAlign defaultRowTextAlign = TextAlign.center;
 
   //Выделенная строка и колонка
   NsgDataItem? _selectedRow;
@@ -552,7 +551,7 @@ class _NsgTableState extends State<NsgTable> {
     var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(item) ?? '';
     String text = textValue;
     TextStyle style = column.rowTextStyle ?? defaultRowTextStyle;
-    TextAlign textAlign = column.rowTextAlign ?? defaultRowTextAlign;
+    TextAlign textAlign = TextAlign.center;
     Widget? icon;
     var fieldkey = item.getFieldValue(column.name);
     var field = item.fieldList.fields[column.name];
@@ -604,6 +603,10 @@ class _NsgTableState extends State<NsgTable> {
       text = '$fieldkey';
       textAlign = TextAlign.center;
       style = const TextStyle(fontSize: 12);
+    }
+
+    if (column.rowTextAlign != null) {
+      textAlign = column.rowTextAlign!;
     }
 
     String addLines(String text, int? count) {
