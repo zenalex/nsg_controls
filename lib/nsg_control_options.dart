@@ -46,6 +46,9 @@ class ControlOptions {
   // Синий цвет для статусов
   final Color colorBlue;
 
+  // Белый цвет
+  final Color colorWhite;
+
   // Оттенки серого цвета
   final Color colorGrey;
   final Color colorGreyLight;
@@ -54,6 +57,8 @@ class ControlOptions {
   final Color tableHeaderColor;
   final Color tableHeaderLinesColor;
   final Color tableCellBackColor;
+
+  final Map<String, List<Color>> gradients;
 
   double sizeXL = 18;
   double sizeL = 16;
@@ -82,6 +87,9 @@ class ControlOptions {
 
   ControlOptions({
     this.borderRadius = 15.0,
+    this.gradients = const {
+      'main': [Color.fromRGBO(233, 200, 45, 1), Color.fromARGB(255, 153, 128, 16)]
+    },
     this.colorMain = const Color.fromRGBO(233, 200, 45, 1),
     this.colorMainText = const Color.fromARGB(255, 70, 59, 11),
     this.colorText = const Color.fromARGB(255, 70, 59, 11),
@@ -95,6 +103,7 @@ class ControlOptions {
     this.colorMainLight = const Color.fromARGB(255, 255, 245, 201),
     this.colorMainLighter = const Color.fromARGB(255, 255, 245, 201),
     this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
+    this.colorWhite = const Color.fromRGBO(255, 255, 255, 1),
     this.colorSecondaryText = const Color.fromARGB(255, 70, 59, 11),
     this.colorNormal = const Color.fromARGB(255, 29, 180, 95),
     this.colorError = const Color.fromRGBO(208, 8, 8, 1),
