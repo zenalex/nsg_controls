@@ -76,7 +76,7 @@ class NsgButton extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (icon != null) Icon(icon, color: color ?? ControlOptions.instance.colorText),
+                        if (icon != null) Icon(icon, color: color ?? ControlOptions.instance.colorMainText),
                         if (text != '' && icon != null) const SizedBox(width: 10),
                         Expanded(
                             child: Padding(
@@ -86,7 +86,7 @@ class NsgButton extends StatelessWidget {
                               overflow: TextOverflow.fade,
                               softWrap: false,
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: ControlOptions.instance.colorText)),
+                              style: TextStyle(color: ControlOptions.instance.colorMainText)),
                         )),
                       ],
                     ),
@@ -98,11 +98,11 @@ class NsgButton extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: <Color>[ControlOptions.instance.colorText.withOpacity(0.0), ControlOptions.instance.colorText.withOpacity(0.3)],
+                    colors: <Color>[ControlOptions.instance.colorMainText.withOpacity(0.0), ControlOptions.instance.colorMainText.withOpacity(0.3)],
                   ),
                   borderRadius: BorderRadius.circular(25),
                 ),
-                child: Icon(Icons.add, size: 32, color: ControlOptions.instance.colorText),
+                child: Icon(Icons.add, size: 32, color: ControlOptions.instance.colorMainText),
               )
             ],
           ));
@@ -126,7 +126,7 @@ class NsgButton extends StatelessWidget {
                     padding: padding,
                     textStyle: TextStyle(fontSize: fontSize)),
                 onPressed: onPressed,
-                child: Text('$text', style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 14)),
+                child: Text('$text', style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 14)),
               )));
     } else // Кнопка с виджетом внутри
     if (style == 'widget') {
@@ -178,7 +178,7 @@ class NsgButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (icon != null) SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorText)),
+                if (icon != null) SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorMainText)),
                 if (text != '' && icon != null) const SizedBox(width: 0),
                 Flexible(
                   fit: FlexFit.loose,
@@ -189,7 +189,7 @@ class NsgButton extends StatelessWidget {
                         overflow: TextOverflow.fade,
                         softWrap: true,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: color ?? ControlOptions.instance.colorText)),
+                        style: TextStyle(color: color ?? ControlOptions.instance.colorMainText)),
                   ),
                 ),
               ],
