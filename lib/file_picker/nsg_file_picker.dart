@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-//import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -94,7 +92,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
               objectsList
                   .add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType));
             } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
-              objectsList.add(NsgFilePickerObject(file: File(element.path), description: basenameWithoutExtension(element.path), fileType: fileType));
+              objectsList
+                  .add(NsgFilePickerObject(file: File(element.path), image: null, description: basenameWithoutExtension(element.path), fileType: fileType));
             } else {
               error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
               setState(() {});
@@ -214,26 +213,43 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
               child: InkWell(
                 //hoverColor: ControlOptions.instance.colorMain,
                 onTap: () {
-                  List<NsgFilePickerObject> imagesList = [];
-                  objectsList.forEach((el) {
-                    if (element.image != null) {
-                      imagesList.add(el);
+                  if (element.image != null) {
+                    List<NsgFilePickerObject> imagesList = [];
+                    for (var el in objectsList) {
+                      if (el.image != null) {
+                        imagesList.add(el);
+                      }
                     }
-                  });
-                  int currentPage = imagesList.indexOf(element);
-                  Get.dialog(
-                      NsgPopUp(
-                          margin: const EdgeInsets.all(15),
-                          title: "Просмотр изображений",
-                          width: Get.width,
-                          height: Get.height,
-                          getContent: () => [
-                                _Gallery(
-                                  imagesList: imagesList,
-                                  currentPage: currentPage,
-                                )
-                              ]),
-                      barrierDismissible: true);
+                    int currentPage = imagesList.indexOf(element);
+                    Get.dialog(
+                        NsgPopUp(
+                            onCancel: () {
+                              Get.back();
+                            },
+                            onConfirm: () {
+                              Get.back();
+                            },
+                            margin: const EdgeInsets.all(15),
+                            title: "Просмотр изображений",
+                            width: Get.width,
+                            height: Get.height,
+                            getContent: () => [
+                                  _Gallery(
+                                    imagesList: imagesList,
+                                    currentPage: currentPage,
+                                  )
+                                ]),
+                        barrierDismissible: true);
+                  } else {
+                    Get.snackbar('Ошибка', 'Этот файл не является изображением',
+                        duration: const Duration(seconds: 3),
+                        maxWidth: 300,
+                        snackPosition: SnackPosition.BOTTOM,
+                        barBlur: 0,
+                        overlayBlur: 0,
+                        colorText: ControlOptions.instance.colorMainText,
+                        backgroundColor: ControlOptions.instance.colorMain);
+                  }
                 },
                 child: Stack(
                   children: [
@@ -407,9 +423,9 @@ class NsgImagePickerButton extends StatelessWidget {
 }
 
 class _Gallery extends StatefulWidget {
-  List<NsgFilePickerObject> imagesList;
-  int currentPage;
-  _Gallery({Key? key, required this.imagesList, required this.currentPage}) : super(key: key);
+  final List<NsgFilePickerObject> imagesList;
+  final int currentPage;
+  const _Gallery({Key? key, required this.imagesList, required this.currentPage}) : super(key: key);
 
   @override
   State<_Gallery> createState() => __GalleryState();

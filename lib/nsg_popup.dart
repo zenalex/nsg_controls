@@ -108,7 +108,9 @@ class _NsgPopUpState extends State<NsgPopUp> {
                     IconButton(
                         icon: Icon(Icons.check, color: widget.colorText, size: 24), // set your color here
                         onPressed: () {
-                          widget.onConfirm!();
+                          if (widget.onConfirm != null) {
+                            widget.onConfirm!();
+                          }
                         }),
                   ],
                 ),
