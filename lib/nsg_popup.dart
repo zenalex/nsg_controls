@@ -31,7 +31,7 @@ class NsgPopUp extends StatefulWidget {
       this.text,
       this.hint,
       this.cancelText,
-      this.margin = const EdgeInsets.all(0),
+      this.margin = const EdgeInsets.all(10),
       this.confirmText,
       this.onCancel,
       this.onConfirm,
