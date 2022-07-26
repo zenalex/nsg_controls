@@ -176,10 +176,9 @@ class _NsgInputState extends State<NsgInput> {
   @override
   Widget build(BuildContext context) {
     var fieldValue = widget.dataItem.getFieldValue(widget.fieldName);
-    NsgDataItem? refItem;
     if (widget.dataItem.isReferenceField(widget.fieldName)) {
-      refItem = widget.dataItem.getReferent(widget.fieldName)!;
-      fieldValue = refItem.toString();
+      var refItem = widget.dataItem.getReferent(widget.fieldName);
+      fieldValue = refItem == null ? '' : refItem.toString();
     }
     if (inputType == NsgInputType.boolValue) {
       return _buildBoolWidget(fieldValue);
