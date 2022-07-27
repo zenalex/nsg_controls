@@ -225,7 +225,11 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     margin: const EdgeInsets.all(0),
                                     padding: const EdgeInsets.all(0),
                                     style: "widget",
-                                    widget: const Center(child: Icon(Icons.remove)),
+                                    widget: Center(
+                                        child: Icon(
+                                      Icons.remove,
+                                      color: ControlOptions.instance.colorMainText,
+                                    )),
                                     onPressed: () {
                                       date.minus();
                                       date.setDateText();
@@ -246,7 +250,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 child: Container(
                                     decoration: BoxDecoration(
                                         color: ControlOptions.instance.colorInverted,
-                                        borderRadius: BorderRadius.circular(15),
+                                        borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
                                         border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
                                     padding: const EdgeInsets.symmetric(vertical: 10),
                                     child: Center(child: Text(date.dateText))),
@@ -259,7 +263,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     margin: const EdgeInsets.all(0),
                                     padding: const EdgeInsets.all(0),
                                     style: "widget",
-                                    widget: const Center(child: Icon(Icons.add)),
+                                    widget: Center(child: Icon(Icons.add, color: ControlOptions.instance.colorMainText)),
                                     onPressed: () {
                                       date.plus();
                                       date.setDateText();

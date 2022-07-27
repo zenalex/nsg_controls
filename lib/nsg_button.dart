@@ -144,13 +144,17 @@ class NsgButton extends StatelessWidget {
               height: height,
               width: width,
               decoration: BoxDecoration(
-                border: Border.all(width: 2.0, color: ControlOptions.instance.colorMain),
                 borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
               ),
               child: Material(
+                borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
                 color: _backColor,
                 child: InkWell(
-                    hoverColor: _backHoverColor,
+                    customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
+                    ),
+                    //focusColor: _backHoverColor,
+                    //hoverColor: _backHoverColor,
                     onTap: onPressed,
                     child: Padding(
                       padding: padding,
