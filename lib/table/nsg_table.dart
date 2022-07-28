@@ -560,7 +560,7 @@ class _NsgTableState extends State<NsgTable> {
 
     /// Если Референс
     if (field is NsgDataReferenceField) {
-      text = field.getReferent(item).toString();
+      text = field.getReferent(item)?.toString() ?? '';
       textAlign = TextAlign.left;
 
       /// Если Перечисление
