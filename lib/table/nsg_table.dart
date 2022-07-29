@@ -482,6 +482,19 @@ class _NsgTableState extends State<NsgTable> {
       List<Widget> totalsRow = [];
 
       visibleColumns.asMap().forEach((index, column) {
+        var fieldkey = widget.controller.items.last.getFieldValue(column.name);
+        var field = widget.controller.items.last.fieldList.fields[column.name];
+        TextAlign textAlign = TextAlign.left;
+
+        /// Если Double
+        if (field is NsgDataDoubleField) {
+          textAlign = TextAlign.right;
+
+          /// Если Int
+        } else if (field is NsgDataIntField) {
+          textAlign = TextAlign.right;
+        }
+        Type runtimeType = column.totalSum.runtimeType;
         totalsRow.add(wrapExpanded(
             child: showCell(
                 align: column.rowAlign ?? defaultRowAlign,
@@ -501,7 +514,11 @@ class _NsgTableState extends State<NsgTable> {
                           )
                         ],
                       )
-                    : Text(column.totalSum.toString(), style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500))),
+                    : SizedBox(
+                        width: double.infinity,
+                        child: Text(runtimeType == double ? column.totalSum.toStringAsFixed(2) : column.totalSum.toString(),
+                            textAlign: textAlign, style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500)),
+                      )),
             expanded: column.expanded,
             flex: column.flex));
       });
@@ -513,7 +530,7 @@ class _NsgTableState extends State<NsgTable> {
         child: crossWrap(Container(
             padding: widget.columnsEditMode == true
                 ? const EdgeInsets.only(right: 510, bottom: 10)
-                : EdgeInsets.only(bottom: 10, right: widget.horizontalScrollEnabled == true ? 0 : 0),
+                : EdgeInsets.only(bottom: 10, right: widget.horizontalScrollEnabled == true ? 10 : 0),
             //margin: EdgeInsets.only(bottom: 10, right: 10),
             //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
             child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
