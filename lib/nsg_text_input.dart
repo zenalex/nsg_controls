@@ -89,7 +89,7 @@ class NsgTextInput extends StatelessWidget {
               label != null ? '   $label   '.toUpperCase() : '',
             )),
             //labelText: label != null ? '$label'.toUpperCase() : '',
-            labelStyle: TextStyle(color: ControlOptions.instance.colorMainDarker, backgroundColor: ControlOptions.instance.colorInverted),
+            labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: ControlOptions.instance.colorInverted),
 
             //labelText: '$title'.toUpperCase(),
             contentPadding: const EdgeInsets.only(left: 10.0, bottom: 0.0, top: 0.0, right: 10.0),

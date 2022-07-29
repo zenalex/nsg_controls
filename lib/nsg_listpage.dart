@@ -113,16 +113,16 @@ class NsgListPage extends StatelessWidget {
                   onLoading: SearchWidget(
                     controller: controller,
                   )),
-              controller.obx(
-                  (state) => controller.controllerFilter.isAllowed && controller.controllerFilter.isPeriodAllowed
-                      ? NsgPeriodFilter(
-                          label: 'Фильтр по датам',
-                          controller: controller,
-                        )
-                      : const SizedBox(),
-                  onLoading: NsgPeriodFilter(
-                    controller: controller,
-                  )),
+              controller.controllerFilter.isAllowed && controller.controllerFilter.isPeriodAllowed
+                  ? controller.obx(
+                      (state) => NsgPeriodFilter(
+                            label: 'Фильтр по датам',
+                            controller: controller,
+                          ),
+                      onLoading: NsgPeriodFilter(
+                        controller: controller,
+                      ))
+                  : const SizedBox(),
               Expanded(
                 child: Column(
                   children: [
@@ -326,14 +326,23 @@ class SearchWidget extends StatelessWidget {
       secondChild: Container(
           padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
           child: Center(
-              child: NsgTextInput(
-                  onChanged: (value) {
-                    controller.controllerFilter.searchString = value;
-                    controller.controllerFilter.refreshControllerWithDelay();
-                  },
-                  label: 'Фильтр по тексту',
-                  initial: controller.controllerFilter.searchString,
-                  fieldName: controller.controllerFilter.searchString))),
+              child: /*NsgInput(
+            label: 'Фильтр по тексту',
+            dataItem: controller.currentItem,
+            fieldName: controller.controllerFilter.searchString,
+            onChanged: (value) {
+              //controller.controllerFilter.searchString = value.va;
+              //controller.controllerFilter.refreshControllerWithDelay();
+            },*/
+
+                  NsgTextInput(
+                      onChanged: (value) {
+                        controller.controllerFilter.searchString = value;
+                        controller.controllerFilter.refreshControllerWithDelay();
+                      },
+                      label: 'Фильтр по тексту',
+                      initial: controller.controllerFilter.searchString,
+                      fieldName: controller.controllerFilter.searchString))),
     );
   }
 }
