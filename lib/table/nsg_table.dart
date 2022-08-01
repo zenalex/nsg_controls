@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:cross_scroll/cross_scroll.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
 import 'package:nsg_data/nsg_data.dart';
-
+import 'package:flutter/services.dart';
 import 'column_resizer.dart';
 
 /// Виджет отображения таблицы
@@ -434,6 +435,20 @@ class _NsgTableState extends State<NsgTable> {
                 child: InkWell(
                     onTap: () {
                       widget.rowOnTap!(row, column.name);
+                    },
+                    onLongPress: () {
+                      var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(row) ?? '';
+                      Clipboard.setData(ClipboardData(text: textValue));
+                      Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
+                          icon: Icon(Icons.info, size: 32, color: ControlOptions.instance.colorMainText),
+                          titleText: null,
+                          duration: const Duration(seconds: 3),
+                          maxWidth: 320,
+                          snackPosition: SnackPosition.BOTTOM,
+                          barBlur: 0,
+                          overlayBlur: 0,
+                          colorText: ControlOptions.instance.colorMainText,
+                          backgroundColor: ControlOptions.instance.colorMainDark);
                     },
                     onHover: (b) {
                       if (widget.selectCellOnHover == true) {
