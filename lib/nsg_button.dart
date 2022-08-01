@@ -192,7 +192,7 @@ class NsgButton extends StatelessWidget {
                 if (icon != null) SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorMainText)),
                 if (text != '' && icon != null) const SizedBox(width: 0),
                 Flexible(
-                  fit: FlexFit.loose,
+                  //fit: FlexFit.loose,
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Text('$text'.toUpperCase(),

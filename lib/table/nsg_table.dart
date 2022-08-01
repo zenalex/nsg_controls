@@ -4,14 +4,18 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:cross_scroll/cross_scroll.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
+import 'package:nsg_controls/table/nsg_table_editmode.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
+import '../nsg_text.dart';
 import 'column_resizer.dart';
+import 'nsg_table_columns_reorder.dart';
 
 /// Виджет отображения таблицы
 class NsgTable extends StatefulWidget {
   const NsgTable(
       {Key? key,
+      this.rowsMaxCount = 20,
       required this.controller,
       this.cellMaxLines = 4,
       this.cellFixedLines,
@@ -29,6 +33,9 @@ class NsgTable extends StatefulWidget {
       this.onColumnsChange,
       this.showHeader = true})
       : super(key: key);
+
+  /// Кол-во отображаемых строк в теле таблицы
+  final int rowsMaxCount;
 
   /// Максимальное количество строк в ячейке тела таблицы
   final int? cellMaxLines;
@@ -80,6 +87,7 @@ class NsgTable extends StatefulWidget {
 }
 
 class _NsgTableState extends State<NsgTable> {
+  late NsgTableEditMode editMode;
   late ScrollController scrollHor;
   late ScrollController scrollHorHeader;
   late ScrollController scrollHorResizers;
@@ -149,6 +157,9 @@ class _NsgTableState extends State<NsgTable> {
     scrollHorResizers = scrollHorizontalGroup.addAndGet();
     scrollVert = scrollVerticalGroup.addAndGet();
     tableColumns = List.from(widget.columns);
+
+    /// Выставляем дефолтный режим просмотра таблицы
+    editMode = NsgTableEditMode.view;
     setInitialSorting();
   }
 
@@ -300,7 +311,6 @@ class _NsgTableState extends State<NsgTable> {
             child: showCell(
                 align: column.headerAlign ?? defaultHeaderAlign,
                 padding: const EdgeInsets.all(0),
-                //borderRight: index != visibleColumns.length - 1 ? true : false,
                 backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
                 color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
                 width: column.width,
@@ -315,7 +325,6 @@ class _NsgTableState extends State<NsgTable> {
         // Если есть sub колонки, добавляем в список колонок "главную" колонку, не имеющую sub колонки
         if (hasSubcolumns == true && column.columns == null) {
           visibleColumns.add(column);
-          //print(visibleColumns.length);
         }
         // Если заданы sub колонки (для двойной йчейки в header)
         if (column.columns != null) {
@@ -412,12 +421,11 @@ class _NsgTableState extends State<NsgTable> {
       visibleColumns = tableColumns.where((e) => e.visible).toList();
     }
 
-    /// Цикл построения ячеек таблицы (строки)
-    //print('Total rows: ${widget.controller.items.length}');
-
     visibleColumns.asMap().forEach((index, column) {
       column.totalSum = 0;
     });
+
+    /// Цикл построения ячеек таблицы (строки)
     for (var row in widget.controller.items) {
       List<Widget> tableRow = [];
 
@@ -451,6 +459,8 @@ class _NsgTableState extends State<NsgTable> {
                           backgroundColor: ControlOptions.instance.colorMainDark);
                     },
                     onHover: (b) {
+                      /// Раскрашиваем строку в цет при наведении на неё - OnHover
+                      /*
                       if (widget.selectCellOnHover == true) {
                         // Ячейке присваиваем isSelected
                         _selectedRow = row;
@@ -460,6 +470,7 @@ class _NsgTableState extends State<NsgTable> {
                         _selectedRow = row;
                         _selectedColumn = null;
                       }
+                      */
                       //setState(() {});
                     },
                     child: showCell(
@@ -481,6 +492,90 @@ class _NsgTableState extends State<NsgTable> {
       });
       tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
     }
+
+    /// Верхнее меню управления таблицей
+    table.add(Container(
+      decoration:
+          BoxDecoration(color: ControlOptions.instance.colorMain.withOpacity(0.1), border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+      child: Row(
+        children: [
+          const NsgText('Строки:'),
+          Flexible(
+              child: NsgButton(
+            width: 50,
+            text: 'Доб',
+            padding: EdgeInsets.all(3),
+            onPressed: () {},
+          )),
+          Flexible(
+              child: NsgButton(
+            width: 50,
+            text: 'Ред',
+            padding: EdgeInsets.all(3),
+            onPressed: () {},
+          )),
+          Flexible(
+              child: NsgButton(
+            width: 50,
+            text: 'Коп',
+            padding: EdgeInsets.all(3),
+            onPressed: () {},
+          )),
+          Flexible(
+              child: NsgButton(
+            width: 50,
+            text: 'Удал',
+            padding: EdgeInsets.all(3),
+            onPressed: () {},
+          )),
+          const Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: NsgText('Колонки:'),
+          ),
+          Flexible(
+              child: NsgButton(
+            width: 50,
+            text: 'Ред',
+            padding: EdgeInsets.all(3),
+            onPressed: () {
+              Get.dialog(
+                  NsgPopUp(
+                      title: 'Отображение колонок',
+                      width: 300,
+                      getContent: () => [
+                            NsgTableColumnsReorder(
+                              controller: widget.controller,
+                              columns: widget.columns,
+                            )
+                          ],
+                      hint: 'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
+                      onConfirm: () {
+                        //print(widget.imageList.indexOf(_selected));
+                        /*   onConfirm(_selected);
+              widget.dataItem.setFieldValue(
+                  widget.fieldName, widget.imageList.indexOf(_selected));
+
+              if (widget.onConfirm != null) widget.onConfirm!();
+              //setState(() {});*/
+
+                        Get.back();
+                      }),
+                  barrierDismissible: false);
+            },
+          )),
+          Flexible(
+              child: NsgButton(
+            width: 70,
+            text: 'Ширин',
+            padding: EdgeInsets.all(3),
+            onPressed: () {},
+          ))
+        ],
+      ),
+    ));
+
+    /// Если showHeader, то показываем Header
     if (widget.showHeader) {
       table.add(IntrinsicHeight(
           child: Container(
