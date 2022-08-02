@@ -109,11 +109,7 @@ class _NsgTableState extends State<NsgTable> {
   /// Вертикальный разделитель в шапке таблицы
   Widget delitel() {
     return Container(
-      width: 1,
-      height: 42,
-      margin: EdgeInsets.symmetric(horizontal: 6),
-      decoration: BoxDecoration(border: Border(right: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-    );
+        width: 2, height: 42, margin: EdgeInsets.symmetric(horizontal: 6), decoration: BoxDecoration(color: ControlOptions.instance.colorMainDark));
   }
 
   /// Оборачивание виджета в Expanded
@@ -545,8 +541,7 @@ class _NsgTableState extends State<NsgTable> {
     // TOP MENU --------------------------------------------------------------------------------------------------------------------------------------------->
     /// Верхнее меню управления таблицей
     table.add(Container(
-      decoration:
-          BoxDecoration(color: ControlOptions.instance.colorMain.withOpacity(0.1), border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+      decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
       child: Row(
         mainAxisSize: MainAxisSize.min,
