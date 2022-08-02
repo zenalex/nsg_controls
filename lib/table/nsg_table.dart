@@ -110,6 +110,16 @@ class _NsgTableState extends State<NsgTable> {
   NsgDataItem? _selectedRow;
   NsgTableColumn? _selectedColumn;
 
+  /// Вертикальный разделитель в шапке таблицы
+  Widget delitel() {
+    return Container(
+      width: 1,
+      height: 42,
+      margin: EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(border: Border(right: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+    );
+  }
+
   /// Оборачивание виджета в Expanded
   Widget wrapExpanded({required Widget child, bool? expanded, int? flex}) {
     if (expanded == true) {
@@ -497,47 +507,63 @@ class _NsgTableState extends State<NsgTable> {
     table.add(Container(
       decoration:
           BoxDecoration(color: ControlOptions.instance.colorMain.withOpacity(0.1), border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
       child: Row(
         children: [
-          const NsgText('Строки:'),
           Flexible(
               child: NsgButton(
-            width: 50,
-            text: 'Доб',
+            height: 32,
+            width: 32,
+            borderRadius: 5,
+            style: 'widget',
+            widget: Icon(Icons.add_circle_outline, color: ControlOptions.instance.colorMainText),
             padding: EdgeInsets.all(3),
+            margin: EdgeInsets.only(right: 5, top: 5, bottom: 5),
             onPressed: () {},
           )),
           Flexible(
               child: NsgButton(
-            width: 50,
-            text: 'Ред',
+            height: 32,
+            width: 32,
+            borderRadius: 5,
+            style: 'widget',
+            widget: Icon(Icons.edit, color: ControlOptions.instance.colorMainText),
             padding: EdgeInsets.all(3),
+            margin: EdgeInsets.only(right: 5, top: 5, bottom: 5),
             onPressed: () {},
           )),
           Flexible(
               child: NsgButton(
-            width: 50,
-            text: 'Коп',
+            height: 32,
+            width: 32,
+            borderRadius: 5,
+            style: 'widget',
+            widget: Icon(Icons.copy, color: ControlOptions.instance.colorMainText),
             padding: EdgeInsets.all(3),
+            margin: EdgeInsets.only(right: 5, top: 5, bottom: 5),
             onPressed: () {},
           )),
           Flexible(
               child: NsgButton(
-            width: 50,
-            text: 'Удал',
+            height: 32,
+            width: 32,
+            borderRadius: 5,
+            style: 'widget',
+            widget: Icon(Icons.delete_forever_outlined, color: ControlOptions.instance.colorMainText),
             padding: EdgeInsets.all(3),
+            margin: EdgeInsets.only(right: 0, top: 5, bottom: 5),
             onPressed: () {},
           )),
-          const Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: NsgText('Колонки:'),
-          ),
+          delitel(),
           Flexible(
               child: NsgButton(
-            width: 50,
-            text: 'Ред',
+            height: 32,
+            width: 32,
+            borderRadius: 5,
+            style: 'widget',
+            widget: Icon(Icons.edit_note_outlined, color: ControlOptions.instance.colorMainText),
             padding: EdgeInsets.all(3),
+            margin: EdgeInsets.only(right: 5, top: 5, bottom: 5),
             onPressed: () {
               Get.dialog(
                   NsgPopUp(
@@ -566,11 +592,28 @@ class _NsgTableState extends State<NsgTable> {
           )),
           Flexible(
               child: NsgButton(
-            width: 70,
-            text: 'Ширин',
+            height: 32,
+            width: 32,
+            borderRadius: 5,
+            style: 'widget',
+            widget: Icon(Icons.view_column_outlined, color: ControlOptions.instance.colorMainText),
             padding: EdgeInsets.all(3),
+            margin: EdgeInsets.only(right: 0, top: 5, bottom: 5),
             onPressed: () {},
-          ))
+          )),
+          delitel(),
+          Flexible(
+              child: NsgButton(
+            height: 32,
+            width: 32,
+            borderRadius: 5,
+            style: 'widget',
+            widget: Icon(Icons.print_outlined, color: ControlOptions.instance.colorMainText),
+            padding: EdgeInsets.all(3),
+            margin: EdgeInsets.only(right: 0, top: 5, bottom: 5),
+            onPressed: () {},
+          )),
+          delitel(),
         ],
       ),
     ));
