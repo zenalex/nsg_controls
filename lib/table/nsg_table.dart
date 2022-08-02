@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-import 'package:cross_scroll/cross_scroll.dart';
+import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
 import 'package:nsg_controls/table/nsg_table_editmode.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
-import '../nsg_text.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
 
@@ -95,9 +94,6 @@ class _NsgTableState extends State<NsgTable> {
   late List<NsgTableColumn> tableColumns;
 
   bool horizontalScrollEnabled = true;
-
-  CrossScrollBar crossScrollBar =
-      const CrossScrollBar(thumb: ScrollThumb.alwaysShow, track: ScrollTrack.show, thickness: 8, hoverThickness: 8, thumbRadius: Radius.circular(0));
 
   //Значения стилей для заголовков и строк по умолчанию
   AlignmentGeometry defaultHeaderAlign = Alignment.center;
@@ -192,20 +188,63 @@ class _NsgTableState extends State<NsgTable> {
 
   Widget crossWrap(Widget child) {
     if (!horizontalScrollEnabled) {
-      return Scrollbar(
+      return RawScrollbar(
+          minOverscrollLength: 100,
+          minThumbLength: 100,
+          thickness: 16,
+          trackBorderColor: ControlOptions.instance.colorMainDark,
+          trackColor: ControlOptions.instance.colorMainDark,
+          thumbColor: ControlOptions.instance.colorMain,
+          radius: Radius.circular(0),
           thumbVisibility: true,
-          thickness: 10,
+          trackVisibility: true,
           controller: scrollVert,
           child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
     } else {
-      return CrossScroll(
+      return RawScrollbar(
+        minOverscrollLength: 100,
+        minThumbLength: 100,
+        thickness: 16,
+        trackBorderColor: ControlOptions.instance.colorMainDark,
+        trackColor: ControlOptions.instance.colorMainDark,
+        thumbColor: ControlOptions.instance.colorMain,
+        radius: Radius.circular(0),
+        controller: scrollVert,
+        thumbVisibility: true,
+        trackVisibility: true,
+        child: RawScrollbar(
+          minOverscrollLength: 100,
+          minThumbLength: 100,
+          thickness: 16,
+          trackBorderColor: ControlOptions.instance.colorMainDark,
+          trackColor: ControlOptions.instance.colorMainDark,
+          thumbColor: ControlOptions.instance.colorMain,
+          radius: Radius.circular(0),
+          controller: scrollHor,
+          thumbVisibility: true,
+          trackVisibility: true,
+          notificationPredicate: (notif) => notif.depth == 1,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(right: 16),
+            controller: scrollVert,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(bottom: 16),
+              controller: scrollHor,
+              scrollDirection: Axis.horizontal,
+              child: child,
+            ),
+          ),
+        ),
+      );
+
+      /*return CrossScroll(
           // TODO тянется во всю доступную ширину, что неправильно. Плюс добавляется фоновый цвет
           normalColor: ControlOptions.instance.colorMain,
           verticalBar: crossScrollBar,
           horizontalBar: crossScrollBar,
           verticalScrollController: scrollVert,
           horizontalScrollController: scrollHor,
-          child: child);
+          child: child);*/
     }
   }
 
@@ -503,12 +542,14 @@ class _NsgTableState extends State<NsgTable> {
       tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
     }
 
+    // TOP MENU --------------------------------------------------------------------------------------------------------------------------------------------->
     /// Верхнее меню управления таблицей
     table.add(Container(
       decoration:
           BoxDecoration(color: ControlOptions.instance.colorMain.withOpacity(0.1), border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Flexible(
               child: NsgButton(
@@ -620,6 +661,12 @@ class _NsgTableState extends State<NsgTable> {
 
     /// Если showHeader, то показываем Header
     if (widget.showHeader) {
+      tableHeader.add(showCell(
+          padding: const EdgeInsets.all(0),
+          backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+          color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+          width: 16,
+          child: SizedBox()));
       table.add(IntrinsicHeight(
           child: Container(
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
@@ -678,38 +725,48 @@ class _NsgTableState extends State<NsgTable> {
       tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: totalsRow)));
     }
 
+    // TABLEBODY -------------------------------------------------------------------------------------------------------------------------------------------->
     table.add(Flexible(
       child: Container(
         child: crossWrap(Container(
             padding: widget.columnsEditMode == true
-                ? const EdgeInsets.only(right: 510, bottom: 10)
-                : EdgeInsets.only(bottom: 10, right: widget.horizontalScrollEnabled == true ? 10 : 0),
+                ? const EdgeInsets.only(right: 500, bottom: 0)
+                : EdgeInsets.only(bottom: 0, right: widget.horizontalScrollEnabled == true ? 0 : 0),
             //margin: EdgeInsets.only(bottom: 10, right: 10),
             //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
             child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
       ),
     ));
 
-    return widget.columnsEditMode == true
-        ? Stack(alignment: Alignment.topLeft, children: [
-            Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
-            Container(
-              padding: const EdgeInsets.only(right: 10, bottom: 10),
-              child: SingleChildScrollView(
-                controller: scrollHorResizers,
-                scrollDirection: Axis.horizontal,
-                child: ResizeLines(
-                    onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
-                    columnsEditMode: widget.columnsEditMode,
-                    columnsOnResize: (resizedColumns) {
-                      tableColumns = resizedColumns;
-                      setState(() {});
-                    },
-                    columns: tableColumns),
-              ),
-            )
-          ])
-        : Column(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table);
+    // BUILD TABLE ------------------------------------------------------------------------------------------------------------------------------------------>
+    return Container(
+        decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+        child: widget.columnsEditMode == true
+            ? Stack(alignment: Alignment.topLeft, children: [
+                Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
+                Container(
+                  padding: const EdgeInsets.only(right: 10, bottom: 10),
+                  child: SingleChildScrollView(
+                    controller: scrollHorResizers,
+                    scrollDirection: Axis.horizontal,
+                    child: ResizeLines(
+                        onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
+                        columnsEditMode: widget.columnsEditMode,
+                        columnsOnResize: (resizedColumns) {
+                          tableColumns = resizedColumns;
+                          setState(() {});
+                        },
+                        columns: tableColumns),
+                  ),
+                )
+              ])
+            : IntrinsicWidth(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: table),
+              ));
   }
 
   Widget _headerWidget(NsgTableColumn column) {

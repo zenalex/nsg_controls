@@ -1,6 +1,7 @@
+
+/*
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-import 'package:cross_scroll/cross_scroll.dart';
 import 'dart:math' as math;
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -530,3 +531,4 @@ class ColumnLineResizer extends StatelessWidget {
     );
   }
 }
+*/
