@@ -191,7 +191,7 @@ class _NsgTableState extends State<NsgTable> {
           trackBorderColor: ControlOptions.instance.colorMainDark,
           trackColor: ControlOptions.instance.colorMainDark,
           thumbColor: ControlOptions.instance.colorMain,
-          radius: Radius.circular(0),
+          radius: const Radius.circular(0),
           thumbVisibility: true,
           trackVisibility: true,
           controller: scrollVert,
@@ -204,7 +204,7 @@ class _NsgTableState extends State<NsgTable> {
         trackBorderColor: ControlOptions.instance.colorMainDark,
         trackColor: ControlOptions.instance.colorMainDark,
         thumbColor: ControlOptions.instance.colorMain,
-        radius: Radius.circular(0),
+        radius: const Radius.circular(0),
         controller: scrollVert,
         thumbVisibility: true,
         trackVisibility: true,
@@ -215,16 +215,16 @@ class _NsgTableState extends State<NsgTable> {
           trackBorderColor: ControlOptions.instance.colorMainDark,
           trackColor: ControlOptions.instance.colorMainDark,
           thumbColor: ControlOptions.instance.colorMain,
-          radius: Radius.circular(0),
+          radius: const Radius.circular(0),
           controller: scrollHor,
           thumbVisibility: true,
           trackVisibility: true,
           notificationPredicate: (notif) => notif.depth == 1,
           child: SingleChildScrollView(
-            padding: EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.only(right: 16),
             controller: scrollVert,
             child: SingleChildScrollView(
-              padding: EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.only(bottom: 16),
               controller: scrollHor,
               scrollDirection: Axis.horizontal,
               child: child,
@@ -232,15 +232,6 @@ class _NsgTableState extends State<NsgTable> {
           ),
         ),
       );
-
-      /*return CrossScroll(
-          // TODO тянется во всю доступную ширину, что неправильно. Плюс добавляется фоновый цвет
-          normalColor: ControlOptions.instance.colorMain,
-          verticalBar: crossScrollBar,
-          horizontalBar: crossScrollBar,
-          verticalScrollController: scrollVert,
-          horizontalScrollController: scrollHor,
-          child: child);*/
     }
   }
 
