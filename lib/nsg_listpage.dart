@@ -260,7 +260,11 @@ ListView.builder(
           backColor: appBarBackColor,
           key: GlobalKey(),
           text: title,
-          text2: showCount != null ? controller.items.length.toString() + ' ' + showCount! : subtitle,
+          text2: showCount != null
+              ? controller.totalCount != null
+                  ? controller.totalCount.toString() + ' ' + showCount!
+                  : null
+              : subtitle,
           colorsInverted: true,
           bottomCircular: true,
           icon: appBarIcon,
