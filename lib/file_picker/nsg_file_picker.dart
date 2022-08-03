@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:path/path.dart';
-import '../nsg_progress_dialog.dart';
 import '../nsg_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'nsg_file_picker_object.dart';
@@ -36,6 +35,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   String error = '';
   List<NsgFilePickerObject> objectsList = [];
   bool galleryPage = true;
+  ScrollController scrollController = ScrollController();
 
   //Function(List<XFile>) callback = Get.arguments;
 
@@ -122,17 +122,16 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   /// Capture a photo
   Future cameraImage() async {
     final ImagePicker picker = ImagePicker();
-    NsgProgressDialog progress = NsgProgressDialog(textDialog: 'Добавляем фото из камеры', canStopped: false);
-    progress.show(Get.context);
+    //NsgProgressDialog progress = NsgProgressDialog(textDialog: 'Добавляем фото из камеры', canStopped: false);
+    //progress.show(Get.context);
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
+
     if (image != null) {
-      progress.hide(Get.context);
-      //Get.offAndToNamed(Routes.imagePickerGalleryPage, arguments: [image]);
       setState(() {
         objectsList.add(NsgFilePickerObject(image: Image.file(File(image.path)), description: basenameWithoutExtension(image.path)));
+        galleryPage = false;
       });
     } else {
-      progress.hide(Get.context);
       setState(() {
         error = 'Ошибка камеры';
       });
@@ -274,43 +273,55 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       ));
     }
     List<Widget> listWithPlus = list;
-    listWithPlus.add(NsgImagePickerButton(
-        icon: Icons.add,
-        text: 'Добавить фото',
-        onPressed: () {
-          if (kIsWeb) {
-            galleryImage();
-          } else if (GetPlatform.isWindows) {
-            galleryImage();
-          } else {
-            setState(() {
-              galleryPage = false;
-            });
-          }
-        }));
+    listWithPlus.add(NsgImagePickerButton(onPressed: () {
+      if (kIsWeb) {
+        galleryImage();
+      } else if (GetPlatform.isWindows) {
+        galleryImage();
+      } else {
+        cameraImage();
+      }
+    }, onPressed2: () {
+      galleryImage();
+    }));
 
-    return ResponsiveGridList(minSpacing: 10, desiredItemWidth: 150, children: listWithPlus);
+    return RawScrollbar(
+        minOverscrollLength: 100,
+        minThumbLength: 100,
+        thickness: 16,
+        trackBorderColor: ControlOptions.instance.colorMainDark,
+        trackColor: ControlOptions.instance.colorMainDark,
+        thumbColor: ControlOptions.instance.colorMain,
+        radius: const Radius.circular(0),
+        thumbVisibility: true,
+        trackVisibility: true,
+        controller: scrollController,
+        child: SingleChildScrollView(
+            controller: scrollController,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: ResponsiveGridList(scroll: false, minSpacing: 10, desiredItemWidth: 150, children: listWithPlus),
+            )));
   }
 
   Widget body() {
-    if (galleryPage) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (error != '')
-            NsgText(
-              margin: const EdgeInsets.only(top: 10),
-              error,
-              backColor: ControlOptions.instance.colorError.withOpacity(0.2),
-            ),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: _getImages(),
-          )),
-        ],
-      );
-    } else {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (error != '')
+          NsgText(
+            margin: const EdgeInsets.only(top: 10),
+            error,
+            backColor: ControlOptions.instance.colorError.withOpacity(0.2),
+          ),
+        Expanded(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: _getImages(),
+        )),
+      ],
+    );
+    /*else {
       return Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -355,7 +366,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           ),
         ),
       );
-    }
+    }*/
   }
 
   @override
@@ -388,37 +399,109 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 }
 
 class NsgImagePickerButton extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final void Function()? onPressed;
-  const NsgImagePickerButton({Key? key, required this.icon, required this.text, required this.onPressed}) : super(key: key);
+  final void Function() onPressed;
+  final void Function() onPressed2;
+  const NsgImagePickerButton({Key? key, required this.onPressed, required this.onPressed2}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: ControlOptions.instance.colorMain.withOpacity(0.5),
-      child: InkWell(
-        hoverColor: ControlOptions.instance.colorMain,
-        onTap: onPressed,
-        child: Container(
-          decoration: BoxDecoration(
-            color: ControlOptions.instance.colorMain,
-          ),
-          width: 150,
-          height: 150,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 64, color: ControlOptions.instance.colorInverted),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: NsgText(text, color: ControlOptions.instance.colorInverted),
+    return (!kIsWeb && GetPlatform.isWindows)
+        ? InkWell(
+            hoverColor: ControlOptions.instance.colorMain,
+            onTap: onPressed,
+            child: Container(
+              decoration: BoxDecoration(
+                color: ControlOptions.instance.colorMain,
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+              width: 150,
+              height: 150,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add, size: 64, color: ControlOptions.instance.colorInverted),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: NsgText('Добавить фото', color: ControlOptions.instance.colorInverted),
+                  ),
+                ],
+              ),
+            ),
+          )
+        : Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(color: ControlOptions.instance.colorMainDark),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: ControlOptions.instance.colorMainDark,
+                  ),
+                  width: 175,
+                  height: 72,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add, size: 32, color: ControlOptions.instance.colorInverted),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0),
+                        child: NsgText('Добавить фото', color: ControlOptions.instance.colorInverted),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        hoverColor: ControlOptions.instance.colorMain,
+                        onTap: onPressed,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: ControlOptions.instance.colorMain,
+                          ),
+                          height: 72,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.camera_alt_outlined, size: 32, color: ControlOptions.instance.colorInverted),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 0),
+                                child: NsgText('Камера', color: ControlOptions.instance.colorInverted),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: InkWell(
+                        hoverColor: ControlOptions.instance.colorMain,
+                        onTap: onPressed2,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: ControlOptions.instance.colorMain,
+                          ),
+                          height: 72,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.photo_library_outlined, size: 32, color: ControlOptions.instance.colorInverted),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 0),
+                                child: NsgText('Галерея', color: ControlOptions.instance.colorInverted),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
   }
 }
 

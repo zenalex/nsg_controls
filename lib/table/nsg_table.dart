@@ -108,8 +108,7 @@ class _NsgTableState extends State<NsgTable> {
 
   /// Вертикальный разделитель в шапке таблицы
   Widget delitel() {
-    return Container(
-        width: 2, height: 42, margin: EdgeInsets.symmetric(horizontal: 6), decoration: BoxDecoration(color: ControlOptions.instance.colorMainDark));
+    return Container(width: 2, height: 42, margin: const EdgeInsets.only(right: 5), decoration: BoxDecoration(color: ControlOptions.instance.colorMainDark));
   }
 
   /// Оборачивание виджета в Expanded
@@ -325,7 +324,8 @@ class _NsgTableState extends State<NsgTable> {
                 } else if (sortElement == NsgTableColumnSort.backward) {
                   column.sort = NsgTableColumnSort.nosort;
                 }
-                //вызываем сортировку
+
+                /// Вызываем сортировку
                 widget.controller.sorting.clear();
                 if (column.sort != NsgTableColumnSort.nosort) {
                   widget.controller.sorting.add(
@@ -539,64 +539,34 @@ class _NsgTableState extends State<NsgTable> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Flexible(
-              child: NsgButton(
-            height: 32,
-            width: 32,
-            borderRadius: 5,
-            style: 'widget',
-            widget: Icon(Icons.add_circle_outline, color: ControlOptions.instance.colorMainText),
-            padding: EdgeInsets.all(3),
-            margin: EdgeInsets.only(right: 5, top: 5, bottom: 5),
+          NsgTableMenuButton(
+            tooltip: 'Добавить строку',
+            icon: Icons.add_circle_outline,
             onPressed: () {},
-          )),
-          Flexible(
-              child: NsgButton(
-            height: 32,
-            width: 32,
-            borderRadius: 5,
-            style: 'widget',
-            widget: Icon(Icons.edit, color: ControlOptions.instance.colorMainText),
-            padding: EdgeInsets.all(3),
-            margin: EdgeInsets.only(right: 5, top: 5, bottom: 5),
+          ),
+          NsgTableMenuButton(
+            tooltip: 'Редактировать строку',
+            icon: Icons.edit,
             onPressed: () {},
-          )),
-          Flexible(
-              child: NsgButton(
-            height: 32,
-            width: 32,
-            borderRadius: 5,
-            style: 'widget',
-            widget: Icon(Icons.copy, color: ControlOptions.instance.colorMainText),
-            padding: EdgeInsets.all(3),
-            margin: EdgeInsets.only(right: 5, top: 5, bottom: 5),
+          ),
+          NsgTableMenuButton(
+            tooltip: 'Копировать строку',
+            icon: Icons.copy,
             onPressed: () {},
-          )),
-          Flexible(
-              child: NsgButton(
-            height: 32,
-            width: 32,
-            borderRadius: 5,
-            style: 'widget',
-            widget: Icon(Icons.delete_forever_outlined, color: ControlOptions.instance.colorMainText),
-            padding: EdgeInsets.all(3),
-            margin: EdgeInsets.only(right: 0, top: 5, bottom: 5),
+          ),
+          NsgTableMenuButton(
+            tooltip: 'Удалить строку',
+            icon: Icons.delete_forever_outlined,
             onPressed: () {},
-          )),
+          ),
           delitel(),
-          Flexible(
-              child: NsgButton(
-            height: 32,
-            width: 32,
-            borderRadius: 5,
-            style: 'widget',
-            widget: Icon(Icons.edit_note_outlined, color: ControlOptions.instance.colorMainText),
-            padding: EdgeInsets.all(3),
-            margin: EdgeInsets.only(right: 5, top: 5, bottom: 5),
+          NsgTableMenuButton(
+            tooltip: 'Отображение колонок',
+            icon: Icons.edit_note_outlined,
             onPressed: () {
               Get.dialog(
                   NsgPopUp(
-                      title: 'Отображение колонок',
+                      title: 'Порядок и отключение колонок',
                       width: 300,
                       getContent: () => [
                             NsgTableColumnsReorder(
@@ -618,30 +588,29 @@ class _NsgTableState extends State<NsgTable> {
                       }),
                   barrierDismissible: false);
             },
-          )),
-          Flexible(
-              child: NsgButton(
-            height: 32,
-            width: 32,
-            borderRadius: 5,
-            style: 'widget',
-            widget: Icon(Icons.view_column_outlined, color: ControlOptions.instance.colorMainText),
-            padding: EdgeInsets.all(3),
-            margin: EdgeInsets.only(right: 0, top: 5, bottom: 5),
+          ),
+          NsgTableMenuButton(
+            tooltip: 'Ширина колонок',
+            icon: Icons.view_column_outlined,
             onPressed: () {},
-          )),
+          ),
           delitel(),
-          Flexible(
-              child: NsgButton(
-            height: 32,
-            width: 32,
-            borderRadius: 5,
-            style: 'widget',
-            widget: Icon(Icons.print_outlined, color: ControlOptions.instance.colorMainText),
-            padding: EdgeInsets.all(3),
-            margin: EdgeInsets.only(right: 0, top: 5, bottom: 5),
+          NsgTableMenuButton(
+            tooltip: 'Вывод на печать',
+            icon: Icons.print_outlined,
             onPressed: () {},
-          )),
+          ),
+          delitel(),
+          NsgTableMenuButton(
+            tooltip: 'Фильтр по тексту',
+            icon: Icons.filter_alt_outlined,
+            onPressed: () {},
+          ),
+          NsgTableMenuButton(
+            tooltip: 'Фильтр по периоду',
+            icon: Icons.date_range_outlined,
+            onPressed: () {},
+          ),
           delitel(),
         ],
       ),
@@ -684,6 +653,15 @@ class _NsgTableState extends State<NsgTable> {
             textAlign = TextAlign.right;
           }
           Type runtimeType = column.totalSum.runtimeType;
+          String text = '';
+          if (runtimeType == double) {
+            if (column.totalSum != 0.0) text = column.totalSum.toStringAsFixed(2);
+          } else if (runtimeType == int) {
+            if (column.totalSum != 0) text = column.totalSum.toString();
+          } else {
+            text = column.totalSum.toString();
+          }
+
           totalsRow.add(wrapExpanded(
               child: showCell(
                   align: column.rowAlign ?? defaultRowAlign,
@@ -705,8 +683,7 @@ class _NsgTableState extends State<NsgTable> {
                         )
                       : SizedBox(
                           width: double.infinity,
-                          child: Text(runtimeType == double ? column.totalSum.toStringAsFixed(2) : column.totalSum.toString(),
-                              textAlign: textAlign, style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500)),
+                          child: Text(text, textAlign: textAlign, style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500)),
                         )),
               expanded: column.expanded,
               flex: column.flex));
@@ -730,7 +707,7 @@ class _NsgTableState extends State<NsgTable> {
 
     // BUILD TABLE ------------------------------------------------------------------------------------------------------------------------------------------>
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.topLeft,
       child: Container(
           decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
           child: widget.columnsEditMode == true
@@ -790,7 +767,11 @@ class _NsgTableState extends State<NsgTable> {
 
       /// Если Дата
     } else if (field is NsgDataDateField) {
-      text = '${NsgDateFormat.dateFormat(fieldkey, format: 'dd.MM.yy')}';
+      if (fieldkey != DateTime(0) && fieldkey != DateTime(1754, 01, 01)) {
+        text = '${NsgDateFormat.dateFormat(fieldkey, format: 'dd.MM.yy')}';
+      } else {
+        text = '';
+      }
       textAlign = TextAlign.center;
 
       /// Если Double
@@ -850,5 +831,35 @@ class _NsgTableState extends State<NsgTable> {
               style: style,
               textAlign: textAlign),
         );
+  }
+}
+
+class NsgTableMenuButton extends StatelessWidget {
+  final String tooltip;
+  final IconData icon;
+  final EdgeInsets margin;
+  final VoidCallback onPressed;
+  const NsgTableMenuButton(
+      {Key? key, required this.tooltip, required this.icon, this.margin = const EdgeInsets.only(right: 5, top: 5, bottom: 5), required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+        child: Tooltip(
+      message: tooltip,
+      textStyle: TextStyle(color: ControlOptions.instance.colorMain, fontSize: ControlOptions.instance.sizeS),
+      decoration: BoxDecoration(color: ControlOptions.instance.colorMainText),
+      child: NsgButton(
+        height: 32,
+        width: 32,
+        borderRadius: 5,
+        style: 'widget',
+        widget: Icon(icon, color: ControlOptions.instance.colorMainText),
+        padding: EdgeInsets.all(3),
+        margin: margin,
+        onPressed: onPressed,
+      ),
+    ));
   }
 }
