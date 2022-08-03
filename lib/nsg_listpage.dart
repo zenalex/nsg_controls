@@ -18,37 +18,40 @@ class NsgListPage extends StatelessWidget {
   /// Колонки для вывода в режиме "таблица"
   List<NsgTableColumn>? columns;
 
-  ///Заголовок для AppBar
+  /// Заголовок для AppBar
   final String title;
 
-  ///Подзаголовок для AppBar
+  /// Подзаголовок для AppBar
   final String? subtitle;
 
-  ///Текст для отображения в случае отсутствия элементов
+  /// Показывать в подзаголовок для AppBar кол-во элементов с текстом указанным в этой переменной
+  final String? showCount;
+
+  /// Текст для отображения в случае отсутствия элементов
   final String textNoItems;
 
-  ///Страница для создания нового элемента
+  /// Страница для создания нового элемента
   final String elementEditPage;
 
-  ///Функция, вызываемая для прорисовки кадого элемента списка
+  /// Функция, вызываемая для прорисовки кадого элемента списка
   final Widget Function(NsgDataItem) widget;
 
-  ///Контроллер, содержащий отображаемые данные
+  /// Контроллер, содержащий отображаемые данные
   final NsgDataController controller;
 
-  ///Реакция на нажатие на элемент. Если не задан, то будет вывана функция контроллера controller.itemPageOpen
+  /// Реакция на нажатие на элемент. Если не задан, то будет вывана функция контроллера controller.itemPageOpen
   final void Function(NsgDataItem)? onElementTap;
 
-  ///Виджет Appbar
+  /// Виджет Appbar
   Widget? appBar;
 
-  ///Цвета Appbar
+  /// Цвета Appbar
   Color? appBarColor, appBarBackColor;
 
-  ///Иконки Appbar
+  /// Иконки Appbar
   IconData? appBarIcon, appBarIcon2, appBarIcon3;
 
-  ///Функции иконок
+  /// Функции иконок
   final VoidCallback? appBarOnPressed, appBarOnPressed2, appBarOnPressed3;
 
   /// Тип отображения элементов на странице
@@ -68,6 +71,7 @@ class NsgListPage extends StatelessWidget {
       required this.controller,
       required this.title,
       this.subtitle,
+      this.showCount,
       required this.textNoItems,
       required this.widget,
       required this.elementEditPage,
@@ -256,7 +260,7 @@ ListView.builder(
           backColor: appBarBackColor,
           key: GlobalKey(),
           text: title,
-          text2: subtitle != null ? controller.items.length.toString() + ' ' + subtitle! : null,
+          text2: showCount != null ? controller.items.length.toString() + ' ' + showCount! : subtitle,
           colorsInverted: true,
           bottomCircular: true,
           icon: appBarIcon,
