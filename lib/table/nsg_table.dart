@@ -462,41 +462,42 @@ class _NsgTableState extends State<NsgTable> {
     });
 
     /// Цикл построения ячеек таблицы (строки)
-    for (var row in widget.controller.items) {
-      List<Widget> tableRow = [];
+    if (widget.controller.items.isNotEmpty) {
+      for (var row in widget.controller.items) {
+        List<Widget> tableRow = [];
 
-      /// Цикл построения ячеек таблицы (колонки)
-      visibleColumns.asMap().forEach((index, column) {
-        if (widget.showTotals) {
-          if (column.totalType == NsgTableColumnTotalType.sum) {
-            column.totalSum += row[column.name];
-          } else if (column.totalType == NsgTableColumnTotalType.count) {
-            column.totalSum += 1;
+        /// Цикл построения ячеек таблицы (колонки)
+        visibleColumns.asMap().forEach((index, column) {
+          if (widget.showTotals) {
+            if (column.totalType == NsgTableColumnTotalType.sum) {
+              column.totalSum += row[column.name];
+            } else if (column.totalType == NsgTableColumnTotalType.count) {
+              column.totalSum += 1;
+            }
           }
-        }
-        tableRow.add(widget.rowOnTap != null
-            ? wrapExpanded(
-                child: InkWell(
-                    onTap: () {
-                      widget.rowOnTap!(row, column.name);
-                    },
-                    onLongPress: () {
-                      var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(row) ?? '';
-                      Clipboard.setData(ClipboardData(text: textValue));
-                      Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
-                          icon: Icon(Icons.info, size: 32, color: ControlOptions.instance.colorMainText),
-                          titleText: null,
-                          duration: const Duration(seconds: 3),
-                          maxWidth: 320,
-                          snackPosition: SnackPosition.BOTTOM,
-                          barBlur: 0,
-                          overlayBlur: 0,
-                          colorText: ControlOptions.instance.colorMainText,
-                          backgroundColor: ControlOptions.instance.colorMainDark);
-                    },
-                    onHover: (b) {
-                      /// Раскрашиваем строку в цет при наведении на неё - OnHover
-                      /*
+          tableRow.add(widget.rowOnTap != null
+              ? wrapExpanded(
+                  child: InkWell(
+                      onTap: () {
+                        widget.rowOnTap!(row, column.name);
+                      },
+                      onLongPress: () {
+                        var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(row) ?? '';
+                        Clipboard.setData(ClipboardData(text: textValue));
+                        Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
+                            icon: Icon(Icons.info, size: 32, color: ControlOptions.instance.colorMainText),
+                            titleText: null,
+                            duration: const Duration(seconds: 3),
+                            maxWidth: 320,
+                            snackPosition: SnackPosition.BOTTOM,
+                            barBlur: 0,
+                            overlayBlur: 0,
+                            colorText: ControlOptions.instance.colorMainText,
+                            backgroundColor: ControlOptions.instance.colorMainDark);
+                      },
+                      onHover: (b) {
+                        /// Раскрашиваем строку в цет при наведении на неё - OnHover
+                        /*
                       if (widget.selectCellOnHover == true) {
                         // Ячейке присваиваем isSelected
                         _selectedRow = row;
@@ -507,26 +508,27 @@ class _NsgTableState extends State<NsgTable> {
                         _selectedColumn = null;
                       }
                       */
-                      //setState(() {});
-                    },
-                    child: showCell(
-                        align: column.rowAlign ?? defaultRowAlign,
-                        backColor: column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
-                        width: column.width,
-                        child: _rowWidget(row, column),
-                        isSelected: row == _selectedRow && (_selectedColumn == null || _selectedColumn == column))),
-                expanded: column.expanded,
-                flex: column.flex)
-            : wrapExpanded(
-                child: showCell(
-                    align: column.rowAlign ?? defaultRowAlign,
-                    backColor: column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
-                    width: column.width,
-                    child: _rowWidget(row, column)),
-                expanded: column.expanded,
-                flex: column.flex));
-      });
-      tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
+                        //setState(() {});
+                      },
+                      child: showCell(
+                          align: column.rowAlign ?? defaultRowAlign,
+                          backColor: column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                          width: column.width,
+                          child: _rowWidget(row, column),
+                          isSelected: row == _selectedRow && (_selectedColumn == null || _selectedColumn == column))),
+                  expanded: column.expanded,
+                  flex: column.flex)
+              : wrapExpanded(
+                  child: showCell(
+                      align: column.rowAlign ?? defaultRowAlign,
+                      backColor: column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                      width: column.width,
+                      child: _rowWidget(row, column)),
+                  expanded: column.expanded,
+                  flex: column.flex));
+        });
+        tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
+      }
     }
 
     // TOP MENU --------------------------------------------------------------------------------------------------------------------------------------------->
@@ -652,7 +654,7 @@ class _NsgTableState extends State<NsgTable> {
           backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
           color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
           width: 16,
-          child: SizedBox()));
+          child: const SizedBox()));
       table.add(IntrinsicHeight(
           child: Container(
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
@@ -664,51 +666,53 @@ class _NsgTableState extends State<NsgTable> {
     }
 
     /// Цикл построения "Итого" таблицы
-    if (widget.showTotals) {
-      List<Widget> totalsRow = [];
+    if (widget.controller.items.isNotEmpty) {
+      if (widget.showTotals) {
+        List<Widget> totalsRow = [];
 
-      visibleColumns.asMap().forEach((index, column) {
-        var fieldkey = widget.controller.items.last.getFieldValue(column.name);
-        var field = widget.controller.items.last.fieldList.fields[column.name];
-        TextAlign textAlign = TextAlign.left;
+        visibleColumns.asMap().forEach((index, column) {
+          var fieldkey = widget.controller.items.last.getFieldValue(column.name);
+          var field = widget.controller.items.last.fieldList.fields[column.name];
+          TextAlign textAlign = TextAlign.left;
 
-        /// Если Double
-        if (field is NsgDataDoubleField) {
-          textAlign = TextAlign.right;
+          /// Если Double
+          if (field is NsgDataDoubleField) {
+            textAlign = TextAlign.right;
 
-          /// Если Int
-        } else if (field is NsgDataIntField) {
-          textAlign = TextAlign.right;
-        }
-        Type runtimeType = column.totalSum.runtimeType;
-        totalsRow.add(wrapExpanded(
-            child: showCell(
-                align: column.rowAlign ?? defaultRowAlign,
-                backColor: ControlOptions.instance.tableHeaderColor,
-                width: column.width,
-                child: index == 0
-                    ? Row(
-                        children: [
-                          Text(
-                            'Итого: ',
-                            style:
-                                TextStyle(color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            column.totalSum.toString(),
-                            style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500),
-                          )
-                        ],
-                      )
-                    : SizedBox(
-                        width: double.infinity,
-                        child: Text(runtimeType == double ? column.totalSum.toStringAsFixed(2) : column.totalSum.toString(),
-                            textAlign: textAlign, style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500)),
-                      )),
-            expanded: column.expanded,
-            flex: column.flex));
-      });
-      tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: totalsRow)));
+            /// Если Int
+          } else if (field is NsgDataIntField) {
+            textAlign = TextAlign.right;
+          }
+          Type runtimeType = column.totalSum.runtimeType;
+          totalsRow.add(wrapExpanded(
+              child: showCell(
+                  align: column.rowAlign ?? defaultRowAlign,
+                  backColor: ControlOptions.instance.tableHeaderColor,
+                  width: column.width,
+                  child: index == 0
+                      ? Row(
+                          children: [
+                            Text(
+                              'Итого: ',
+                              style: TextStyle(
+                                  color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              column.totalSum.toString(),
+                              style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500),
+                            )
+                          ],
+                        )
+                      : SizedBox(
+                          width: double.infinity,
+                          child: Text(runtimeType == double ? column.totalSum.toStringAsFixed(2) : column.totalSum.toString(),
+                              textAlign: textAlign, style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500)),
+                        )),
+              expanded: column.expanded,
+              flex: column.flex));
+        });
+        tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: totalsRow)));
+      }
     }
 
     // TABLEBODY -------------------------------------------------------------------------------------------------------------------------------------------->
@@ -725,34 +729,37 @@ class _NsgTableState extends State<NsgTable> {
     ));
 
     // BUILD TABLE ------------------------------------------------------------------------------------------------------------------------------------------>
-    return Container(
-        decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-        child: widget.columnsEditMode == true
-            ? Stack(alignment: Alignment.topLeft, children: [
-                Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
-                Container(
-                  padding: const EdgeInsets.only(right: 10, bottom: 10),
-                  child: SingleChildScrollView(
-                    controller: scrollHorResizers,
-                    scrollDirection: Axis.horizontal,
-                    child: ResizeLines(
-                        onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
-                        columnsEditMode: widget.columnsEditMode,
-                        columnsOnResize: (resizedColumns) {
-                          tableColumns = resizedColumns;
-                          setState(() {});
-                        },
-                        columns: tableColumns),
-                  ),
-                )
-              ])
-            : IntrinsicWidth(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: table),
-              ));
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(
+          decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+          child: widget.columnsEditMode == true
+              ? Stack(alignment: Alignment.topLeft, children: [
+                  Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
+                  Container(
+                    padding: const EdgeInsets.only(right: 10, bottom: 10),
+                    child: SingleChildScrollView(
+                      controller: scrollHorResizers,
+                      scrollDirection: Axis.horizontal,
+                      child: ResizeLines(
+                          onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
+                          columnsEditMode: widget.columnsEditMode,
+                          columnsOnResize: (resizedColumns) {
+                            tableColumns = resizedColumns;
+                            setState(() {});
+                          },
+                          columns: tableColumns),
+                    ),
+                  )
+                ])
+              : IntrinsicWidth(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: table),
+                )),
+    );
   }
 
   Widget _headerWidget(NsgTableColumn column) {
