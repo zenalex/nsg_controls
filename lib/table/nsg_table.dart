@@ -28,7 +28,6 @@ class NsgTable extends StatefulWidget {
       this.horizontalScrollEnabled = true,
       this.rowOnTap,
       this.headerOnTap,
-      this.columnsEditMode = false,
       this.onColumnsChange,
       this.showHeader = true})
       : super(key: key);
@@ -60,9 +59,6 @@ class NsgTable extends StatefulWidget {
   /// Разрешена ли сортировка колонок по клику в хедере
   final bool sortingClickEnabled;
 
-  /// Режим редактирования ширины колонок
-  final bool columnsEditMode;
-
   /// Параметры колонок
   final List<NsgTableColumn> columns;
 
@@ -79,6 +75,7 @@ class NsgTable extends StatefulWidget {
   /// Если обработчик вернет true - это остановит дальнейшую обработку события
   final bool Function(String)? headerOnTap;
 
+  /// Показывать или нет Header
   final bool showHeader;
 
   @override
@@ -157,6 +154,7 @@ class _NsgTableState extends State<NsgTable> {
     scrollHorHeader = scrollHorizontalGroup.addAndGet();
     scrollHorResizers = scrollHorizontalGroup.addAndGet();
     scrollVert = scrollVerticalGroup.addAndGet();
+
     tableColumns = List.from(widget.columns);
 
     /// Выставляем дефолтный режим просмотра таблицы
@@ -166,6 +164,10 @@ class _NsgTableState extends State<NsgTable> {
 
   @override
   void dispose() {
+    scrollHor.dispose();
+    scrollHorHeader.dispose();
+    scrollHorResizers.dispose();
+    scrollVert.dispose();
     super.dispose();
   }
 
@@ -244,6 +246,7 @@ class _NsgTableState extends State<NsgTable> {
 
   @override
   Widget build(BuildContext context) {
+    tableColumns = List.from(widget.columns);
     List<Widget> table = [];
     List<Widget> tableHeader = [];
     List<Widget> tableBody = [];
@@ -306,7 +309,7 @@ class _NsgTableState extends State<NsgTable> {
             ],
           );
         }
-        if (widget.sortingClickEnabled == true && column.columns == null && widget.columnsEditMode != true) {
+        if (widget.sortingClickEnabled == true && column.columns == null && editMode == NsgTableEditMode.view) {
           child = InkWell(
             /// Переключение сортировки
             onTap: () {
@@ -399,7 +402,7 @@ class _NsgTableState extends State<NsgTable> {
                 ],
               );
             }
-            if (widget.sortingClickEnabled == true && widget.columnsEditMode != true) {
+            if (widget.sortingClickEnabled == true && editMode == NsgTableEditMode.view) {
               child = InkWell(
                 /// Переключение сортировки
                 onTap: () {
@@ -533,88 +536,120 @@ class _NsgTableState extends State<NsgTable> {
 
     // TOP MENU --------------------------------------------------------------------------------------------------------------------------------------------->
     /// Верхнее меню управления таблицей
-    table.add(Container(
-      decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          NsgTableMenuButton(
-            tooltip: 'Добавить строку',
-            icon: Icons.add_circle_outline,
-            onPressed: () {},
-          ),
-          NsgTableMenuButton(
-            tooltip: 'Редактировать строку',
-            icon: Icons.edit,
-            onPressed: () {},
-          ),
-          NsgTableMenuButton(
-            tooltip: 'Копировать строку',
-            icon: Icons.copy,
-            onPressed: () {},
-          ),
-          NsgTableMenuButton(
-            tooltip: 'Удалить строку',
-            icon: Icons.delete_forever_outlined,
-            onPressed: () {},
-          ),
-          delitel(),
-          NsgTableMenuButton(
-            tooltip: 'Отображение колонок',
-            icon: Icons.edit_note_outlined,
-            onPressed: () {
-              Get.dialog(
-                  NsgPopUp(
-                      title: 'Порядок и отключение колонок',
-                      width: 300,
-                      getContent: () => [
-                            NsgTableColumnsReorder(
-                              controller: widget.controller,
-                              columns: widget.columns,
-                            )
-                          ],
-                      hint: 'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
-                      onConfirm: () {
-                        //print(widget.imageList.indexOf(_selected));
-                        /*   onConfirm(_selected);
+    if (editMode == NsgTableEditMode.view) {
+      table.add(Container(
+        decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
+        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            NsgTableMenuButton(
+              tooltip: 'Добавить строку',
+              icon: Icons.add_circle_outline,
+              onPressed: () {},
+            ),
+            NsgTableMenuButton(
+              tooltip: 'Редактировать строку',
+              icon: Icons.edit,
+              onPressed: () {},
+            ),
+            NsgTableMenuButton(
+              tooltip: 'Копировать строку',
+              icon: Icons.copy,
+              onPressed: () {},
+            ),
+            NsgTableMenuButton(
+              tooltip: 'Удалить строку',
+              icon: Icons.delete_forever_outlined,
+              onPressed: () {},
+            ),
+            NsgTableMenuButton(
+              tooltip: 'Обновить таблицу',
+              icon: Icons.refresh_rounded,
+              onPressed: () {},
+            ),
+            delitel(),
+            NsgTableMenuButton(
+              tooltip: 'Отображение колонок',
+              icon: Icons.edit_note_outlined,
+              onPressed: () {
+                Get.dialog(
+                    NsgPopUp(
+                        title: 'Порядок и отключение колонок',
+                        width: 300,
+                        getContent: () => [
+                              NsgTableColumnsReorder(
+                                controller: widget.controller,
+                                columns: widget.columns,
+                              )
+                            ],
+                        hint: 'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
+                        onConfirm: () {
+                          //print(widget.imageList.indexOf(_selected));
+                          /*   onConfirm(_selected);
               widget.dataItem.setFieldValue(
                   widget.fieldName, widget.imageList.indexOf(_selected));
 
               if (widget.onConfirm != null) widget.onConfirm!();
               //setState(() {});*/
 
-                        Get.back();
-                      }),
-                  barrierDismissible: false);
-            },
-          ),
-          NsgTableMenuButton(
-            tooltip: 'Ширина колонок',
-            icon: Icons.view_column_outlined,
-            onPressed: () {},
-          ),
-          delitel(),
-          NsgTableMenuButton(
-            tooltip: 'Вывод на печать',
-            icon: Icons.print_outlined,
-            onPressed: () {},
-          ),
-          delitel(),
-          NsgTableMenuButton(
-            tooltip: 'Фильтр по тексту',
-            icon: Icons.filter_alt_outlined,
-            onPressed: () {},
-          ),
-          NsgTableMenuButton(
-            tooltip: 'Фильтр по периоду',
-            icon: Icons.date_range_outlined,
-            onPressed: () {},
-          ),
-          delitel(),
-        ],
-      ),
-    ));
+                          Get.back();
+                        }),
+                    barrierDismissible: false);
+              },
+            ),
+            NsgTableMenuButton(
+              tooltip: 'Ширина колонок',
+              icon: Icons.view_column_outlined,
+              onPressed: () {
+                setState(() {
+                  editMode = NsgTableEditMode.columnsWidth;
+                });
+              },
+            ),
+            delitel(),
+            NsgTableMenuButton(
+              tooltip: 'Вывод на печать',
+              icon: Icons.print_outlined,
+              onPressed: () {},
+            ),
+            delitel(),
+            NsgTableMenuButton(
+              tooltip: 'Фильтр по тексту',
+              icon: Icons.filter_alt_outlined,
+              onPressed: () {},
+            ),
+            NsgTableMenuButton(
+              tooltip: 'Фильтр по периоду',
+              icon: Icons.date_range_outlined,
+              onPressed: () {},
+            ),
+            delitel(),
+          ],
+        ),
+      ));
+    } else if (editMode == NsgTableEditMode.columnsWidth) {
+      table.add(Container(
+        decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
+        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            NsgTableMenuButton(
+              tooltip: 'Отмена',
+              icon: Icons.remove,
+              onPressed: () {},
+            ),
+            NsgTableMenuButton(
+              tooltip: 'Применить',
+              icon: Icons.check,
+              onPressed: () {},
+            ),
+            delitel(),
+          ],
+        ),
+      ));
+    }
 
     /// Если showHeader, то показываем Header
     if (widget.showHeader) {
@@ -628,7 +663,7 @@ class _NsgTableState extends State<NsgTable> {
           child: Container(
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
               child: horScrollHeaderWrap(Container(
-        padding: widget.columnsEditMode == true ? const EdgeInsets.only(right: 510) : null,
+        padding: editMode == NsgTableEditMode.columnsWidth ? const EdgeInsets.only(right: 510) : null,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableHeader),
       )))));
@@ -696,7 +731,7 @@ class _NsgTableState extends State<NsgTable> {
     table.add(Flexible(
       child: Container(
         child: crossWrap(Container(
-            padding: widget.columnsEditMode == true
+            padding: editMode == NsgTableEditMode.columnsWidth
                 ? const EdgeInsets.only(right: 500, bottom: 0)
                 : EdgeInsets.only(bottom: 0, right: widget.horizontalScrollEnabled == true ? 0 : 0),
             //margin: EdgeInsets.only(bottom: 10, right: 10),
@@ -710,17 +745,17 @@ class _NsgTableState extends State<NsgTable> {
       alignment: Alignment.topLeft,
       child: Container(
           decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-          child: widget.columnsEditMode == true
+          child: editMode == NsgTableEditMode.columnsWidth
               ? Stack(alignment: Alignment.topLeft, children: [
                   Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
                   Container(
                     padding: const EdgeInsets.only(right: 10, bottom: 10),
                     child: SingleChildScrollView(
-                      controller: scrollHorResizers,
+                      //controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
                       scrollDirection: Axis.horizontal,
                       child: ResizeLines(
                           onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
-                          columnsEditMode: widget.columnsEditMode,
+                          columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
                           columnsOnResize: (resizedColumns) {
                             tableColumns = resizedColumns;
                             setState(() {});

@@ -9,6 +9,8 @@ class NsgTableColumnsReorder extends StatefulWidget {
   /// Параметры колонок
   final List<NsgTableColumn> columns;
 
+  
+
   /// Контроллер данных
   final NsgDataController controller;
   const NsgTableColumnsReorder({Key? key, required this.columns, required this.controller}) : super(key: key);
