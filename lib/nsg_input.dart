@@ -11,7 +11,7 @@ import 'package:nsg_data/nsg_data.dart';
 import 'nsg_control_options.dart';
 
 class NsgInput extends StatefulWidget {
-  final String? label;
+  final String label;
   final bool disabled;
   final bool? gesture;
   final double? fontSize;
@@ -25,7 +25,13 @@ class NsgInput extends StatefulWidget {
   final int maxLines;
   final int minLines;
 
-  // Высота
+  /// Красный текст валидации под текстовым полем
+  final String validateText;
+
+  /// Обязательное поле
+  final bool required;
+
+  /// Высота
   final double? height;
 
   /// Картинки для выводя рядом с текстом
@@ -62,16 +68,17 @@ class NsgInput extends StatefulWidget {
 
   const NsgInput(
       {Key? key,
+      this.validateText = '',
       required this.dataItem,
       required this.fieldName,
       this.selectionController,
       this.updateController,
-      this.label,
+      this.label = '',
       this.imagesList,
       this.disabled = false,
       this.fontSize = 16,
       this.borderRadius = 15,
-      this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 5),
+      this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 0),
       this.gesture,
       this.hint,
       this.onChanged,
@@ -85,7 +92,8 @@ class NsgInput extends StatefulWidget {
       this.inputType = NsgInputType.autoselect,
       this.selectionForm = '',
       this.keyboard = TextInputType.multiline,
-      this.mask})
+      this.mask,
+      this.required = false})
       : super(key: key);
 
   @override
@@ -162,7 +170,7 @@ class _NsgInputState extends State<NsgInput> {
       child,
       if (widget.disabled != true)
         Padding(
-          padding: const EdgeInsets.fromLTRB(0, 14, 0, 0),
+          padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
           child: NsgIconButton(
               onPressed: () {
                 widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
@@ -211,54 +219,81 @@ class _NsgInputState extends State<NsgInput> {
                         hasFocus ? print('Focus') : widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                       }
                     },
-                    child: TextFormField(
-                      inputFormatters: widget.mask != null
-                          ? [
-                              MaskTextInputFormatter(
-                                initialText: fieldValue.toString(),
-                                mask: widget.mask,
-                              )
-                            ]
-                          : null,
-                      maxLength: _maxLength,
-                      autofocus: false,
-                      maxLines: widget.maxLines,
-                      minLines: widget.minLines,
-                      keyboardType: widget.keyboard,
-                      initialValue: fieldValue.toString(),
-                      cursorColor: ControlOptions.instance.colorText,
-                      decoration: InputDecoration(
-                        counterText: "",
-                        labelText: widget.label != null
-                            ? widget.disabled == false
-                                ? widget.label!
-                                : '🔒 ${widget.label!}'
-                            : ' ',
-                        //hintText: "Phone number",
-                        alignLabelWithHint: true,
-                        contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 0, 10), //  <- you can it to 0.0 for no space
-                        isDense: true,
-                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
-                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
-                        labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                      ),
-                      key: GlobalKey(),
-                      onEditingComplete: () {
-                        //FocusScope.of(context).nextFocus();
-                        if (widget.onEditingComplete != null) {
-                          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                        }
-                      },
-                      onChanged: (String value) {
-                        if (inputType == NsgInputType.stringValue) {
-                          widget.dataItem.setFieldValue(widget.fieldName, value);
-                        }
-                        if (widget.onChanged != null) {
-                          widget.onChanged!(widget.dataItem);
-                        }
-                      },
-                      style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
-                      readOnly: widget.disabled,
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        if (widget.validateText != '')
+                          Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                widget.validateText,
+                                style: TextStyle(fontSize: 10, color: ControlOptions.instance.colorError),
+                              )),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: TextFormField(
+                              inputFormatters: widget.mask != null
+                                  ? [
+                                      MaskTextInputFormatter(
+                                        initialText: fieldValue.toString(),
+                                        mask: widget.mask,
+                                      )
+                                    ]
+                                  : null,
+                              maxLength: _maxLength,
+                              autofocus: false,
+                              maxLines: widget.maxLines,
+                              minLines: widget.minLines,
+                              keyboardType: widget.keyboard,
+                              initialValue: fieldValue.toString(),
+                              cursorColor: ControlOptions.instance.colorText,
+                              decoration: InputDecoration(
+                                prefix: widget.disabled == false
+                                    ? null
+                                    : Padding(
+                                        padding: const EdgeInsets.only(right: 3.0),
+                                        child: Icon(
+                                          Icons.lock,
+                                          size: 12,
+                                          color: ControlOptions.instance.colorMain,
+                                        ),
+                                      ),
+
+                                counterText: "",
+                                labelText: widget.required ? widget.label + ' *' : widget.label,
+                                //hintText: "Phone number",
+                                alignLabelWithHint: true,
+                                contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 0, 10), //  <- you can it to 0.0 for no space
+                                isDense: true,
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 2, color: widget.validateText != '' ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain)),
+                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
+                                labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                              ),
+                              key: GlobalKey(),
+                              onEditingComplete: () {
+                                //FocusScope.of(context).nextFocus();
+                                if (widget.onEditingComplete != null) {
+                                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                                }
+                              },
+                              onChanged: (String value) {
+                                if (inputType == NsgInputType.stringValue) {
+                                  widget.dataItem.setFieldValue(widget.fieldName, value);
+                                }
+                                if (widget.onChanged != null) {
+                                  widget.onChanged!(widget.dataItem);
+                                }
+                              },
+                              style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
+                              readOnly: widget.disabled,
+                            ),
+                          ),
+                        ),
+                      ],
                     ))),
         fieldValue.toString() != '');
   }
@@ -271,7 +306,7 @@ class _NsgInputState extends State<NsgInput> {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
         var form = NsgSelection(inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
         form.selectFromArray(
-          widget.label ?? '',
+          widget.label,
           (item) {
             widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
             if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
@@ -299,7 +334,7 @@ class _NsgInputState extends State<NsgInput> {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var form = NsgSelection(allValues: enumItem.getAll(), selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
       form.selectFromArray(
-        widget.label ?? '',
+        widget.label,
         (item) {
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
@@ -323,7 +358,7 @@ class _NsgInputState extends State<NsgInput> {
             height: 38,
             child: Row(
               children: [
-                Expanded(child: Text(widget.label ?? '')),
+                Expanded(child: Text(widget.label)),
                 CupertinoSwitch(
                     value: fieldValue,
                     activeColor: ControlOptions.instance.colorMain,
