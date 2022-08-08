@@ -57,7 +57,6 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                         selectedDate = value;
                       },
                       controller: widget.controller,
-                      periodSelected: widget.controller.controllerFilter.periodSelected,
                       periodTimeEnabled: widget.controller.controllerFilter.periodTimeEnabled)
                 ],
             onConfirm: () {
@@ -135,11 +134,9 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
 /// Контент фильтра в диалоговом окне
 class NsgPeriodFilterContent extends StatefulWidget {
   final NsgDataController controller;
-  final NsgPeriodType periodSelected;
   final bool periodTimeEnabled;
   final Function(NsgPeriod)? onSelect;
-  const NsgPeriodFilterContent({Key? key, this.onSelect, this.periodSelected = NsgPeriodType.year, this.periodTimeEnabled = false, required this.controller})
-      : super(key: key);
+  const NsgPeriodFilterContent({Key? key, this.onSelect, this.periodTimeEnabled = false, required this.controller}) : super(key: key);
 
   @override
   State<NsgPeriodFilterContent> createState() => NsgPeriodFilterContentState();
@@ -157,8 +154,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
     super.initState();
     date.beginDate = widget.controller.controllerFilter.nsgPeriod.beginDate;
     date.endDate = widget.controller.controllerFilter.nsgPeriod.endDate;
+    _selected = widget.controller.controllerFilter.nsgPeriod.type;
     date.setDateText();
-    _selected = widget.periodSelected;
     _timeselected = widget.periodTimeEnabled;
   }
 
