@@ -9,8 +9,6 @@ class NsgTableColumnsReorder extends StatefulWidget {
   /// Параметры колонок
   final List<NsgTableColumn> columns;
 
-  
-
   /// Контроллер данных
   final NsgDataController controller;
   const NsgTableColumnsReorder({Key? key, required this.columns, required this.controller}) : super(key: key);
@@ -29,6 +27,7 @@ class _NsgTableColumnsReorderState extends State<NsgTableColumnsReorder> {
           width: 280,
           height: 30,
           child: NsgCheckBox(
+              simple: true,
               label: value.presentation ?? NsgDataClient.client.getFieldList(widget.controller.dataType).fields[value.name]?.presentation ?? '',
               value: value.visible,
               onPressed: () {

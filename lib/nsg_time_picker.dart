@@ -9,7 +9,10 @@ class NsgTimePicker extends StatefulWidget {
   final TextAlign? textAlign;
   final EdgeInsets margin;
   final Duration initialTime;
-  final bool? disabled;
+  final bool disabled;
+
+  /// Убирает отступы сверху и снизу, убирает текст валидации
+  final bool simple;
   final Function(Duration endDate) onClose;
   const NsgTimePicker(
       {Key? key,
@@ -17,8 +20,9 @@ class NsgTimePicker extends StatefulWidget {
       required this.onClose,
       this.label = '',
       this.textAlign = TextAlign.center,
-      this.disabled,
-      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
+      this.disabled = false,
+      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      this.simple = false})
       : super(key: key);
 
   void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
@@ -151,14 +155,15 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
-                height: 13,
-                child: Text(
-                  widget.disabled == false ? widget.label! : '🔒 ${widget.label!}',
-                  textAlign: widget.textAlign,
-                  style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+              if (widget.simple != true)
+                SizedBox(
+                  height: 13,
+                  child: Text(
+                    widget.disabled == false ? widget.label! : '🔒 ${widget.label!}',
+                    textAlign: widget.textAlign,
+                    style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+                  ),
                 ),
-              ),
               Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),

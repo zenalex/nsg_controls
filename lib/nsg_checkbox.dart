@@ -11,6 +11,9 @@ class NsgCheckBox extends StatefulWidget {
   final VoidCallback onPressed;
   final EdgeInsets margin;
 
+  /// Убирает отступы сверху и снизу, убирает текст валидации
+  final bool simple;
+
   /// Красный текст валидации под текстовым полем
   final String validateText;
   const NsgCheckBox(
@@ -22,7 +25,8 @@ class NsgCheckBox extends StatefulWidget {
       required this.value,
       this.height = 44,
       required this.onPressed,
-      this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 0)})
+      this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      this.simple = false})
       : super(key: key);
 
   @override
@@ -44,7 +48,7 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: [
-            if (widget.validateText != '')
+            if (widget.validateText != '' && widget.simple != true)
               Align(
                   alignment: Alignment.bottomLeft,
                   child: Text(
@@ -57,9 +61,11 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
               alignment: Alignment.topLeft,
               child: Container(
                 decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 2, color: widget.validateText != '' ? ControlOptions.instance.colorError : Colors.transparent))),
+                    border: widget.simple != true
+                        ? Border(bottom: BorderSide(width: 2, color: widget.validateText != '' ? ControlOptions.instance.colorError : Colors.transparent))
+                        : null),
                 height: 34,
-                margin: const EdgeInsets.only(top: 15, bottom: 14),
+                margin: widget.simple == true ? const EdgeInsets.only(top: 0, bottom: 0) : const EdgeInsets.only(top: 15, bottom: 14),
                 //padding: const EdgeInsets.only(bottom: 17),
                 child: InkWell(
                   onTap: () {

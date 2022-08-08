@@ -49,7 +49,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   void showPopup(BuildContext context, Function(NsgPeriod date) onClose) {
     Get.dialog(
         NsgPopUp(
-            height: 440,
+            height: 370,
             title: 'Выберите период',
             getContent: () => [
                   NsgPeriodFilterContent(
@@ -77,7 +77,8 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
       width: widget.width,
       child: AnimatedCrossFade(
           duration: const Duration(milliseconds: 500),
-          crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState:
+              widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           firstChild: Container(),
           secondChild: _filterWidget()),
     );
@@ -102,7 +103,8 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
               ),
               Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
+                  decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
                   padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
                   child: Text(
                     _showPeriod(),
@@ -136,7 +138,8 @@ class NsgPeriodFilterContent extends StatefulWidget {
   final NsgDataController controller;
   final bool periodTimeEnabled;
   final Function(NsgPeriod)? onSelect;
-  const NsgPeriodFilterContent({Key? key, this.onSelect, this.periodTimeEnabled = false, required this.controller}) : super(key: key);
+  const NsgPeriodFilterContent({Key? key, this.onSelect, this.periodTimeEnabled = false, required this.controller})
+      : super(key: key);
 
   @override
   State<NsgPeriodFilterContent> createState() => NsgPeriodFilterContentState();
@@ -237,7 +240,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                               padding: const EdgeInsets.symmetric(horizontal: 6),
                               child: GestureDetector(
                                 onTap: () {
-                                  NsgDatePicker(initialTime: date.beginDate, onClose: (value) {}).showPopup(context, date.beginDate, (value) {
+                                  NsgDatePicker(initialTime: date.beginDate, onClose: (value) {})
+                                      .showPopup(context, date.beginDate, (value) {
                                     date.beginDate = value;
                                     _setToSelected(_selected);
                                     date.setDateText();
@@ -260,7 +264,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     margin: const EdgeInsets.all(0),
                                     padding: const EdgeInsets.all(0),
                                     style: "widget",
-                                    widget: Center(child: Icon(Icons.add, color: ControlOptions.instance.colorMainText)),
+                                    widget:
+                                        Center(child: Icon(Icons.add, color: ControlOptions.instance.colorMainText)),
                                     onPressed: () {
                                       date.plus();
                                       date.setDateText();
@@ -274,13 +279,14 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                         children: [
                           Expanded(
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              //NsgCheckBox(label: 'Сегодня', value: false, onPressed: () {}),
+                              //NsgCheckBox(simple:true,label: 'Сегодня', value: false, onPressed: () {}),
 
                               Row(
                                 children: [
                                   Expanded(
                                     child: NsgCheckBox(
-                                        margin: const EdgeInsets.all(0),
+                                        simple: true,
+                                        margin: const EdgeInsets.only(top: 5),
                                         radio: true,
                                         label: 'Год ',
                                         value: _selected == NsgPeriodType.year ? true : false,
@@ -292,7 +298,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   ),
                                   Expanded(
                                     child: NsgCheckBox(
-                                        margin: const EdgeInsets.all(0),
+                                        simple: true,
+                                        margin: const EdgeInsets.only(top: 5),
                                         radio: true,
                                         label: 'Квартал',
                                         value: _selected == NsgPeriodType.quarter ? true : false,
@@ -309,7 +316,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 children: [
                                   Expanded(
                                     child: NsgCheckBox(
-                                        margin: const EdgeInsets.all(0),
+                                        simple: true,
+                                        margin: const EdgeInsets.only(top: 5),
                                         radio: true,
                                         label: 'Месяц',
                                         value: _selected == NsgPeriodType.month ? true : false,
@@ -321,7 +329,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   ),
                                   Expanded(
                                     child: NsgCheckBox(
-                                        margin: const EdgeInsets.all(0),
+                                        simple: true,
+                                        margin: const EdgeInsets.only(top: 5),
                                         radio: true,
                                         label: 'Неделя',
                                         value: _selected == NsgPeriodType.week ? true : false,
@@ -338,7 +347,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 children: [
                                   Expanded(
                                     child: NsgCheckBox(
-                                        margin: const EdgeInsets.all(0),
+                                        simple: true,
+                                        margin: const EdgeInsets.only(top: 5),
                                         radio: true,
                                         label: 'День',
                                         value: _selected == NsgPeriodType.day ? true : false,
@@ -350,7 +360,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   ),
                                   Expanded(
                                       child: NsgButton(
-                                          margin: const EdgeInsets.all(0),
+                                          margin: const EdgeInsets.only(top: 5),
                                           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
                                           text: 'Сегодня',
                                           borderRadius: 10,
@@ -377,10 +387,14 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                                   NsgCheckBox(
-                                      margin: const EdgeInsets.all(0),
+                                      simple: true,
+                                      margin: const EdgeInsets.only(top: 5),
                                       radio: true,
                                       label: 'Период',
-                                      value: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? true : false,
+                                      value: _selected == NsgPeriodType.period ||
+                                              _selected == NsgPeriodType.periodWidthTime
+                                          ? true
+                                          : false,
                                       onPressed: () {
                                         _selected = NsgPeriodType.period;
                                         if (_timeselected) {
@@ -388,16 +402,22 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                               .startOf(Units.DAY)
                                               .add(duration: Duration(hours: time1.hour, minutes: time1.minute))
                                               .dateTime;
-                                          date.endDate =
-                                              Jiffy(date.endDate).startOf(Units.DAY).add(duration: Duration(hours: time2.hour, minutes: time2.minute)).dateTime;
+                                          date.endDate = Jiffy(date.endDate)
+                                              .startOf(Units.DAY)
+                                              .add(duration: Duration(hours: time2.hour, minutes: time2.minute))
+                                              .dateTime;
                                         }
                                         date.setToPeriod(date);
                                         setState(() {});
                                       }),
                                   Opacity(
-                                    opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
+                                    opacity:
+                                        _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
+                                            ? 1
+                                            : 0.3,
                                     child: NsgDatePicker(
-                                      margin: const EdgeInsets.all(0),
+                                      simple: true,
+                                      margin: const EdgeInsets.only(top: 5),
                                       initialTime: date.beginDate,
                                       onClose: (value) {
                                         if (value.difference(date.endDate) > const Duration(minutes: 0)) {
@@ -412,9 +432,13 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     ),
                                   ),
                                   Opacity(
-                                    opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
+                                    opacity:
+                                        _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
+                                            ? 1
+                                            : 0.3,
                                     child: NsgDatePicker(
-                                      margin: const EdgeInsets.all(0),
+                                      simple: true,
+                                      margin: const EdgeInsets.only(top: 5),
                                       initialTime: date.endDate,
                                       onClose: (value) {
                                         if (value.difference(date.beginDate) < const Duration(minutes: 0)) {
@@ -432,13 +456,17 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                               )),
                               Expanded(
                                   child: Opacity(
-                                opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
+                                opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
+                                    ? 1
+                                    : 0.3,
                                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                                   NsgCheckBox(
-                                      margin: const EdgeInsets.all(0),
+                                      simple: true,
+                                      margin: const EdgeInsets.only(top: 5),
                                       label: 'Время',
                                       value: _timeselected == true ? true : false,
-                                      onPressed: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
+                                      onPressed: _selected == NsgPeriodType.period ||
+                                              _selected == NsgPeriodType.periodWidthTime
                                           ? () {
                                               if (_timeselected) {
                                                 date.beginDate = Jiffy(date.beginDate)
@@ -453,7 +481,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                               } else {
                                                 date.beginDate = Jiffy(date.beginDate).startOf(Units.DAY).dateTime;
                                                 date.endDate = Jiffy(date.endDate).startOf(Units.DAY).dateTime;
-                                                _selected = NsgPeriodType.day;
+                                                _selected = NsgPeriodType.period;
                                               }
                                               date.setToPeriodWithTime(date);
                                               _timeselected = !_timeselected;
@@ -467,8 +495,9 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                             ? 1
                                             : 0.3,
                                     child: NsgTimePicker(
-                                      margin: const EdgeInsets.all(0),
-                                      disabled: !_timeselected == true ? true : false,
+                                      simple: true,
+                                      margin: const EdgeInsets.only(top: 5),
+                                      //disabled: !_timeselected == true ? true : false,
                                       initialTime: NsgDateFormat.timeToDuration(time1),
                                       onClose: (value) {
                                         time1 = DateTime(time1.year, time1.month, time1.day).add(value);
@@ -483,8 +512,9 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                             ? 1
                                             : 0.3,
                                     child: NsgTimePicker(
-                                      margin: const EdgeInsets.all(0),
-                                      disabled: !_timeselected == true ? true : false,
+                                      simple: true,
+                                      margin: const EdgeInsets.only(top: 5),
+                                      //disabled: !_timeselected == true ? true : false,
                                       initialTime: NsgDateFormat.timeToDuration(time2),
                                       onClose: (value) {
                                         time2 = DateTime(time2.year, time2.month, time2.day).add(value);

@@ -12,6 +12,9 @@ class NsgDatePicker extends StatefulWidget {
   final EdgeInsets margin;
   final DateTime initialTime;
   final bool? disabled;
+
+  /// Убирает отступы сверху и снизу, убирает текст валидации
+  final bool simple;
   final Function(DateTime endDate) onClose;
 
   const NsgDatePicker(
@@ -21,7 +24,8 @@ class NsgDatePicker extends StatefulWidget {
       this.label = '',
       this.textAlign = TextAlign.center,
       this.disabled = false,
-      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5)})
+      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      this.simple = false})
       : super(key: key);
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
@@ -89,14 +93,15 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
-                height: 13,
-                child: Text(
-                  widget.disabled == false ? widget.label! : '🔒 ${widget.label!}',
-                  textAlign: widget.textAlign,
-                  style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+              if (widget.simple != true)
+                SizedBox(
+                  height: 13,
+                  child: Text(
+                    widget.disabled == false ? widget.label! : '🔒 ${widget.label!}',
+                    textAlign: widget.textAlign,
+                    style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+                  ),
                 ),
-              ),
               Container(
                   //constraints: const BoxConstraints(minHeight: 40),
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
