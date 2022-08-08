@@ -17,7 +17,14 @@ class NsgSelection {
   Color? textColor;
   Color? colorInverted;
 
-  NsgSelection({required this.inputType, this.controller, this.rowWidget, this.allValues, this.selectedElement, this.textColor, this.colorInverted}) {
+  NsgSelection(
+      {required this.inputType,
+      this.controller,
+      this.rowWidget,
+      this.allValues,
+      this.selectedElement,
+      this.textColor,
+      this.colorInverted}) {
     if (inputType == NsgInputType.reference) {
       assert(controller != null);
     }
@@ -79,10 +86,10 @@ class NsgSelection {
     }
   }
 
-  void selectFromArray(String title, Function(NsgDataItem) onSelected) {
+  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected) {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
-      if (controller!.lateInit) controller!.requestItems();
+      controller!.requestItems();
     }
     Get.dialog(
         NsgPopUp(
@@ -91,11 +98,11 @@ class NsgSelection {
             dataController: controller,
             confirmText: 'Подтвердить',
             onConfirm: () {
+              Get.back();
               if (selectedElement != null) {
                 controller?.selectedItem = selectedElement;
                 onSelected(selectedElement!);
               }
-              Get.back();
             }),
         barrierDismissible: false);
   }
