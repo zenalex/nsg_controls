@@ -9,6 +9,7 @@ import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
+import 'nsg_table_menu_button.dart';
 
 /// Виджет отображения таблицы
 class NsgTable extends StatefulWidget {
@@ -653,12 +654,14 @@ class _NsgTableState extends State<NsgTable> {
 
     /// Если showHeader, то показываем Header
     if (widget.showHeader) {
-      tableHeader.add(showCell(
-          padding: const EdgeInsets.all(0),
-          backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-          color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
-          width: 16,
-          child: const SizedBox()));
+      if (horizontalScrollEnabled) {
+        tableHeader.add(showCell(
+            padding: const EdgeInsets.all(0),
+            backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+            color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+            width: 16,
+            child: const SizedBox()));
+      }
       table.add(IntrinsicHeight(
           child: Container(
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
@@ -866,35 +869,5 @@ class _NsgTableState extends State<NsgTable> {
               style: style,
               textAlign: textAlign),
         );
-  }
-}
-
-class NsgTableMenuButton extends StatelessWidget {
-  final String tooltip;
-  final IconData icon;
-  final EdgeInsets margin;
-  final VoidCallback onPressed;
-  const NsgTableMenuButton(
-      {Key? key, required this.tooltip, required this.icon, this.margin = const EdgeInsets.only(right: 5, top: 5, bottom: 5), required this.onPressed})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Flexible(
-        child: Tooltip(
-      message: tooltip,
-      textStyle: TextStyle(color: ControlOptions.instance.colorMain, fontSize: ControlOptions.instance.sizeS),
-      decoration: BoxDecoration(color: ControlOptions.instance.colorMainText),
-      child: NsgButton(
-        height: 32,
-        width: 32,
-        borderRadius: 5,
-        style: 'widget',
-        widget: Icon(icon, color: ControlOptions.instance.colorMainText),
-        padding: EdgeInsets.all(3),
-        margin: margin,
-        onPressed: onPressed,
-      ),
-    ));
   }
 }
