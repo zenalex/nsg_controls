@@ -62,10 +62,17 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
               child: Container(
                 decoration: BoxDecoration(
                     border: widget.simple != true
-                        ? Border(bottom: BorderSide(width: 2, color: widget.validateText != '' ? ControlOptions.instance.colorError : Colors.transparent))
+                        ? Border(
+                            bottom: BorderSide(
+                                width: 2,
+                                color: widget.validateText != ''
+                                    ? ControlOptions.instance.colorError
+                                    : Colors.transparent))
                         : null),
                 height: 34,
-                margin: widget.simple == true ? const EdgeInsets.only(top: 0, bottom: 0) : const EdgeInsets.only(top: 15, bottom: 14),
+                margin: widget.simple == true
+                    ? const EdgeInsets.only(top: 0, bottom: 0)
+                    : const EdgeInsets.only(top: 15, bottom: 14),
                 //padding: const EdgeInsets.only(bottom: 17),
                 child: InkWell(
                   onTap: () {
@@ -82,18 +89,26 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (widget.radio == true)
-                          Icon(widget.value == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
-                              color: widget.value == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark)
+                          Icon(
+                              widget.value == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
+                              color: widget.value == true
+                                  ? ControlOptions.instance.colorMainDark
+                                  : ControlOptions.instance.colorMainDark)
                         else
                           Icon(widget.value == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                              color: widget.value == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark),
+                              color: widget.value == true
+                                  ? ControlOptions.instance.colorMainDark
+                                  : ControlOptions.instance.colorMainDark),
                         const SizedBox(width: 4),
-                        Expanded(
+                        Flexible(
                           child: Text(
                             widget.label,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(height: 1, color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
+                            style: TextStyle(
+                                height: 1,
+                                color: ControlOptions.instance.colorText,
+                                fontSize: ControlOptions.instance.sizeM),
                           ),
                         )
                       ],
