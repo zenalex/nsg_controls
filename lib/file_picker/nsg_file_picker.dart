@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:file_picker/file_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,14 @@ class NsgFilePicker extends StatefulWidget {
   final bool showAsWidget;
   final List<String> allowedImageFormats;
   final List<String> allowedFileFormats;
+  final bool useFilePicker;
   final Function(List<NsgFilePickerObject>) callback;
   const NsgFilePicker(
       {Key? key,
       this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
       this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
       this.showAsWidget = false,
+      this.useFilePicker = false,
       required this.callback})
       : super(key: key);
 
@@ -116,6 +119,33 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           }
         });
       }
+    }
+  }
+
+  /// Pick an image
+  Future pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'pdf', 'doc'],
+    );
+    if (result != null) {
+      setState(() {
+        galleryPage = true;
+        for (var element in result.files) {
+          String? fileType = extension(element.name).replaceAll('.', '');
+
+          if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
+            objectsList
+                .add(NsgFilePickerObject(image: Image.file(File(element.name)), description: basenameWithoutExtension(element.name), fileType: fileType));
+          } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
+            objectsList
+                .add(NsgFilePickerObject(file: File(element.name), image: null, description: basenameWithoutExtension(element.name), fileType: fileType));
+          } else {
+            error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+            setState(() {});
+          }
+        }
+      });
     }
   }
 
@@ -274,6 +304,9 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     }
     List<Widget> listWithPlus = list;
     listWithPlus.add(NsgImagePickerButton(onPressed: () {
+      if (widget.useFilePicker) {
+        pickFile();
+      }
       if (kIsWeb) {
         galleryImage();
       } else if (GetPlatform.isWindows) {
