@@ -860,6 +860,15 @@ class _NsgTableState extends State<NsgTable> {
       }
     }
 
+    //Если задана функция возврата widget для вывода в ячейке, берем widget из неё
+    if (column.getColumnWidget != null) {
+      Widget cellWidget = column.getColumnWidget!(item, column, widget);
+      return SizedBox(
+        width: double.infinity,
+        child: cellWidget,
+      );
+    }
+
     //Если задана функция возврата значения для вывода в ячейке, берем text из неё
     if (column.getColumnText != null) {
       text = column.getColumnText!(item, column, text);

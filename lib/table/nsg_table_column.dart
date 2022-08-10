@@ -68,6 +68,8 @@ class NsgTableColumn {
 
   String Function(NsgDataItem item, NsgTableColumn column, String defaultText)? getColumnText;
 
+  Widget Function(NsgDataItem item, NsgTableColumn column, Widget widget)? getColumnWidget;
+
   NsgTableColumn({
     required this.name,
     this.columns,
