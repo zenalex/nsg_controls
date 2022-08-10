@@ -68,28 +68,29 @@ class NsgTableColumn {
 
   String Function(NsgDataItem item, NsgTableColumn column, String defaultText)? getColumnText;
 
-  Widget Function(NsgDataItem item, NsgTableColumn column, Widget widget)? getColumnWidget;
+  Widget Function(NsgDataItem item, NsgTableColumn column)? getColumnWidget;
 
-  NsgTableColumn({
-    required this.name,
-    this.columns,
-    this.totalType = NsgTableColumnTotalType.none,
-    this.presentation,
-    this.expanded = false,
-    this.totalSum = 0,
-    this.flex = 1,
-    this.width,
-    this.visible = true,
-    this.sort = NsgTableColumnSort.nosort,
-    this.headerAlign,
-    this.headerTextAlign,
-    this.headerTextStyle,
-    this.headerBackColor,
-    this.rowAlign,
-    this.rowTextAlign,
-    this.rowBackColor,
-    this.rowTextStyle,
-    this.showTotals = false,
-    this.allowSort = true,
-  });
+  NsgTableColumn(
+      {required this.name,
+      this.columns,
+      this.totalType = NsgTableColumnTotalType.none,
+      this.presentation,
+      this.expanded = false,
+      this.totalSum = 0,
+      this.flex = 1,
+      this.width,
+      this.visible = true,
+      this.sort = NsgTableColumnSort.nosort,
+      this.headerAlign,
+      this.headerTextAlign,
+      this.headerTextStyle,
+      this.headerBackColor,
+      this.rowAlign,
+      this.rowTextAlign,
+      this.rowBackColor,
+      this.rowTextStyle,
+      this.showTotals = false,
+      this.allowSort = true,
+      this.getColumnText,
+      this.getColumnWidget});
 }

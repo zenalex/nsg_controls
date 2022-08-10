@@ -862,7 +862,7 @@ class _NsgTableState extends State<NsgTable> {
 
     //Если задана функция возврата widget для вывода в ячейке, берем widget из неё
     if (column.getColumnWidget != null) {
-      Widget cellWidget = column.getColumnWidget!(item, column, widget);
+      Widget cellWidget = column.getColumnWidget!(item, column);
       return SizedBox(
         width: double.infinity,
         child: cellWidget,
