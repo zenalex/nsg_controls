@@ -860,6 +860,11 @@ class _NsgTableState extends State<NsgTable> {
       }
     }
 
+    //Если задана функция возврата значения для вывода в ячейке, берем text из неё
+    if (column.getColumnText != null) {
+      text = column.getColumnText!(item, column, text);
+    }
+
     return icon ??
         SizedBox(
           width: double.infinity,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nsg_data/nsg_data.dart';
 import 'nsg_table_column_sort.dart';
 import 'nsg_table_column_total_type.dart';
 
@@ -64,6 +65,8 @@ class NsgTableColumn {
 
   ///Разрешить сортировку по данному столбцу
   bool allowSort;
+
+  String Function(NsgDataItem item, NsgTableColumn column, String defaultText)? getColumnText;
 
   NsgTableColumn({
     required this.name,
