@@ -654,14 +654,13 @@ class _NsgTableState extends State<NsgTable> {
 
     /// Если showHeader, то показываем Header
     if (widget.showHeader) {
-      if (horizontalScrollEnabled) {
-        tableHeader.add(showCell(
-            padding: const EdgeInsets.all(0),
-            backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-            color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
-            width: 16,
-            child: const SizedBox()));
-      }
+      tableHeader.add(showCell(
+          padding: const EdgeInsets.all(0),
+          backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+          color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+          width: 16,
+          child: const SizedBox()));
+
       table.add(IntrinsicHeight(
           child: Container(
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
@@ -736,7 +735,7 @@ class _NsgTableState extends State<NsgTable> {
         child: crossWrap(Container(
             padding: editMode == NsgTableEditMode.columnsWidth
                 ? const EdgeInsets.only(right: 500, bottom: 0)
-                : EdgeInsets.only(bottom: 0, right: widget.horizontalScrollEnabled == true ? 0 : 0),
+                : EdgeInsets.only(bottom: 0, right: horizontalScrollEnabled ? 0 : 16),
             //margin: EdgeInsets.only(bottom: 10, right: 10),
             //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
             child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
