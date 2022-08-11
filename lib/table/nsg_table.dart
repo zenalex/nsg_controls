@@ -743,35 +743,38 @@ class _NsgTableState extends State<NsgTable> {
     ));
 
     // BUILD TABLE ------------------------------------------------------------------------------------------------------------------------------------------>
-    return Container(
-        width: horizontalScrollEnabled == false ? double.infinity : null,
-        decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-        child: editMode == NsgTableEditMode.columnsWidth
-            ? Stack(alignment: Alignment.topLeft, children: [
-                Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
-                Container(
-                  padding: const EdgeInsets.only(right: 10, bottom: 10),
-                  child: SingleChildScrollView(
-                    //controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
-                    scrollDirection: Axis.horizontal,
-                    child: ResizeLines(
-                        onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
-                        columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
-                        columnsOnResize: (resizedColumns) {
-                          tableColumns = resizedColumns;
-                          setState(() {});
-                        },
-                        columns: tableColumns),
-                  ),
-                )
-              ])
-            : IntrinsicWidth(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: table),
-              ));
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Container(
+          width: horizontalScrollEnabled == false ? double.infinity : null,
+          decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+          child: editMode == NsgTableEditMode.columnsWidth
+              ? Stack(alignment: Alignment.topLeft, children: [
+                  Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
+                  Container(
+                    padding: const EdgeInsets.only(right: 10, bottom: 10),
+                    child: SingleChildScrollView(
+                      //controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
+                      scrollDirection: Axis.horizontal,
+                      child: ResizeLines(
+                          onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
+                          columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
+                          columnsOnResize: (resizedColumns) {
+                            tableColumns = resizedColumns;
+                            setState(() {});
+                          },
+                          columns: tableColumns),
+                    ),
+                  )
+                ])
+              : IntrinsicWidth(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: table),
+                )),
+    );
   }
 
   Widget _headerWidget(NsgTableColumn column) {
