@@ -34,7 +34,7 @@ class NsgListPage extends StatelessWidget {
   final String elementEditPage;
 
   /// Функция, вызываемая для прорисовки кадого элемента списка
-  final Widget Function(NsgDataItem) widget;
+  final Widget Function(NsgDataItem)? elementWidget;
 
   /// Контроллер, содержащий отображаемые данные
   final NsgDataController controller;
@@ -73,7 +73,7 @@ class NsgListPage extends StatelessWidget {
       this.subtitle,
       this.showCount,
       required this.textNoItems,
-      required this.widget,
+      this.elementWidget,
       required this.elementEditPage,
       this.columns,
       this.type = NsgListPageMode.list,
@@ -156,7 +156,7 @@ class NsgListPage extends StatelessWidget {
                     Expanded(
                       child: controller.obx(
                           (state) => Container(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                               child: SmartRefresher(
                                 key: _refresherKey,
                                 enablePullDown: true,
@@ -247,7 +247,7 @@ ListView.builder(
       ));
     } else {
       for (var element in controller.items) {
-        list.add(InkWell(onTap: () => _elementTap(element), child: widget(element)));
+        list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
       }
     }
     return list;
