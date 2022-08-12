@@ -21,3 +21,4 @@ export 'table/nsg_table_column.dart';
 export 'table/nsg_table_column_sort.dart';
 export 'table/nsg_table_row.dart';
 export 'table/nsg_table_cell.dart';
+export 'table/nsg_table_menu_button_type.dart';

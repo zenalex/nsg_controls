@@ -633,12 +633,12 @@ class _NsgTableState extends State<NsgTable> {
               ),
             delitel(),
             //TODO: Временно отключил. Сделать через печать PDF?
-            if (widget.availableButtons.contains(NsgTableMenuButtonType.printTable))
-              NsgTableMenuButton(
-                tooltip: 'Вывод на печать',
-                icon: Icons.print_outlined,
-                onPressed: () {},
-              ),
+            // if (widget.availableButtons.contains(NsgTableMenuButtonType.printTable))
+            //   NsgTableMenuButton(
+            //     tooltip: 'Вывод на печать',
+            //     icon: Icons.print_outlined,
+            //     onPressed: () {},
+            //   ),
             delitel(),
             if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
               NsgTableMenuButton(
@@ -646,12 +646,13 @@ class _NsgTableState extends State<NsgTable> {
                 icon: Icons.filter_alt_outlined,
                 onPressed: () {},
               ),
-            if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-              NsgTableMenuButton(
-                tooltip: 'Фильтр по периоду',
-                icon: Icons.date_range_outlined,
-                onPressed: () {},
-              ),
+            //TODO: Перенести фильтра в саму таблицу
+            // if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+            //   NsgTableMenuButton(
+            //     tooltip: 'Фильтр по периоду',
+            //     icon: Icons.date_range_outlined,
+            //     onPressed: () {},
+            //   ),
             delitel(),
           ],
         ),
