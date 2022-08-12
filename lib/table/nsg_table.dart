@@ -5,6 +5,7 @@ import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
 import 'package:nsg_controls/table/nsg_table_editmode.dart';
+import 'package:nsg_controls/table/nsg_table_menu_button_type.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import 'column_resizer.dart';
@@ -30,7 +31,9 @@ class NsgTable extends StatefulWidget {
       this.rowOnTap,
       this.headerOnTap,
       this.onColumnsChange,
-      this.showHeader = true})
+      this.showHeader = true,
+      this.availableButtons = NsgTableMenuButtonType.allValues,
+      this.elementEditPageName})
       : super(key: key);
 
   /// Кол-во отображаемых строк в теле таблицы
@@ -78,6 +81,12 @@ class NsgTable extends StatefulWidget {
 
   /// Показывать или нет Header
   final bool showHeader;
+
+  ///Перечисление доступных для пользователя Кнопок управления таблицей
+  final List<NsgTableMenuButtonType> availableButtons;
+
+  ///Имя страницы для создания и редактирования страницы элемента строки таблицы
+  final String? elementEditPageName;
 
   @override
   State<NsgTable> createState() => _NsgTableState();
@@ -544,87 +553,105 @@ class _NsgTableState extends State<NsgTable> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            NsgTableMenuButton(
-              tooltip: 'Добавить строку',
-              icon: Icons.add_circle_outline,
-              onPressed: () {},
-            ),
-            NsgTableMenuButton(
-              tooltip: 'Редактировать строку',
-              icon: Icons.edit,
-              onPressed: () {},
-            ),
-            NsgTableMenuButton(
-              tooltip: 'Копировать строку',
-              icon: Icons.copy,
-              onPressed: () {},
-            ),
-            NsgTableMenuButton(
-              tooltip: 'Удалить строку',
-              icon: Icons.delete_forever_outlined,
-              onPressed: () {},
-            ),
-            NsgTableMenuButton(
-              tooltip: 'Обновить таблицу',
-              icon: Icons.refresh_rounded,
-              onPressed: () {},
-            ),
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.createNewElement))
+              NsgTableMenuButton(
+                  tooltip: 'Добавить строку',
+                  icon: Icons.add_circle_outline,
+                  onPressed: () {
+                    if (widget.elementEditPageName != null) {
+                      widget.controller.itemNewPageOpen(widget.elementEditPageName!);
+                    }
+                  }),
+            //TODO: Редактирование строк. Зачем?
+            // if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement))
+            //   NsgTableMenuButton(
+            //     tooltip: 'Редактировать строку',
+            //     icon: Icons.edit,
+            //     onPressed: () {},
+            //   ),
+            //TODO: Копирование строк. Сделать.
+            // if (widget.availableButtons.contains(NsgTableMenuButtonType.copyElement))
+            //   NsgTableMenuButton(
+            //     tooltip: 'Копировать строку',
+            //     icon: Icons.copy,
+            //     onPressed: () {},
+            //   ),
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.removeElement))
+              NsgTableMenuButton(
+                tooltip: 'Удалить строку',
+                icon: Icons.delete_forever_outlined,
+                onPressed: () {},
+              ),
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.refreshTable))
+              NsgTableMenuButton(
+                tooltip: 'Обновить таблицу',
+                icon: Icons.refresh_rounded,
+                onPressed: () {
+                  widget.controller.refreshData();
+                },
+              ),
             delitel(),
-            NsgTableMenuButton(
-              tooltip: 'Отображение колонок',
-              icon: Icons.edit_note_outlined,
-              onPressed: () {
-                Get.dialog(
-                    NsgPopUp(
-                        title: 'Порядок и отключение колонок',
-                        width: 300,
-                        getContent: () => [
-                              NsgTableColumnsReorder(
-                                controller: widget.controller,
-                                columns: widget.columns,
-                              )
-                            ],
-                        hint: 'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
-                        onConfirm: () {
-                          //print(widget.imageList.indexOf(_selected));
-                          /*   onConfirm(_selected);
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSelect))
+              NsgTableMenuButton(
+                tooltip: 'Отображение колонок',
+                icon: Icons.edit_note_outlined,
+                onPressed: () {
+                  Get.dialog(
+                      NsgPopUp(
+                          title: 'Порядок и отключение колонок',
+                          width: 300,
+                          getContent: () => [
+                                NsgTableColumnsReorder(
+                                  controller: widget.controller,
+                                  columns: widget.columns,
+                                )
+                              ],
+                          hint: 'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
+                          onConfirm: () {
+                            //print(widget.imageList.indexOf(_selected));
+                            /*   onConfirm(_selected);
               widget.dataItem.setFieldValue(
                   widget.fieldName, widget.imageList.indexOf(_selected));
 
               if (widget.onConfirm != null) widget.onConfirm!();
               //setState(() {});*/
 
-                          Get.back();
-                        }),
-                    barrierDismissible: false);
-              },
-            ),
-            NsgTableMenuButton(
-              tooltip: 'Ширина колонок',
-              icon: Icons.view_column_outlined,
-              onPressed: () {
-                setState(() {
-                  editMode = NsgTableEditMode.columnsWidth;
-                });
-              },
-            ),
+                            Get.back();
+                          }),
+                      barrierDismissible: false);
+                },
+              ),
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize))
+              NsgTableMenuButton(
+                tooltip: 'Ширина колонок',
+                icon: Icons.view_column_outlined,
+                onPressed: () {
+                  setState(() {
+                    editMode = NsgTableEditMode.columnsWidth;
+                  });
+                },
+              ),
             delitel(),
-            NsgTableMenuButton(
-              tooltip: 'Вывод на печать',
-              icon: Icons.print_outlined,
-              onPressed: () {},
-            ),
+            //TODO: Временно отключил. Сделать через печать PDF?
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.printTable))
+              NsgTableMenuButton(
+                tooltip: 'Вывод на печать',
+                icon: Icons.print_outlined,
+                onPressed: () {},
+              ),
             delitel(),
-            NsgTableMenuButton(
-              tooltip: 'Фильтр по тексту',
-              icon: Icons.filter_alt_outlined,
-              onPressed: () {},
-            ),
-            NsgTableMenuButton(
-              tooltip: 'Фильтр по периоду',
-              icon: Icons.date_range_outlined,
-              onPressed: () {},
-            ),
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+              NsgTableMenuButton(
+                tooltip: 'Фильтр по тексту',
+                icon: Icons.filter_alt_outlined,
+                onPressed: () {},
+              ),
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+              NsgTableMenuButton(
+                tooltip: 'Фильтр по периоду',
+                icon: Icons.date_range_outlined,
+                onPressed: () {},
+              ),
             delitel(),
           ],
         ),

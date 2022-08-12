@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -19,6 +20,18 @@ class NsgFilePicker extends StatefulWidget {
   final List<String> allowedImageFormats;
   final List<String> allowedFileFormats;
   final bool useFilePicker;
+
+  ///Максимальная ширина картинки. При превышении, картинка будет пережата.
+  final double imageMaxWidth;
+
+  ///Максимальная высота картинки. При превышении, картинка будет пережата
+  final double imageMaxHeight;
+
+  ///Качество сжатия картинки в jpeg (100 - макс)
+  final int imageQuality;
+
+  ///Максимально разрешенный размер файла для выбора. При превышении размера файла, его выбор будет запрещен
+  final double fileMaxSize;
   final Function(List<NsgFilePickerObject>) callback;
   const NsgFilePicker(
       {Key? key,
@@ -26,6 +39,10 @@ class NsgFilePicker extends StatefulWidget {
       this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
       this.showAsWidget = false,
       this.useFilePicker = false,
+      this.imageMaxWidth = 1440.0,
+      this.imageMaxHeight = 1440.0,
+      this.imageQuality = 70,
+      this.fileMaxSize = 1000000.0,
       required this.callback})
       : super(key: key);
 
@@ -67,9 +84,9 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   Future galleryImage() async {
     if (kIsWeb) {
       final result = await ImagePicker().pickMultiImage(
-        imageQuality: 70,
-        maxWidth: 1440,
-        maxHeight: 1440,
+        imageQuality: widget.imageQuality,
+        maxWidth: widget.imageMaxWidth,
+        maxHeight: widget.imageMaxHeight,
       );
       if (result != null) {
         setState(() {
@@ -81,9 +98,9 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       }
     } else if (GetPlatform.isWindows) {
       final result = await ImagePicker().pickMultiImage(
-        imageQuality: 70,
-        maxWidth: 1440,
-        maxHeight: 1440,
+        imageQuality: widget.imageQuality,
+        maxWidth: widget.imageMaxWidth,
+        maxHeight: widget.imageMaxHeight,
       );
       if (result != null) {
         setState(() {
@@ -106,9 +123,9 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       }
     } else {
       final result = await ImagePicker().pickMultiImage(
-        imageQuality: 70,
-        maxWidth: 1440,
-        maxHeight: 1440,
+        imageQuality: widget.imageQuality,
+        maxWidth: widget.imageMaxWidth,
+        maxHeight: widget.imageMaxHeight,
       );
 
       if (result != null) {
@@ -124,28 +141,28 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   /// Pick an image
   Future pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'pdf', 'doc'],
-    );
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: [...widget.allowedFileFormats, ...widget.allowedImageFormats]);
     if (result != null) {
-      setState(() {
-        galleryPage = true;
-        for (var element in result.files) {
-          String? fileType = extension(element.name).replaceAll('.', '');
+      galleryPage = true;
+      for (var element in result.files) {
+        String? fileType = extension(element.name).replaceAll('.', '');
 
-          if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
-            objectsList
-                .add(NsgFilePickerObject(image: Image.file(File(element.name)), description: basenameWithoutExtension(element.name), fileType: fileType));
-          } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
-            objectsList
-                .add(NsgFilePickerObject(file: File(element.name), image: null, description: basenameWithoutExtension(element.name), fileType: fileType));
-          } else {
-            error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
-            setState(() {});
-          }
+        var file = File(element.name);
+        if ((await file.length()) > widget.fileMaxSize) {
+          error = 'Превышен саксимальный размер файла ${(widget.fileMaxSize / 1024).toString()} кБайт';
+          setState(() {});
+          return;
         }
-      });
+        if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
+          objectsList.add(NsgFilePickerObject(image: Image.file(File(element.name)), description: basenameWithoutExtension(element.name), fileType: fileType));
+        } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
+          objectsList.add(NsgFilePickerObject(file: File(element.name), image: null, description: basenameWithoutExtension(element.name), fileType: fileType));
+        } else {
+          error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+          setState(() {});
+        }
+      }
     }
   }
 
