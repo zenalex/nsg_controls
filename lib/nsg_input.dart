@@ -66,6 +66,9 @@ class NsgInput extends StatefulWidget {
   /// Маска текста
   final String? mask;
 
+  ///При работе с enum можно задать возможные варианты для выбора, если не заданы, будут предложены все
+  final List<NsgDataItem>? itemsToSelect;
+
   const NsgInput(
       {Key? key,
       this.validateText = '',
@@ -93,6 +96,7 @@ class NsgInput extends StatefulWidget {
       this.selectionForm = '',
       this.keyboard = TextInputType.multiline,
       this.mask,
+      this.itemsToSelect,
       this.required = false})
       : super(key: key);
 
@@ -332,7 +336,8 @@ class _NsgInputState extends State<NsgInput> {
       }
     } else if (inputType == NsgInputType.enumReference && widget.disabled != true) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
-      var form = NsgSelection(allValues: enumItem.getAll(), selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
+      var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
+      var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
       form.selectFromArray(
         widget.label,
         (item) {
