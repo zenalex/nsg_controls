@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
-
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'nsg_icon_button.dart';
 import 'nsg_input_type.dart';
 import 'nsg_selection.dart';
@@ -66,6 +66,9 @@ class NsgInput extends StatefulWidget {
   /// Маска текста
   final String? mask;
 
+  /// Поле с телефоном и специальной маской для телефонов разных стран
+  final bool phoneMask;
+
   ///При работе с enum можно задать возможные варианты для выбора, если не заданы, будут предложены все
   final List<NsgDataItem>? itemsToSelect;
 
@@ -96,6 +99,7 @@ class NsgInput extends StatefulWidget {
       this.selectionForm = '',
       this.keyboard = TextInputType.multiline,
       this.mask,
+      this.phoneMask = false,
       this.itemsToSelect,
       this.required = false})
       : super(key: key);
@@ -139,6 +143,7 @@ class NsgInput extends StatefulWidget {
 class _NsgInputState extends State<NsgInput> {
   late NsgInputType inputType;
   NsgBaseController? selectionController;
+  PhoneInputFormatter phoneFormatter = PhoneInputFormatter();
 
   get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
 
@@ -238,14 +243,16 @@ class _NsgInputState extends State<NsgInput> {
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 15),
                             child: TextFormField(
-                              inputFormatters: widget.mask != null
-                                  ? [
-                                      MaskTextInputFormatter(
-                                        initialText: fieldValue.toString(),
-                                        mask: widget.mask,
-                                      )
-                                    ]
-                                  : null,
+                              inputFormatters: widget.phoneMask != null
+                                  ? [phoneFormatter]
+                                  : widget.mask != null
+                                      ? [
+                                          MaskTextInputFormatter(
+                                            initialText: fieldValue.toString(),
+                                            mask: widget.mask,
+                                          )
+                                        ]
+                                      : null,
                               maxLength: _maxLength,
                               autofocus: false,
                               maxLines: widget.maxLines,
