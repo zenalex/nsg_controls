@@ -243,7 +243,7 @@ class _NsgInputState extends State<NsgInput> {
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 15),
                             child: TextFormField(
-                              inputFormatters: widget.phoneMask != null
+                              inputFormatters: widget.phoneMask == true
                                   ? [phoneFormatter]
                                   : widget.mask != null
                                       ? [
