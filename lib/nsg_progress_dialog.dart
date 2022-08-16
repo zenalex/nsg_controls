@@ -10,7 +10,7 @@ class NsgProgressDialog {
   Function? requestStop;
   String textDialog;
   NsgProgressDialog({this.percent, this.canStopped, this.requestStop, this.textDialog = 'Загрузка данных...'});
-  void show(ctx) {
+  void show() {
     // открываем popup с прогрессбаром NsgProgressBar
     //print("SHOW");
     Get.dialog(
@@ -34,7 +34,7 @@ class NsgProgressDialog {
                         text: 'Отмена',
                         onPressed: () {
                           if (requestStop != null) requestStop!();
-                          Navigator.of(ctx).pop();
+                          Get.back();
                         },
                       ),
                   ],
@@ -46,10 +46,10 @@ class NsgProgressDialog {
         barrierDismissible: false);
   }
 
-  void hide(ctx) {
+  void hide() {
     // закрываем popup
     //print("HIDE");
-    Navigator.of(ctx).pop(true);
+    Get.back();
   }
   // При нажатии на кнопку отмены вызываем requestStop - убираем кнопку отмены, пишем "обработка отмены"
 }
