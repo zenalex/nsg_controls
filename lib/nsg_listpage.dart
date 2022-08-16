@@ -262,7 +262,7 @@ ListView.builder(
           text: title,
           text2: showCount != null
               ? controller.totalCount != null
-                  ? controller.totalCount.toString() + ' ' + showCount!
+                  ? showCount! + ' ' + controller.totalCount.toString()
                   : null
               : subtitle,
           colorsInverted: true,
