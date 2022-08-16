@@ -15,13 +15,18 @@ class NsgGrid extends StatelessWidget {
     List<Widget> list = [];
     List<Widget> row = [];
     for (var element in children) {
-      row.add(Expanded(child: element));
+      row.add(Expanded(flex: 2, child: element));
       count++;
       if (count > crossAxisCount - 1) {
         list.add(Row(children: row));
         count = 0;
         row = [];
       }
+    }
+    if (count.isOdd) {
+      row.add(Expanded(child: SizedBox()));
+      row.insert(0, Expanded(child: SizedBox()));
+      list.add(Row(children: row));
     }
 
     return Column(children: list);

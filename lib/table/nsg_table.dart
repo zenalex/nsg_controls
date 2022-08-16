@@ -82,7 +82,29 @@ class NsgTable extends StatefulWidget {
   /// Показывать или нет Header
   final bool showHeader;
 
-  ///Перечисление доступных для пользователя Кнопок управления таблицей
+  /// Перечисление доступных для пользователя Кнопок управления таблицей
+  /*
+  // Добавить строку
+  NsgTableMenuButtonType.createNewElement,
+  // Редактировать строку
+  NsgTableMenuButtonType.editElement,
+  // Копировать строку
+  NsgTableMenuButtonType.copyElement,
+  // Удалить строку
+  NsgTableMenuButtonType.removeElement,
+  // Обновить таблицу
+  NsgTableMenuButtonType.refreshTable,
+  // Отображение колонок
+  NsgTableMenuButtonType.columnsSelect,
+  // Ширина колонок
+  NsgTableMenuButtonType.columnsSize,
+  // Вывод на печать
+  NsgTableMenuButtonType.printTable,
+  // Фильтр по тексту
+  NsgTableMenuButtonType.filterText,
+  // Фильтр по периоду
+  NsgTableMenuButtonType.filterPeriod
+  */
   final List<NsgTableMenuButtonType> availableButtons;
 
   ///Имя страницы для создания и редактирования страницы элемента строки таблицы
@@ -115,7 +137,11 @@ class _NsgTableState extends State<NsgTable> {
 
   /// Вертикальный разделитель в шапке таблицы
   Widget delitel() {
-    return Container(width: 2, height: 42, margin: const EdgeInsets.only(right: 5), decoration: BoxDecoration(color: ControlOptions.instance.colorMainDark));
+    if (widget.availableButtons == null) {
+      return Container(width: 2, height: 42, margin: const EdgeInsets.only(right: 5), decoration: BoxDecoration(color: ControlOptions.instance.colorMainDark));
+    } else {
+      return SizedBox();
+    }
   }
 
   /// Оборачивание виджета в Expanded
@@ -563,6 +589,8 @@ class _NsgTableState extends State<NsgTable> {
                     }
                   }),
             //TODO: Редактирование строк. Зачем?
+            // Чтобы редактировать строки на месте - при клике, все колонки меняются на инпуты и редактируем прямо внутри строки
+            //
             // if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement))
             //   NsgTableMenuButton(
             //     tooltip: 'Редактировать строку',
@@ -580,7 +608,9 @@ class _NsgTableState extends State<NsgTable> {
               NsgTableMenuButton(
                 tooltip: 'Удалить строку',
                 icon: Icons.delete_forever_outlined,
-                onPressed: () {},
+                onPressed: () {
+                  // removeItem()
+                },
               ),
             if (widget.availableButtons.contains(NsgTableMenuButtonType.refreshTable))
               NsgTableMenuButton(
