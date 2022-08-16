@@ -609,6 +609,9 @@ class _NsgTableState extends State<NsgTable> {
                 tooltip: 'Удалить строку',
                 icon: Icons.delete_forever_outlined,
                 onPressed: () {
+                  setState(() {
+                    editMode = NsgTableEditMode.rowDelete;
+                  });
                   // removeItem()
                 },
               ),
@@ -692,12 +695,49 @@ class _NsgTableState extends State<NsgTable> {
         decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             NsgTableMenuButton(
               tooltip: 'Отмена',
-              icon: Icons.remove,
+              icon: Icons.close,
+              onPressed: () {
+                setState(() {
+                  editMode = NsgTableEditMode.view;
+                });
+              },
+            ),
+            Text(
+              'Ширина колонок',
+              style: TextStyle(color: ControlOptions.instance.colorMainText),
+            ),
+            NsgTableMenuButton(
+              tooltip: 'Применить',
+              icon: Icons.check,
               onPressed: () {},
+            ),
+            delitel(),
+          ],
+        ),
+      ));
+    } else if (editMode == NsgTableEditMode.rowDelete) {
+      table.add(Container(
+        decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
+        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            NsgTableMenuButton(
+              tooltip: 'Отмена',
+              icon: Icons.close,
+              onPressed: () {
+                setState(() {
+                  editMode = NsgTableEditMode.view;
+                });
+              },
+            ),
+            Text(
+              'Удаление строк',
+              style: TextStyle(color: ControlOptions.instance.colorMainText),
             ),
             NsgTableMenuButton(
               tooltip: 'Применить',
@@ -712,12 +752,14 @@ class _NsgTableState extends State<NsgTable> {
 
     /// Если showHeader, то показываем Header
     if (widget.showHeader) {
-      tableHeader.add(showCell(
-          padding: const EdgeInsets.all(0),
-          backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-          color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
-          width: 16,
-          child: const SizedBox()));
+      if (editMode == NsgTableEditMode.view) {
+        tableHeader.add(showCell(
+            padding: const EdgeInsets.all(0),
+            backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+            color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+            width: 16,
+            child: const SizedBox()));
+      }
 
       table.add(IntrinsicHeight(
           child: Container(
@@ -810,9 +852,9 @@ class _NsgTableState extends State<NsgTable> {
               ? Stack(alignment: Alignment.topLeft, children: [
                   Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
                   Container(
-                    padding: const EdgeInsets.only(right: 10, bottom: 10),
+                    margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
                     child: SingleChildScrollView(
-                      //controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
+                      controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
                       scrollDirection: Axis.horizontal,
                       child: ResizeLines(
                           onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
