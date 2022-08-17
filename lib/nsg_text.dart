@@ -31,7 +31,9 @@ class NsgText extends StatelessWidget {
   final String text;
   final NsgTextType? type;
   final NsgTextStyle? style;
-  const NsgText(this.text, {Key? key, this.margin = EdgeInsets.zero, this.overflow, this.maxLines, this.color, this.backColor, this.type, this.style})
+  final TextAlign? textAlign;
+  const NsgText(this.text,
+      {Key? key, this.margin = EdgeInsets.zero, this.overflow, this.maxLines, this.color, this.backColor, this.type, this.style, this.textAlign})
       : super(key: key);
 
   @override
@@ -47,6 +49,7 @@ class NsgText extends StatelessWidget {
             padding: margin,
             child: Text(
               text,
+              textAlign: textAlign,
               style: mergedStyle,
               maxLines: maxLines,
               overflow: overflow,
@@ -58,6 +61,7 @@ class NsgText extends StatelessWidget {
             decoration: BoxDecoration(color: backColor),
             child: Text(
               text,
+              textAlign: textAlign,
               overflow: TextOverflow.visible,
               maxLines: 2,
               style: mergedStyle,
