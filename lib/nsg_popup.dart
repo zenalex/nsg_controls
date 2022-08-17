@@ -23,6 +23,7 @@ class NsgPopUp extends StatefulWidget {
   final double? height;
   final double? width;
   final NsgBaseController? dataController;
+  final bool hideBackButton;
   Color? colorText;
   NsgPopUp(
       {Key? key,
@@ -41,7 +42,8 @@ class NsgPopUp extends StatefulWidget {
       this.contentSecondary,
       this.contentBottom,
       this.dataController,
-      this.colorText = Colors.black})
+      this.colorText = Colors.black,
+      this.hideBackButton = false})
       : super(key: key);
 
   @override
@@ -96,11 +98,12 @@ class _NsgPopUpState extends State<NsgPopUp> {
                 ),
                 child: Row(
                   children: [
-                    IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new, color: widget.colorText, size: 24), // set your color here
-                        onPressed: () {
-                          Get.back();
-                        }),
+                    if (widget.hideBackButton == false)
+                      IconButton(
+                          icon: Icon(Icons.arrow_back_ios_new, color: widget.colorText, size: 24), // set your color here
+                          onPressed: () {
+                            Get.back();
+                          }),
                     Expanded(
                       child:
                           Text(widget.title, textAlign: TextAlign.center, style: TextStyle(color: widget.colorText, fontWeight: FontWeight.bold, fontSize: 18)),
