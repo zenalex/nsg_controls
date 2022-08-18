@@ -136,11 +136,7 @@ class _NsgTableState extends State<NsgTable> {
 
   /// Вертикальный разделитель в шапке таблицы
   Widget delitel() {
-    if (widget.availableButtons == null) {
-      return Container(width: 2, height: 42, margin: const EdgeInsets.only(right: 5), decoration: BoxDecoration(color: ControlOptions.instance.colorMainDark));
-    } else {
-      return SizedBox();
-    }
+    return Container(width: 2, height: 42, margin: const EdgeInsets.only(right: 5), decoration: BoxDecoration(color: ControlOptions.instance.colorMainDark));
   }
 
   /// Оборачивание виджета в Expanded
@@ -543,6 +539,19 @@ class _NsgTableState extends State<NsgTable> {
                         barrierDismissible: false);
                   },
                   icon: Icon(Icons.delete_forever_outlined, color: ControlOptions.instance.colorError, size: 24))));
+        } else if (editMode == NsgTableEditMode.rowEdit) {
+          tableRow.add(showCell(
+              padding: const EdgeInsets.all(0),
+              //backColor: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+              color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+              width: 40,
+              child: IconButton(
+                  onPressed: () {
+                    if (widget.controller.currentItem.defaultListPage != null) {
+                      widget.controller.itemPageOpen(row, widget.controller.currentItem.defaultListPage!);
+                    }
+                  },
+                  icon: Icon(Icons.edit, color: ControlOptions.instance.colorError, size: 24))));
         }
 
         /// Цикл построения ячеек таблицы (колонки)
@@ -630,15 +639,17 @@ class _NsgTableState extends State<NsgTable> {
                       widget.controller.itemNewPageOpen(widget.elementEditPageName!);
                     }
                   }),
-            //TODO: Редактирование строк. Зачем?
-            // Чтобы редактировать строки на месте - при клике, все колонки меняются на инпуты и редактируем прямо внутри строки
-            //
-            // if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement))
-            //   NsgTableMenuButton(
-            //     tooltip: 'Редактировать строку',
-            //     icon: Icons.edit,
-            //     onPressed: () {},
-            //   ),
+
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement) && widget.controller.currentItem.defaultListPage != null)
+              NsgTableMenuButton(
+                tooltip: 'Редактировать строку',
+                icon: Icons.edit,
+                onPressed: () {
+                  setState(() {
+                    editMode = NsgTableEditMode.rowEdit;
+                  });
+                },
+              ),
             //TODO: Копирование строк. Сделать.
             // if (widget.availableButtons.contains(NsgTableMenuButtonType.copyElement))
             //   NsgTableMenuButton(
@@ -706,7 +717,7 @@ class _NsgTableState extends State<NsgTable> {
                   });
                 },
               ),
-            delitel(),
+
             //TODO: Временно отключил. Сделать через печать PDF?
             // if (widget.availableButtons.contains(NsgTableMenuButtonType.printTable))
             //   NsgTableMenuButton(
@@ -797,6 +808,33 @@ class _NsgTableState extends State<NsgTable> {
           ],
         ),
       ));
+    } else if (editMode == NsgTableEditMode.rowEdit) {
+      table.add(Container(
+        decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
+        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            NsgTableMenuButton(
+              tooltip: 'Отмена',
+              icon: Icons.arrow_back_ios_new_outlined,
+              onPressed: () {
+                setState(() {
+                  editMode = NsgTableEditMode.view;
+                });
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                'Редактирование строк',
+                style: TextStyle(color: ControlOptions.instance.colorMainText),
+              ),
+            ),
+            delitel(),
+          ],
+        ),
+      ));
     }
 
     /// Если showHeader, то показываем Header
@@ -809,7 +847,18 @@ class _NsgTableState extends State<NsgTable> {
             width: 16,
             child: const SizedBox()));
       }
+
+      // Рисуем квадратик слева от хедера
       if (editMode == NsgTableEditMode.rowDelete) {
+        tableHeader.insert(
+            0,
+            showCell(
+                padding: const EdgeInsets.all(0),
+                backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+                width: 40,
+                child: const SizedBox()));
+      } else if (editMode == NsgTableEditMode.rowEdit) {
         tableHeader.insert(
             0,
             showCell(
