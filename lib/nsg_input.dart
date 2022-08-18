@@ -43,6 +43,9 @@ class NsgInput extends StatefulWidget {
   /// Поле для отображения и задания значения
   final String fieldName;
 
+  /// Контроллер
+  final NsgDataController? controller;
+
   /// Контроллер для выбора связанного значения
   final NsgBaseController? selectionController;
 
@@ -77,6 +80,7 @@ class NsgInput extends StatefulWidget {
       this.validateText = '',
       required this.dataItem,
       required this.fieldName,
+      this.controller,
       this.selectionController,
       this.updateController,
       this.label = '',
@@ -144,13 +148,14 @@ class _NsgInputState extends State<NsgInput> {
   late NsgInputType inputType;
   NsgBaseController? selectionController;
   PhoneInputFormatter phoneFormatter = PhoneInputFormatter();
-
+  bool _disabled = false;
   get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
 
   @override
   void initState() {
     super.initState();
     //Проверяем, выбран ли тип инпута пользователем
+    _disabled = widget.disabled;
     inputType = widget.selectInputType();
     if (useSelectionController) {
       var sc = widget.selectionController ?? widget.dataItem.defaultController;
@@ -159,6 +164,9 @@ class _NsgInputState extends State<NsgInput> {
         sc = NsgDefaultController(dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType);
       }
       selectionController = sc;
+    }
+    if (widget.controller != null && widget.controller!.readOnly == true) {
+      _disabled = true;
     }
   }
 
@@ -300,7 +308,7 @@ class _NsgInputState extends State<NsgInput> {
                                 }
                               },
                               style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
-                              readOnly: widget.disabled,
+                              readOnly: _disabled,
                             ),
                           ),
                         ),
@@ -310,7 +318,7 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   void _onPressed() {
-    if (inputType == NsgInputType.reference && widget.disabled != true) {
+    if (inputType == NsgInputType.reference && _disabled != true) {
       selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       selectionController!.refreshData();
       if (widget.selectionForm == '') {
@@ -341,7 +349,7 @@ class _NsgInputState extends State<NsgInput> {
         };
         Get.toNamed(widget.selectionForm);
       }
-    } else if (inputType == NsgInputType.enumReference && widget.disabled != true) {
+    } else if (inputType == NsgInputType.enumReference && _disabled != true) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
       var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
