@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
 import 'package:nsg_controls/table/nsg_table_editmode.dart';
-import 'package:nsg_controls/table/nsg_table_menu_button_type.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
+import '../nsg_period_filter.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
 import 'nsg_table_menu_button.dart';
@@ -623,7 +622,7 @@ class _NsgTableState extends State<NsgTable> {
                   widget.controller.refreshData();
                 },
               ),
-            delitel(),
+
             if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSelect))
               NsgTableMenuButton(
                 tooltip: 'Отображение колонок',
@@ -672,13 +671,19 @@ class _NsgTableState extends State<NsgTable> {
             //     icon: Icons.print_outlined,
             //     onPressed: () {},
             //   ),
-            delitel(),
+            if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+              NsgTableMenuButton(
+                tooltip: 'Фильтр по периоду',
+                icon: Icons.date_range_outlined,
+                onPressed: () {},
+              ),
             if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
               NsgTableMenuButton(
                 tooltip: 'Фильтр по тексту',
                 icon: Icons.filter_alt_outlined,
                 onPressed: () {},
               ),
+
             //TODO: Перенести фильтра в саму таблицу
             // if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
             //   NsgTableMenuButton(
@@ -760,6 +765,23 @@ class _NsgTableState extends State<NsgTable> {
             width: 16,
             child: const SizedBox()));
       }
+
+      table.add(Row(
+        children: [
+          Expanded(
+            child: SearchWidget(
+              controller: widget.controller,
+            ),
+          ),
+          Expanded(
+            child: NsgPeriodFilter(
+              margin: EdgeInsets.zero,
+              label: "Фильтр по периоду",
+              controller: widget.controller,
+            ),
+          )
+        ],
+      ));
 
       table.add(IntrinsicHeight(
           child: Container(
