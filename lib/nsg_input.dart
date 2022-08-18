@@ -161,13 +161,12 @@ class _NsgInputState extends State<NsgInput> {
       var sc = widget.selectionController ?? widget.dataItem.defaultController;
       if (sc == null) {
         assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
-        sc = NsgDefaultController(
-            dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType);
+        sc = NsgDefaultController(dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType);
       }
       selectionController = sc;
     }
     if (widget.controller != null && widget.controller!.readOnly == true) {
-      _disabled = true;
+      //_disabled = true;
     }
   }
 
@@ -186,7 +185,7 @@ class _NsgInputState extends State<NsgInput> {
   Widget _addClearIcon(Widget child) {
     return Stack(alignment: Alignment.centerRight, children: [
       child,
-      if (widget.disabled != true)
+      if (_disabled != true)
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
           child: NsgIconButton(
@@ -222,8 +221,7 @@ class _NsgInputState extends State<NsgInput> {
         Container(
             //height: widget.height,
             margin: widget.margin,
-            padding:
-                widget.widget == null ? const EdgeInsets.fromLTRB(0, 0, 0, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            padding: widget.widget == null ? const EdgeInsets.fromLTRB(0, 0, 0, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
             /* decoration: BoxDecoration(
                 color: ControlOptions.instance.colorInverted,
                 borderRadius: BorderRadius.circular(widget.borderRadius),
@@ -271,7 +269,7 @@ class _NsgInputState extends State<NsgInput> {
                               initialValue: fieldValue.toString(),
                               cursorColor: ControlOptions.instance.colorText,
                               decoration: InputDecoration(
-                                prefix: widget.disabled == false
+                                prefix: _disabled == false
                                     ? null
                                     : Padding(
                                         padding: const EdgeInsets.only(right: 3.0),
@@ -286,19 +284,13 @@ class _NsgInputState extends State<NsgInput> {
                                 labelText: widget.required ? widget.label + ' *' : widget.label,
                                 hintText: widget.hint,
                                 alignLabelWithHint: true,
-                                contentPadding: EdgeInsets.fromLTRB(
-                                    0, 10, useSelectionController ? 25 : 25, 10), //  <- you can it to 0.0 for no space
+                                contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 25, 10), //  <- you can it to 0.0 for no space
                                 isDense: true,
                                 enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
-                                        width: 2,
-                                        color: widget.validateText != ''
-                                            ? ControlOptions.instance.colorError
-                                            : ControlOptions.instance.colorMain)),
-                                focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
-                                labelStyle: TextStyle(
-                                    color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                                        width: 2, color: widget.validateText != '' ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain)),
+                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
+                                labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                               ),
                               key: GlobalKey(),
                               onEditingComplete: () {
@@ -360,11 +352,7 @@ class _NsgInputState extends State<NsgInput> {
     } else if (inputType == NsgInputType.enumReference && _disabled != true) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
-      var form = NsgSelection(
-          allValues: itemsArray,
-          selectedElement: enumItem,
-          rowWidget: widget.rowWidget,
-          inputType: NsgInputType.enumReference);
+      var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
       form.selectFromArray(
         widget.label,
         (item) {

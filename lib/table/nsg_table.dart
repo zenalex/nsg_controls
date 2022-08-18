@@ -510,7 +510,7 @@ class _NsgTableState extends State<NsgTable> {
                   onPressed: () {
                     Get.dialog(
                         NsgPopUp(
-                            title: 'Удаление строки ' + row.toString(),
+                            title: 'Удаление строки',
                             getContent: () => [
                                   Padding(
                                     padding: const EdgeInsets.all(15.0),
@@ -526,7 +526,7 @@ class _NsgTableState extends State<NsgTable> {
                                               color: ControlOptions.instance.colorMain,
                                             ),
                                           ),
-                                          const Flexible(child: Text('Вы уверены, что хотите удалить строку?')),
+                                          Flexible(child: Text('Вы уверены, что хотите удалить строку ${row.toString()}?')),
                                         ],
                                       ),
                                     ),
