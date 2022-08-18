@@ -276,7 +276,7 @@ class _NsgInputState extends State<NsgInput> {
                                 labelText: widget.required ? widget.label + ' *' : widget.label,
                                 //hintText: "Phone number",
                                 alignLabelWithHint: true,
-                                contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 0, 10), //  <- you can it to 0.0 for no space
+                                contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 25, 10), //  <- you can it to 0.0 for no space
                                 isDense: true,
                                 enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(

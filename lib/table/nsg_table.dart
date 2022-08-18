@@ -504,6 +504,47 @@ class _NsgTableState extends State<NsgTable> {
       for (var row in widget.controller.items) {
         List<Widget> tableRow = [];
 
+        if (editMode == NsgTableEditMode.rowDelete) {
+          tableRow.add(showCell(
+              padding: const EdgeInsets.all(0),
+              //backColor: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+              color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+              width: 40,
+              child: IconButton(
+                  onPressed: () {
+                    Get.dialog(
+                        NsgPopUp(
+                            title: 'Удаление строки ' + row.toString(),
+                            getContent: () => [
+                                  Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Center(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 10),
+                                            child: Icon(
+                                              Icons.error_outline,
+                                              size: 38,
+                                              color: ControlOptions.instance.colorMain,
+                                            ),
+                                          ),
+                                          const Flexible(child: Text('Вы уверены, что хотите удалить строку?')),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                            onConfirm: () {
+                              widget.controller.currentItem = row;
+                              widget.controller.itemRemove();
+                            }),
+                        barrierDismissible: false);
+                  },
+                  icon: Icon(Icons.delete_forever_outlined, color: ControlOptions.instance.colorError, size: 24))));
+        }
+
         /// Цикл построения ячеек таблицы (колонки)
         visibleColumns.asMap().forEach((index, column) {
           if (widget.showTotals) {
@@ -517,7 +558,9 @@ class _NsgTableState extends State<NsgTable> {
               ? wrapExpanded(
                   child: InkWell(
                       onTap: () {
-                        widget.rowOnTap!(row, column.name);
+                        if (editMode == NsgTableEditMode.view) {
+                          widget.rowOnTap!(row, column.name);
+                        }
                       },
                       onLongPress: () {
                         var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(row) ?? '';
@@ -675,7 +718,10 @@ class _NsgTableState extends State<NsgTable> {
               NsgTableMenuButton(
                 tooltip: 'Фильтр по периоду',
                 icon: Icons.date_range_outlined,
-                onPressed: () {},
+                onPressed: () {
+                  widget.controller.controllerFilter.isOpen = !widget.controller.controllerFilter.isOpen;
+                  widget.controller.sendNotify();
+                },
               ),
             if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
               NsgTableMenuButton(
@@ -729,25 +775,23 @@ class _NsgTableState extends State<NsgTable> {
         decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             NsgTableMenuButton(
               tooltip: 'Отмена',
-              icon: Icons.close,
+              icon: Icons.arrow_back_ios_new_outlined,
               onPressed: () {
                 setState(() {
                   editMode = NsgTableEditMode.view;
                 });
               },
             ),
-            Text(
-              'Удаление строк',
-              style: TextStyle(color: ControlOptions.instance.colorMainText),
-            ),
-            NsgTableMenuButton(
-              tooltip: 'Применить',
-              icon: Icons.check,
-              onPressed: () {},
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                'Удаление строк',
+                style: TextStyle(color: ControlOptions.instance.colorMainText),
+              ),
             ),
             delitel(),
           ],
@@ -765,23 +809,36 @@ class _NsgTableState extends State<NsgTable> {
             width: 16,
             child: const SizedBox()));
       }
+      if (editMode == NsgTableEditMode.rowDelete) {
+        tableHeader.insert(
+            0,
+            showCell(
+                padding: const EdgeInsets.all(0),
+                backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+                width: 40,
+                child: const SizedBox()));
+      }
 
-      table.add(Row(
-        children: [
-          Expanded(
-            child: SearchWidget(
-              controller: widget.controller,
+/* ------------------------------- Фильтры по Тексту и Периоду ------------------------------- */
+      if (editMode == NsgTableEditMode.view) {
+        table.add(Row(
+          children: [
+            Flexible(
+              child: SearchWidget(
+                controller: widget.controller,
+              ),
             ),
-          ),
-          Expanded(
-            child: NsgPeriodFilter(
-              margin: EdgeInsets.zero,
-              label: "Фильтр по периоду",
-              controller: widget.controller,
-            ),
-          )
-        ],
-      ));
+            Flexible(
+              child: NsgPeriodFilter(
+                margin: EdgeInsets.zero,
+                label: "Фильтр по периоду",
+                controller: widget.controller,
+              ),
+            )
+          ],
+        ));
+      }
 
       table.add(IntrinsicHeight(
           child: Container(
