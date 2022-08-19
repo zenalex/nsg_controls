@@ -63,7 +63,7 @@ class NsgText extends StatelessWidget {
               text,
               textAlign: textAlign,
               overflow: TextOverflow.visible,
-              maxLines: 2,
+              maxLines: maxLines,
               style: mergedStyle,
             ));
   }
