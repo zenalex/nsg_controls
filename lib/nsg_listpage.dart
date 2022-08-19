@@ -221,6 +221,7 @@ ListView.builder(
             _elementTap(item);
           }
         },
+        elementEditPageName: elementEditPage,
       );
     } else {
       return const Text('Несуществующий тип отображения NsgListPage');
