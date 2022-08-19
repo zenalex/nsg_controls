@@ -15,7 +15,7 @@ enum NsgSnarkBarType {
 
 void nsgSnackbar({String? title, required String text, NsgSnarkBarType? type, Duration? duration}) {
   Get.snackbar(title ?? (type == null ? '' : type.title), text,
-      icon: type == null ? null : Icon(type.icon),
+      icon: type == null ? null : Icon(type.icon, color: ControlOptions.instance.colorMainText),
       duration: duration ?? const Duration(seconds: 3),
       maxWidth: 300,
       snackPosition: SnackPosition.BOTTOM,
