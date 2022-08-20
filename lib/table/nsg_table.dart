@@ -32,7 +32,9 @@ class NsgTable extends StatefulWidget {
       this.onColumnsChange,
       this.showHeader = true,
       this.availableButtons = NsgTableMenuButtonType.allValues,
-      this.elementEditPageName})
+      this.elementEditPageName,
+      this.initialIsPeriodFilterOpen = false,
+      this.initialIsSearchStringOpen = false})
       : super(key: key);
 
   /// Кол-во отображаемых строк в теле таблицы
@@ -109,6 +111,9 @@ class NsgTable extends StatefulWidget {
   ///Имя страницы для создания и редактирования страницы элемента строки таблицы
   final String? elementEditPageName;
 
+  final bool initialIsPeriodFilterOpen;
+  final bool initialIsSearchStringOpen;
+
   @override
   State<NsgTable> createState() => _NsgTableState();
 }
@@ -133,6 +138,8 @@ class _NsgTableState extends State<NsgTable> {
   //Выделенная строка и колонка
   NsgDataItem? _selectedRow;
   NsgTableColumn? _selectedColumn;
+  var isPeriodFilterOpen = false;
+  var isSearchStringFilterOpen = false;
 
   /// Вертикальный разделитель в шапке таблицы
   Widget delitel() {
@@ -190,6 +197,8 @@ class _NsgTableState extends State<NsgTable> {
 
     /// Выставляем дефолтный режим просмотра таблицы
     editMode = NsgTableEditMode.view;
+    isPeriodFilterOpen = widget.initialIsPeriodFilterOpen;
+    isSearchStringFilterOpen = widget.initialIsSearchStringOpen;
     setInitialSorting();
   }
 
@@ -730,7 +739,7 @@ class _NsgTableState extends State<NsgTable> {
                 tooltip: 'Фильтр по периоду',
                 icon: Icons.date_range_outlined,
                 onPressed: () {
-                  widget.controller.controllerFilter.isOpen = !widget.controller.controllerFilter.isOpen;
+                  isPeriodFilterOpen = !isPeriodFilterOpen;
                   setState(() {});
                   //widget.controller.sendNotify();
                 },
@@ -740,7 +749,7 @@ class _NsgTableState extends State<NsgTable> {
                 tooltip: 'Фильтр по тексту',
                 icon: Icons.filter_alt_outlined,
                 onPressed: () {
-                  widget.controller.controllerFilter.isOpen = !widget.controller.controllerFilter.isOpen;
+                  isSearchStringFilterOpen = !isSearchStringFilterOpen;
                   setState(() {});
                 },
               ),
@@ -880,13 +889,16 @@ class _NsgTableState extends State<NsgTable> {
             Flexible(
               child: SearchWidget(
                 controller: widget.controller,
+                isOpen: isSearchStringFilterOpen,
               ),
             ),
             Flexible(
               child: NsgPeriodFilter(
+                key: GlobalKey(),
                 margin: EdgeInsets.zero,
                 label: "Фильтр по периоду",
                 controller: widget.controller,
+                isOpen: isPeriodFilterOpen,
               ),
             )
           ],

@@ -322,18 +322,20 @@ ListView.builder(
 }
 
 class SearchWidget extends StatelessWidget {
-  const SearchWidget({Key? key, required this.controller}) : super(key: key);
+  const SearchWidget({Key? key, required this.controller, this.isOpen}) : super(key: key);
 
   final NsgDataController controller;
+  final bool? isOpen;
 
   @override
   Widget build(BuildContext context) {
+    var isFilterOpen = isOpen ?? controller.controllerFilter.isOpen;
     return Container(
       constraints: const BoxConstraints(maxWidth: 300),
       padding: const EdgeInsets.only(bottom: 5),
       child: AnimatedCrossFade(
         duration: const Duration(milliseconds: 500),
-        crossFadeState: controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        crossFadeState: isFilterOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
         firstChild: const SizedBox(),
         secondChild: Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

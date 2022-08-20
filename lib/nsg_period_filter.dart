@@ -15,6 +15,7 @@ class NsgPeriodFilter extends StatefulWidget {
   final bool disabled;
   final double? width;
   final TextAlign textAlign;
+  final bool? isOpen;
   const NsgPeriodFilter(
       {Key? key,
       required this.controller,
@@ -24,7 +25,8 @@ class NsgPeriodFilter extends StatefulWidget {
       this.textAlign = TextAlign.center,
       // this.onConfirm,
       this.margin = const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10)})
+      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      this.isOpen})
       : super(key: key);
   @override
   State<NsgPeriodFilter> createState() => _NsgPeriodFilterState();
@@ -34,12 +36,15 @@ class NsgPeriodFilter extends StatefulWidget {
 NsgPeriod selectedDate = NsgPeriod();
 
 class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
+  var isOpen = false;
+
   @override
   void initState() {
     super.initState();
     selectedDate.beginDate = widget.controller.controllerFilter.nsgPeriod.beginDate;
     selectedDate.endDate = widget.controller.controllerFilter.nsgPeriod.endDate;
     selectedDate.setDateText();
+    isOpen = widget.isOpen ?? widget.controller.controllerFilter.isOpen;
   }
 
   String _showPeriod() {
@@ -77,7 +82,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
       width: widget.width,
       child: AnimatedCrossFade(
           duration: const Duration(milliseconds: 500),
-          crossFadeState: widget.controller.controllerFilter.isOpen == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: isOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           firstChild: Container(),
           secondChild: _filterWidget()),
     );
