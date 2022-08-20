@@ -1,5 +1,3 @@
-import 'package:nsg_data/controllers/nsg_controller_regime.dart';
-
 import 'nsg_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

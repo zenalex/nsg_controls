@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:reorderables/reorderables.dart';
-import 'package:get/get.dart';
-import 'package:nsg_controls/table/nsg_table_column.dart';
 
 class NsgReorderable extends StatefulWidget {
   final List<Widget> widgets;
-  NsgReorderable({Key? key, required this.widgets}) : super(key: key);
+  const NsgReorderable({Key? key, required this.widgets}) : super(key: key);
 
   @override
   State<NsgReorderable> createState() => _NsgReorderableState();

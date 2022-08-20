@@ -21,7 +21,7 @@ class _NsgTableColumnsReorderState extends State<NsgTableColumnsReorder> {
   @override
   Widget build(BuildContext context) {
     List<Widget> list = [];
-    widget.columns.forEach((value) {
+    for (var value in widget.columns) {
       //assert(widget.fieldNameDict[value.name] != null);
       list.add(Container(
           width: 280,
@@ -34,7 +34,7 @@ class _NsgTableColumnsReorderState extends State<NsgTableColumnsReorder> {
                 value.visible = !value.visible;
                 setState(() {});
               })));
-    });
+    }
     return NsgReorderable(
       widgets: list,
     );

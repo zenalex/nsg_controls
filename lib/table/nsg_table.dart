@@ -731,14 +731,18 @@ class _NsgTableState extends State<NsgTable> {
                 icon: Icons.date_range_outlined,
                 onPressed: () {
                   widget.controller.controllerFilter.isOpen = !widget.controller.controllerFilter.isOpen;
-                  widget.controller.sendNotify();
+                  setState(() {});
+                  //widget.controller.sendNotify();
                 },
               ),
             if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
               NsgTableMenuButton(
                 tooltip: 'Фильтр по тексту',
                 icon: Icons.filter_alt_outlined,
-                onPressed: () {},
+                onPressed: () {
+                  widget.controller.controllerFilter.isOpen = !widget.controller.controllerFilter.isOpen;
+                  setState(() {});
+                },
               ),
 
             //TODO: Перенести фильтра в саму таблицу
@@ -905,7 +909,7 @@ class _NsgTableState extends State<NsgTable> {
         List<Widget> totalsRow = [];
 
         visibleColumns.asMap().forEach((index, column) {
-          var fieldkey = widget.controller.items.last.getFieldValue(column.name);
+          //var fieldkey = widget.controller.items.last.getFieldValue(column.name);
           var field = widget.controller.items.last.fieldList.fields[column.name];
           TextAlign textAlign = TextAlign.left;
 

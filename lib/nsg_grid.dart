@@ -24,8 +24,8 @@ class NsgGrid extends StatelessWidget {
       }
     }
     if (count.isOdd) {
-      row.add(Expanded(child: SizedBox()));
-      row.insert(0, Expanded(child: SizedBox()));
+      row.add(const Expanded(child: SizedBox()));
+      row.insert(0, const Expanded(child: SizedBox()));
       list.add(Row(children: row));
     }
 

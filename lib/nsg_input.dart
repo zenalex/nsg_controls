@@ -233,7 +233,7 @@ class _NsgInputState extends State<NsgInput> {
                     autofocus: false,
                     onFocusChange: (hasFocus) {
                       if (widget.onEditingComplete != null) {
-                        hasFocus ? print('Focus') : widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                        if (!hasFocus) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                       }
                     },
                     child: Stack(
