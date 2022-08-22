@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../nsg_button.dart';
 import '../nsg_popup.dart';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:nsg_data/nsgDataApiError.dart';
 
 // This function is triggered when the copy icon is pressed
 Future _copyToClipboard(String text, BuildContext dialogContext) async {
@@ -27,6 +28,10 @@ Future _copyToClipboard(String text, BuildContext dialogContext) async {
 
 ///Класс для отображение ошибок для пользователю
 class NsgErrorWidget {
+  static void showErrorByString(String errorMessage) {
+    showError(NsgApiException(NsgApiError(message: errorMessage)));
+  }
+
   static void showError(NsgApiException exception) {
     Get.dialog(Builder(builder: (dialogContext) {
       return NsgPopUp(
