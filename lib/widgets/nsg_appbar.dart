@@ -59,7 +59,7 @@ class NsgAppBar extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Stack(children: [
-                  if (notificationController != null && notificationPosition == NsgAppBarNotificationPosition.leftIcon)
+                  if (notificationController != null && notificationPosition == NsgAppBarNotificationPosition.leftIcon && getNotificationCount!() > 0)
                     notificationController!.obx((c) => Padding(
                           padding: const EdgeInsets.only(left: 30),
                           child: NsgCircle(
@@ -94,7 +94,7 @@ class NsgAppBar extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.clip,
                       ),
-                      if (notificationController != null && notificationPosition == NsgAppBarNotificationPosition.title)
+                      if (notificationController != null && notificationPosition == NsgAppBarNotificationPosition.title && getNotificationCount!() > 0)
                         notificationController!.obx(
                           (c) => Text(
                             'Непрочитанных оповещений: ${getNotificationCount!()}',
