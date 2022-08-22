@@ -104,7 +104,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                       ),
                     ),
                     Container(
-                        margin: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+                        margin: const EdgeInsets.fromLTRB(5, 3, 5, 3),
                         decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
                         padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                         child: Text(
