@@ -66,6 +66,12 @@ class NsgListPage extends StatelessWidget {
 
   final RefreshController _refreshController = RefreshController();
 
+  /// Контроллер, содержащий кол-во нотификаций
+  final NsgDataController? notificationController;
+
+  //Цифра в кружочке около левой иконки
+  final int Function()? getNotificationCount;
+
   NsgListPage(
       {Key? key,
       required this.controller,
@@ -86,10 +92,12 @@ class NsgListPage extends StatelessWidget {
       this.appBarIcon = Icons.arrow_back_ios_new,
       this.appBarIcon2 = Icons.add,
       this.appBarIcon3,
+      this.getNotificationCount,
       this.appBarOnPressed,
       this.appBarOnPressed2,
       this.appBarOnPressed3,
-      this.onElementTap})
+      this.onElementTap,
+      this.notificationController})
       : super(key: key);
 
   @override
@@ -275,6 +283,8 @@ ListView.builder(
                   () {
                     Get.back();
                   },
+          getNotificationCount: getNotificationCount,
+          notificationController: notificationController,
 
           /// Новый объект
           icon2: appBarIcon2,

@@ -1,6 +1,10 @@
 // импорт
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/controllers/nsgDataController.dart';
+
+import 'nsg_circle.dart';
 
 class NsgAppBar extends StatelessWidget {
   final String text;
@@ -11,6 +15,8 @@ class NsgAppBar extends StatelessWidget {
   final VoidCallback? onPressed;
   final VoidCallback? onPressed2;
   final VoidCallback? onPressed3;
+  final NsgDataController? notificationController;
+  final int Function()? getNotificationCount;
   final bool? colorsInverted;
   final bool? bottomCircular;
   final Color? color;
@@ -25,6 +31,8 @@ class NsgAppBar extends StatelessWidget {
       this.onPressed,
       this.onPressed2,
       this.onPressed3,
+      this.getNotificationCount,
+      this.notificationController,
       this.colorsInverted,
       this.bottomCircular,
       this.color,
@@ -46,11 +54,26 @@ class NsgAppBar extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: IconButton(
-                    icon: Icon(icon,
-                        color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
-                        size: 24), // set your color here
-                    onPressed: onPressed),
+                child: Stack(children: [
+                  if (notificationController != null)
+                    notificationController!.obx((c) => Padding(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: NsgCircle(
+                            height: 20,
+                            width: 20,
+                            fontSize: 12,
+                            text: getNotificationCount!().toString(),
+                            color: ControlOptions.instance.colorMainText,
+                            backColor: ControlOptions.instance.colorMainDark,
+                            borderColor: ControlOptions.instance.colorMainText,
+                          ),
+                        )),
+                  IconButton(
+                      icon: Icon(icon,
+                          color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                          size: 24), // set your color here
+                      onPressed: onPressed),
+                ]),
               ),
               Align(
                 alignment: Alignment.center,
