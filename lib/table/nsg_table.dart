@@ -7,6 +7,7 @@ import 'package:nsg_controls/table/nsg_table_editmode.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../nsg_period_filter.dart';
+import '../nsg_row_to_column.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
 import 'nsg_table_menu_button.dart';
@@ -849,7 +850,7 @@ class _NsgTableState extends State<NsgTable> {
       }
 
 /* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
-      table.add(Row(children: [
+      table.add(NsgRowToColumn(children: [
         if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
           Expanded(
             child: SearchWidget(
