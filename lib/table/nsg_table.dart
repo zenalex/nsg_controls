@@ -745,6 +745,7 @@ class _NsgTableState extends State<NsgTable> {
                     setState(() {});
                   },
                 ),
+
               if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
                 NsgTableMenuButton(
                   tooltip: 'Фильтр по периоду',
@@ -762,27 +763,6 @@ class _NsgTableState extends State<NsgTable> {
               //     icon: Icons.date_range_outlined,
               //     onPressed: () {},
               //   ),
-              /* ------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
-
-              if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
-                Expanded(
-                  child: SearchWidget(
-                    controller: widget.controller,
-                    isOpen: isSearchStringFilterOpen,
-                  ),
-                ),
-              if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-                Expanded(
-                  child: NsgPeriodFilter(
-                    showCompact: isPeriodFilterOpen,
-                    key: GlobalKey(),
-                    margin: EdgeInsets.zero,
-                    label: "Фильтр по периоду",
-                    controller: widget.controller,
-                  ),
-                )
-
-/* ------------------------------- // Фильтры по Тексту и Периоду ------------------------------- */
             ],
           ),
         ));
@@ -867,6 +847,28 @@ class _NsgTableState extends State<NsgTable> {
           ),
         ));
       }
+
+/* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
+      table.add(Row(children: [
+        if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+          Expanded(
+            child: SearchWidget(
+              controller: widget.controller,
+              isOpen: isSearchStringFilterOpen,
+            ),
+          ),
+        if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+          Expanded(
+            child: NsgPeriodFilter(
+              //showCompact: isPeriodFilterOpen,
+              key: GlobalKey(),
+              margin: EdgeInsets.zero,
+              label: "Фильтр по периоду",
+              controller: widget.controller,
+            ),
+          )
+      ]));
+/* ------------------------------- // Фильтры по Тексту и Периоду ------------------------------- */
 
       /// Если showHeader, то показываем Header
       if (widget.showHeader) {

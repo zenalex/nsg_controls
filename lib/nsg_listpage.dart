@@ -350,7 +350,7 @@ class SearchWidget extends StatelessWidget {
       crossFadeState: isFilterOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
       firstChild: const SizedBox(),
       secondChild: Container(
-          padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
           child: TextFormField(
             autofocus: false,
             initialValue: controller.controllerFilter.searchString,
@@ -359,7 +359,7 @@ class SearchWidget extends StatelessWidget {
               counterText: "",
               labelText: 'Фильтр по тексту',
               alignLabelWithHint: true,
-              contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
+              contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5), //  <- you can it to 0.0 for no space
               isDense: true,
               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
               focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
