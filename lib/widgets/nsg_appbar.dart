@@ -6,6 +6,8 @@ import 'package:nsg_data/controllers/nsgDataController.dart';
 
 import 'nsg_circle.dart';
 
+enum NsgAppBarNotificationPosition { leftIcon, rightIcon, title }
+
 class NsgAppBar extends StatelessWidget {
   final String text;
   final String? text2;
@@ -17,6 +19,7 @@ class NsgAppBar extends StatelessWidget {
   final VoidCallback? onPressed3;
   final NsgDataController? notificationController;
   final int Function()? getNotificationCount;
+  final NsgAppBarNotificationPosition notificationPosition;
   final bool? colorsInverted;
   final bool? bottomCircular;
   final Color? color;
@@ -33,6 +36,7 @@ class NsgAppBar extends StatelessWidget {
       this.onPressed3,
       this.getNotificationCount,
       this.notificationController,
+      this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
       this.colorsInverted,
       this.bottomCircular,
       this.color,
@@ -55,7 +59,7 @@ class NsgAppBar extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Stack(children: [
-                  if (notificationController != null)
+                  if (notificationController != null && notificationPosition == NsgAppBarNotificationPosition.leftIcon)
                     notificationController!.obx((c) => Padding(
                           padding: const EdgeInsets.only(left: 30),
                           child: NsgCircle(
@@ -90,6 +94,17 @@ class NsgAppBar extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.clip,
                       ),
+                      if (notificationController != null && notificationPosition == NsgAppBarNotificationPosition.title)
+                        notificationController!.obx(
+                          (c) => Text(
+                            'Непрочитанных оповещений: ${getNotificationCount!()}',
+                            style: TextStyle(
+                                color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain, fontSize: 10),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.clip,
+                          ),
+                        ),
                       if (text2 != null)
                         Text(
                           '$text2',

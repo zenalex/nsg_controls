@@ -72,33 +72,37 @@ class NsgListPage extends StatelessWidget {
   //Цифра в кружочке около левой иконки
   final int Function()? getNotificationCount;
 
-  NsgListPage(
-      {Key? key,
-      required this.controller,
-      required this.title,
-      this.subtitle,
-      this.showCount,
-      required this.textNoItems,
-      this.elementWidget,
-      required this.elementEditPage,
-      this.columns,
-      this.type = NsgListPageMode.list,
-      this.gridCellMinWidth = 160,
-      this.gridXSpacing = 10.0,
-      this.gridYSpacing = 10.0,
-      this.appBar,
-      this.appBarColor,
-      this.appBarBackColor,
-      this.appBarIcon = Icons.arrow_back_ios_new,
-      this.appBarIcon2 = Icons.add,
-      this.appBarIcon3,
-      this.getNotificationCount,
-      this.appBarOnPressed,
-      this.appBarOnPressed2,
-      this.appBarOnPressed3,
-      this.onElementTap,
-      this.notificationController})
-      : super(key: key);
+  // Позиция, где показывать нотификацию в аппбаре
+  NsgAppBarNotificationPosition notificationPosition;
+
+  NsgListPage({
+    Key? key,
+    required this.controller,
+    required this.title,
+    this.subtitle,
+    this.showCount,
+    required this.textNoItems,
+    this.elementWidget,
+    required this.elementEditPage,
+    this.columns,
+    this.type = NsgListPageMode.list,
+    this.gridCellMinWidth = 160,
+    this.gridXSpacing = 10.0,
+    this.gridYSpacing = 10.0,
+    this.appBar,
+    this.appBarColor,
+    this.appBarBackColor,
+    this.appBarIcon = Icons.arrow_back_ios_new,
+    this.appBarIcon2 = Icons.add,
+    this.appBarIcon3,
+    this.getNotificationCount,
+    this.appBarOnPressed,
+    this.appBarOnPressed2,
+    this.appBarOnPressed3,
+    this.onElementTap,
+    this.notificationController,
+    this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -285,6 +289,7 @@ ListView.builder(
                   },
           getNotificationCount: getNotificationCount,
           notificationController: notificationController,
+          notificationPosition: notificationPosition,
 
           /// Новый объект
           icon2: appBarIcon2,
