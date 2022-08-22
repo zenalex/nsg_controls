@@ -104,10 +104,9 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                       ),
                     ),
                     Container(
-                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        decoration: BoxDecoration(
-                            border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
-                        padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+                        margin: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+                        decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
+                        padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                         child: Text(
                           _showPeriod(),
                           textAlign: widget.textAlign,
@@ -150,8 +149,7 @@ class NsgPeriodFilterContent extends StatefulWidget {
   final NsgDataController controller;
   final bool periodTimeEnabled;
   final Function(NsgPeriod)? onSelect;
-  const NsgPeriodFilterContent({Key? key, this.onSelect, this.periodTimeEnabled = false, required this.controller})
-      : super(key: key);
+  const NsgPeriodFilterContent({Key? key, this.onSelect, this.periodTimeEnabled = false, required this.controller}) : super(key: key);
 
   @override
   State<NsgPeriodFilterContent> createState() => NsgPeriodFilterContentState();
@@ -262,8 +260,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                               padding: const EdgeInsets.symmetric(horizontal: 6),
                               child: GestureDetector(
                                 onTap: () {
-                                  NsgDatePicker(initialTime: date.beginDate, onClose: (value) {})
-                                      .showPopup(context, date.beginDate, (value) {
+                                  NsgDatePicker(initialTime: date.beginDate, onClose: (value) {}).showPopup(context, date.beginDate, (value) {
                                     date.beginDate = value;
                                     _setToSelected(_selected);
                                     date.setDateText();
@@ -286,8 +283,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     margin: const EdgeInsets.all(0),
                                     padding: const EdgeInsets.all(0),
                                     style: "widget",
-                                    widget:
-                                        Center(child: Icon(Icons.add, color: ControlOptions.instance.colorMainText)),
+                                    widget: Center(child: Icon(Icons.add, color: ControlOptions.instance.colorMainText)),
                                     onPressed: () {
                                       date.plus();
                                       date.setDateText();
@@ -413,10 +409,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       margin: const EdgeInsets.only(top: 5),
                                       radio: true,
                                       label: 'Период',
-                                      value: _selected == NsgPeriodType.period ||
-                                              _selected == NsgPeriodType.periodWidthTime
-                                          ? true
-                                          : false,
+                                      value: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? true : false,
                                       onPressed: () {
                                         if (_timeselected) {
                                           _selected = NsgPeriodType.periodWidthTime;
@@ -424,10 +417,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                               .startOf(Units.DAY)
                                               .add(duration: Duration(hours: time1.hour, minutes: time1.minute))
                                               .dateTime;
-                                          date.endDate = Jiffy(date.endDate)
-                                              .startOf(Units.DAY)
-                                              .add(duration: Duration(hours: time2.hour, minutes: time2.minute))
-                                              .dateTime;
+                                          date.endDate =
+                                              Jiffy(date.endDate).startOf(Units.DAY).add(duration: Duration(hours: time2.hour, minutes: time2.minute)).dateTime;
                                           date.setToPeriodWithTime(date);
                                         } else {
                                           _selected = NsgPeriodType.period;
@@ -437,10 +428,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         setState(() {});
                                       }),
                                   Opacity(
-                                    opacity:
-                                        _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
-                                            ? 1
-                                            : 0.3,
+                                    opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
                                     child: NsgDatePicker(
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),
@@ -458,10 +446,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     ),
                                   ),
                                   Opacity(
-                                    opacity:
-                                        _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
-                                            ? 1
-                                            : 0.3,
+                                    opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
                                     child: NsgDatePicker(
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),
@@ -482,17 +467,14 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                               )),
                               Expanded(
                                   child: Opacity(
-                                opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
-                                    ? 1
-                                    : 0.3,
+                                opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
                                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                                   NsgCheckBox(
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),
                                       label: 'Время',
                                       value: _timeselected == true ? true : false,
-                                      onPressed: _selected == NsgPeriodType.period ||
-                                              _selected == NsgPeriodType.periodWidthTime
+                                      onPressed: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
                                           ? () {
                                               if (!_timeselected) {
                                                 date.beginDate = Jiffy(date.beginDate)

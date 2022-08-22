@@ -850,16 +850,33 @@ class _NsgTableState extends State<NsgTable> {
       }
 
 /* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
-      table.add(NsgRowToColumn(children: [
+
+      Widget _rowcolumn({required List<Widget> children}) {
+        if (Get.width > 400) {
+          return Row(children: children);
+        } else {
+          return Column(children: children);
+        }
+      }
+
+      Widget _expanded({required Widget child}) {
+        if (Get.width > 400) {
+          return Expanded(child: child);
+        } else {
+          return child;
+        }
+      }
+
+      table.add(_rowcolumn(children: [
         if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
-          Expanded(
+          _expanded(
             child: SearchWidget(
               controller: widget.controller,
               isOpen: isSearchStringFilterOpen,
             ),
           ),
         if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-          Expanded(
+          _expanded(
             child: NsgPeriodFilter(
               //showCompact: isPeriodFilterOpen,
               key: GlobalKey(),

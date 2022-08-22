@@ -345,34 +345,29 @@ class SearchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var isFilterOpen = isOpen ?? controller.controllerFilter.isOpen;
-    return AnimatedCrossFade(
-      duration: const Duration(milliseconds: 500),
-      crossFadeState: isFilterOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-      firstChild: const SizedBox(),
-      secondChild: Container(
-          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          child: TextFormField(
-            autofocus: false,
-            initialValue: controller.controllerFilter.searchString,
-            cursorColor: ControlOptions.instance.colorText,
-            decoration: InputDecoration(
-              counterText: "",
-              labelText: 'Фильтр по тексту',
-              alignLabelWithHint: true,
-              contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5), //  <- you can it to 0.0 for no space
-              isDense: true,
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
-              labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-            ),
-            key: GlobalKey(),
-            onEditingComplete: () {},
-            onChanged: (value) {
-              controller.controllerFilter.searchString = value;
-              controller.controllerFilter.refreshControllerWithDelay();
-            },
-            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 16),
-          )),
-    );
+    return Container(
+        padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+        child: TextFormField(
+          autofocus: false,
+          initialValue: controller.controllerFilter.searchString,
+          cursorColor: ControlOptions.instance.colorText,
+          decoration: InputDecoration(
+            counterText: "",
+            labelText: 'Фильтр по тексту',
+            alignLabelWithHint: true,
+            contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5), //  <- you can it to 0.0 for no space
+            isDense: true,
+            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
+            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
+            labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+          ),
+          key: GlobalKey(),
+          onEditingComplete: () {},
+          onChanged: (value) {
+            controller.controllerFilter.searchString = value;
+            controller.controllerFilter.refreshControllerWithDelay();
+          },
+          style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 16),
+        ));
   }
 }
