@@ -735,6 +735,16 @@ class _NsgTableState extends State<NsgTable> {
               //     icon: Icons.print_outlined,
               //     onPressed: () {},
               //   ),
+
+              if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+                NsgTableMenuButton(
+                  tooltip: 'Фильтр по тексту',
+                  icon: Icons.filter_alt_outlined,
+                  onPressed: () {
+                    isSearchStringFilterOpen = !isSearchStringFilterOpen;
+                    setState(() {});
+                  },
+                ),
               if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
                 NsgTableMenuButton(
                   tooltip: 'Фильтр по периоду',
@@ -745,16 +755,6 @@ class _NsgTableState extends State<NsgTable> {
                     //widget.controller.sendNotify();
                   },
                 ),
-              if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
-                NsgTableMenuButton(
-                  tooltip: 'Фильтр по тексту',
-                  icon: Icons.filter_alt_outlined,
-                  onPressed: () {
-                    isSearchStringFilterOpen = !isSearchStringFilterOpen;
-                    setState(() {});
-                  },
-                ),
-
               //TODO: Перенести фильтра в саму таблицу
               // if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
               //   NsgTableMenuButton(
@@ -762,7 +762,27 @@ class _NsgTableState extends State<NsgTable> {
               //     icon: Icons.date_range_outlined,
               //     onPressed: () {},
               //   ),
-              delitel(),
+              /* ------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
+
+              if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+                Expanded(
+                  child: SearchWidget(
+                    controller: widget.controller,
+                    isOpen: isSearchStringFilterOpen,
+                  ),
+                ),
+              if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+                Expanded(
+                  child: NsgPeriodFilter(
+                    showCompact: isPeriodFilterOpen,
+                    key: GlobalKey(),
+                    margin: EdgeInsets.zero,
+                    label: "Фильтр по периоду",
+                    controller: widget.controller,
+                  ),
+                )
+
+/* ------------------------------- // Фильтры по Тексту и Периоду ------------------------------- */
             ],
           ),
         ));
@@ -791,7 +811,6 @@ class _NsgTableState extends State<NsgTable> {
                 icon: Icons.check,
                 onPressed: () {},
               ),
-              delitel(),
             ],
           ),
         ));
@@ -818,7 +837,6 @@ class _NsgTableState extends State<NsgTable> {
                   style: TextStyle(color: ControlOptions.instance.colorMainText),
                 ),
               ),
-              delitel(),
             ],
           ),
         ));
@@ -845,7 +863,6 @@ class _NsgTableState extends State<NsgTable> {
                   style: TextStyle(color: ControlOptions.instance.colorMainText),
                 ),
               ),
-              delitel(),
             ],
           ),
         ));
@@ -881,29 +898,6 @@ class _NsgTableState extends State<NsgTable> {
                   color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
                   width: 40,
                   child: const SizedBox()));
-        }
-
-/* ------------------------------- Фильтры по Тексту и Периоду ------------------------------- */
-        if (editMode == NsgTableEditMode.view) {
-          table.add(Row(
-            children: [
-              Flexible(
-                child: SearchWidget(
-                  controller: widget.controller,
-                  isOpen: isSearchStringFilterOpen,
-                ),
-              ),
-              Flexible(
-                child: NsgPeriodFilter(
-                  key: GlobalKey(),
-                  margin: EdgeInsets.zero,
-                  label: "Фильтр по периоду",
-                  controller: widget.controller,
-                  isOpen: isPeriodFilterOpen,
-                ),
-              )
-            ],
-          ));
         }
 
         table.add(IntrinsicHeight(
@@ -958,18 +952,21 @@ class _NsgTableState extends State<NsgTable> {
                               Text(
                                 'Итого: ',
                                 style: TextStyle(
-                                    color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.w500),
+                                    color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500),
                               ),
                               Text(
                                 column.totalSum.toString(),
-                                style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500),
+                                style: TextStyle(
+                                    color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500),
                               )
                             ],
                           )
                         : SizedBox(
                             width: double.infinity,
-                            child:
-                                Text(text, textAlign: textAlign, style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.w500)),
+                            child: Text(text,
+                                textAlign: textAlign,
+                                style: TextStyle(
+                                    color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500)),
                           )),
                 expanded: column.expanded,
                 flex: column.flex));

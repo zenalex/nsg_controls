@@ -8,7 +8,6 @@ import 'package:nsg_data/nsg_data.dart';
 /// Виджет фильтра периода по датам (времени) + метод открытия диалогового окна с виджетом контента фильтра
 class NsgPeriodFilter extends StatefulWidget {
   final NsgDataController controller;
-  //final Function(NsgPeriod)? onConfirm;
   final EdgeInsets margin;
   final EdgeInsets padding;
   final String label;
@@ -16,6 +15,7 @@ class NsgPeriodFilter extends StatefulWidget {
   final double? width;
   final TextAlign textAlign;
   final bool? isOpen;
+  final bool showCompact;
   const NsgPeriodFilter(
       {Key? key,
       required this.controller,
@@ -26,6 +26,7 @@ class NsgPeriodFilter extends StatefulWidget {
       // this.onConfirm,
       this.margin = const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
       this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      this.showCompact = false,
       this.isOpen})
       : super(key: key);
   @override
@@ -80,45 +81,51 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
     /// Тело виджета
     return SizedBox(
       width: widget.width,
-      child: AnimatedCrossFade(
-          duration: const Duration(milliseconds: 500),
-          crossFadeState: isOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-          firstChild: Container(),
-          secondChild: _filterWidget()),
+      child: _filterWidget(),
     );
   }
 
   Widget _filterWidget() {
     return _inkWellWrapper(
-      child: Padding(
-        padding: widget.margin,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 200),
-          padding: const EdgeInsets.only(top: 3.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 13,
-                child: Text(
-                  widget.disabled == false ? widget.label : '🔒 ${widget.label}',
-                  textAlign: widget.textAlign,
-                  style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+      child: widget.showCompact
+          ? Padding(
+              padding: widget.margin,
+              child: Container(
+                padding: const EdgeInsets.only(top: 3.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: 13,
+                      child: Text(
+                        widget.disabled == false ? widget.label : '🔒 ${widget.label}',
+                        textAlign: widget.textAlign,
+                        style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+                      ),
+                    ),
+                    Container(
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
+                        padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+                        child: Text(
+                          _showPeriod(),
+                          textAlign: widget.textAlign,
+                          style: const TextStyle(fontSize: 16),
+                        )),
+                  ],
                 ),
               ),
-              Container(
-                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
-                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+            )
+          : Padding(
+              padding: widget.margin,
+              child: Container(
+                  margin: const EdgeInsets.fromLTRB(0, 3, 0, 3),
                   child: Text(
-                    _showPeriod(),
+                    'Период: ${_showPeriod()}'.toUpperCase(),
                     textAlign: widget.textAlign,
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 10),
                   )),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
