@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart';
 
 class NsgTimePicker extends StatefulWidget {
   final String? label;
@@ -14,6 +17,7 @@ class NsgTimePicker extends StatefulWidget {
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
   final Function(Duration endDate) onClose;
+
   const NsgTimePicker(
       {Key? key,
       required this.initialTime,
@@ -41,58 +45,13 @@ class NsgTimePicker extends StatefulWidget {
                 Get.back();
               },
               getContent: () => [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 40,
-                      width: 120,
-                      child: TextFormField(
-                        inputFormatters: [
-                          MaskTextInputFormatter(
-                            mask: "##:##",
-                            filter: {
-                              "#": RegExp(r'\d+|-|/'),
-                            },
-                          )
-                        ],
-                        initialValue: minutes > 9 ? '$hours:$minutes' : '$hours:0$minutes',
-                        keyboardType: TextInputType.number,
-                        cursorColor: ControlOptions.instance.colorText,
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          labelText: '',
-                          contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
-                          isDense: true,
-                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
-                          labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                        ),
-                        key: GlobalKey(),
-                        onEditingComplete: () {
-                          FocusScope.of(context).unfocus();
-                        },
-                        onChanged: (String value) {},
-                        style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 300,
-                      height: 300,
-                      child: CupertinoDatePicker(
-                        mode: CupertinoDatePickerMode.time,
-                        initialDateTime: DateTime(_today.year, _today.month, _today.day, hours, minutes),
-                        onDateTimeChanged: (DateTime value) {
-                          selectedDate = value;
-                        },
-                        use24hFormat: true,
-                        minuteInterval: 1,
-                      ),
+                TimePickerContent(
+                    initialTime: Jiffy(DateTime(0)).add(duration: initialTime).dateTime,
+                    onChange: ((endDate) {
+                      selectedDate = endDate;
+                    })
+                    //  onClose,
                     )
-                  ],
-                )
               ],
             ));
   }
@@ -133,10 +92,9 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
                         onClose: (value) {
                           _initialTime = value;
                           setState(() {});
-                        }).showPopup(context, hours, minutes, (value) {
-                      DateTime now = DateTime.now();
-                      DateTime date = DateTime(now.year, now.month, now.day);
-                      Duration duration = value.difference(date);
+                        }).showPopup(context, hours, minutes, (endDate) {
+                      DateTime date = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
+                      Duration duration = endDate.difference(date);
                       widget.onClose(duration);
                       _initialTime = duration;
                       setState(() {});
@@ -179,4 +137,175 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
       ),
     );
   }
+}
+
+class TimePickerContent extends StatefulWidget {
+  final DateTime initialTime;
+  final Function(DateTime endDate) onChange;
+  const TimePickerContent({Key? key, required this.initialTime, required this.onChange}) : super(key: key);
+
+  @override
+  State<TimePickerContent> createState() => _TimePickerContentState();
+}
+
+class _TimePickerContentState extends State<TimePickerContent> {
+  String _initialTime = '';
+  DateTime _initialTime2 = DateTime.now();
+  final textController = TextEditingController();
+
+  @override
+  void initState() {
+    _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'HH:mm');
+    _initialTime2 = widget.initialTime;
+    textController.text = _initialTime;
+    textController.addListener(textChanged);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
+
+  bool _ignoreChange = false;
+  void textChanged() {
+    _initialTime = textController.text;
+    DateTime? _initialTimeNew;
+    var splitedTime = _initialTime.split(':');
+    if (splitedTime.length > 1) {
+      var hour = int.tryParse(splitedTime[0]) ?? 0;
+      var minutes = int.tryParse(splitedTime[1]) ?? 0;
+      var now = DateTime.now();
+      var time = DateFormat('HH:mm').parse(_initialTime, true);
+      _initialTimeNew = DateTime(now.year, now.month, now.day, hour, minutes);
+    }
+    if (_initialTimeNew != null) {
+      _initialTime2 = _initialTimeNew;
+      datepicker!.setState(_initialTime2);
+      widget.onChange(_initialTime2);
+    }
+    if (textController.text != _initialTime) {
+      var start = textController.selection.start;
+      _ignoreChange = true;
+      textController.text = _initialTime;
+
+      textController.selection = TextSelection.fromPosition(TextPosition(offset: start));
+      _ignoreChange = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var hours = _initialTime2.hour.toString();
+    var minutes = _initialTime2.minute.toString();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        SizedBox(
+          height: 40,
+          width: 120,
+          child: TextFormField(
+            inputFormatters: [
+              MaskTextInputFormatter(
+                mask: "##:##",
+                filter: {
+                  "#": RegExp(r'\d+|-|/'),
+                },
+              )
+            ],
+            keyboardType: TextInputType.number,
+            cursorColor: ControlOptions.instance.colorText,
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              labelText: '',
+              contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
+              isDense: true,
+              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+              labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+            ),
+            key: GlobalKey(),
+            onEditingComplete: () {
+              FocusScope.of(context).unfocus();
+            },
+            onChanged: (String value) {},
+            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
+            controller: textController,
+          ),
+        ),
+        SizedBox(width: 300, height: 300, child: getCupertinoPicker())
+      ],
+    );
+  }
+
+  NsgCupertinoTimePicker? datepicker;
+  Widget getCupertinoPicker() {
+    datepicker = NsgCupertinoTimePicker(
+      initialDateTime: _initialTime2,
+      onDateTimeChanged: (DateTime value) {
+        //widget.onChange(value);
+        _initialTime = NsgDateFormat.dateFormat(value, format: 'HH:mm');
+        _ignoreChange = true;
+        textController.text = _initialTime;
+        textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
+        _ignoreChange = false;
+      },
+    );
+    return datepicker!;
+  }
+}
+
+// ignore: must_be_immutable
+class NsgCupertinoTimePicker extends StatefulWidget {
+  DateTime initialDateTime;
+  final ValueChanged<DateTime> onDateTimeChanged;
+
+  NsgCupertinoTimePicker({Key? key, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
+
+  @override
+  State<NsgCupertinoTimePicker> createState() => NsgCupertinoTimeState();
+
+  NsgCupertinoTimeState? currentState;
+
+  void setState(DateTime date) {
+    if (currentState != null) {
+      initialDateTime = date;
+      currentState!.externalSetState();
+    }
+  }
+}
+
+class NsgCupertinoTimeState extends State<NsgCupertinoTimePicker> {
+  @override
+  void initState() {
+    widget.currentState = this;
+    super.initState();
+  }
+
+  void externalSetState() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoDatePicker(
+      key: GlobalKey(),
+      mode: CupertinoDatePickerMode.time,
+      initialDateTime: widget.initialDateTime,
+      onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
+      use24hFormat: true,
+      minuteInterval: 1,
+    );
+  }
+
+  // DateTime parseTime(String value, DateTime initialDate) {
+  //   var dm = value.split(':');
+  //   if (dm.length > 1) {
+  //     return DateTime(initialDate.year, initialDate.month, initialDate.day, int.parse(dm[0]), int.parse(dm[1]));
+  //   }
+  //   return initialDate;
+  // }
 }
