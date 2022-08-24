@@ -182,6 +182,12 @@ class _NsgInputState extends State<NsgInput> {
     }
   }
 
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
+
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
   Widget _gestureWrap(Widget interactiveWidget, bool clearIcon) {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
