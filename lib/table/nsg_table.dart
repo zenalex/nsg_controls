@@ -612,7 +612,7 @@ class _NsgTableState extends State<NsgTable> {
                           //setState(() {});
                         },
                         child: showCell(
-                            align: column.rowAlign ?? defaultRowAlign,
+                            //align: column.rowAlign ?? defaultRowAlign,
                             backColor: column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
                             width: column.width,
                             child: _rowWidget(row, column),
@@ -621,7 +621,7 @@ class _NsgTableState extends State<NsgTable> {
                     flex: column.flex)
                 : wrapExpanded(
                     child: showCell(
-                        align: column.rowAlign ?? defaultRowAlign,
+                        //align: column.rowAlign ?? defaultRowAlign,
                         backColor: column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
                         width: column.width,
                         child: _rowWidget(row, column)),
@@ -963,7 +963,7 @@ class _NsgTableState extends State<NsgTable> {
 
             totalsRow.add(wrapExpanded(
                 child: showCell(
-                    align: column.rowAlign ?? defaultRowAlign,
+                    //align: column.rowAlign ?? defaultRowAlign,
                     backColor: ControlOptions.instance.tableHeaderColor,
                     width: column.width,
                     child: index == 0

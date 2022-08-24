@@ -49,7 +49,7 @@ class NsgTableColumn {
   TextAlign? headerTextAlign;
 
   ///Выравнивание текста в строках
-  AlignmentGeometry? rowAlign;
+  //AlignmentGeometry? rowAlign;
 
   ///Выравнивание текста в строках
   TextAlign? rowTextAlign;
@@ -85,7 +85,7 @@ class NsgTableColumn {
       this.headerTextAlign,
       this.headerTextStyle,
       this.headerBackColor,
-      this.rowAlign,
+      //this.rowAlign,
       this.rowTextAlign,
       this.rowBackColor,
       this.rowTextStyle,

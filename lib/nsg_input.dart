@@ -147,13 +147,25 @@ class NsgInput extends StatefulWidget {
 class _NsgInputState extends State<NsgInput> {
   late NsgInputType inputType;
   NsgBaseController? selectionController;
+  bool isFocused = false;
   PhoneInputFormatter phoneFormatter = PhoneInputFormatter();
   bool _disabled = false;
+  TextEditingController textController = TextEditingController();
   get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
 
   @override
   void initState() {
     super.initState();
+
+    textController.addListener(() {
+      if (inputType == NsgInputType.stringValue) {
+        widget.dataItem.setFieldValue(widget.fieldName, textController.value);
+      }
+      if (widget.onChanged != null) {
+        widget.onChanged!(widget.dataItem);
+      }
+    });
+
     //Проверяем, выбран ли тип инпута пользователем
     _disabled = widget.disabled;
     inputType = widget.selectInputType();
@@ -205,6 +217,7 @@ class _NsgInputState extends State<NsgInput> {
       var refItem = widget.dataItem.getReferent(widget.fieldName);
       fieldValue = refItem == null ? '' : refItem.toString();
     }
+    textController.text = fieldValue.toString();
     if (inputType == NsgInputType.boolValue) {
       return _buildBoolWidget(fieldValue);
     }
@@ -232,6 +245,7 @@ class _NsgInputState extends State<NsgInput> {
                     // ↓ Focus widget handler e.g. user taps elsewhere
                     autofocus: false,
                     onFocusChange: (hasFocus) {
+                      isFocused = hasFocus;
                       if (widget.onEditingComplete != null) {
                         if (!hasFocus) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                       }
@@ -251,6 +265,12 @@ class _NsgInputState extends State<NsgInput> {
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 15),
                             child: TextFormField(
+                              controller: textController,
+                              onTap: () {
+                                if (!isFocused) {
+                                  textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.value.text.length);
+                                }
+                              },
                               inputFormatters: widget.phoneMask == true
                                   ? [phoneFormatter]
                                   : widget.mask != null
@@ -266,7 +286,6 @@ class _NsgInputState extends State<NsgInput> {
                               maxLines: widget.maxLines,
                               minLines: widget.minLines,
                               keyboardType: widget.keyboard,
-                              initialValue: fieldValue.toString(),
                               cursorColor: ControlOptions.instance.colorText,
                               decoration: InputDecoration(
                                 prefix: _disabled == false
@@ -299,14 +318,14 @@ class _NsgInputState extends State<NsgInput> {
                                   widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                                 }
                               },
-                              onChanged: (String value) {
+                              /* onChanged: (String value) {
                                 if (inputType == NsgInputType.stringValue) {
                                   widget.dataItem.setFieldValue(widget.fieldName, value);
                                 }
                                 if (widget.onChanged != null) {
                                   widget.onChanged!(widget.dataItem);
                                 }
-                              },
+                              },*/
                               style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
                               readOnly: _disabled,
                             ),
