@@ -1081,7 +1081,7 @@ class _NsgTableState extends State<NsgTable> {
 
       /// Если Double
     } else if (field is NsgDataDoubleField) {
-      text = '${fieldkey == 0.0 ? '' : fieldkey.toStringAsFixed(2)}';
+      text = '${fieldkey == 0.0 ? '' : fieldkey.toStringAsFixed(field.maxDecimalPlaces)}';
       textAlign = TextAlign.right;
 
       /// Если Int
