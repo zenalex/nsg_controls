@@ -32,8 +32,14 @@ class NsgErrorWidget {
     showError(NsgApiException(NsgApiError(message: errorMessage)));
   }
 
-  static void showError(NsgApiException exception) {
+  static void showError(Exception ex) {
     Get.dialog(Builder(builder: (dialogContext) {
+      NsgApiException exception;
+      if (ex is! NsgApiException) {
+        exception = NsgApiException(NsgApiError(code: 0, message: ex.toString(), errorType: null));
+      } else {
+        exception = ex;
+      }
       return NsgPopUp(
           title: 'Ошибка ${exception.error.code}',
           getContent: () => [

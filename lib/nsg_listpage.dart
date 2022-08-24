@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_controls/widgets/nsg_snackbar.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -168,7 +169,7 @@ class NsgListPage extends StatelessWidget {
                     Expanded(
                       child: controller.obx(
                           (state) => Container(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
                               child: SmartRefresher(
                                 key: _refresherKey,
                                 enablePullDown: true,
@@ -214,8 +215,9 @@ ListView.builder(
       );
     } else if (type == NsgListPageMode.grid) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.only(left: 10, right: 10),
         child: GridView.count(
+          padding: EdgeInsets.only(bottom: 10, top: 10),
           mainAxisSpacing: gridYSpacing,
           crossAxisSpacing: gridXSpacing,
           crossAxisCount: _crossAxisCount(),
@@ -337,39 +339,70 @@ ListView.builder(
 }
 
 class SearchWidget extends StatelessWidget {
-  const SearchWidget({Key? key, required this.controller, this.isOpen}) : super(key: key);
+  SearchWidget({Key? key, required this.controller, this.isOpen}) : super(key: key);
 
   final NsgDataController controller;
   final bool? isOpen;
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController textController = TextEditingController();
+    textController.text = controller.controllerFilter.searchString;
     var isFilterOpen = isOpen ?? controller.controllerFilter.isOpen;
+
+    void setFilter() {
+      if (controller.controllerFilter.searchString != textController.text) {
+        controller.controllerFilter.searchString = textController.text;
+        controller.controllerFilter.refreshControllerWithDelay();
+      } else {
+        nsgSnackbar(text: 'Фильтр по тексту не изменился', type: NsgSnarkBarType.warning);
+      }
+    }
+
     return !isFilterOpen
-        ? SizedBox()
-        : Container(
-            padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-            child: TextFormField(
-              autofocus: false,
-              initialValue: controller.controllerFilter.searchString,
-              cursorColor: ControlOptions.instance.colorText,
-              decoration: InputDecoration(
-                counterText: "",
-                labelText: 'Фильтр по тексту',
-                alignLabelWithHint: true,
-                contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5), //  <- you can it to 0.0 for no space
-                isDense: true,
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
-                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
-                labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+        ? const SizedBox()
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Container(
+                    padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                    child: TextFormField(
+                      controller: textController,
+                      autofocus: false,
+                      cursorColor: ControlOptions.instance.colorText,
+                      decoration: InputDecoration(
+                        counterText: "",
+                        labelText: 'Фильтр по тексту',
+                        alignLabelWithHint: true,
+                        contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5), //  <- you can it to 0.0 for no space
+                        isDense: true,
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
+                        labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                      ),
+                      key: GlobalKey(),
+                      onEditingComplete: () {
+                        setFilter();
+                      },
+                      onChanged: (value) {},
+                      style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 16),
+                    )),
               ),
-              key: GlobalKey(),
-              onEditingComplete: () {},
-              onChanged: (value) {
-                controller.controllerFilter.searchString = value;
-                controller.controllerFilter.refreshControllerWithDelay();
-              },
-              style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 16),
-            ));
+              Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: InkWell(
+                  onTap: () {
+                    setFilter();
+                  },
+                  child: Icon(
+                    Icons.search_outlined,
+                    size: 24,
+                    color: ControlOptions.instance.colorMain,
+                  ),
+                ),
+              )
+            ],
+          );
   }
 }
