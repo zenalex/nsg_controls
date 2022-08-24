@@ -169,7 +169,7 @@ class NsgListPage extends StatelessWidget {
                     Expanded(
                       child: controller.obx(
                           (state) => Container(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
                               child: SmartRefresher(
                                 key: _refresherKey,
                                 enablePullDown: true,
@@ -215,8 +215,9 @@ ListView.builder(
       );
     } else if (type == NsgListPageMode.grid) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.only(left: 10, right: 10),
         child: GridView.count(
+          padding: EdgeInsets.only(bottom: 10, top: 10),
           mainAxisSpacing: gridYSpacing,
           crossAxisSpacing: gridXSpacing,
           crossAxisCount: _crossAxisCount(),
@@ -354,45 +355,51 @@ class SearchWidget extends StatelessWidget {
         controller.controllerFilter.searchString = textController.text;
         controller.controllerFilter.refreshControllerWithDelay();
       } else {
-        nsgSnackbar(text: 'Запрос уже обрабатывается', type: NsgSnarkBarType.warning);
+        nsgSnackbar(text: 'Фильтр по тексту не изменился', type: NsgSnarkBarType.warning);
       }
     }
 
     return !isFilterOpen
         ? const SizedBox()
         : Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                  padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-                  child: TextFormField(
-                    controller: textController,
-                    autofocus: false,
-                    cursorColor: ControlOptions.instance.colorText,
-                    decoration: InputDecoration(
-                      counterText: "",
-                      labelText: 'Фильтр по тексту',
-                      alignLabelWithHint: true,
-                      contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5), //  <- you can it to 0.0 for no space
-                      isDense: true,
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
-                      labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                    ),
-                    key: GlobalKey(),
-                    onEditingComplete: () {
-                      setFilter();
-                    },
-                    onChanged: (value) {},
-                    style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 16),
-                  )),
-              InkWell(
-                onTap: () {
-                  setFilter();
-                },
-                child: Icon(
-                  Icons.search_off_outlined,
-                  size: 24,
-                  color: ControlOptions.instance.colorMain,
+              Expanded(
+                child: Container(
+                    padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                    child: TextFormField(
+                      controller: textController,
+                      autofocus: false,
+                      cursorColor: ControlOptions.instance.colorText,
+                      decoration: InputDecoration(
+                        counterText: "",
+                        labelText: 'Фильтр по тексту',
+                        alignLabelWithHint: true,
+                        contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5), //  <- you can it to 0.0 for no space
+                        isDense: true,
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
+                        labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                      ),
+                      key: GlobalKey(),
+                      onEditingComplete: () {
+                        setFilter();
+                      },
+                      onChanged: (value) {},
+                      style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 16),
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: InkWell(
+                  onTap: () {
+                    setFilter();
+                  },
+                  child: Icon(
+                    Icons.search_outlined,
+                    size: 24,
+                    color: ControlOptions.instance.colorMain,
+                  ),
                 ),
               )
             ],
