@@ -951,11 +951,10 @@ class _NsgTableState extends State<NsgTable> {
             } else if (field is NsgDataIntField) {
               textAlign = TextAlign.right;
             }
-            Type runtimeType = column.totalSum.runtimeType;
             String text = '';
-            if (runtimeType == double) {
-              if (column.totalSum != 0.0) text = column.totalSum.toStringAsFixed(2);
-            } else if (runtimeType == int) {
+            if (column.totalSum is double && field is NsgDataDoubleField) {
+              if (column.totalSum != 0.0) text = column.totalSum.toStringAsFixed((field as NsgDataDoubleField).maxDecimalPlaces);
+            } else if (column.totalSum is int) {
               if (column.totalSum != 0) text = column.totalSum.toString();
             } else {
               text = column.totalSum.toString();
