@@ -70,40 +70,44 @@ class NsgListPage extends StatelessWidget {
   /// Контроллер, содержащий кол-во нотификаций
   final NsgDataController? notificationController;
 
-  //Цифра в кружочке около левой иконки
+  ///Цифра в кружочке около левой иконки
   final int Function()? getNotificationCount;
 
-  // Позиция, где показывать нотификацию в аппбаре
+  /// Позиция, где показывать нотификацию в аппбаре
   NsgAppBarNotificationPosition notificationPosition;
 
-  NsgListPage({
-    Key? key,
-    required this.controller,
-    required this.title,
-    this.subtitle,
-    this.showCount,
-    required this.textNoItems,
-    this.elementWidget,
-    required this.elementEditPage,
-    this.columns,
-    this.type = NsgListPageMode.list,
-    this.gridCellMinWidth = 160,
-    this.gridXSpacing = 10.0,
-    this.gridYSpacing = 10.0,
-    this.appBar,
-    this.appBarColor,
-    this.appBarBackColor,
-    this.appBarIcon = Icons.arrow_back_ios_new,
-    this.appBarIcon2 = Icons.add,
-    this.appBarIcon3,
-    this.getNotificationCount,
-    this.appBarOnPressed,
-    this.appBarOnPressed2,
-    this.appBarOnPressed3,
-    this.onElementTap,
-    this.notificationController,
-    this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
-  }) : super(key: key);
+  /// Управление видимостью кнопок в режиме таблицы. Если не задана, то все
+  List<NsgTableMenuButtonType>? availableButtons;
+
+  NsgListPage(
+      {Key? key,
+      required this.controller,
+      required this.title,
+      this.subtitle,
+      this.showCount,
+      required this.textNoItems,
+      this.elementWidget,
+      required this.elementEditPage,
+      this.columns,
+      this.type = NsgListPageMode.list,
+      this.gridCellMinWidth = 160,
+      this.gridXSpacing = 10.0,
+      this.gridYSpacing = 10.0,
+      this.appBar,
+      this.appBarColor,
+      this.appBarBackColor,
+      this.appBarIcon = Icons.arrow_back_ios_new,
+      this.appBarIcon2 = Icons.add,
+      this.appBarIcon3,
+      this.getNotificationCount,
+      this.appBarOnPressed,
+      this.appBarOnPressed2,
+      this.appBarOnPressed3,
+      this.onElementTap,
+      this.notificationController,
+      this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
+      this.availableButtons})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -230,6 +234,7 @@ ListView.builder(
         headerColor: ControlOptions.instance.colorMain,
         columns: columns!,
         controller: controller,
+        availableButtons: availableButtons ?? NsgTableMenuButtonType.allValues,
         rowOnTap: (item, name) {
           if (item != null) {
             _elementTap(item);
