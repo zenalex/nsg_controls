@@ -109,27 +109,43 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
       child: Padding(
         padding: widget.margin,
         child: Padding(
-          padding: const EdgeInsets.only(top: 3.0),
+          padding: const EdgeInsets.only(top: 5.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (widget.simple != true)
                 SizedBox(
-                  height: 13,
+                  height: 14,
                   child: Text(
-                    widget.disabled == false ? widget.label! : '🔒 ${widget.label!}',
+                    widget.label!,
                     textAlign: widget.textAlign,
-                    style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 11, color: ControlOptions.instance.colorMainDark),
                   ),
                 ),
               Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
-                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
-                  child: Text(
-                    "$hours:$minutesString",
-                    textAlign: widget.textAlign,
-                    style: const TextStyle(fontSize: 16),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (widget.disabled == true)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5.0),
+                          child: Icon(
+                            Icons.lock,
+                            size: 12,
+                            color: ControlOptions.instance.colorMain,
+                          ),
+                        ),
+                      Text(
+                        "$hours:$minutesString",
+                        textAlign: widget.textAlign,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
                   )),
             ],
           ),
