@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:flutter/rendering.dart';
 
 // ignore: must_be_immutable
 class NsgExpansionPanel extends StatefulWidget {
   NsgExpansionPanel(
       {Key? key,
+      this.scrollController,
       this.isDisabled = false,
       this.widgetTopColor,
       this.widgetTopBackColor,
@@ -21,6 +24,9 @@ class NsgExpansionPanel extends StatefulWidget {
       this.isExpanded,
       this.linkedPanels})
       : super(key: key);
+
+  /// Контроллер скролла в котором находится панель
+  final ScrollController? scrollController;
 
   /// Disabled
   final bool isDisabled;
@@ -74,7 +80,6 @@ class NsgExpansionPanel extends StatefulWidget {
 
 class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
   bool _expanded = false;
-
   final containerKey = GlobalKey();
 
   void collapse() {
@@ -97,31 +102,12 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
 
   @override
   Widget build(BuildContext context) {
-    Widget wrapNotDisabled({required Widget child}) {
-      if (widget.isDisabled == true) {
-        return child;
-      } else {
-        return MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _expanded = !_expanded;
-                    if (_expanded) widget.collapseOtherPanels();
-                    if (widget.isExpanded != null) {
-                      widget.isExpanded!(_expanded);
-                    }
-                  });
-                },
-                child: child));
-      }
-    }
-
     return Container(
       key: containerKey,
       margin: widget.margin ?? const EdgeInsets.fromLTRB(10, 5, 10, 5),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           if (widget.isSimple != true)
             wrapNotDisabled(
@@ -168,7 +154,7 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                             }
                           });
                         },
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                           Padding(padding: const EdgeInsets.fromLTRB(0, 5, 0, 0), child: widget.widgetTop),
                           SizedBox(
                             height: 20,
@@ -176,17 +162,18 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                                 padding: const EdgeInsets.all(0), onPressed: null, icon: Icon(Icons.expand_more, color: ControlOptions.instance.colorText)),
                           ),
                           /* Container(
-                            height: 1,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
-                            ),
-                          ),*/
+                                height: 1,
+                                decoration: BoxDecoration(
+                                  border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
+                                ),
+                              ),*/
                         ]),
                       ),
                     )
                   : const SizedBox(width: double.infinity, height: 0),
               secondChild: widget.isSimple == true
                   ? Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         widget.widgetBottom,
                         MouseRegion(
@@ -205,15 +192,15 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                               alignment: Alignment.topCenter,
                               children: [
                                 /*   Container(
-                                  height: 1,
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
-                                  ),
-                                ),*/
+                                      height: 1,
+                                      margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 1, color: ControlOptions.instance.colorMain),
+                                      ),
+                                    ),*/
                                 Container(
                                   padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
-                                  child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                                  child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                                     SizedBox(
                                       height: 20,
                                       child: IconButton(
@@ -250,5 +237,41 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
         ],
       ),
     );
+  }
+
+  Widget wrapNotDisabled({required Widget child}) {
+    if (widget.isDisabled == true) {
+      return child;
+    } else {
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+            onTap: () {
+              double getAbsoluteY() {
+                RenderBox box = containerKey.currentContext!.findRenderObject() as RenderBox;
+                Offset position = box.localToGlobal(Offset.zero); //this is global position
+                double y = position.dy; //this is y - I think it's what you want
+                return y;
+              }
+
+              if (!_expanded && widget.scrollController != null) {
+                if (getAbsoluteY() > Get.height - 200) {
+                  Future.delayed(const Duration(milliseconds: 500), () async {
+                    widget.scrollController!.animateTo(widget.scrollController!.offset + containerKey.currentContext!.size!.height,
+                        duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+                  });
+                }
+              }
+              setState(() {
+                _expanded = !_expanded;
+                if (_expanded) widget.collapseOtherPanels();
+                if (widget.isExpanded != null) {
+                  widget.isExpanded!(_expanded);
+                }
+              });
+            },
+            child: child),
+      );
+    }
   }
 }
