@@ -212,10 +212,13 @@ ListView.builder(
             },
           )*/
 
-      return ListView(
-        children: [
-          FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
-        ],
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: ListView(
+          children: [
+            FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
+          ],
+        ),
       );
     } else if (type == NsgListPageMode.grid) {
       return Padding(
@@ -230,17 +233,20 @@ ListView.builder(
       );
     } else if (type == NsgListPageMode.table) {
       assert(columns != null, 'Колонки (columns) не заданы для таблицы');
-      return NsgTable(
-        headerColor: ControlOptions.instance.colorMain,
-        columns: columns!,
-        controller: controller,
-        availableButtons: availableButtons ?? NsgTableMenuButtonType.allValues,
-        rowOnTap: (item, name) {
-          if (item != null) {
-            _elementTap(item);
-          }
-        },
-        elementEditPageName: elementEditPage,
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: NsgTable(
+          headerColor: ControlOptions.instance.colorMain,
+          columns: columns!,
+          controller: controller,
+          availableButtons: availableButtons ?? NsgTableMenuButtonType.allValues,
+          rowOnTap: (item, name) {
+            if (item != null) {
+              _elementTap(item);
+            }
+          },
+          elementEditPageName: elementEditPage,
+        ),
       );
     } else {
       return const Text('Несуществующий тип отображения NsgListPage');

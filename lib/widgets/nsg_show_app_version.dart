@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../nsg_control_options.dart';
 
@@ -34,6 +35,8 @@ class _NsgShowAppVersionState extends State<NsgShowAppVersion> {
 
   @override
   Widget build(BuildContext context) {
-    return Text('Версия: ${_packageInfo.version}', style: TextStyle(color: widget.color ?? ControlOptions.instance.colorMain));
+    return FadeIn(
+        duration: const Duration(seconds: 1),
+        child: Text('Версия: ${_packageInfo.version}', style: TextStyle(color: widget.color ?? ControlOptions.instance.colorMain)));
   }
 }
