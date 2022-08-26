@@ -5,6 +5,7 @@ import 'package:nsg_controls/nsg_controls.dart';
 class NsgExpansionPanel extends StatefulWidget {
   NsgExpansionPanel(
       {Key? key,
+      this.isDisabled = false,
       this.widgetTopColor,
       this.widgetTopBackColor,
       this.widgetBottomBackColor,
@@ -20,6 +21,9 @@ class NsgExpansionPanel extends StatefulWidget {
       this.isExpanded,
       this.linkedPanels})
       : super(key: key);
+
+  /// Disabled
+  final bool isDisabled;
 
   /// Фон верхнего виджета
   final Color? widgetTopColor;
@@ -93,16 +97,13 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      key: containerKey,
-      margin: widget.margin ?? const EdgeInsets.fromLTRB(10, 5, 10, 5),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (widget.isSimple != true)
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
+    Widget wrapNotDisabled({required Widget child}) {
+      if (widget.isDisabled == true) {
+        return child;
+      } else {
+        return MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
                 onTap: () {
                   setState(() {
                     _expanded = !_expanded;
@@ -112,29 +113,41 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                     }
                   });
                 },
-                child: Container(
-                  padding: widget.widgetTopPadding,
-                  decoration: BoxDecoration(
-                      color: _expanded == true
-                          ? widget.widgetTopBackColor ?? ControlOptions.instance.colorMain
-                          : widget.widgetTopBackColor ?? ControlOptions.instance.colorInverted,
-                      border: Border.all(width: 2, color: widget.borderColor ?? ControlOptions.instance.colorMain),
-                      borderRadius: _expanded == true
-                          ? BorderRadius.only(
-                              topLeft: Radius.circular(widget.borderRadius ?? ControlOptions.instance.borderRadius),
-                              topRight: Radius.circular(widget.borderRadius ?? ControlOptions.instance.borderRadius),
-                            )
-                          : BorderRadius.circular(widget.borderRadius ?? ControlOptions.instance.borderRadius)),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Expanded(
-                      child: widget.widgetTop,
-                    ),
+                child: child));
+      }
+    }
+
+    return Container(
+      key: containerKey,
+      margin: widget.margin ?? const EdgeInsets.fromLTRB(10, 5, 10, 5),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (widget.isSimple != true)
+            wrapNotDisabled(
+              child: Container(
+                padding: widget.widgetTopPadding,
+                decoration: BoxDecoration(
+                    color: _expanded == true
+                        ? widget.widgetTopBackColor ?? ControlOptions.instance.colorMain
+                        : widget.widgetTopBackColor ?? ControlOptions.instance.colorInverted,
+                    border: Border.all(width: 2, color: widget.borderColor ?? ControlOptions.instance.colorMain),
+                    borderRadius: _expanded == true
+                        ? BorderRadius.only(
+                            topLeft: Radius.circular(widget.borderRadius ?? ControlOptions.instance.borderRadius),
+                            topRight: Radius.circular(widget.borderRadius ?? ControlOptions.instance.borderRadius),
+                          )
+                        : BorderRadius.circular(widget.borderRadius ?? ControlOptions.instance.borderRadius)),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Expanded(
+                    child: widget.widgetTop,
+                  ),
+                  if (!widget.isDisabled)
                     Icon(_expanded == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                         color: _expanded == true
                             ? widget.widgetTopColor ?? ControlOptions.instance.colorText
                             : widget.widgetTopColor ?? ControlOptions.instance.colorText)
-                  ]),
-                ),
+                ]),
               ),
             ),
           AnimatedCrossFade(
