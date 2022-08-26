@@ -127,6 +127,7 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
             wrapNotDisabled(
               child: Container(
                 padding: widget.widgetTopPadding,
+                constraints: const BoxConstraints(minHeight: 36),
                 decoration: BoxDecoration(
                     color: _expanded == true
                         ? widget.widgetTopBackColor ?? ControlOptions.instance.colorMain

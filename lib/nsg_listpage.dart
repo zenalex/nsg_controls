@@ -173,6 +173,7 @@ class NsgListPage extends StatelessWidget {
                     Expanded(
                       child: controller.obx(
                           (state) => Container(
+                              key: GlobalKey(),
                               padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
                               child: SmartRefresher(
                                 key: _refresherKey,
@@ -200,18 +201,6 @@ class NsgListPage extends StatelessWidget {
 
   Widget _content() {
     if (type == NsgListPageMode.list) {
-/* // TODO listview.builder
-ListView.builder(
-            primary: false,
-            shrinkWrap: true,
-            //physics: const NeverScrollableScrollPhysics(),
-            itemCount: tableBody.length,
-            itemBuilder: (BuildContext context, int index) {
-              print(index);
-              return tableBody[index];
-            },
-          )*/
-
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: ListView(

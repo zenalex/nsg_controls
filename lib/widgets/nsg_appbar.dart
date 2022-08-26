@@ -59,8 +59,10 @@ class NsgAppBar extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Stack(children: [
-                  if (notificationController != null && notificationPosition == NsgAppBarNotificationPosition.leftIcon && getNotificationCount!() > 0)
-                    notificationController!.obx((c) => Padding(
+                  if (notificationController != null)
+                    notificationController!.obx((c) {
+                      if (notificationPosition == NsgAppBarNotificationPosition.leftIcon && getNotificationCount!() > 0) {
+                        return Padding(
                           padding: const EdgeInsets.only(left: 30),
                           child: NsgCircle(
                             height: 20,
@@ -71,7 +73,11 @@ class NsgAppBar extends StatelessWidget {
                             backColor: ControlOptions.instance.colorMainDark,
                             borderColor: ControlOptions.instance.colorMainText,
                           ),
-                        )),
+                        );
+                      } else {
+                        return SizedBox();
+                      }
+                    }),
                   IconButton(
                       icon: Icon(icon,
                           color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
