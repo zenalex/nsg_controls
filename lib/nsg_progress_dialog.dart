@@ -3,14 +3,20 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart';
 
 class NsgProgressDialog {
   double? percent = 0;
   bool? canStopped = false;
   Function? requestStop;
   String textDialog;
-  NsgProgressDialog({this.percent, this.canStopped, this.requestStop, this.textDialog = 'Загрузка данных...'});
+
+  ///Если пользователь нажмет отменить, будет передан запрос на отмену сетевого соединения
+  NsgCancelToken? cancelToken;
+  bool visible = false;
+  NsgProgressDialog({this.percent, this.canStopped, this.requestStop, this.textDialog = 'Загрузка данных...', this.cancelToken});
   void show() {
+    visible = true;
     // открываем popup с прогрессбаром NsgProgressBar
     //print("SHOW");
     Get.dialog(
@@ -34,6 +40,7 @@ class NsgProgressDialog {
                         text: 'Отмена',
                         onPressed: () {
                           if (requestStop != null) requestStop!();
+                          cancelToken?.calcel();
                           Get.back();
                         },
                       ),
@@ -47,9 +54,10 @@ class NsgProgressDialog {
   }
 
   void hide() {
-    // закрываем popup
-    //print("HIDE");
-    Get.back();
+    if (visible) {
+      visible = false;
+      Get.back();
+    }
   }
   // При нажатии на кнопку отмены вызываем requestStop - убираем кнопку отмены, пишем "обработка отмены"
 }
