@@ -44,12 +44,11 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
     super.initState();
     selectedDate.beginDate = widget.controller.controllerFilter.nsgPeriod.beginDate;
     selectedDate.endDate = widget.controller.controllerFilter.nsgPeriod.endDate;
-    selectedDate.setDateText();
     isOpen = widget.isOpen ?? widget.controller.controllerFilter.isOpen;
   }
 
   String _showPeriod() {
-    return selectedDate.dateWidgetText;
+    return selectedDate.dateTextWithTime;
   }
 
   void showPopup(BuildContext context, Function(NsgPeriod date) onClose) {
@@ -168,7 +167,6 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
     date.beginDate = widget.controller.controllerFilter.nsgPeriod.beginDate;
     date.endDate = widget.controller.controllerFilter.nsgPeriod.endDate;
     _selected = widget.controller.controllerFilter.nsgPeriod.type;
-    date.setDateText();
     _timeselected = widget.periodTimeEnabled;
   }
 
@@ -252,7 +250,6 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     )),
                                     onPressed: () {
                                       date.minus();
-                                      date.setDateText();
                                       setState(() {});
                                     })),
                             Expanded(
@@ -263,7 +260,6 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   NsgDatePicker(initialTime: date.beginDate, onClose: (value) {}).showPopup(context, date.beginDate, (value) {
                                     date.beginDate = value;
                                     _setToSelected(_selected);
-                                    date.setDateText();
                                     setState(() {});
                                   });
                                 },
@@ -273,7 +269,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
                                         border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
                                     padding: const EdgeInsets.symmetric(vertical: 10),
-                                    child: Center(child: Text(date.dateText))),
+                                    child: Center(child: Text(date.dateTextWithoutTime))),
                               ),
                             )),
                             SizedBox(
@@ -286,7 +282,6 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     widget: Center(child: Icon(Icons.add, color: ControlOptions.instance.colorMainText)),
                                     onPressed: () {
                                       date.plus();
-                                      date.setDateText();
                                       setState(() {});
                                     })),
                           ],
@@ -386,7 +381,6 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                           onPressed: () {
                                             date.setToDay(DateTime.now());
                                             _setToSelected(_selected);
-                                            date.setDateText();
                                             setState(() {});
                                           }))
                                 ],

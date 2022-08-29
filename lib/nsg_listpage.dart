@@ -149,7 +149,6 @@ class NsgListPage extends StatelessWidget {
                   children: [
                     controller.obx((state) {
                       if (controller.controllerFilter.isAllowed == true) {
-                        controller.controllerFilter.nsgPeriod.setDateText();
                         return AnimatedCrossFade(
                             duration: const Duration(milliseconds: 500),
                             crossFadeState: controller.controllerFilter.isOpen != true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
@@ -160,7 +159,7 @@ class NsgListPage extends StatelessWidget {
                                   width: double.infinity,
                                   child: controller.controllerFilter.isPeriodAllowed
                                       ? Text(
-                                          'Фильтр по датам: ' + controller.controllerFilter.nsgPeriod.dateWidgetText,
+                                          'Фильтр по датам: ' + controller.controllerFilter.nsgPeriod.dateTextWithTime,
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(fontWeight: FontWeight.bold),
                                         )
