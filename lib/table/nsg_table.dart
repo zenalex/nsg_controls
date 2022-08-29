@@ -4,10 +4,10 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
 import 'package:nsg_controls/table/nsg_table_editmode.dart';
+import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../nsg_period_filter.dart';
-import '../nsg_row_to_column.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
 import 'nsg_table_menu_button.dart';
@@ -35,7 +35,9 @@ class NsgTable extends StatefulWidget {
       this.availableButtons = NsgTableMenuButtonType.allValues,
       this.elementEditPageName,
       this.initialIsPeriodFilterOpen = false,
-      this.initialIsSearchStringOpen = false})
+      this.initialIsSearchStringOpen = false,
+      this.userSettings,
+      this.userSettingsId = ''})
       : super(key: key);
 
   /// Кол-во отображаемых строк в теле таблицы
@@ -114,6 +116,12 @@ class NsgTable extends StatefulWidget {
 
   final bool initialIsPeriodFilterOpen;
   final bool initialIsSearchStringOpen;
+
+  ///Объет настроект пользователя
+  final NsgUserSettings? userSettings;
+
+  ///Идетнификатор данной таблицы в настройках пользователя
+  final String userSettingsId;
 
   @override
   State<NsgTable> createState() => _NsgTableState();
@@ -693,29 +701,28 @@ class _NsgTableState extends State<NsgTable> {
                   tooltip: 'Отображение колонок',
                   icon: Icons.edit_note_outlined,
                   onPressed: () {
-                    Get.dialog(
-                        NsgPopUp(
-                            title: 'Порядок и отключение колонок',
-                            width: 300,
-                            getContent: () => [
-                                  NsgTableColumnsReorder(
-                                    controller: widget.controller,
-                                    columns: widget.columns,
-                                  )
-                                ],
-                            hint: 'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
-                            onConfirm: () {
-                              //print(widget.imageList.indexOf(_selected));
-                              /*   onConfirm(_selected);
-              widget.dataItem.setFieldValue(
-                  widget.fieldName, widget.imageList.indexOf(_selected));
-
-              if (widget.onConfirm != null) widget.onConfirm!();
-              //setState(() {});*/
-
-                              Get.back();
-                            }),
-                        barrierDismissible: false);
+                    if (widget.userSettings != null) {
+                      Get.dialog(
+                          NsgPopUp(
+                              title: 'Порядок и отключение колонок',
+                              width: 300,
+                              getContent: () => [
+                                    NsgTableColumnsReorder(
+                                      controller: widget.controller,
+                                      columns: widget.columns,
+                                      userSettings: widget.userSettings!,
+                                      userSettingsId: widget.userSettingsId,
+                                    )
+                                  ],
+                              hint: 'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
+                              onConfirm: () {
+                                setState(() {});
+                                Get.back();
+                              }),
+                          barrierDismissible: false);
+                    } else {
+                      NsgErrorWidget.showErrorByString('Не заданы настройки пользователя');
+                    }
                   },
                 ),
               if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize))

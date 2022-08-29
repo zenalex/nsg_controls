@@ -3,7 +3,8 @@ import 'package:reorderables/reorderables.dart';
 
 class NsgReorderable extends StatefulWidget {
   final List<Widget> widgets;
-  const NsgReorderable({Key? key, required this.widgets}) : super(key: key);
+  final ReorderCallback onReorder;
+  const NsgReorderable({Key? key, required this.widgets, required this.onReorder}) : super(key: key);
 
   @override
   State<NsgReorderable> createState() => _NsgReorderableState();
@@ -16,9 +17,8 @@ class _NsgReorderableState extends State<NsgReorderable> {
       setState(() {
         Widget row = widget.widgets.removeAt(oldIndex);
         widget.widgets.insert(newIndex, row);
-        //NsgTableColumn dataColumn = dataController.tableColumns[widget.currentPage]!.removeAt(oldIndex);
-        //dataController.tableColumns[widget.currentPage]!.insert(newIndex, dataColumn);
       });
+      widget.onReorder(oldIndex, newIndex);
     }
 
     var wrap = ReorderableWrap(
@@ -29,14 +29,8 @@ class _NsgReorderableState extends State<NsgReorderable> {
         padding: const EdgeInsets.all(0),
         children: widget.widgets,
         onReorder: _onReorder,
-        onNoReorder: (int index) {
-          //this callback is optional
-          debugPrint('${DateTime.now().toString().substring(5, 22)} reorder cancelled. index:$index');
-        },
-        onReorderStarted: (int index) {
-          //this callback is optional
-          debugPrint('${DateTime.now().toString().substring(5, 22)} reorder started: index:$index');
-        });
+        onNoReorder: (int index) {},
+        onReorderStarted: (int index) {});
 
     return SingleChildScrollView(
       child: wrap,

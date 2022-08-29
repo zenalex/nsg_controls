@@ -11,7 +11,10 @@ class NsgTableColumnsReorder extends StatefulWidget {
 
   /// Контроллер данных
   final NsgDataController controller;
-  const NsgTableColumnsReorder({Key? key, required this.columns, required this.controller}) : super(key: key);
+  final NsgUserSettings userSettings;
+  final String userSettingsId;
+  const NsgTableColumnsReorder({Key? key, required this.columns, required this.controller, required this.userSettings, required this.userSettingsId})
+      : super(key: key);
 
   @override
   State<NsgTableColumnsReorder> createState() => _NsgTableColumnsReorderState();
@@ -23,7 +26,7 @@ class _NsgTableColumnsReorderState extends State<NsgTableColumnsReorder> {
     List<Widget> list = [];
     for (var value in widget.columns) {
       //assert(widget.fieldNameDict[value.name] != null);
-      list.add(Container(
+      list.add(SizedBox(
           width: 280,
           height: 30,
           child: NsgCheckBox(
@@ -37,6 +40,12 @@ class _NsgTableColumnsReorderState extends State<NsgTableColumnsReorder> {
     }
     return NsgReorderable(
       widgets: list,
+      onReorder: _reorder,
     );
+  }
+
+  void _reorder(int oldIndex, int newIndex) {
+    var column = widget.columns.removeAt(oldIndex);
+    widget.columns.insert(newIndex, column);
   }
 }
