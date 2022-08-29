@@ -5,14 +5,14 @@ import '../nsg_control_options.dart';
 
 class NsgProgressBar extends StatefulWidget {
   final double? percent;
-  const NsgProgressBar({Key? key, this.percent}) : super(key: key);
+  final String? text;
+  const NsgProgressBar({Key? key, this.percent, this.text = 'Загрузка'}) : super(key: key);
 
   @override
   _NsgProgressBarState createState() => _NsgProgressBarState();
 }
 
-class _NsgProgressBarState extends State<NsgProgressBar>
-    with SingleTickerProviderStateMixin {
+class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -80,9 +80,7 @@ class _NsgProgressBarState extends State<NsgProgressBar>
             child: CustomPaint(
               key: GlobalKey(),
               painter: OpenPainter(
-                  value: widget.percent == null
-                      ? _animation.value
-                      : widget.percent!.toDouble(),
+                  value: widget.percent == null ? _animation.value : widget.percent!.toDouble(),
                   arc1: arc1,
                   arc2: arc2,
                   percent: widget.percent == null ? false : true),
@@ -90,9 +88,7 @@ class _NsgProgressBarState extends State<NsgProgressBar>
           ),
           Center(
             child: Text(
-              widget.percent == null
-                  ? 'Загрузка'
-                  : 'Загрузка ${widget.percent}%',
+              widget.percent == null ? '${widget.text}' : '${widget.text} ${widget.percent}%',
               style: const TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w600,
@@ -111,12 +107,7 @@ class OpenPainter extends CustomPainter {
   final double value;
   double arc1, arc2;
   bool percent;
-  OpenPainter(
-      {required this.value,
-      required this.arc1,
-      required this.arc2,
-      this.percent = false})
-      : super();
+  OpenPainter({required this.value, required this.arc1, required this.arc2, this.percent = false}) : super();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -133,20 +124,14 @@ class OpenPainter extends CustomPainter {
     final gradient = LinearGradient(
       begin: const Alignment(-1.0, 0.0),
       end: const Alignment(1.0, 0.0),
-      colors: [
-        ControlOptions.instance.colorMain,
-        ControlOptions.instance.colorMainDark
-      ],
+      colors: [ControlOptions.instance.colorMain, ControlOptions.instance.colorMainDark],
       stops: const <double>[0, 1],
       transform: GradientRotation(val2),
     );
     final gradient2 = RadialGradient(
       radius: 2,
       tileMode: TileMode.mirror,
-      colors: [
-        ControlOptions.instance.colorMainDark.withOpacity(.5),
-        ControlOptions.instance.colorMain.withOpacity(.5)
-      ],
+      colors: [ControlOptions.instance.colorMainDark.withOpacity(.5), ControlOptions.instance.colorMain.withOpacity(.5)],
       stops: <double>[value / 300, value / 100],
     );
 
