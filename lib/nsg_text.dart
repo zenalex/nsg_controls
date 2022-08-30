@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 
+import 'widgets/nsg_snackbar.dart';
+
 /// Класс статуса сортировки колонки NsgSimpleTable
 class NsgTextType {
   TextStyle style;
@@ -49,7 +51,8 @@ class NsgText extends StatelessWidget {
     return GestureDetector(
         onLongPress: () {
           Clipboard.setData(ClipboardData(text: text));
-          Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
+          nsgSnackbar(text: 'Данные ячейки скопированы в буфер');
+          /*Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
               icon: Icon(Icons.info, size: 32, color: ControlOptions.instance.colorMainText),
               titleText: null,
               duration: const Duration(seconds: 3),
@@ -58,7 +61,7 @@ class NsgText extends StatelessWidget {
               barBlur: 0,
               overlayBlur: 0,
               colorText: ControlOptions.instance.colorMainText,
-              backgroundColor: ControlOptions.instance.colorMainDark);
+              backgroundColor: ControlOptions.instance.colorMainDark);*/
         },
         child: backColor == null
             ? Padding(

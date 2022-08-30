@@ -16,10 +16,11 @@ enum NsgSnarkBarType {
 
 void nsgSnackbar({String? title, required String text, NsgSnarkBarType? type, Duration? duration}) {
   Flushbar(
-    backgroundColor: ControlOptions.instance.colorInverted,
-    messageColor: ControlOptions.instance.colorText,
-    message: 'Скопировано в буфер обмена',
-    duration: const Duration(seconds: 2),
+    backgroundColor: ControlOptions.instance.colorMain,
+    messageColor: ControlOptions.instance.colorMainText,
+    message: text,
+    duration: const Duration(seconds: 3),
+    maxWidth: 640,
   ).show(Get.context!);
 
 /* Get.snackbar(title ?? (type == null ? '' : type.title), text,
