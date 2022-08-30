@@ -742,7 +742,6 @@ class _NsgTableState extends State<NsgTable> {
                     scrollHor.dispose();
                     scrollHorHeader.dispose();
                     scrollHorResizers.dispose();
-                    //scrollVert.dispose();
 
                     var scrollHorizontalGroup = LinkedScrollControllerGroup();
                     var scrollVerticalGroup = LinkedScrollControllerGroup();
