@@ -18,9 +18,11 @@ void nsgSnackbar({String? title, required String text, NsgSnarkBarType? type, Du
   Flushbar(
     backgroundColor: ControlOptions.instance.colorMain,
     messageColor: ControlOptions.instance.colorMainText,
+    title: type?.title,
     message: text,
     duration: const Duration(seconds: 3),
     maxWidth: 640,
+    icon: type == null ? null : Icon(type.icon, color: ControlOptions.instance.colorMainText),
   ).show(Get.context!);
 
 /* Get.snackbar(title ?? (type == null ? '' : type.title), text,
