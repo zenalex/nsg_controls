@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
+import 'package:nsg_controls/widgets/nsg_snackbar.dart';
 import 'package:nsg_data/nsgApiException.dart';
 import 'package:share_plus/share_plus.dart';
 import '../nsg_button.dart';
@@ -13,12 +14,14 @@ import 'package:nsg_data/nsgDataApiError.dart';
 Future _copyToClipboard(String text, BuildContext dialogContext) async {
   await Clipboard.setData(ClipboardData(text: text));
 
-  Flushbar(
+  nsgSnackbar(text: 'Скопировано в буфер обмена', type: NsgSnarkBarType.info);
+
+  /* Flushbar(
     backgroundColor: ControlOptions.instance.colorInverted,
     messageColor: ControlOptions.instance.colorText,
     message: 'Скопировано в буфер обмена',
     duration: const Duration(seconds: 2),
-  ).show(dialogContext);
+  ).show(dialogContext);*/
 
   /* ScaffoldMessenger.of(dialogContext).showSnackBar(SnackBar(
     backgroundColor: ControlOptions.instance.colorMain,

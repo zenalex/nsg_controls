@@ -1063,7 +1063,7 @@ class _NsgTableState extends State<NsgTable> {
                               tableColumns = resizedColumns;
                               setState(() {});
                             },
-                            columns: tableColumns),
+                            columns: visibleColumns),
                       ),
                     )
                   ])

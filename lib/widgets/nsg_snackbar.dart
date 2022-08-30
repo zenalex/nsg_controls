@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../nsg_control_options.dart';
@@ -14,13 +15,22 @@ enum NsgSnarkBarType {
 }
 
 void nsgSnackbar({String? title, required String text, NsgSnarkBarType? type, Duration? duration}) {
-  Get.snackbar(title ?? (type == null ? '' : type.title), text,
+  Flushbar(
+    backgroundColor: ControlOptions.instance.colorInverted,
+    messageColor: ControlOptions.instance.colorText,
+    message: 'Скопировано в буфер обмена',
+    duration: const Duration(seconds: 2),
+  ).show(Get.context!);
+
+/* Get.snackbar(title ?? (type == null ? '' : type.title), text,
       icon: type == null ? null : Icon(type.icon, color: ControlOptions.instance.colorMainText),
       duration: duration ?? const Duration(seconds: 3),
       maxWidth: 300,
       snackPosition: SnackPosition.BOTTOM,
       barBlur: 0,
       overlayBlur: 0,
+      borderRadius: 4,
+      snackStyle: SnackStyle.GROUNDED,
       colorText: ControlOptions.instance.colorMainText,
-      backgroundColor: ControlOptions.instance.colorMainDark);
+      backgroundColor: ControlOptions.instance.colorMainDark);*/
 }
