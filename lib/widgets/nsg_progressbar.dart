@@ -5,7 +5,7 @@ import '../nsg_control_options.dart';
 
 class NsgProgressBar extends StatefulWidget {
   final double? percent;
-  final String? text;
+  final String text;
   const NsgProgressBar({Key? key, this.percent, this.text = 'Загрузка'}) : super(key: key);
 
   @override
