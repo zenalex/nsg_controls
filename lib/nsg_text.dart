@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 
 /// Класс статуса сортировки колонки NsgSimpleTable
@@ -44,27 +46,41 @@ class NsgText extends StatelessWidget {
     mergedStyle = mergedStyle.merge(_type.style);
     if (style != null) mergedStyle = mergedStyle.merge(style!.style);
     mergedStyle = mergedStyle.merge(TextStyle(color: color));
-    return backColor == null
-        ? Padding(
-            padding: margin,
-            child: Text(
-              text,
-              textAlign: textAlign,
-              style: mergedStyle,
-              maxLines: maxLines,
-              overflow: overflow,
-            ),
-          )
-        : Container(
-            margin: margin,
-            padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(color: backColor),
-            child: Text(
-              text,
-              textAlign: textAlign,
-              overflow: TextOverflow.visible,
-              maxLines: maxLines,
-              style: mergedStyle,
-            ));
+    return GestureDetector(
+        onLongPress: () {
+          Clipboard.setData(ClipboardData(text: text));
+          Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
+              icon: Icon(Icons.info, size: 32, color: ControlOptions.instance.colorMainText),
+              titleText: null,
+              duration: const Duration(seconds: 3),
+              maxWidth: 320,
+              snackPosition: SnackPosition.BOTTOM,
+              barBlur: 0,
+              overlayBlur: 0,
+              colorText: ControlOptions.instance.colorMainText,
+              backgroundColor: ControlOptions.instance.colorMainDark);
+        },
+        child: backColor == null
+            ? Padding(
+                padding: margin,
+                child: Text(
+                  text,
+                  textAlign: textAlign,
+                  style: mergedStyle,
+                  maxLines: maxLines,
+                  overflow: overflow,
+                ),
+              )
+            : Container(
+                margin: margin,
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(color: backColor),
+                child: Text(
+                  text,
+                  textAlign: textAlign,
+                  overflow: TextOverflow.visible,
+                  maxLines: maxLines,
+                  style: mergedStyle,
+                )));
   }
 }
