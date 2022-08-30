@@ -95,12 +95,16 @@ class NsgTableColumn {
       this.getColumnWidget});
 
   static const String usVisible = 'visible';
+  static const String usWidth = 'width';
 
   ///Чтение полей объекта из JSON
   void fromJson(Map<String, dynamic> json) {
     json.forEach((name, jsonValue) {
       if (name == usVisible) {
         visible = (jsonValue.toString().toLowerCase() == 'true' || jsonValue.toString().toLowerCase() == '1');
+      }
+      if (name == usWidth) {
+        width = jsonValue;
       }
     });
   }
@@ -110,6 +114,7 @@ class NsgTableColumn {
     var map = <String, dynamic>{};
 
     map[usVisible] = visible;
+    map[usWidth] = width;
     return map;
   }
 }

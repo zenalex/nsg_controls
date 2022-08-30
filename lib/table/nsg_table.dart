@@ -737,9 +737,20 @@ class _NsgTableState extends State<NsgTable> {
                   tooltip: 'Ширина колонок',
                   icon: Icons.view_column_outlined,
                   onPressed: () {
-                    setState(() {
-                      editMode = NsgTableEditMode.columnsWidth;
-                    });
+                    editMode = NsgTableEditMode.columnsWidth;
+
+                    scrollHor.dispose();
+                    scrollHorHeader.dispose();
+                    scrollHorResizers.dispose();
+                    //scrollVert.dispose();
+
+                    var scrollHorizontalGroup = LinkedScrollControllerGroup();
+                    var scrollVerticalGroup = LinkedScrollControllerGroup();
+                    scrollHor = scrollHorizontalGroup.addAndGet();
+                    scrollHorHeader = scrollHorizontalGroup.addAndGet();
+                    scrollHorResizers = scrollHorizontalGroup.addAndGet();
+
+                    setState(() {});
                   },
                 ),
 
@@ -792,9 +803,13 @@ class _NsgTableState extends State<NsgTable> {
                 tooltip: 'Отмена',
                 icon: Icons.close,
                 onPressed: () {
-                  setState(() {
-                    editMode = NsgTableEditMode.view;
-                  });
+                  if (widget.userSettingsController != null) {
+                    if (widget.userSettingsController!.settingsMap.containsKey(widget.userSettingsId)) {
+                      fromJson(widget.userSettingsController!.settingsMap[widget.userSettingsId]);
+                    }
+                  }
+                  editMode = NsgTableEditMode.view;
+                  setState(() {});
                 },
               ),
               Text(
@@ -804,7 +819,14 @@ class _NsgTableState extends State<NsgTable> {
               NsgTableMenuButton(
                 tooltip: 'Применить',
                 icon: Icons.check,
-                onPressed: () {},
+                onPressed: () {
+                  if (widget.userSettingsController != null) {
+                    widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
+                    widget.userSettingsController!.itemPagePost();
+                  }
+                  editMode = NsgTableEditMode.view;
+                  setState(() {});
+                },
               ),
             ],
           ),
