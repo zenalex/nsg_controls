@@ -721,7 +721,7 @@ class _NsgTableState extends State<NsgTable> {
                               onConfirm: () {
                                 if (widget.userSettingsController != null) {
                                   widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
-                                  widget.userSettingsController!.itemPagePost();
+                                  widget.userSettingsController!.itemPagePost(goBack: false);
                                 }
                                 setState(() {});
                                 Get.back();
@@ -821,7 +821,7 @@ class _NsgTableState extends State<NsgTable> {
                 onPressed: () {
                   if (widget.userSettingsController != null) {
                     widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
-                    widget.userSettingsController!.itemPagePost();
+                    widget.userSettingsController!.itemPagePost(goBack: false);
                   }
                   editMode = NsgTableEditMode.view;
                   setState(() {});
@@ -1203,14 +1203,14 @@ class _NsgTableState extends State<NsgTable> {
       col.fromJson(jsonValue);
     }
     List<NsgTableColumn> columnsNew = [];
-    for (var col in columnsOrder) {
-      if (!widget.columns.contains(col)) {
+    for (var col in widget.columns) {
+      if (!columnsOrder.contains(col)) {
         columnsNew.add(col);
       }
-      widget.columns.clear();
-      widget.columns.addAll(columnsOrder);
-      widget.columns.addAll(columnsNew);
     }
+    widget.columns.clear();
+    widget.columns.addAll(columnsOrder);
+    widget.columns.addAll(columnsNew);
   }
 
   ///Запись полей объекта в JSON
