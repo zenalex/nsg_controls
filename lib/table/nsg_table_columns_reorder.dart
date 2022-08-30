@@ -11,10 +11,7 @@ class NsgTableColumnsReorder extends StatefulWidget {
 
   /// Контроллер данных
   final NsgDataController controller;
-  final NsgUserSettings userSettings;
-  final String userSettingsId;
-  const NsgTableColumnsReorder({Key? key, required this.columns, required this.controller, required this.userSettings, required this.userSettingsId})
-      : super(key: key);
+  const NsgTableColumnsReorder({Key? key, required this.columns, required this.controller}) : super(key: key);
 
   @override
   State<NsgTableColumnsReorder> createState() => _NsgTableColumnsReorderState();

@@ -93,4 +93,23 @@ class NsgTableColumn {
       this.allowSort = true,
       this.getColumnText,
       this.getColumnWidget});
+
+  static const String usVisible = 'visible';
+
+  ///Чтение полей объекта из JSON
+  void fromJson(Map<String, dynamic> json) {
+    json.forEach((name, jsonValue) {
+      if (name == usVisible) {
+        visible = (jsonValue.toString().toLowerCase() == 'true' || jsonValue.toString().toLowerCase() == '1');
+      }
+    });
+  }
+
+  ///Запись полей объекта в JSON
+  Map<String, dynamic> toJson() {
+    var map = <String, dynamic>{};
+
+    map[usVisible] = visible;
+    return map;
+  }
 }

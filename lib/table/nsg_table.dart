@@ -36,7 +36,7 @@ class NsgTable extends StatefulWidget {
       this.elementEditPageName,
       this.initialIsPeriodFilterOpen = false,
       this.initialIsSearchStringOpen = false,
-      this.userSettings,
+      this.userSettingsController,
       this.userSettingsId = ''})
       : super(key: key);
 
@@ -117,8 +117,8 @@ class NsgTable extends StatefulWidget {
   final bool initialIsPeriodFilterOpen;
   final bool initialIsSearchStringOpen;
 
-  ///Объет настроект пользователя
-  final NsgUserSettings? userSettings;
+  ///Контроллер настроект пользователя
+  final NsgUserSettingsController? userSettingsController;
 
   ///Идетнификатор данной таблицы в настройках пользователя
   final String userSettingsId;
@@ -203,6 +203,11 @@ class _NsgTableState extends State<NsgTable> {
     scrollVert = scrollVerticalGroup.addAndGet();
 
     tableColumns = List.from(widget.columns);
+    if (widget.userSettingsController != null) {
+      if (widget.userSettingsController!.settingsMap.containsKey(widget.userSettingsId)) {
+        fromJson(widget.userSettingsController!.settingsMap[widget.userSettingsId]);
+      }
+    }
 
     /// Выставляем дефолтный режим просмотра таблицы
     editMode = NsgTableEditMode.view;
@@ -701,7 +706,7 @@ class _NsgTableState extends State<NsgTable> {
                   tooltip: 'Отображение колонок',
                   icon: Icons.edit_note_outlined,
                   onPressed: () {
-                    if (widget.userSettings != null) {
+                    if (widget.userSettingsController != null) {
                       Get.dialog(
                           NsgPopUp(
                               title: 'Порядок и отключение колонок',
@@ -710,12 +715,14 @@ class _NsgTableState extends State<NsgTable> {
                                     NsgTableColumnsReorder(
                                       controller: widget.controller,
                                       columns: widget.columns,
-                                      userSettings: widget.userSettings!,
-                                      userSettingsId: widget.userSettingsId,
                                     )
                                   ],
                               hint: 'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
                               onConfirm: () {
+                                if (widget.userSettingsController != null) {
+                                  widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
+                                  widget.userSettingsController!.itemPagePost();
+                                }
                                 setState(() {});
                                 Get.back();
                               }),
@@ -1156,5 +1163,41 @@ class _NsgTableState extends State<NsgTable> {
               style: style,
               textAlign: textAlign),
         );
+  }
+
+  static const String usColumnName = 'columnName';
+
+  ///Чтение полей объекта из JSON
+  void fromJson(Map<String, dynamic> json) {
+    List<NsgTableColumn> columnsOrder = [];
+
+    for (var name in json.keys) {
+      var jsonValue = json[name];
+      var cols = widget.columns.where((e) => e.name == name);
+      if (cols.isEmpty) {
+        continue;
+      }
+      var col = cols.first;
+      columnsOrder.add(col);
+      col.fromJson(jsonValue);
+    }
+    List<NsgTableColumn> columnsNew = [];
+    for (var col in columnsOrder) {
+      if (!widget.columns.contains(col)) {
+        columnsNew.add(col);
+      }
+      widget.columns.clear();
+      widget.columns.addAll(columnsOrder);
+      widget.columns.addAll(columnsNew);
+    }
+  }
+
+  ///Запись полей объекта в JSON
+  Map<String, dynamic> toJson() {
+    var map = <String, dynamic>{};
+    for (var col in widget.columns) {
+      map[col.name] = col.toJson();
+    }
+    return map;
   }
 }
