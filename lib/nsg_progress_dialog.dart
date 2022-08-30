@@ -15,7 +15,7 @@ class NsgProgressDialog {
   NsgCancelToken? cancelToken;
   bool visible = false;
   NsgProgressDialog({this.percent, this.canStopped, this.requestStop, this.textDialog = 'Загрузка данных...', this.cancelToken});
-  void show({String? text}) {
+  void show({String text = 'Загрузка'}) {
     visible = true;
     // открываем popup с прогрессбаром NsgProgressBar
     //print("SHOW");
@@ -24,6 +24,7 @@ class NsgProgressDialog {
           filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
           child: Center(
             child: Container(
+              width: 250,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               decoration: BoxDecoration(color: const Color.fromARGB(255, 255, 255, 255), borderRadius: BorderRadius.circular(15)),
               child: Material(
