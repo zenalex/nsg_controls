@@ -193,7 +193,6 @@ class _TimePickerContentState extends State<TimePickerContent> {
       var hour = int.tryParse(splitedTime[0]) ?? 0;
       var minutes = int.tryParse(splitedTime[1]) ?? 0;
       var now = DateTime.now();
-      var time = DateFormat('HH:mm').parse(_initialTime, true);
       _initialTimeNew = DateTime(now.year, now.month, now.day, hour, minutes);
     }
     if (_initialTimeNew != null) {
@@ -213,8 +212,6 @@ class _TimePickerContentState extends State<TimePickerContent> {
 
   @override
   Widget build(BuildContext context) {
-    var hours = _initialTime2.hour.toString();
-    var minutes = _initialTime2.minute.toString();
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
