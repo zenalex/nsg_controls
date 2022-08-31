@@ -36,9 +36,13 @@ class NsgTable extends StatefulWidget {
       this.elementEditPageName,
       this.initialIsPeriodFilterOpen = false,
       this.initialIsSearchStringOpen = false,
+      this.removeVerticalScrollIfNotNeeded = false,
       this.userSettingsController,
       this.userSettingsId = ''})
       : super(key: key);
+
+  /// Убираем отступы справа если контент поместился без вертикального скролла
+  final bool removeVerticalScrollIfNotNeeded;
 
   /// Кол-во отображаемых строк в теле таблицы
   final int rowsMaxCount;
@@ -128,6 +132,9 @@ class NsgTable extends StatefulWidget {
 }
 
 class _NsgTableState extends State<NsgTable> {
+  final containerKey = GlobalKey();
+  late bool hasScrollbar;
+
   late NsgTableEditMode editMode;
   late ScrollController scrollHor;
   late ScrollController scrollHorHeader;
@@ -195,6 +202,8 @@ class _NsgTableState extends State<NsgTable> {
   @override
   void initState() {
     super.initState();
+    hasScrollbar = true;
+    //WidgetsBinding.instance.addPostFrameCallback((_) => checkScrollbarIsVisible());
     var scrollHorizontalGroup = LinkedScrollControllerGroup();
     var scrollVerticalGroup = LinkedScrollControllerGroup();
     scrollHor = scrollHorizontalGroup.addAndGet();
@@ -237,6 +246,33 @@ class _NsgTableState extends State<NsgTable> {
     }
   }
 
+  Widget rawScrollBarVertCross({required Widget child}) {
+    if (hasScrollbar) {
+      return RawScrollbar(
+          minOverscrollLength: 100,
+          minThumbLength: 100,
+          thickness: 16,
+          trackBorderColor: ControlOptions.instance.colorMainDark,
+          trackColor: ControlOptions.instance.colorMainDark,
+          thumbColor: ControlOptions.instance.colorMain,
+          radius: const Radius.circular(0),
+          controller: scrollVert,
+          thumbVisibility: true,
+          trackVisibility: true,
+          child: child);
+    } else {
+      return child;
+    }
+  }
+
+  Widget singleChildScrollViewCross({required Widget child}) {
+    if (hasScrollbar) {
+      return SingleChildScrollView(padding: EdgeInsets.only(right: hasScrollbar == true ? 16 : 0), controller: scrollVert, child: child);
+    } else {
+      return child;
+    }
+  }
+
   Widget crossWrap(Widget child) {
     if (!horizontalScrollEnabled) {
       return RawScrollbar(
@@ -247,22 +283,12 @@ class _NsgTableState extends State<NsgTable> {
           trackColor: ControlOptions.instance.colorMainDark,
           thumbColor: ControlOptions.instance.colorMain,
           radius: const Radius.circular(0),
+          controller: scrollVert,
           thumbVisibility: true,
           trackVisibility: true,
-          controller: scrollVert,
           child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
     } else {
-      return RawScrollbar(
-        minOverscrollLength: 100,
-        minThumbLength: 100,
-        thickness: 16,
-        trackBorderColor: ControlOptions.instance.colorMainDark,
-        trackColor: ControlOptions.instance.colorMainDark,
-        thumbColor: ControlOptions.instance.colorMain,
-        radius: const Radius.circular(0),
-        controller: scrollVert,
-        thumbVisibility: true,
-        trackVisibility: true,
+      return rawScrollBarVertCross(
         child: RawScrollbar(
           minOverscrollLength: 100,
           minThumbLength: 100,
@@ -275,9 +301,7 @@ class _NsgTableState extends State<NsgTable> {
           thumbVisibility: true,
           trackVisibility: true,
           notificationPredicate: (notif) => notif.depth == 1,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(right: 16),
-            controller: scrollVert,
+          child: singleChildScrollViewCross(
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 16),
               controller: scrollHor,
@@ -288,6 +312,30 @@ class _NsgTableState extends State<NsgTable> {
         ),
       );
     }
+  }
+
+  /* Widget checkScrollbarIsVisible({required Widget child}) {
+    return NotificationListener<ScrollMetricsNotification>(
+        onNotification: (notification) {
+          print("checkScrollbarIsVisible");
+          setState(() {
+            hasScrollbar = (notification.metrics.maxScrollExtent > 0);
+          });
+          return true;
+        },
+        child: child);
+  }*/
+
+  double getHeight() {
+    if (containerKey.currentContext != null) {
+      RenderBox box = containerKey.currentContext!.findRenderObject() as RenderBox;
+      //Offset position = box.localToGlobal(Offset.zero); //this is global position
+      double height = box.size.height;
+      //double y = position.dy; //this is y - I think it's what you want
+      //print("Height $height");
+      return height;
+    }
+    return 0;
   }
 
   Widget horScrollHeaderWrap(Widget child) {
@@ -925,7 +973,7 @@ class _NsgTableState extends State<NsgTable> {
 
       /// Если showHeader, то показываем Header
       if (widget.showHeader) {
-        if (editMode == NsgTableEditMode.view) {
+        if (editMode == NsgTableEditMode.view && hasScrollbar) {
           tableHeader.add(showCell(
               padding: const EdgeInsets.all(0),
               backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
@@ -1035,7 +1083,13 @@ class _NsgTableState extends State<NsgTable> {
           child: crossWrap(Container(
               padding: editMode == NsgTableEditMode.columnsWidth
                   ? const EdgeInsets.only(right: 500, bottom: 0)
-                  : EdgeInsets.only(bottom: 0, right: horizontalScrollEnabled ? 0 : 16),
+                  : EdgeInsets.only(
+                      bottom: 0,
+                      right: horizontalScrollEnabled
+                          ? 0
+                          : hasScrollbar
+                              ? 16
+                              : 0),
               //margin: EdgeInsets.only(bottom: 10, right: 10),
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
               child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
@@ -1043,9 +1097,30 @@ class _NsgTableState extends State<NsgTable> {
       ));
 
       // BUILD TABLE ------------------------------------------------------------------------------------------------------------------------------------------>
-      return Align(
-        alignment: Alignment.topLeft,
-        child: Container(
+      return LayoutBuilder(builder: (context, constraints) {
+        print("LAYOUT BUILD ${DateTime.now()} ${constraints.constrainHeight()} > ${getHeight()} hasScrollbar $hasScrollbar");
+        if (widget.removeVerticalScrollIfNotNeeded) {
+          Future.delayed(Duration.zero, () async {
+            if (constraints.constrainHeight() > getHeight()) {
+              if (hasScrollbar) {
+                setState(() {
+                  hasScrollbar = false;
+                });
+              }
+            } else {
+              if (!hasScrollbar) {
+                setState(() {
+                  hasScrollbar = true;
+                });
+              }
+            }
+          });
+        }
+
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Container(
+            key: containerKey,
             width: horizontalScrollEnabled == false ? double.infinity : null,
             decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
             child: editMode == NsgTableEditMode.columnsWidth
@@ -1073,8 +1148,10 @@ class _NsgTableState extends State<NsgTable> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: table),
-                  )),
-      );
+                  ),
+          ),
+        );
+      });
     }, onLoading: const NsgProgressBar());
   }
 
