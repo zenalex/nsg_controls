@@ -1098,7 +1098,7 @@ class _NsgTableState extends State<NsgTable> {
 
       // BUILD TABLE ------------------------------------------------------------------------------------------------------------------------------------------>
       return LayoutBuilder(builder: (context, constraints) {
-        print("LAYOUT BUILD ${DateTime.now()} ${constraints.constrainHeight()} > ${getHeight()} hasScrollbar $hasScrollbar");
+        //print("LAYOUT BUILD ${DateTime.now()} ${constraints.constrainHeight()} > ${getHeight()} hasScrollbar $hasScrollbar");
         if (widget.removeVerticalScrollIfNotNeeded) {
           Future.delayed(Duration.zero, () async {
             if (constraints.constrainHeight() > getHeight()) {
