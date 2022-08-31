@@ -88,7 +88,7 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
           ),
           Center(
             child: Text(
-              widget.percent == null ? '${widget.text}' : '${widget.text} ${widget.percent}%',
+              widget.percent == null ? widget.text : '${widget.text} ${widget.percent}%',
               style: const TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w600,

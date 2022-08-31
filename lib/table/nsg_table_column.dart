@@ -106,8 +106,9 @@ class NsgTableColumn {
       if (name == usWidth) {
         if (jsonValue is int) {
           width = jsonValue.toDouble();
-        } else
+        } else {
           width = jsonValue;
+        }
       }
     });
   }

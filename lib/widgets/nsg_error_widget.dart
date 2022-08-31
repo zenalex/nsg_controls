@@ -6,7 +6,6 @@ import 'package:nsg_data/nsgApiException.dart';
 import 'package:share_plus/share_plus.dart';
 import '../nsg_button.dart';
 import '../nsg_popup.dart';
-import 'package:nsg_data/nsgDataApiError.dart';
 
 // This function is triggered when the copy icon is pressed
 Future _copyToClipboard(String text, BuildContext dialogContext) async {
@@ -33,10 +32,8 @@ class NsgErrorWidget {
 
   static void _showError(String errorMessage, String title) {
     Get.dialog(Builder(builder: (dialogContext) {
-      NsgApiException exception;
-
       return NsgPopUp(
-          title: '$title',
+          title: title,
           getContent: () => [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),

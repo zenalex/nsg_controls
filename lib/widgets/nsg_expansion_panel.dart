@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
-import 'package:flutter/rendering.dart';
 
 // ignore: must_be_immutable
 class NsgExpansionPanel extends StatefulWidget {
