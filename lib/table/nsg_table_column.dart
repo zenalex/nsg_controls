@@ -104,7 +104,10 @@ class NsgTableColumn {
         visible = (jsonValue.toString().toLowerCase() == 'true' || jsonValue.toString().toLowerCase() == '1');
       }
       if (name == usWidth) {
-        width = jsonValue;
+        if (jsonValue is int) {
+          width = jsonValue.toDouble();
+        } else
+          width = jsonValue;
       }
     });
   }
