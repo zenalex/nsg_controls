@@ -158,7 +158,12 @@ class _NsgInputState extends State<NsgInput> {
     super.initState();
 
     textController.addListener(() {
-      if (inputType == NsgInputType.stringValue) {
+      if (widget.dataItem.getField(widget.fieldName) is NsgDataDoubleField) {
+        String text = textController.value.text;
+        text = text.replaceAll(',', '.');
+        text = text.replaceAll(RegExp('[^0-9.]'), '');
+        widget.dataItem.setFieldValue(widget.fieldName, text);
+      } else if (inputType == NsgInputType.stringValue) {
         widget.dataItem.setFieldValue(widget.fieldName, textController.value.text);
       }
       if (widget.onChanged != null) {
@@ -253,7 +258,9 @@ class _NsgInputState extends State<NsgInput> {
                     onFocusChange: (hasFocus) {
                       isFocused = hasFocus;
                       if (widget.onEditingComplete != null) {
-                        if (!hasFocus) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                        if (!hasFocus) {
+                          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                        }
                       }
                     },
                     child: Stack(
