@@ -72,6 +72,9 @@ class NsgInput extends StatefulWidget {
   /// Поле с телефоном и специальной маской для телефонов разных стран
   final bool phoneMask;
 
+  /// Поле с российским номером автомобиля и автокорректировкой символов
+  final bool carMask;
+
   ///При работе с enum можно задать возможные варианты для выбора, если не заданы, будут предложены все
   final List<NsgDataItem>? itemsToSelect;
 
@@ -104,6 +107,7 @@ class NsgInput extends StatefulWidget {
       this.keyboard = TextInputType.multiline,
       this.mask,
       this.phoneMask = false,
+      this.carMask = false,
       this.itemsToSelect,
       this.required = false})
       : super(key: key);
@@ -158,12 +162,16 @@ class _NsgInputState extends State<NsgInput> {
     super.initState();
 
     textController.addListener(() {
+      /// Заменяем в Double запятую на точку, удаляем всё, кроме цифр
       if (widget.dataItem.getField(widget.fieldName) is NsgDataDoubleField) {
-        String text = textController.value.text;
+        String text = textController.text;
         text = text.replaceAll(',', '.');
         text = text.replaceAll(RegExp('[^0-9.]'), '');
         widget.dataItem.setFieldValue(widget.fieldName, text);
       } else if (inputType == NsgInputType.stringValue) {
+        if (widget.carMask) {
+          textController.text = textController.text.toUpperCase();
+        }
         widget.dataItem.setFieldValue(widget.fieldName, textController.value.text);
       }
       if (widget.onChanged != null) {

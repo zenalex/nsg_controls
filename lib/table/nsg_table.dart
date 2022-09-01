@@ -8,6 +8,7 @@ import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../nsg_period_filter.dart';
+import '../widgets/nsg_errorpage.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
 import 'nsg_table_menu_button.dart';
@@ -1152,7 +1153,7 @@ class _NsgTableState extends State<NsgTable> {
           ),
         );
       });
-    }, onLoading: const NsgProgressBar());
+    }, onLoading: const NsgProgressBar(), onError: (text) => NsgErrorPage(text: text));
   }
 
   Widget _headerWidget(NsgTableColumn column) {

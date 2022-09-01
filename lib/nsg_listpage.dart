@@ -8,6 +8,7 @@ import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'nsg_period_filter.dart';
+import 'widgets/nsg_errorpage.dart';
 
 enum NsgListPageMode { list, grid, table }
 
@@ -126,32 +127,40 @@ class NsgListPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              controller.obx((state) => _getNsgAppBar(Get.context!), onLoading: SimpleBuilder(builder: (context) => _getNsgAppBar(context))),
-              controller.obx(
-                  (state) => SearchWidget(
-                        controller: controller,
-                      ),
-                  onLoading: SearchWidget(
-                    controller: controller,
-                  )),
-              controller.controllerFilter.isAllowed && controller.controllerFilter.isPeriodAllowed
-                  ? controller.obx(
-                      (state) => NsgPeriodFilter(
-                            label: 'Фильтр по датам',
-                            controller: controller,
-                          ),
-                      onLoading: NsgPeriodFilter(
-                        controller: controller,
-                      ))
-                  : const SizedBox(),
+              controller.obx((state) => _getNsgAppBar(), onLoading: _getNsgAppBar(), onError: (error) {
+                return _getNsgAppBar(error: NsgErrorPage(text: error).title());
+              }),
+              if (type != NsgListPageMode.table)
+                controller.obx(
+                    (state) => SearchWidget(
+                          controller: controller,
+                        ),
+                    onLoading: SearchWidget(
+                      controller: controller,
+                    ),
+                    onError: (error) => const SizedBox()),
+              if (type != NsgListPageMode.table)
+                controller.controllerFilter.isAllowed && controller.controllerFilter.isPeriodAllowed
+                    ? controller.obx(
+                        (state) => NsgPeriodFilter(
+                              label: 'Фильтр по датам',
+                              controller: controller,
+                            ),
+                        onLoading: NsgPeriodFilter(
+                          controller: controller,
+                        ),
+                        onError: (error) => const SizedBox())
+                    : const SizedBox(),
               Expanded(
                 child: Column(
                   children: [
-                    controller.obx((state) {
+                    /* controller.obx((state) {
                       if (controller.controllerFilter.isAllowed == true) {
                         return AnimatedCrossFade(
                             duration: const Duration(milliseconds: 500),
-                            crossFadeState: controller.controllerFilter.isOpen != true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                            crossFadeState: controller.controllerFilter.isOpen != true
+                                ? CrossFadeState.showSecond
+                                : CrossFadeState.showFirst,
                             firstChild: const SizedBox(width: double.infinity),
                             secondChild: Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -168,7 +177,7 @@ class NsgListPage extends StatelessWidget {
                       } else {
                         return const SizedBox();
                       }
-                    }, onLoading: const SizedBox()),
+                    }, onLoading: const SizedBox(), onError: (error) => const SizedBox()),*/
                     Expanded(
                       child: controller.obx(
                           (state) => Container(
@@ -181,7 +190,8 @@ class NsgListPage extends StatelessWidget {
                                 onRefresh: _onRefresh,
                                 child: _content(),
                               )),
-                          onLoading: const NsgProgressBar()),
+                          onLoading: const NsgProgressBar(),
+                          onError: (text) => NsgErrorPage(text: text)),
                     ),
                   ],
                 ),
@@ -194,7 +204,8 @@ class NsgListPage extends StatelessWidget {
   }
 
   int _crossAxisCount() {
-    double screenWidth = Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
+    double screenWidth =
+        Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
     return screenWidth ~/ gridCellMinWidth;
   }
 
@@ -204,7 +215,10 @@ class NsgListPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: ListView(
           children: [
-            FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
+            FadeIn(
+                duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed),
+                curve: Curves.easeIn,
+                child: Column(children: _showItems())),
           ],
         ),
       );
@@ -261,19 +275,21 @@ class NsgListPage extends StatelessWidget {
       ));
     } else {
       for (var element in controller.items) {
-        list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
+        list.add(InkWell(
+            onTap: () => _elementTap(element),
+            child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
       }
     }
     return list;
   }
 
-  Widget _getNsgAppBar(BuildContext context) {
+  Widget _getNsgAppBar({String? error}) {
     return appBar ??
         NsgAppBar(
           color: appBarColor,
           backColor: appBarBackColor,
           key: GlobalKey(),
-          text: title,
+          text: error != null ? 'Ошибка: $error'.toUpperCase() : title,
           text2: showCount != null
               ? controller.totalCount != null
                   ? showCount! + ' ' + controller.totalCount.toString()
@@ -305,10 +321,12 @@ class NsgListPage extends StatelessWidget {
           /// Фильтр
           icon3: appBarIcon3 != null
               ? appBarIcon3!
-              : controller.controllerFilter.isAllowed == true
-                  ? controller.controllerFilter.isOpen == true
-                      ? Icons.filter_alt_off
-                      : Icons.filter_alt
+              : type != NsgListPageMode.table
+                  ? controller.controllerFilter.isAllowed == true
+                      ? controller.controllerFilter.isOpen == true
+                          ? Icons.filter_alt_off
+                          : Icons.filter_alt
+                      : null
                   : null,
           onPressed3: appBarOnPressed3 ??
               (controller.controllerFilter.isAllowed == true
@@ -376,9 +394,12 @@ class SearchWidget extends StatelessWidget {
                         alignLabelWithHint: true,
                         contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5), //  <- you can it to 0.0 for no space
                         isDense: true,
-                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
-                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
-                        labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
+                        labelStyle: TextStyle(
+                            color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                       ),
                       key: GlobalKey(),
                       onEditingComplete: () {
