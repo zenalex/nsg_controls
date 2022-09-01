@@ -8,7 +8,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class NsgDatePicker extends StatefulWidget {
   final String? label;
-  final TextAlign? textAlign;
+  final TextAlign textAlign;
   final EdgeInsets margin;
   final DateTime initialTime;
   final bool? disabled;
@@ -44,6 +44,7 @@ class NsgDatePicker extends StatefulWidget {
               },
               getContent: () => [
                 DatePickerContent(
+                    textAlign: textAlign,
                     initialTime: initialTime,
                     onChange: (endDate) {
                       selectedDate = endDate;
@@ -139,7 +140,8 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
 class DatePickerContent extends StatefulWidget {
   final DateTime initialTime;
   final Function(DateTime endDate) onChange;
-  const DatePickerContent({Key? key, required this.initialTime, required this.onChange}) : super(key: key);
+  final TextAlign textAlign;
+  const DatePickerContent({Key? key, required this.initialTime, required this.textAlign, required this.onChange}) : super(key: key);
 
   @override
   State<DatePickerContent> createState() => _DatePickerContentState();
@@ -222,7 +224,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
             ],
             keyboardType: TextInputType.number,
             cursorColor: ControlOptions.instance.colorText,
-            textAlign: TextAlign.center,
+            textAlign: widget.textAlign,
             controller: textController,
             decoration: InputDecoration(
               labelText: '',
