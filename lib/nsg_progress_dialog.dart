@@ -33,7 +33,7 @@ class NsgProgressDialog {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(textDialog, style: TextStyle(color: ControlOptions.instance.colorText)),
+                    Text(textDialog, textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText)),
                     const SizedBox(height: 10),
                     NsgProgressBar(text: text),
                     if (canStopped == true)
