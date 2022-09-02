@@ -4,6 +4,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'nsg_icon_button.dart';
+import 'nsg_input_mask_type.dart';
 import 'nsg_input_type.dart';
 import 'nsg_selection.dart';
 import 'package:flutter/material.dart';
@@ -70,10 +71,8 @@ class NsgInput extends StatefulWidget {
   final String? mask;
 
   /// Поле с телефоном и специальной маской для телефонов разных стран
-  final bool phoneMask;
-
   /// Поле с российским номером автомобиля и автокорректировкой символов
-  final bool carMask;
+  final NsgInputMaskType? maskType;
 
   ///При работе с enum можно задать возможные варианты для выбора, если не заданы, будут предложены все
   final List<NsgDataItem>? itemsToSelect;
@@ -106,8 +105,7 @@ class NsgInput extends StatefulWidget {
       this.selectionForm = '',
       this.keyboard = TextInputType.multiline,
       this.mask,
-      this.phoneMask = false,
-      this.carMask = false,
+      this.maskType,
       this.itemsToSelect,
       this.required = false})
       : super(key: key);
@@ -173,13 +171,11 @@ class _NsgInputState extends State<NsgInput> {
       if (widget.dataItem.getField(widget.fieldName) is NsgDataDoubleField) {
         var start = textController.selection.start;
         var end = textController.selection.end;
-
         String text = textController.text;
         text = text.replaceAll(',', '.');
         text = text.replaceAll(RegExp('[^0-9.]'), '');
         widget.dataItem.setFieldValue(widget.fieldName, text);
         _ignoreChange = true;
-
         try {
           textController.text = text;
           if (start != -1 && end != -1) textController.selection = TextSelection(baseOffset: start, extentOffset: end);
@@ -187,20 +183,17 @@ class _NsgInputState extends State<NsgInput> {
           _ignoreChange = false;
         }
       } else if (inputType == NsgInputType.stringValue) {
-        if (widget.carMask) {
+        if (widget.maskType == NsgInputMaskType.car) {
           var start = textController.selection.start;
           var end = textController.selection.end;
           String text = textController.text.toUpperCase();
           text = text.replaceAll(RegExp('[^0-9АВЕКМНОРСТУХABEKMHOPCTYX]'), '');
-
           if (start > text.length) {
             start = text.length;
             end = start;
           }
-
           widget.dataItem.setFieldValue(widget.fieldName, text);
           _ignoreChange = true;
-
           try {
             textController.text = text;
             if (start != -1 && end != -1) textController.selection = TextSelection(baseOffset: start, extentOffset: end);
@@ -325,7 +318,7 @@ class _NsgInputState extends State<NsgInput> {
                                   textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.value.text.length);
                                 }
                               },
-                              inputFormatters: widget.phoneMask == true
+                              inputFormatters: widget.maskType == NsgInputMaskType.phone
                                   ? [phoneFormatter]
                                   : widget.mask != null
                                       ? [
