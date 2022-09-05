@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+import 'widgets/nsg_dialog_save_or_cancel.dart';
 import 'widgets/nsg_error_widget.dart';
 
 class ControlOptions {
@@ -116,6 +117,9 @@ class ControlOptions {
     this.colorGreyLighter = const Color.fromARGB(255, 230, 230, 230),
   }) {
     NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
+
+    // Дефолтная функция с диалоговым окном при закрытии страницы на которой были сделаны изменения (например, в текстовой форме)
+    NsgBaseController.saveOrCancelDefaultDialog = NsgDialogSaveOrCancel.saveOrCancel;
   }
 
   static ControlOptions instance = ControlOptions();
