@@ -142,6 +142,7 @@ class _NsgTableState extends State<NsgTable> {
   late ScrollController scrollHorResizers;
   late ScrollController scrollVert;
   late List<NsgTableColumn> tableColumns;
+  late List<NsgDataItem> listRowsToDelete;
 
   bool horizontalScrollEnabled = true;
 
@@ -203,6 +204,7 @@ class _NsgTableState extends State<NsgTable> {
   @override
   void initState() {
     super.initState();
+    listRowsToDelete = [];
     hasScrollbar = true;
     //WidgetsBinding.instance.addPostFrameCallback((_) => checkScrollbarIsVisible());
     var scrollHorizontalGroup = LinkedScrollControllerGroup();
@@ -636,12 +638,26 @@ class _NsgTableState extends State<NsgTable> {
                 column.totalSum += 1;
               }
             }
+            var isSelected = false;
+            if (listRowsToDelete.contains(row)) {
+              isSelected = true;
+            }
             tableRow.add(widget.rowOnTap != null
                 ? wrapExpanded(
                     child: InkWell(
                         onTap: () {
                           if (editMode == NsgTableEditMode.view) {
                             widget.rowOnTap!(row, column.name);
+                          } else if (editMode == NsgTableEditMode.rowDelete) {
+                            if (listRowsToDelete.contains(row)) {
+                              setState(() {
+                                listRowsToDelete.remove(row);
+                              });
+                            } else {
+                              setState(() {
+                                listRowsToDelete.add(row);
+                              });
+                            }
                           }
                         },
                         onLongPress: () {
@@ -675,7 +691,9 @@ class _NsgTableState extends State<NsgTable> {
                         },
                         child: showCell(
                             align: column.verticalAlign ?? defaultRowAlign,
-                            backColor: column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                            backColor: isSelected
+                                ? ControlOptions.instance.colorError.withOpacity(0.3)
+                                : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
                             width: column.width,
                             child: _rowWidget(row, column),
                             isSelected: row == _selectedRow && (_selectedColumn == null || _selectedColumn == column))),
@@ -684,7 +702,9 @@ class _NsgTableState extends State<NsgTable> {
                 : wrapExpanded(
                     child: showCell(
                         align: column.verticalAlign ?? defaultRowAlign,
-                        backColor: column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                        backColor: isSelected
+                            ? ControlOptions.instance.colorError.withOpacity(0.3)
+                            : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
                         width: column.width,
                         child: _rowWidget(row, column)),
                     expanded: column.expanded,
@@ -735,6 +755,8 @@ class _NsgTableState extends State<NsgTable> {
                   tooltip: 'Удалить строку',
                   icon: Icons.delete_forever_outlined,
                   onPressed: () {
+                    // Обнуляем массив строк на удаление
+                    listRowsToDelete = [];
                     setState(() {
                       editMode = NsgTableEditMode.rowDelete;
                     });
@@ -901,6 +923,16 @@ class _NsgTableState extends State<NsgTable> {
                   'Удаление строк',
                   style: TextStyle(color: ControlOptions.instance.colorMainText),
                 ),
+              ),
+              NsgTableMenuButton(
+                tooltip: 'Удалить',
+                icon: Icons.check,
+                onPressed: () {
+                  deleteSelectedRows(listRowsToDelete);
+                  /* setState(() {
+                    editMode = NsgTableEditMode.view;
+                  });*/
+                },
               ),
             ],
           ),
@@ -1154,6 +1186,55 @@ class _NsgTableState extends State<NsgTable> {
         );
       });
     }, onLoading: const NsgProgressBar(), onError: (text) => NsgErrorPage(text: text));
+  }
+
+  void deleteSelectedRows(List<NsgDataItem> rowsToDelete) {
+    List<Widget> list = [];
+    for (var element in rowsToDelete) {
+      list.add(Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Row(
+          children: [
+            Flexible(child: Text(element.toString())),
+          ],
+        ),
+      ));
+    }
+
+    Get.dialog(
+        NsgPopUp(
+            title: 'Удаление строк',
+            getContent: () => [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Icon(
+                                  Icons.error_outline,
+                                  size: 38,
+                                  color: ControlOptions.instance.colorMain,
+                                ),
+                              ),
+                              const Flexible(child: Text('Подтвердите, что хотите удалить следующие строки:')),
+                            ],
+                          ),
+                          Flexible(child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: list)))
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+            onConfirm: () {
+              //widget.controller.currentItem = row; TODO как удалить лист объектов?
+              //widget.controller.itemRemove();
+            }),
+        barrierDismissible: false);
   }
 
   Widget _headerWidget(NsgTableColumn column) {

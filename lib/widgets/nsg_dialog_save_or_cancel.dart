@@ -18,7 +18,7 @@ class NsgDialogSaveOrCancel {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Text('остаться на странице для продолжения редактирования (стрелочка сверху слева),'),
+                child: Text('продолжить редактирование (стрелочка сверху слева),'),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
