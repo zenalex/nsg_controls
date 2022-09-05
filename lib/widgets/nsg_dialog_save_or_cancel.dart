@@ -6,7 +6,7 @@ import 'package:nsg_controls/nsg_popup.dart';
 
 class NsgDialogSaveOrCancel {
   static Future<bool?> saveOrCancel() async {
-    bool? value = null;
+    bool? value;
     await Get.dialog(
         NsgPopUp(
           title: 'Вы внесли изменения. Хотитие сохранить?',
