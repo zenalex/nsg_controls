@@ -80,8 +80,13 @@ class NsgListPage extends StatelessWidget {
   /// Управление видимостью кнопок в режиме таблицы. Если не задана, то все
   List<NsgTableMenuButtonType>? availableButtons;
 
+  Widget? widgetBottom;
+
+  final bool showLastAndFavourites;
   NsgListPage(
       {Key? key,
+      this.widgetBottom,
+      this.showLastAndFavourites = false,
       required this.controller,
       required this.title,
       this.subtitle,
@@ -188,11 +193,12 @@ class NsgListPage extends StatelessWidget {
                                 enablePullDown: true,
                                 controller: _refreshController,
                                 onRefresh: _onRefresh,
-                                child: _content(),
+                                child: _wrapTabs(child: _content()),
                               )),
                           onLoading: const NsgProgressBar(),
                           onError: (text) => NsgErrorPage(text: text)),
                     ),
+                    if (widgetBottom != null) widgetBottom!
                   ],
                 ),
               ),
@@ -203,9 +209,65 @@ class NsgListPage extends StatelessWidget {
     );
   }
 
+  Widget _wrapTabs({required Widget child}) {
+    if (!showLastAndFavourites) {
+      return child;
+    }
+    return DefaultTabController(
+      //  initialIndex: controller.contextMachinery,
+      length: 3,
+      child: Builder(builder: (BuildContext contextMachinery) {
+        final TabController tabMachineryController = DefaultTabController.of(contextMachinery)!;
+        tabMachineryController.addListener(() {
+          if (!tabMachineryController.indexIsChanging) {
+            // controller.contextMachinery = tabMachineryController.index;
+          }
+        });
+
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            height: 50,
+            child: TabBar(
+              indicatorColor: ControlOptions.instance.colorMain,
+              unselectedLabelColor: ControlOptions.instance.colorText.withOpacity(0.5),
+              labelColor: ControlOptions.instance.colorText,
+              labelPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              tabs: [
+                Tab(
+                    child: Text(
+                  "Все".toUpperCase(),
+                  textAlign: TextAlign.center,
+                )),
+                Tab(
+                    child: Text(
+                  "Последние".toUpperCase(),
+                  textAlign: TextAlign.center,
+                )),
+                Tab(child: Text("Избранные".toUpperCase(), textAlign: TextAlign.center)),
+              ],
+            ),
+          ),
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: TabBarView(children: [
+              Flexible(child: _content()),
+              ListView(
+                children: [],
+              ),
+              ListView(
+                children: [],
+              )
+            ]),
+          ))
+        ]);
+      }),
+    );
+  }
+
   int _crossAxisCount() {
-    double screenWidth =
-        Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
+    double screenWidth = Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
     return screenWidth ~/ gridCellMinWidth;
   }
 
@@ -215,10 +277,7 @@ class NsgListPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: ListView(
           children: [
-            FadeIn(
-                duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed),
-                curve: Curves.easeIn,
-                child: Column(children: _showItems())),
+            FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
           ],
         ),
       );
@@ -238,6 +297,7 @@ class NsgListPage extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: NsgTable(
+          removeVerticalScrollIfNotNeeded: false,
           headerColor: ControlOptions.instance.colorMain,
           columns: columns!,
           controller: controller,
@@ -275,9 +335,7 @@ class NsgListPage extends StatelessWidget {
       ));
     } else {
       for (var element in controller.items) {
-        list.add(InkWell(
-            onTap: () => _elementTap(element),
-            child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
+        list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
       }
     }
     return list;
@@ -394,12 +452,9 @@ class SearchWidget extends StatelessWidget {
                         alignLabelWithHint: true,
                         contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5), //  <- you can it to 0.0 for no space
                         isDense: true,
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
-                        labelStyle: TextStyle(
-                            color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMain)),
+                        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
+                        labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                       ),
                       key: GlobalKey(),
                       onEditingComplete: () {
