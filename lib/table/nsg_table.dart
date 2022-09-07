@@ -223,8 +223,8 @@ class _NsgTableState extends State<NsgTable> {
 
     /// Выставляем дефолтный режим просмотра таблицы
     editMode = NsgTableEditMode.view;
-    isPeriodFilterOpen = widget.initialIsPeriodFilterOpen;
-    isSearchStringFilterOpen = widget.initialIsSearchStringOpen;
+    isPeriodFilterOpen = widget.initialIsPeriodFilterOpen || widget.controller.controllerFilter.isPeriodAllowed;
+    isSearchStringFilterOpen = widget.initialIsSearchStringOpen || widget.controller.controllerFilter.searchString.isNotEmpty;
     setInitialSorting();
   }
 
