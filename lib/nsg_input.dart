@@ -147,6 +147,7 @@ class NsgInput extends StatefulWidget {
 }
 
 class _NsgInputState extends State<NsgInput> {
+  FocusNode focus = FocusNode();
   late TextInputType? keyboard;
   late NsgInputType inputType;
   NsgBaseController? selectionController;
@@ -161,6 +162,9 @@ class _NsgInputState extends State<NsgInput> {
   @override
   void initState() {
     super.initState();
+    focus.addListener(() {
+      print('focus.hasFocus ${focus.hasFocus}');
+    });
     //Проверяем, выбран ли тип инпута пользователем
     _disabled = widget.disabled;
     inputType = widget.selectInputType();
@@ -233,8 +237,10 @@ class _NsgInputState extends State<NsgInput> {
 
   @override
   void dispose() {
-    textController.dispose();
     super.dispose();
+    textController.dispose();
+    focus.removeListener(() {});
+    focus.dispose();
   }
 
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
@@ -258,7 +264,10 @@ class _NsgInputState extends State<NsgInput> {
           child: NsgIconButton(
               onPressed: () {
                 widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
-                setState(() {});
+                textController.text = widget.dataItem[widget.fieldName].toString();
+                FocusScope.of(context).requestFocus();
+                textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.value.text.length);
+                // setState(() {});
               },
               icon: Icons.close_outlined),
         )
@@ -295,8 +304,8 @@ class _NsgInputState extends State<NsgInput> {
                 borderRadius: BorderRadius.circular(widget.borderRadius),
                 border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),*/
             child: widget.widget ??
-                Focus(
-                    canRequestFocus: true,
+                /*   Focus(
+                    canRequestFocus: false,
                     //autofocus: true,
                     onFocusChange: (hasFocus) {
                       isFocused = hasFocus;
@@ -305,90 +314,99 @@ class _NsgInputState extends State<NsgInput> {
                           widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                         }
                       }
-                    },
-                    child: Stack(
-                      alignment: Alignment.bottomLeft,
-                      children: [
-                        if (widget.validateText != '')
-                          Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                widget.validateText,
-                                style: TextStyle(fontSize: 10, color: ControlOptions.instance.colorError),
-                              )),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 15),
-                            child: TextFormField(
-                              controller: textController,
-                              onTap: () {
-                                if (!isFocused) {
-                                  textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.value.text.length);
-                                }
-                              },
-                              inputFormatters: widget.maskType == NsgInputMaskType.phone
-                                  ? [phoneFormatter]
-                                  : widget.mask != null
-                                      ? [
-                                          MaskTextInputFormatter(
-                                            initialText: fieldValue.toString(),
-                                            mask: widget.mask,
-                                          )
-                                        ]
-                                      : null,
-                              maxLength: _maxLength,
-                              autofocus: false,
-                              maxLines: widget.maxLines,
-                              minLines: widget.minLines,
-                              keyboardType: keyboard,
-                              cursorColor: ControlOptions.instance.colorText,
-                              decoration: InputDecoration(
-                                prefix: _disabled == false
-                                    ? null
-                                    : Padding(
-                                        padding: const EdgeInsets.only(right: 3.0),
-                                        child: Icon(
-                                          Icons.lock,
-                                          size: 12,
-                                          color: ControlOptions.instance.colorMain,
-                                        ),
-                                      ),
+                    },*/
+                Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: [
+                    if (widget.validateText != '')
+                      Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(
+                            widget.validateText,
+                            style: TextStyle(fontSize: 10, color: ControlOptions.instance.colorError),
+                          )),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 15),
+                        child: TextFormField(
+                          controller: textController,
+                          onTap: () {
+                            print(!focus.hasFocus);
+                            if (!focus.hasFocus) {
+                              textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.value.text.length);
+                            }
+                          },
+                          inputFormatters: widget.maskType == NsgInputMaskType.phone
+                              ? [phoneFormatter]
+                              : widget.mask != null
+                                  ? [
+                                      MaskTextInputFormatter(
+                                        initialText: fieldValue.toString(),
+                                        mask: widget.mask,
+                                      )
+                                    ]
+                                  : null,
+                          maxLength: _maxLength,
+                          autofocus: false,
+                          focusNode: focus,
+                          maxLines: widget.maxLines,
+                          minLines: widget.minLines,
+                          keyboardType: keyboard,
+                          cursorColor: ControlOptions.instance.colorText,
+                          decoration: InputDecoration(
+                            prefix: _disabled == false
+                                ? null
+                                : Padding(
+                                    padding: const EdgeInsets.only(right: 3.0),
+                                    child: Icon(
+                                      Icons.lock,
+                                      size: 12,
+                                      color: ControlOptions.instance.colorMain,
+                                    ),
+                                  ),
 
-                                counterText: "",
-                                labelText: widget.required ? widget.label + ' *' : widget.label,
-                                hintText: widget.hint,
-                                alignLabelWithHint: true,
-                                contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 25, 10), //  <- you can it to 0.0 for no space
-                                isDense: true,
-                                enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 2, color: widget.validateText != '' ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain)),
-                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
-                                labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                              ),
-                              //key: GlobalKey(),
-                              onEditingComplete: () {
-                                //FocusScope.of(context).nextFocus();
-                                if (widget.onEditingComplete != null) {
-                                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                                }
-                              },
-                              /* onChanged: (String value) {
-                                if (inputType == NsgInputType.stringValue) {
-                                  widget.dataItem.setFieldValue(widget.fieldName, value);
-                                }
-                                if (widget.onChanged != null) {
-                                  widget.onChanged!(widget.dataItem);
-                                }
-                              },*/
-                              style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
-                              readOnly: _disabled,
-                            ),
+                            counterText: "",
+                            labelText: widget.required ? widget.label + ' *' : widget.label,
+                            hintText: widget.hint,
+                            alignLabelWithHint: true,
+                            contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 25, 10), //  <- you can it to 0.0 for no space
+                            isDense: true,
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 2, color: widget.validateText != '' ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain)),
+                            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
+                            labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                           ),
+                          //key: GlobalKey(),
+                          onFieldSubmitted: (string) {
+                            FocusScope.of(context).nextFocus();
+
+                            if (widget.onEditingComplete != null) {
+                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                            }
+                          },
+                          onEditingComplete: () {
+                            //FocusScope.of(context).nextFocus();
+                            if (widget.onEditingComplete != null) {
+                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                            }
+                          },
+                          /* onChanged: (String value) {
+                            if (inputType == NsgInputType.stringValue) {
+                              widget.dataItem.setFieldValue(widget.fieldName, value);
+                            }
+                            if (widget.onChanged != null) {
+                              widget.onChanged!(widget.dataItem);
+                            }
+                          },*/
+                          style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
+                          readOnly: _disabled,
                         ),
-                      ],
-                    ))),
+                      ),
+                    ),
+                  ],
+                )),
         fieldValue.toString() != '');
   }
 
