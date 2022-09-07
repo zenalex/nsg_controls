@@ -19,6 +19,7 @@ class NsgPopUp extends StatefulWidget {
   final VoidCallback? onConfirm;
   final List<Widget> Function()? getContent;
   final List<Widget>? contentSecondary;
+  final Widget? contentTop;
   final Widget? contentBottom;
   final double? height;
   final double? width;
@@ -40,6 +41,7 @@ class NsgPopUp extends StatefulWidget {
       this.height,
       this.width,
       this.contentSecondary,
+      this.contentTop,
       this.contentBottom,
       this.dataController,
       this.colorText = Colors.black,
@@ -51,10 +53,20 @@ class NsgPopUp extends StatefulWidget {
 }
 
 class _NsgPopUpState extends State<NsgPopUp> {
+  final ScrollController controller1 = ScrollController();
+  final ScrollController controller2 = ScrollController();
+
   @override
   void initState() {
     widget.colorText ??= ControlOptions.instance.colorText;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller1.dispose();
+    controller2.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,8 +80,6 @@ class _NsgPopUpState extends State<NsgPopUp> {
   }
 
   Widget _widgetData() {
-    final ScrollController controller1 = ScrollController();
-    final ScrollController controller2 = ScrollController();
     var mediaQuery = MediaQuery.of(context);
     return Center(
         child: AnimatedContainer(
@@ -126,7 +136,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                 ],
               ),
             ),
-            if (widget.getContent != null)
+            if (widget.getContent != null || widget.contentTop != null)
               Flexible(
                 flex: 4,
                 child: Padding(
@@ -136,7 +146,10 @@ class _NsgPopUpState extends State<NsgPopUp> {
                     thickness: 5,
                     thumbVisibility: true,
                     child: SingleChildScrollView(
-                        controller: controller1, child: widget.dataController == null ? _getContent() : widget.dataController!.obx((state) => _getContent())),
+                        controller: controller1,
+                        child: widget.dataController == null
+                            ? widget.contentTop ?? _getContent()
+                            : widget.dataController!.obx((state) => widget.contentTop ?? _getContent())),
                   ),
                 ),
               ),
@@ -195,6 +208,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
   }
 
   Widget _getContent() {
+    print('_getContent');
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
