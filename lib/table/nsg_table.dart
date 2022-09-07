@@ -612,6 +612,18 @@ class _NsgTableState extends State<NsgTable> {
                       }
                     },
                     icon: Icon(Icons.edit, color: ControlOptions.instance.colorError, size: 24))));
+          } else if (editMode == NsgTableEditMode.rowCopy) {
+            tableRow.add(showCell(
+                padding: const EdgeInsets.all(0),
+                color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                width: 40,
+                child: IconButton(
+                    onPressed: () {
+                      if (widget.elementEditPageName != null) {
+                        widget.controller.itemCopyPageOpen(row, widget.elementEditPageName!);
+                      }
+                    },
+                    icon: Icon(Icons.copy, color: ControlOptions.instance.colorError, size: 24))));
           }
 
           /// Цикл построения ячеек таблицы (колонки)
@@ -728,13 +740,16 @@ class _NsgTableState extends State<NsgTable> {
                     });
                   },
                 ),
-              //TODO: Копирование строк. Сделать.
-              // if (widget.availableButtons.contains(NsgTableMenuButtonType.copyElement))
-              //   NsgTableMenuButton(
-              //     tooltip: 'Копировать строку',
-              //     icon: Icons.copy,
-              //     onPressed: () {},
-              //   ),
+              if (widget.availableButtons.contains(NsgTableMenuButtonType.copyElement))
+                NsgTableMenuButton(
+                  tooltip: 'Копировать строку',
+                  icon: Icons.copy,
+                  onPressed: () {
+                    setState(() {
+                      editMode = NsgTableEditMode.rowCopy;
+                    });
+                  },
+                ),
               if (widget.availableButtons.contains(NsgTableMenuButtonType.removeElement))
                 NsgTableMenuButton(
                   tooltip: 'Удалить строку',
@@ -800,7 +815,7 @@ class _NsgTableState extends State<NsgTable> {
                     scrollHorResizers.dispose();
 
                     var scrollHorizontalGroup = LinkedScrollControllerGroup();
-                    var scrollVerticalGroup = LinkedScrollControllerGroup();
+                    //var scrollVerticalGroup = LinkedScrollControllerGroup();
                     scrollHor = scrollHorizontalGroup.addAndGet();
                     scrollHorHeader = scrollHorizontalGroup.addAndGet();
                     scrollHorResizers = scrollHorizontalGroup.addAndGet();
@@ -837,13 +852,6 @@ class _NsgTableState extends State<NsgTable> {
                     //widget.controller.sendNotify();
                   },
                 ),
-              //TODO: Перенести фильтра в саму таблицу
-              // if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-              //   NsgTableMenuButton(
-              //     tooltip: 'Фильтр по периоду',
-              //     icon: Icons.date_range_outlined,
-              //     onPressed: () {},
-              //   ),
             ],
           ),
         ));
@@ -918,6 +926,32 @@ class _NsgTableState extends State<NsgTable> {
                     editMode = NsgTableEditMode.view;
                   });*/
                 },
+              ),
+            ],
+          ),
+        ));
+      } else if (editMode == NsgTableEditMode.rowCopy) {
+        table.add(Container(
+          decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              NsgTableMenuButton(
+                tooltip: 'Отмена',
+                icon: Icons.arrow_back_ios_new_outlined,
+                onPressed: () {
+                  setState(() {
+                    editMode = NsgTableEditMode.view;
+                  });
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  'Скопироват строку',
+                  style: TextStyle(color: ControlOptions.instance.colorMainText),
+                ),
               ),
             ],
           ),
@@ -1001,7 +1035,7 @@ class _NsgTableState extends State<NsgTable> {
         }
 
         // Рисуем квадратик слева от хедера
-        if (editMode == NsgTableEditMode.rowDelete) {
+        if (editMode == NsgTableEditMode.rowDelete || editMode == NsgTableEditMode.rowCopy) {
           tableHeader.insert(
               0,
               showCell(
@@ -1054,7 +1088,7 @@ class _NsgTableState extends State<NsgTable> {
             }
             String text = '';
             if (column.totalSum is double && field is NsgDataDoubleField) {
-              if (column.totalSum != 0.0) text = column.totalSum.toStringAsFixed((field as NsgDataDoubleField).maxDecimalPlaces);
+              if (column.totalSum != 0.0) text = column.totalSum.toStringAsFixed(field.maxDecimalPlaces);
             } else if (column.totalSum is int) {
               if (column.totalSum != 0) text = column.totalSum.toString();
             } else {
@@ -1331,7 +1365,7 @@ class _NsgTableState extends State<NsgTable> {
         );
   }
 
-  static const String usColumnName = 'columnName';
+  //static const String usColumnName = 'columnName';
 
   ///Чтение полей объекта из JSON
   void fromJson(Map<String, dynamic> json) {
