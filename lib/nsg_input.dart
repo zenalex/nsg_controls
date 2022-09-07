@@ -152,7 +152,7 @@ class _NsgInputState extends State<NsgInput> {
   bool isFocused = false;
   PhoneInputFormatter phoneFormatter = PhoneInputFormatter();
   bool _disabled = false;
-  TextEditingController textController = TextEditingController();
+  late TextEditingController textController;
   get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
 
   bool _ignoreChange = false;
@@ -163,6 +163,7 @@ class _NsgInputState extends State<NsgInput> {
     //Проверяем, выбран ли тип инпута пользователем
     _disabled = widget.disabled;
     inputType = widget.selectInputType();
+    textController = TextEditingController();
 
     textController.addListener(() {
       if (_ignoreChange) return;
@@ -286,9 +287,8 @@ class _NsgInputState extends State<NsgInput> {
                 border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),*/
             child: widget.widget ??
                 Focus(
-                    canRequestFocus: false,
-                    // ↓ Focus widget handler e.g. user taps elsewhere
-                    autofocus: false,
+                    canRequestFocus: true,
+                    //autofocus: true,
                     onFocusChange: (hasFocus) {
                       isFocused = hasFocus;
                       if (widget.onEditingComplete != null) {
@@ -358,7 +358,7 @@ class _NsgInputState extends State<NsgInput> {
                                 focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
                                 labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                               ),
-                              key: GlobalKey(),
+                              //key: GlobalKey(),
                               onEditingComplete: () {
                                 //FocusScope.of(context).nextFocus();
                                 if (widget.onEditingComplete != null) {
