@@ -70,123 +70,128 @@ class _NsgPopUpState extends State<NsgPopUp> {
   Widget _widgetData() {
     final ScrollController controller1 = ScrollController();
     final ScrollController controller2 = ScrollController();
+    var mediaQuery = MediaQuery.of(context);
     return Center(
-        child: Container(
-            padding: EdgeInsets.zero,
-            margin: widget.margin,
-            //margin: MediaQuery.of(context).viewInsets,
-            width: widget.width,
-            height: widget.height,
-            constraints: BoxConstraints(
-              maxWidth: widget.width ?? 640,
-              maxHeight: widget.height ?? 400,
+        child: AnimatedContainer(
+      padding: mediaQuery.viewInsets,
+      duration: const Duration(milliseconds: 300),
+      child: Container(
+          padding: EdgeInsets.zero,
+          margin: widget.margin,
+          //margin: MediaQuery.of(context).viewInsets,
+          width: widget.width,
+          height: widget.height,
+          constraints: BoxConstraints(
+            maxWidth: widget.width ?? 640,
+            maxHeight: widget.height ?? 400,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  topLeft: Radius.circular(10),
+                ),
+                color: ControlOptions.instance.colorText.withOpacity(0.05),
+              ),
+              child: Row(
+                children: [
+                  if (widget.hideBackButton == false)
+                    IconButton(
+                        icon: Icon(Icons.arrow_back_ios_new, color: widget.colorText, size: 24), // set your color here
+                        onPressed: () {
+                          if (widget.onCancel != null) {
+                            widget.onCancel!();
+                          } else {
+                            Get.back();
+                          }
+                        }),
+                  Expanded(
+                    child:
+                        Text(widget.title, textAlign: TextAlign.center, style: TextStyle(color: widget.colorText, fontWeight: FontWeight.bold, fontSize: 18)),
+                  ),
+                  IconButton(
+                      icon: Icon(Icons.check, color: widget.colorText, size: 24), // set your color here
+                      onPressed: () {
+                        if (widget.onConfirm != null) {
+                          widget.onConfirm!();
+                        }
+                      }),
+                ],
+              ),
             ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-            ),
-            child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+            if (widget.getContent != null)
+              Flexible(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                  child: Scrollbar(
+                    controller: controller1,
+                    thickness: 5,
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                        controller: controller1, child: widget.dataController == null ? _getContent() : widget.dataController!.obx((state) => _getContent())),
+                  ),
+                ),
+              ),
+            if (widget.contentSecondary != null)
+              Expanded(
+                flex: 2,
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(color: ControlOptions.instance.colorMainOpacity),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
+                        child: Text(
+                          widget.title2,
+                          style: TextStyle(color: widget.colorText, fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                      ),
+                      Expanded(
+                        child: Scrollbar(
+                          controller: controller2,
+                          thickness: 5,
+                          thumbVisibility: true,
+                          child: SingleChildScrollView(controller: controller2, child: Wrap(children: widget.contentSecondary!)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (widget.text != null)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+                child: Text('${widget.text}', style: TextStyle(color: widget.colorText)),
+              ),
+            if (widget.hint != null)
+              Container(
+                padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
+                child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: widget.colorText?.withOpacity(0.5))),
+              ),
+            if (widget.contentBottom != null)
               Container(
                 width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(10),
-                    topLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
                   ),
                   color: ControlOptions.instance.colorText.withOpacity(0.05),
                 ),
-                child: Row(
-                  children: [
-                    if (widget.hideBackButton == false)
-                      IconButton(
-                          icon: Icon(Icons.arrow_back_ios_new, color: widget.colorText, size: 24), // set your color here
-                          onPressed: () {
-                            if (widget.onCancel != null) {
-                              widget.onCancel!();
-                            } else {
-                              Get.back();
-                            }
-                          }),
-                    Expanded(
-                      child:
-                          Text(widget.title, textAlign: TextAlign.center, style: TextStyle(color: widget.colorText, fontWeight: FontWeight.bold, fontSize: 18)),
-                    ),
-                    IconButton(
-                        icon: Icon(Icons.check, color: widget.colorText, size: 24), // set your color here
-                        onPressed: () {
-                          if (widget.onConfirm != null) {
-                            widget.onConfirm!();
-                          }
-                        }),
-                  ],
-                ),
+                child: widget.contentBottom!,
               ),
-              if (widget.getContent != null)
-                Flexible(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    child: Scrollbar(
-                      controller: controller1,
-                      thickness: 5,
-                      thumbVisibility: true,
-                      child: SingleChildScrollView(
-                          controller: controller1, child: widget.dataController == null ? _getContent() : widget.dataController!.obx((state) => _getContent())),
-                    ),
-                  ),
-                ),
-              if (widget.contentSecondary != null)
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(color: ControlOptions.instance.colorMainOpacity),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
-                          child: Text(
-                            widget.title2,
-                            style: TextStyle(color: widget.colorText, fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
-                        Expanded(
-                          child: Scrollbar(
-                            controller: controller2,
-                            thickness: 5,
-                            thumbVisibility: true,
-                            child: SingleChildScrollView(controller: controller2, child: Wrap(children: widget.contentSecondary!)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              if (widget.text != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-                  child: Text('${widget.text}', style: TextStyle(color: widget.colorText)),
-                ),
-              if (widget.hint != null)
-                Container(
-                  padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
-                  child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: widget.colorText?.withOpacity(0.5))),
-                ),
-              if (widget.contentBottom != null)
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                    ),
-                    color: ControlOptions.instance.colorText.withOpacity(0.05),
-                  ),
-                  child: widget.contentBottom!,
-                ),
-            ])));
+          ])),
+    ));
   }
 
   Widget _getContent() {

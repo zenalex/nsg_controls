@@ -234,7 +234,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
               focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
               labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
             ),
-            key: GlobalKey(),
+            // key: GlobalKey(),
             onEditingComplete: () {
               FocusScope.of(context).unfocus();
             },

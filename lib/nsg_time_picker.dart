@@ -240,7 +240,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
               focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
               labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
             ),
-            key: GlobalKey(),
+            //   key: GlobalKey(),
             onEditingComplete: () {
               FocusScope.of(context).unfocus();
             },
@@ -305,7 +305,7 @@ class NsgCupertinoTimeState extends State<NsgCupertinoTimePicker> {
   @override
   Widget build(BuildContext context) {
     return CupertinoDatePicker(
-      key: GlobalKey(),
+      //key: GlobalKey(),
       mode: CupertinoDatePickerMode.time,
       initialDateTime: widget.initialDateTime,
       onDateTimeChanged: (d) => widget.onDateTimeChanged(d),

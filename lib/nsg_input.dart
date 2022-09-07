@@ -147,6 +147,7 @@ class NsgInput extends StatefulWidget {
 }
 
 class _NsgInputState extends State<NsgInput> {
+  late TextInputType? keyboard;
   late NsgInputType inputType;
   NsgBaseController? selectionController;
   bool isFocused = false;
@@ -164,6 +165,14 @@ class _NsgInputState extends State<NsgInput> {
     _disabled = widget.disabled;
     inputType = widget.selectInputType();
     textController = TextEditingController();
+    keyboard = widget.keyboard;
+    if (widget.dataItem.getField(widget.fieldName) is NsgDataDoubleField) {
+      keyboard = TextInputType.number;
+    } else if (widget.dataItem.getField(widget.fieldName) is NsgDataIntField) {
+      keyboard = TextInputType.number;
+    } else if (inputType == NsgInputType.stringValue && widget.maskType == NsgInputMaskType.car) {
+      keyboard = TextInputType.number;
+    }
 
     textController.addListener(() {
       if (_ignoreChange) return;
@@ -332,7 +341,7 @@ class _NsgInputState extends State<NsgInput> {
                               autofocus: false,
                               maxLines: widget.maxLines,
                               minLines: widget.minLines,
-                              keyboardType: widget.keyboard,
+                              keyboardType: keyboard,
                               cursorColor: ControlOptions.instance.colorText,
                               decoration: InputDecoration(
                                 prefix: _disabled == false
