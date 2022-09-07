@@ -456,7 +456,6 @@ class SearchWidget extends StatelessWidget {
                         focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
                         labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                       ),
-                      key: GlobalKey(),
                       onEditingComplete: () {
                         setFilter();
                       },

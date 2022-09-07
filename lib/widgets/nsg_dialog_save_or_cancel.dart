@@ -11,18 +11,39 @@ class NsgDialogSaveOrCancel {
         NsgPopUp(
           title: 'Вы внесли изменения. Хотитие сохранить?',
           getContent: () {
-            return const [
+            return [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Text('Вы можете сохранить изменения (галочка сверху справа),'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Вы можете сохранить изменения ',
+                      textAlign: TextAlign.center,
+                    ),
+                    Icon(Icons.arrow_back_ios_new_outlined, color: ControlOptions.instance.colorGrey)
+                  ],
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Text('продолжить редактирование (стрелочка сверху слева),'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('продолжить редактирование ', textAlign: TextAlign.center),
+                    Icon(Icons.check, color: ControlOptions.instance.colorGrey)
+                  ],
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Text('или выйти назад без сохранения'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('или выйти назад без сохранения ', textAlign: TextAlign.center),
+                    Icon(Icons.close, color: ControlOptions.instance.colorGrey)
+                  ],
+                ),
               ),
             ];
           },

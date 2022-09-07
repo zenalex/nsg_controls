@@ -163,7 +163,7 @@ class _NsgInputState extends State<NsgInput> {
   void initState() {
     super.initState();
     focus.addListener(() {
-      print('focus.hasFocus ${focus.hasFocus}');
+      // print('focus.hasFocus ${focus.hasFocus}');
     });
     //Проверяем, выбран ли тип инпута пользователем
     _disabled = widget.disabled;
