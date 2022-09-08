@@ -21,7 +21,7 @@ class NsgDialogSaveOrCancel {
                       'Вы можете сохранить изменения ',
                       textAlign: TextAlign.center,
                     ),
-                    Icon(Icons.arrow_back_ios_new_outlined, color: ControlOptions.instance.colorGrey)
+                    Icon(Icons.check, color: ControlOptions.instance.colorGrey)
                   ],
                 ),
               ),
@@ -31,7 +31,7 @@ class NsgDialogSaveOrCancel {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text('продолжить редактирование ', textAlign: TextAlign.center),
-                    Icon(Icons.check, color: ControlOptions.instance.colorGrey)
+                    Icon(Icons.arrow_back_ios_new_outlined, color: ControlOptions.instance.colorGrey)
                   ],
                 ),
               ),
