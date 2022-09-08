@@ -165,6 +165,7 @@ class NsgButton extends StatelessWidget {
       // Кнопка обычная
       return Container(
           margin: margin,
+          constraints: const BoxConstraints(minHeight: 38),
           width: width ?? double.infinity,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius), boxShadow: <BoxShadow>[
             shadow ??

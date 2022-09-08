@@ -19,6 +19,7 @@ class NsgExpansionPanel extends StatefulWidget {
       required this.widgetBottom,
       this.margin,
       this.widgetTopPadding = const EdgeInsets.fromLTRB(10, 5, 5, 5),
+      this.widgetBottomPadding = const EdgeInsets.all(5),
       this.isSimple,
       this.isExpanded,
       this.linkedPanels})
@@ -36,6 +37,7 @@ class NsgExpansionPanel extends StatefulWidget {
   final Color? borderColor;
 
   final EdgeInsets? widgetTopPadding;
+  final EdgeInsets? widgetBottomPadding;
 
   /// Свёрнуто
   final bool collapsed;
@@ -222,7 +224,7 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                       ],
                     )
                   : Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      padding: widget.widgetBottomPadding,
                       width: double.infinity,
                       decoration: BoxDecoration(
                           color: widget.widgetBottomBackColor,

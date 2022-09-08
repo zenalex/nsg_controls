@@ -95,7 +95,8 @@ class NsgAppBar extends StatelessWidget {
                       Text(
                         text,
                         style: TextStyle(
-                            color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain, fontSize: 18),
+                            color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                            fontSize: ControlOptions.instance.sizeL),
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         overflow: TextOverflow.clip,
@@ -105,7 +106,8 @@ class NsgAppBar extends StatelessWidget {
                           (c) => Text(
                             'Непрочитанных оповещений: ${getNotificationCount!()}',
                             style: TextStyle(
-                                color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain, fontSize: 10),
+                                color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                                fontSize: ControlOptions.instance.sizeXS),
                             textAlign: TextAlign.center,
                             maxLines: 2,
                             overflow: TextOverflow.clip,
@@ -115,7 +117,8 @@ class NsgAppBar extends StatelessWidget {
                         Text(
                           '$text2',
                           style: TextStyle(
-                              color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain, fontSize: 10),
+                              color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                              fontSize: ControlOptions.instance.sizeXS),
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           overflow: TextOverflow.clip,
