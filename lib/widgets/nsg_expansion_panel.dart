@@ -256,10 +256,14 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
               }
 
               if (!_expanded && widget.scrollController != null) {
-                if (getAbsoluteY() > Get.height - 200) {
+                double absY = getAbsoluteY();
+                if (absY > Get.height - 200) {
                   Future.delayed(const Duration(milliseconds: 500), () async {
-                    widget.scrollController!.animateTo(widget.scrollController!.offset + containerKey.currentContext!.size!.height,
-                        duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+                    double h = containerKey.currentContext!.size!.height - 38;
+                    if (h > Get.height - 100) h = Get.height - 100;
+                    double diff = Get.height - absY;
+                    widget.scrollController!
+                        .animateTo(widget.scrollController!.offset + h - diff + 43, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
                   });
                 }
               }

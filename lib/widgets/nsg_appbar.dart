@@ -1,6 +1,7 @@
 // импорт
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsgDataController.dart';
 
@@ -88,7 +89,7 @@ class NsgAppBar extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 70),
+                  padding: EdgeInsets.symmetric(horizontal: icon3 == null ? 30 : 70),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
