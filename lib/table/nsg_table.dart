@@ -115,7 +115,9 @@ class NsgTable extends StatefulWidget {
   NsgTableMenuButtonType.filterText,
   // Фильтр по периоду
   NsgTableMenuButtonType.filterPeriod,
-  // Избанное
+  // Последние
+  NsgTableMenuButtonType.recent,
+  // Избранное
   NsgTableMenuButtonType.favorites
   */
   final List<NsgTableMenuButtonType> availableButtons;
@@ -217,7 +219,7 @@ class _NsgTableState extends State<NsgTable> {
   @override
   void initState() {
     super.initState();
-
+    editModeLast = NsgTableEditMode.view;
     isMobile = Platform.isAndroid || Platform.isIOS;
     listRowsToDelete = [];
     hasScrollbar = true;
@@ -389,9 +391,9 @@ class _NsgTableState extends State<NsgTable> {
   @override
   Widget build(BuildContext context) {
     /// Если выбран режим "Избранное", вместо массива объектов, подставляем массив избранных объектов favorites
-    if (editMode == NsgTableEditMode.favorites) {
+    if (editMode == NsgTableEditMode.favorites || editModeLast == NsgTableEditMode.favorites) {
       items = widget.controller.favorites;
-    } else if (editMode == NsgTableEditMode.recent) {
+    } else if (editMode == NsgTableEditMode.recent || editModeLast == NsgTableEditMode.recent) {
       items = widget.controller.recent;
     } else {
       items = widget.controller.items;
@@ -1058,6 +1060,7 @@ class _NsgTableState extends State<NsgTable> {
                 onPressed: () {
                   setState(() {
                     editMode = editModeLast;
+                    editModeLast = NsgTableEditMode.view;
                   });
                 },
               ),
@@ -1084,6 +1087,7 @@ class _NsgTableState extends State<NsgTable> {
                 onPressed: () {
                   setState(() {
                     editMode = editModeLast;
+                    editModeLast = NsgTableEditMode.view;
                   });
                 },
               ),
