@@ -198,7 +198,11 @@ class _NsgTableState extends State<NsgTable> {
 
             /// Меняем цвет ячейки при наведении мыши
             color: isSelected == true ? ControlOptions.instance.colorMain.withOpacity(0.2) : backColor,
-            border: Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
+            border: Border(
+                left: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
+                top: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain))),
+
+        // Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
         child: child);
 
     return showCell;
@@ -1209,7 +1213,10 @@ class _NsgTableState extends State<NsgTable> {
           child: Container(
             key: containerKey,
             width: horizontalScrollEnabled == false ? double.infinity : null,
-            decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+            decoration: BoxDecoration(
+                border: Border(
+                    right: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
+                    bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
             child: editMode == NsgTableEditMode.columnsWidth
                 ? Stack(alignment: Alignment.topLeft, children: [
                     Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
