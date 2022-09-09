@@ -889,7 +889,7 @@ class _NsgTableState extends State<NsgTable> {
                     }
                   },
                 ),
-              if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize))
+              if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize) && horizontalScrollEnabled)
                 NsgTableMenuButton(
                   tooltip: 'Ширина колонок',
                   icon: NsgTableMenuButtonType.columnsSize.icon,
