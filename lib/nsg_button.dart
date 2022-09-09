@@ -175,36 +175,31 @@ class NsgButton extends StatelessWidget {
                   offset: const Offset(0, 2),
                 )
           ]),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-                ),
-                elevation: 0,
-                side: BorderSide(width: 2, color: borderColor ?? _backColor),
-                primary: _backColor,
-                padding: padding,
-                textStyle: TextStyle(fontSize: _fontSize)),
-            onPressed: onPressed,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon != null) SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorMainText)),
-                if (text != '' && icon != null) const SizedBox(width: 0),
-                Flexible(
-                  //fit: FlexFit.loose,
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text('$text'.toUpperCase(),
-                        maxLines: 2,
-                        overflow: TextOverflow.fade,
-                        softWrap: true,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: color ?? ControlOptions.instance.colorMainText)),
+          child: Material(
+            borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
+            color: _backColor,
+            child: InkWell(
+              onTap: onPressed,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (icon != null) SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorMainText)),
+                  if (text != '' && icon != null) const SizedBox(width: 0),
+                  Flexible(
+                    //fit: FlexFit.loose,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text('$text'.toUpperCase(),
+                          maxLines: 2,
+                          overflow: TextOverflow.fade,
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: color ?? ControlOptions.instance.colorMainText)),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ));
     }
