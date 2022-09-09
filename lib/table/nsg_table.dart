@@ -114,7 +114,9 @@ class NsgTable extends StatefulWidget {
   // Фильтр по тексту
   NsgTableMenuButtonType.filterText,
   // Фильтр по периоду
-  NsgTableMenuButtonType.filterPeriod
+  NsgTableMenuButtonType.filterPeriod,
+  // Избанное
+  NsgTableMenuButtonType.favorites
   */
   final List<NsgTableMenuButtonType> availableButtons;
 
@@ -134,11 +136,14 @@ class NsgTable extends StatefulWidget {
   State<NsgTable> createState() => _NsgTableState();
 }
 
+/* ------------------------------------- Переменные таблицы ------------------------------------- */
 class _NsgTableState extends State<NsgTable> {
+  List<NsgDataItem> items = [];
   final containerKey = GlobalKey();
   late bool hasScrollbar;
   late bool isMobile;
   late NsgTableEditMode editMode;
+  late NsgTableEditMode editModeLast;
   late ScrollController scrollHor;
   late ScrollController scrollHorHeader;
   late ScrollController scrollHorResizers;
@@ -208,9 +213,11 @@ class _NsgTableState extends State<NsgTable> {
     return showCell;
   }
 
+/* ---------------------- InitState таблицы. Присвоение значений переменным --------------------- */
   @override
   void initState() {
     super.initState();
+
     isMobile = Platform.isAndroid || Platform.isIOS;
     listRowsToDelete = [];
     hasScrollbar = true;
@@ -229,8 +236,13 @@ class _NsgTableState extends State<NsgTable> {
       }
     }
 
-    /// Выставляем дефолтный режим просмотра таблицы
-    editMode = NsgTableEditMode.view;
+    /// Выставляем режим просмотра таблицы в "Избранное" или "Просмотр"
+    if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
+      editMode = NsgTableEditMode.recent;
+    } else {
+      editMode = NsgTableEditMode.view;
+    }
+    editModeLast = editMode;
     isPeriodFilterOpen = widget.initialIsPeriodFilterOpen || widget.controller.controllerFilter.isPeriodAllowed;
     isSearchStringFilterOpen = widget.initialIsSearchStringOpen || widget.controller.controllerFilter.searchString.isNotEmpty;
     setInitialSorting();
@@ -376,6 +388,15 @@ class _NsgTableState extends State<NsgTable> {
 
   @override
   Widget build(BuildContext context) {
+    /// Если выбран режим "Избранное", вместо массива объектов, подставляем массив избранных объектов favorites
+    if (editMode == NsgTableEditMode.favorites) {
+      items = widget.controller.favorites;
+    } else if (editMode == NsgTableEditMode.recent) {
+      items = widget.controller.recent;
+    } else {
+      items = widget.controller.items;
+    }
+
     return widget.controller.obx((state) {
       tableColumns = List.from(widget.columns);
       List<Widget> table = [];
@@ -629,10 +650,11 @@ class _NsgTableState extends State<NsgTable> {
       }
 
       /// Цикл построения ячеек таблицы (строки)
-      if (widget.controller.items.isNotEmpty) {
-        for (var row in widget.controller.items) {
+      if (items.isNotEmpty) {
+        for (var row in items) {
           List<Widget> tableRow = [];
-          var isSelected = false;
+          bool isSelected = false;
+          bool isFavorite = widget.controller.favorites.contains(row);
           if (listRowsToDelete.contains(row)) {
             isSelected = true;
           }
@@ -672,6 +694,21 @@ class _NsgTableState extends State<NsgTable> {
                   width: 40,
                   child: Icon(Icons.copy, color: ControlOptions.instance.colorMain, size: 24)),
             ));
+          } else if (editMode == NsgTableEditMode.favorites ||
+              editMode == NsgTableEditMode.recent ||
+              (editMode == NsgTableEditMode.view && widget.availableButtons.contains(NsgTableMenuButtonType.favorites))) {
+            /// Добавление в избранное
+            tableRow.add(InkWell(
+              onTap: () {
+                widget.controller.toggleFavorite(row);
+                setState(() {});
+              },
+              child: showCell(
+                  padding: const EdgeInsets.all(0),
+                  color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                  width: 40,
+                  child: Icon(isFavorite ? Icons.star : Icons.star_outline, color: ControlOptions.instance.colorMain, size: 24)),
+            ));
           }
 
           /// Цикл построения ячеек таблицы (колонки)
@@ -691,8 +728,10 @@ class _NsgTableState extends State<NsgTable> {
                 ? wrapExpanded(
                     child: InkWell(
                         onTap: () {
-                          if (editMode == NsgTableEditMode.view) {
+                          if (editMode == NsgTableEditMode.view || editMode == NsgTableEditMode.recent || editMode == NsgTableEditMode.favorites) {
                             widget.rowOnTap!(row, column.name);
+                            // Добаввляем в последнее
+                            widget.controller.addRecent(row);
                           } else if (editMode == NsgTableEditMode.rowDelete) {
                             rowDelete(row);
                           } else if (editMode == NsgTableEditMode.rowEdit) {
@@ -755,9 +794,8 @@ class _NsgTableState extends State<NsgTable> {
         }
       }
 
-      // TOP MENU --------------------------------------------------------------------------------------------------------------------------------------------->
-      /// Верхнее меню управления таблицей
-      if (editMode == NsgTableEditMode.view) {
+      /// Верхнее меню управления таблицей------------------------------------------------------------------------------------------------------------------->
+      if (editMode == NsgTableEditMode.view || editMode == NsgTableEditMode.recent || editMode == NsgTableEditMode.favorites) {
         table.add(Container(
           decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
@@ -767,7 +805,7 @@ class _NsgTableState extends State<NsgTable> {
               if (widget.availableButtons.contains(NsgTableMenuButtonType.createNewElement))
                 NsgTableMenuButton(
                     tooltip: 'Добавить строку',
-                    icon: Icons.add_circle_outline,
+                    icon: NsgTableMenuButtonType.createNewElement.icon,
                     onPressed: () {
                       if (widget.elementEditPageName != null) {
                         widget.controller.itemNewPageOpen(widget.elementEditPageName!);
@@ -777,9 +815,10 @@ class _NsgTableState extends State<NsgTable> {
               if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement) && widget.controller.currentItem.defaultListPage != null)
                 NsgTableMenuButton(
                   tooltip: 'Редактировать строку',
-                  icon: Icons.edit,
+                  icon: NsgTableMenuButtonType.editElement.icon,
                   onPressed: () {
                     setState(() {
+                      editModeLast = editMode;
                       editMode = NsgTableEditMode.rowEdit;
                     });
                   },
@@ -787,9 +826,10 @@ class _NsgTableState extends State<NsgTable> {
               if (widget.availableButtons.contains(NsgTableMenuButtonType.copyElement))
                 NsgTableMenuButton(
                   tooltip: 'Копировать строку',
-                  icon: Icons.copy,
+                  icon: NsgTableMenuButtonType.copyElement.icon,
                   onPressed: () {
                     setState(() {
+                      editModeLast = editMode;
                       editMode = NsgTableEditMode.rowCopy;
                     });
                   },
@@ -797,7 +837,7 @@ class _NsgTableState extends State<NsgTable> {
               if (widget.availableButtons.contains(NsgTableMenuButtonType.removeElement))
                 NsgTableMenuButton(
                   tooltip: 'Удалить строку',
-                  icon: Icons.delete_forever_outlined,
+                  icon: NsgTableMenuButtonType.removeElement.icon,
                   onPressed: () {
                     // Обнуляем массив строк на удаление
                     listRowsToDelete = [];
@@ -810,7 +850,7 @@ class _NsgTableState extends State<NsgTable> {
               if (widget.availableButtons.contains(NsgTableMenuButtonType.refreshTable))
                 NsgTableMenuButton(
                   tooltip: 'Обновить таблицу',
-                  icon: Icons.refresh_rounded,
+                  icon: NsgTableMenuButtonType.refreshTable.icon,
                   onPressed: () {
                     widget.controller.refreshData();
                   },
@@ -819,7 +859,7 @@ class _NsgTableState extends State<NsgTable> {
               if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSelect))
                 NsgTableMenuButton(
                   tooltip: 'Отображение колонок',
-                  icon: Icons.edit_note_outlined,
+                  icon: NsgTableMenuButtonType.columnsSelect.icon,
                   onPressed: () {
                     if (widget.userSettingsController != null) {
                       Get.dialog(
@@ -850,10 +890,10 @@ class _NsgTableState extends State<NsgTable> {
               if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize))
                 NsgTableMenuButton(
                   tooltip: 'Ширина колонок',
-                  icon: Icons.view_column_outlined,
+                  icon: NsgTableMenuButtonType.columnsSize.icon,
                   onPressed: () {
+                    editModeLast = editMode;
                     editMode = NsgTableEditMode.columnsWidth;
-
                     scrollHor.dispose();
                     scrollHorHeader.dispose();
                     scrollHorResizers.dispose();
@@ -879,7 +919,8 @@ class _NsgTableState extends State<NsgTable> {
               if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
                 NsgTableMenuButton(
                   tooltip: 'Фильтр по тексту',
-                  icon: Icons.filter_alt_outlined,
+                  backColor: isSearchStringFilterOpen ? ControlOptions.instance.colorMainDark : null,
+                  icon: isSearchStringFilterOpen ? Icons.filter_alt : NsgTableMenuButtonType.filterText.icon,
                   onPressed: () {
                     isSearchStringFilterOpen = !isSearchStringFilterOpen;
                     setState(() {});
@@ -889,11 +930,41 @@ class _NsgTableState extends State<NsgTable> {
               if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
                 NsgTableMenuButton(
                   tooltip: 'Фильтр по периоду',
-                  icon: Icons.date_range_outlined,
+                  backColor: isPeriodFilterOpen ? ControlOptions.instance.colorMainDark : null,
+                  icon: isPeriodFilterOpen ? Icons.date_range : NsgTableMenuButtonType.filterPeriod.icon,
                   onPressed: () {
                     isPeriodFilterOpen = !isPeriodFilterOpen;
                     setState(() {});
-                    //widget.controller.sendNotify();
+                  },
+                ),
+              if (widget.availableButtons.contains(NsgTableMenuButtonType.recent))
+                NsgTableMenuButton(
+                  tooltip: 'Последние',
+                  backColor: editMode == NsgTableEditMode.recent ? ControlOptions.instance.colorMainDark : null,
+                  icon: editMode == NsgTableEditMode.recent ? Icons.history : NsgTableMenuButtonType.recent.icon,
+                  onPressed: () {
+                    setState(() {
+                      if (editMode != NsgTableEditMode.recent) {
+                        editMode = NsgTableEditMode.recent;
+                      } else {
+                        editMode = NsgTableEditMode.view;
+                      }
+                    });
+                  },
+                ),
+              if (widget.availableButtons.contains(NsgTableMenuButtonType.favorites))
+                NsgTableMenuButton(
+                  tooltip: 'Избранное',
+                  backColor: editMode == NsgTableEditMode.favorites ? ControlOptions.instance.colorMainDark : null,
+                  icon: editMode == NsgTableEditMode.favorites ? Icons.star : NsgTableMenuButtonType.favorites.icon,
+                  onPressed: () {
+                    setState(() {
+                      if (editMode != NsgTableEditMode.favorites) {
+                        editMode = NsgTableEditMode.favorites;
+                      } else {
+                        editMode = NsgTableEditMode.view;
+                      }
+                    });
                   },
                 ),
             ],
@@ -915,7 +986,7 @@ class _NsgTableState extends State<NsgTable> {
                       fromJson(widget.userSettingsController!.settingsMap[widget.userSettingsId]);
                     }
                   }
-                  editMode = NsgTableEditMode.view;
+                  editMode = editModeLast;
                   setState(() {});
                 },
               ),
@@ -931,7 +1002,7 @@ class _NsgTableState extends State<NsgTable> {
                     widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
                     widget.userSettingsController!.itemPagePost(goBack: false);
                   }
-                  editMode = NsgTableEditMode.view;
+                  editMode = editModeLast;
                   setState(() {});
                 },
               ),
@@ -986,7 +1057,7 @@ class _NsgTableState extends State<NsgTable> {
                 icon: Icons.arrow_back_ios_new_outlined,
                 onPressed: () {
                   setState(() {
-                    editMode = NsgTableEditMode.view;
+                    editMode = editModeLast;
                   });
                 },
               ),
@@ -1012,7 +1083,7 @@ class _NsgTableState extends State<NsgTable> {
                 icon: Icons.arrow_back_ios_new_outlined,
                 onPressed: () {
                   setState(() {
-                    editMode = NsgTableEditMode.view;
+                    editMode = editModeLast;
                   });
                 },
               ),
@@ -1079,7 +1150,12 @@ class _NsgTableState extends State<NsgTable> {
         }
 
         // Рисуем квадратик слева от хедера
-        if (editMode == NsgTableEditMode.rowDelete || editMode == NsgTableEditMode.rowCopy || editMode == NsgTableEditMode.rowEdit) {
+        if (editMode == NsgTableEditMode.rowDelete ||
+            editMode == NsgTableEditMode.rowCopy ||
+            editMode == NsgTableEditMode.rowEdit ||
+            editMode == NsgTableEditMode.favorites ||
+            editMode == NsgTableEditMode.recent ||
+            (editMode == NsgTableEditMode.view && widget.availableButtons.contains(NsgTableMenuButtonType.favorites))) {
           tableHeader.insert(
               0,
               showCell(
@@ -1104,13 +1180,13 @@ class _NsgTableState extends State<NsgTable> {
       }
 
       /// Цикл построения "Итого" таблицы
-      if (widget.controller.items.isNotEmpty && editMode == NsgTableEditMode.view) {
+      if (items.isNotEmpty && editMode == NsgTableEditMode.view) {
         if (widget.showTotals) {
           List<Widget> totalsRow = [];
 
           visibleColumns.asMap().forEach((index, column) {
             //var fieldkey = widget.controller.items.last.getFieldValue(column.name);
-            var field = widget.controller.items.last.fieldList.fields[column.name];
+            var field = items.last.fieldList.fields[column.name];
             TextAlign textAlign = TextAlign.left;
 
             /// Если Double

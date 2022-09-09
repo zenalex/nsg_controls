@@ -6,8 +6,14 @@ class NsgTableMenuButton extends StatelessWidget {
   final IconData icon;
   final EdgeInsets margin;
   final VoidCallback onPressed;
+  final Color? backColor;
   const NsgTableMenuButton(
-      {Key? key, required this.tooltip, required this.icon, this.margin = const EdgeInsets.only(right: 5, top: 5, bottom: 5), required this.onPressed})
+      {Key? key,
+      required this.tooltip,
+      required this.icon,
+      this.margin = const EdgeInsets.only(right: 5, top: 5, bottom: 5),
+      required this.onPressed,
+      this.backColor})
       : super(key: key);
 
   @override
@@ -18,6 +24,7 @@ class NsgTableMenuButton extends StatelessWidget {
       textStyle: TextStyle(color: ControlOptions.instance.colorMain, fontSize: ControlOptions.instance.sizeS),
       decoration: BoxDecoration(color: ControlOptions.instance.colorMainText),
       child: NsgButton(
+        backColor: backColor,
         height: 32,
         width: 32,
         borderRadius: 5,

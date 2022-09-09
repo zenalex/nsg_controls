@@ -5,4 +5,4 @@
 /// columnsVisibleOrder - режим выбора видимости и последовательности колонок
 /// rowCopy - режим копирования строки
 /// rowDelete - режим удаления строки
-enum NsgTableEditMode { view, columnsWidth, columnsVisibleOrder, rowCopy, rowDelete, rowEdit }
+enum NsgTableEditMode { view, columnsWidth, columnsVisibleOrder, rowCopy, rowDelete, rowEdit, recent, favorites }

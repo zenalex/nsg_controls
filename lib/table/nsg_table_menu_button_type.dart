@@ -10,9 +10,11 @@ enum NsgTableMenuButtonType {
   refreshTable('Обновить таблицу', Icons.refresh_rounded),
   columnsSelect('Отображение колонок', Icons.edit_note_outlined),
   columnsSize('Ширина колонок', Icons.view_column_outlined),
-  printTable('Вывод на печать', Icons.filter_alt_outlined),
-  filterText('Фильтр по тексту', Icons.print_outlined),
-  filterPeriod('Фильтр по периоду', Icons.date_range_outlined);
+  printTable('Вывод на печать', Icons.print_outlined),
+  filterText('Фильтр по тексту', Icons.filter_alt_outlined),
+  filterPeriod('Фильтр по периоду', Icons.date_range_outlined),
+  recent('Последние', Icons.history_outlined),
+  favorites('Избранное', Icons.star_outline);
 
   final String tooltip;
   final IconData icon;
@@ -29,6 +31,8 @@ enum NsgTableMenuButtonType {
     columnsSize,
     printTable,
     filterText,
-    filterPeriod
+    filterPeriod,
+    recent,
+    favorites
   ];
 }
