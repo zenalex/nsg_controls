@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
@@ -135,7 +137,7 @@ class NsgTable extends StatefulWidget {
 class _NsgTableState extends State<NsgTable> {
   final containerKey = GlobalKey();
   late bool hasScrollbar;
-
+  late bool isMobile;
   late NsgTableEditMode editMode;
   late ScrollController scrollHor;
   late ScrollController scrollHorHeader;
@@ -205,6 +207,7 @@ class _NsgTableState extends State<NsgTable> {
   @override
   void initState() {
     super.initState();
+    isMobile = Platform.isAndroid || Platform.isIOS;
     listRowsToDelete = [];
     hasScrollbar = true;
     //WidgetsBinding.instance.addPostFrameCallback((_) => checkScrollbarIsVisible());
@@ -251,7 +254,7 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   Widget rawScrollBarVertCross({required Widget child}) {
-    if (hasScrollbar) {
+    if (hasScrollbar && !isMobile) {
       return RawScrollbar(
           minOverscrollLength: 100,
           minThumbLength: 100,
@@ -278,43 +281,60 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   Widget crossWrap(Widget child) {
-    if (!horizontalScrollEnabled) {
-      return RawScrollbar(
-          minOverscrollLength: 100,
-          minThumbLength: 100,
-          thickness: 16,
-          trackBorderColor: ControlOptions.instance.colorMainDark,
-          trackColor: ControlOptions.instance.colorMainDark,
-          thumbColor: ControlOptions.instance.colorMain,
-          radius: const Radius.circular(0),
-          controller: scrollVert,
-          thumbVisibility: true,
-          trackVisibility: true,
-          child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
+    /// На Android и Ios убираем постоянно видимые скроллбары
+    if (isMobile) {
+      if (!horizontalScrollEnabled) {
+        return SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child);
+      } else {
+        return singleChildScrollViewCross(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 16),
+            controller: scrollHor,
+            scrollDirection: Axis.horizontal,
+            child: child,
+          ),
+        );
+      }
     } else {
-      return rawScrollBarVertCross(
-        child: RawScrollbar(
-          minOverscrollLength: 100,
-          minThumbLength: 100,
-          thickness: 16,
-          trackBorderColor: ControlOptions.instance.colorMainDark,
-          trackColor: ControlOptions.instance.colorMainDark,
-          thumbColor: ControlOptions.instance.colorMain,
-          radius: const Radius.circular(0),
-          controller: scrollHor,
-          thumbVisibility: true,
-          trackVisibility: true,
-          notificationPredicate: (notif) => notif.depth == 1,
-          child: singleChildScrollViewCross(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 16),
-              controller: scrollHor,
-              scrollDirection: Axis.horizontal,
-              child: child,
+      /// На всех платформах кроме Anrdoid и Ios показываем постоянно видимые скроллбары
+      if (!horizontalScrollEnabled) {
+        return RawScrollbar(
+            minOverscrollLength: 100,
+            minThumbLength: 100,
+            thickness: 16,
+            trackBorderColor: ControlOptions.instance.colorMainDark,
+            trackColor: ControlOptions.instance.colorMainDark,
+            thumbColor: ControlOptions.instance.colorMain,
+            radius: const Radius.circular(0),
+            controller: scrollVert,
+            thumbVisibility: true,
+            trackVisibility: true,
+            child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
+      } else {
+        return rawScrollBarVertCross(
+          child: RawScrollbar(
+            minOverscrollLength: 100,
+            minThumbLength: 100,
+            thickness: 16,
+            trackBorderColor: ControlOptions.instance.colorMainDark,
+            trackColor: ControlOptions.instance.colorMainDark,
+            thumbColor: ControlOptions.instance.colorMain,
+            radius: const Radius.circular(0),
+            controller: scrollHor,
+            thumbVisibility: true,
+            trackVisibility: true,
+            notificationPredicate: (notif) => notif.depth == 1,
+            child: singleChildScrollViewCross(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 16),
+                controller: scrollHor,
+                scrollDirection: Axis.horizontal,
+                child: child,
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -1045,7 +1065,7 @@ class _NsgTableState extends State<NsgTable> {
 
       /// Если showHeader, то показываем Header
       if (widget.showHeader) {
-        if (editMode == NsgTableEditMode.view && hasScrollbar) {
+        if (editMode == NsgTableEditMode.view && hasScrollbar && !isMobile) {
           tableHeader.add(showCell(
               padding: const EdgeInsets.all(0),
               backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
@@ -1151,7 +1171,9 @@ class _NsgTableState extends State<NsgTable> {
                       right: horizontalScrollEnabled
                           ? 0
                           : hasScrollbar
-                              ? 16
+                              ? !isMobile
+                                  ? 16
+                                  : 0
                               : 0),
               //margin: EdgeInsets.only(bottom: 10, right: 10),
               //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
