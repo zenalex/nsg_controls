@@ -1185,6 +1185,8 @@ class _NsgTableState extends State<NsgTable> {
       return LayoutBuilder(builder: (context, constraints) {
         //print("LAYOUT BUILD ${DateTime.now()} ${constraints.constrainHeight()} > ${getHeight()} hasScrollbar $hasScrollbar");
         if (widget.removeVerticalScrollIfNotNeeded) {
+          /* TODO переделать расчёт высоты с фиксированной высотой ячеек, чтобы убирать по необходимости вертикальный скрлол
+        
           Future.delayed(Duration.zero, () async {
             if (constraints.constrainHeight() > getHeight()) {
               if (hasScrollbar) {
@@ -1199,7 +1201,7 @@ class _NsgTableState extends State<NsgTable> {
                 });
               }
             }
-          });
+          });*/
         }
 
         return Align(
