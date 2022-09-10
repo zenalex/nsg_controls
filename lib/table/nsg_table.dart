@@ -390,16 +390,16 @@ class _NsgTableState extends State<NsgTable> {
 
   @override
   Widget build(BuildContext context) {
-    /// Если выбран режим "Избранное", вместо массива объектов, подставляем массив избранных объектов favorites
-    if (editMode == NsgTableEditMode.favorites || editModeLast == NsgTableEditMode.favorites) {
-      items = widget.controller.favorites;
-    } else if (editMode == NsgTableEditMode.recent || editModeLast == NsgTableEditMode.recent) {
-      items = widget.controller.recent;
-    } else {
-      items = widget.controller.items;
-    }
-
     return widget.controller.obx((state) {
+      /// Если выбран режим "Избранное", вместо массива объектов, подставляем массив избранных объектов favorites
+      if (editMode == NsgTableEditMode.favorites || editModeLast == NsgTableEditMode.favorites) {
+        items = widget.controller.favorites;
+      } else if (editMode == NsgTableEditMode.recent || editModeLast == NsgTableEditMode.recent) {
+        items = widget.controller.recent;
+      } else {
+        items = widget.controller.items;
+      }
+
       tableColumns = List.from(widget.columns);
       List<Widget> table = [];
       List<Widget> tableHeader = [];
@@ -489,7 +489,7 @@ class _NsgTableState extends State<NsgTable> {
                         name: column.name,
                         direction: (column.sort == NsgTableColumnSort.forward ? NsgSortingDirection.ascending : NsgSortingDirection.descending));
                   }
-                  widget.controller.controllerFilter.refreshControllerWithDelay();
+                  widget.controller.refreshData();
                   setState(() {});
                 }
               },
@@ -581,7 +581,7 @@ class _NsgTableState extends State<NsgTable> {
                             name: subcolumn.name,
                             direction: (subcolumn.sort == NsgTableColumnSort.forward ? NsgSortingDirection.ascending : NsgSortingDirection.descending));
                       }
-                      widget.controller.controllerFilter.refreshControllerWithDelay();
+                      widget.controller.refreshData();
                       setState(() {});
                     }
                   },
