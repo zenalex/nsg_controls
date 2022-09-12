@@ -10,6 +10,7 @@ import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../nsg_period_filter.dart';
+import '../nsg_text_filter.dart';
 import '../widgets/nsg_errorpage.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
@@ -255,16 +256,18 @@ class _NsgTableState extends State<NsgTable> {
         fromJson(widget.userSettingsController!.settingsMap[widget.userSettingsId]);
       }
     }
+    isPeriodFilterOpen = widget.initialIsPeriodFilterOpen || widget.controller.controllerFilter.isPeriodAllowed;
+    isSearchStringFilterOpen = widget.initialIsSearchStringOpen || widget.controller.controllerFilter.searchString.isNotEmpty;
 
     /// Выставляем режим просмотра таблицы в "Избранное" или "Просмотр"
     if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
       editMode = NsgTableEditMode.recent;
+      isSearchStringFilterOpen = true;
     } else {
       editMode = NsgTableEditMode.view;
     }
     editModeLast = editMode;
-    isPeriodFilterOpen = widget.initialIsPeriodFilterOpen || widget.controller.controllerFilter.isPeriodAllowed;
-    isSearchStringFilterOpen = widget.initialIsSearchStringOpen || widget.controller.controllerFilter.searchString.isNotEmpty;
+
     setInitialSorting();
   }
 
@@ -1148,7 +1151,13 @@ class _NsgTableState extends State<NsgTable> {
         table.add(_rowcolumn(children: [
           if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
             _expanded(
-              child: SearchWidget(
+              child: NsgTextFilter(
+                onSetFilter: () {
+                  setState(() {
+                    editModeLast = NsgTableEditMode.view;
+                    editMode = NsgTableEditMode.view;
+                  });
+                },
                 controller: widget.controller,
                 isOpen: isSearchStringFilterOpen,
               ),
