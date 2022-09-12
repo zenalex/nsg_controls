@@ -982,8 +982,10 @@ class _NsgTableState extends State<NsgTable> {
                     onPressed: () {
                       setState(() {
                         if (editMode != NsgTableEditMode.recent) {
+                          editModeLast = NsgTableEditMode.recent;
                           editMode = NsgTableEditMode.recent;
                         } else {
+                          editModeLast = NsgTableEditMode.view;
                           editMode = NsgTableEditMode.view;
                         }
                       });
@@ -998,8 +1000,10 @@ class _NsgTableState extends State<NsgTable> {
                       setState(() {
                         widget.closeAllSlided(tableRowList);
                         if (editMode != NsgTableEditMode.favorites) {
+                          editModeLast = NsgTableEditMode.favorites;
                           editMode = NsgTableEditMode.favorites;
                         } else {
+                          editModeLast = NsgTableEditMode.view;
                           editMode = NsgTableEditMode.view;
                         }
                       });
