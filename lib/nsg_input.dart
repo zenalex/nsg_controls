@@ -163,7 +163,10 @@ class _NsgInputState extends State<NsgInput> {
   void initState() {
     super.initState();
     focus.addListener(() {
-      print('Listener ${!focus.hasFocus}');
+      if (focus.hasFocus) {
+        textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+      }
+
       if (!focus.hasFocus && widget.onEditingComplete != null) {
         widget.onEditingComplete!(widget.dataItem, widget.fieldName);
       }
@@ -340,15 +343,14 @@ class _NsgInputState extends State<NsgInput> {
                         padding: const EdgeInsets.only(bottom: 15),
                         child: TextFormField(
                           controller: textController,
-                          onTap: () {
-                            print('Widget ${!focus.hasFocus}');
+                          /*   onTap: () {
+                            print('Widget ${focus.hasFocus}');
                             if (!focus.hasFocus) {
-                              /* print('!focus.hasFocus ${!focus.hasFocus}');
-                              print(textController.text.length);*/
+                              //print(textController.text.length);
                               textController.selection =
                                   TextSelection(baseOffset: 0, extentOffset: textController.text.length);
                             }
-                          },
+                          },*/
                           inputFormatters: widget.maskType == NsgInputMaskType.phone
                               ? [phoneFormatter]
                               : widget.mask != null
