@@ -260,12 +260,13 @@ class _NsgTableState extends State<NsgTable> {
     isSearchStringFilterOpen = widget.initialIsSearchStringOpen || widget.controller.controllerFilter.searchString.isNotEmpty;
 
     /// Выставляем режим просмотра таблицы в "Избранное" или "Просмотр"
-    if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
+    /*if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
       editMode = NsgTableEditMode.recent;
       isSearchStringFilterOpen = true;
     } else {
       editMode = NsgTableEditMode.view;
-    }
+    }*/ // TODO вернуть обратно после обновления контроллера внутри таблицы
+    editMode = NsgTableEditMode.view;
     editModeLast = editMode;
 
     setInitialSorting();
