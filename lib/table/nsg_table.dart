@@ -17,7 +17,7 @@ import 'nsg_table_menu_button.dart';
 
 /// Виджет отображения таблицы
 class NsgTable extends StatefulWidget {
-  const NsgTable(
+  NsgTable(
       {Key? key,
       this.rowsMaxCount = 20,
       required this.controller,
@@ -133,6 +133,20 @@ class NsgTable extends StatefulWidget {
 
   ///Идетнификатор данной таблицы в настройках пользователя
   final String userSettingsId;
+
+  final List<NsgTableRowState> rowStateList = [];
+
+  closeAllSlided(List<NsgTableRow> tableRowList) {
+    rowStateList.forEach((element) {
+      element.slideClose();
+    });
+  }
+
+  closeAllSlidedKeepOne(NsgTableRowState row) {
+    rowStateList.forEach((element) {
+      if (element != row) element.slideClose();
+    });
+  }
 
   @override
   State<NsgTable> createState() => _NsgTableState();
@@ -260,6 +274,7 @@ class _NsgTableState extends State<NsgTable> {
     scrollHorHeader.dispose();
     scrollHorResizers.dispose();
     scrollVert.dispose();
+
     super.dispose();
   }
 
@@ -474,6 +489,7 @@ class _NsgTableState extends State<NsgTable> {
         List<Widget> table = [];
         List<Widget> tableHeader = [];
         List<Widget> tableBody = [];
+        List<NsgTableRow> tableRowList = [];
 
         /// Есть sub колонки
         bool hasSubcolumns = false;
@@ -676,7 +692,7 @@ class _NsgTableState extends State<NsgTable> {
           column.totalSum = 0;
         });
 
-        /// Цикл построения ячеек таблицы (строки)
+        /* ------------------------- /// Цикл построения ячеек таблицы (строки) ------------------------- */
         if (items.isNotEmpty) {
           for (var row in items) {
             List<Widget> tableRow = [];
@@ -721,24 +737,9 @@ class _NsgTableState extends State<NsgTable> {
                     width: 40,
                     child: Icon(Icons.copy, color: ControlOptions.instance.colorMain, size: 24)),
               ));
-            } else if (editMode == NsgTableEditMode.favorites ||
-                editMode == NsgTableEditMode.recent ||
-                (editMode == NsgTableEditMode.view && widget.availableButtons.contains(NsgTableMenuButtonType.favorites))) {
-              /// Добавление в избранное
-              tableRow.add(InkWell(
-                onTap: () {
-                  widget.controller.toggleFavorite(row);
-                  setState(() {});
-                },
-                child: showCell(
-                    padding: const EdgeInsets.all(0),
-                    color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-                    width: 40,
-                    child: Icon(isFavorite ? Icons.star : Icons.star_outline, color: ControlOptions.instance.colorMain, size: 24)),
-              ));
             }
 
-            /// Цикл построения ячеек таблицы (колонки)
+            /* ------------------------- /// Цикл построения ячеек таблицы (колонки) ------------------------ */
             visibleColumns.asMap().forEach((index, column) {
               if (widget.showTotals) {
                 if (column.totalType == NsgTableColumnTotalType.sum) {
@@ -817,7 +818,16 @@ class _NsgTableState extends State<NsgTable> {
                       expanded: column.expanded,
                       flex: column.flex));
             });
-            tableBody.add(IntrinsicHeight(child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: tableRow)));
+            var currentRow = NsgTableRow(
+                controller: widget.controller,
+                dataItem: row,
+                tableRow: tableRow,
+                rowStateList: widget.rowStateList,
+                rowStateCloseOthers: (item) {
+                  widget.closeAllSlidedKeepOne(item);
+                });
+            //tableRowList.add(currentRow);
+            tableBody.add(currentRow);
           }
         }
 
@@ -986,6 +996,7 @@ class _NsgTableState extends State<NsgTable> {
                     icon: editMode == NsgTableEditMode.favorites ? Icons.star : NsgTableMenuButtonType.favorites.icon,
                     onPressed: () {
                       setState(() {
+                        widget.closeAllSlided(tableRowList);
                         if (editMode != NsgTableEditMode.favorites) {
                           editMode = NsgTableEditMode.favorites;
                         } else {
@@ -1163,12 +1174,7 @@ class _NsgTableState extends State<NsgTable> {
           }
 
           // Рисуем квадратик слева от хедера
-          if (editMode == NsgTableEditMode.rowDelete ||
-              editMode == NsgTableEditMode.rowCopy ||
-              editMode == NsgTableEditMode.rowEdit ||
-              editMode == NsgTableEditMode.favorites ||
-              editMode == NsgTableEditMode.recent ||
-              (editMode == NsgTableEditMode.view && widget.availableButtons.contains(NsgTableMenuButtonType.favorites))) {
+          if (editMode == NsgTableEditMode.rowDelete || editMode == NsgTableEditMode.rowCopy || editMode == NsgTableEditMode.rowEdit) {
             tableHeader.insert(
                 0,
                 showCell(

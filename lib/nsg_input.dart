@@ -163,6 +163,7 @@ class _NsgInputState extends State<NsgInput> {
   void initState() {
     super.initState();
     focus.addListener(() {
+      print('Listener ${!focus.hasFocus}');
       if (!focus.hasFocus && widget.onEditingComplete != null) {
         widget.onEditingComplete!(widget.dataItem, widget.fieldName);
       }
@@ -340,6 +341,7 @@ class _NsgInputState extends State<NsgInput> {
                         child: TextFormField(
                           controller: textController,
                           onTap: () {
+                            print('Widget ${!focus.hasFocus}');
                             if (!focus.hasFocus) {
                               /* print('!focus.hasFocus ${!focus.hasFocus}');
                               print(textController.text.length);*/
