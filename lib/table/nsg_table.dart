@@ -712,7 +712,7 @@ class _NsgTableState extends State<NsgTable> {
                   },
                   child: showCell(
                     padding: const EdgeInsets.all(0),
-                    backColor: isSelected ? ControlOptions.instance.colorMain.withOpacity(0.2) : null,
+                    backColor: isSelected ? ControlOptions.instance.colorMainLighter : ControlOptions.instance.tableCellBackColor,
                     color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
                     width: 40,
                     child: Icon(Icons.delete_forever_outlined,
@@ -727,6 +727,7 @@ class _NsgTableState extends State<NsgTable> {
                     padding: const EdgeInsets.all(0),
                     //backColor: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
                     color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                    backColor: ControlOptions.instance.tableCellBackColor,
                     width: 40,
                     child: Icon(Icons.edit, color: ControlOptions.instance.colorMain, size: 24)),
               ));
@@ -738,6 +739,7 @@ class _NsgTableState extends State<NsgTable> {
                 child: showCell(
                     padding: const EdgeInsets.all(0),
                     color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                    backColor: ControlOptions.instance.tableCellBackColor,
                     width: 40,
                     child: Icon(Icons.copy, color: ControlOptions.instance.colorMain, size: 24)),
               ));
