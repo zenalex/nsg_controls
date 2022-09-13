@@ -83,20 +83,22 @@ class NsgTableRowState extends State<NsgTableRow> {
             child: Stack(
               alignment: Alignment.topLeft,
               children: [
-                Container(
-                    width: 40,
-                    decoration: BoxDecoration(
-                        border: Border(
-                      top: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
-                    )),
-                    child: Center(
-                        child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                widget.controller.toggleFavorite(widget.dataItem);
-                              });
-                            },
-                            child: Icon(isFavorite ? Icons.star : Icons.star_outline, color: ControlOptions.instance.colorMain)))),
+                _translateX < 1
+                    ? const SizedBox()
+                    : Container(
+                        width: 40,
+                        decoration: BoxDecoration(
+                            border: Border(
+                          top: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
+                        )),
+                        child: Center(
+                            child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    widget.controller.toggleFavorite(widget.dataItem);
+                                  });
+                                },
+                                child: Icon(isFavorite ? Icons.star : Icons.star_outline, color: ControlOptions.instance.colorMain)))),
                 AnimatedContainer(
                     transform: Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, _translateX, 0, 0, 1),
                     duration: Duration(milliseconds: 100),
