@@ -32,6 +32,7 @@ class NsgFilePicker extends StatefulWidget {
   ///Максимально разрешенный размер файла для выбора. При превышении размера файла, его выбор будет запрещен
   final double fileMaxSize;
   final Function(List<NsgFilePickerObject>) callback;
+  final List<NsgFilePickerObject> objectsList;
   const NsgFilePicker(
       {Key? key,
       this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
@@ -42,7 +43,8 @@ class NsgFilePicker extends StatefulWidget {
       this.imageMaxHeight = 1440.0,
       this.imageQuality = 70,
       this.fileMaxSize = 1000000.0,
-      required this.callback})
+      required this.callback,
+      required this.objectsList})
       : super(key: key);
 
   @override
@@ -52,7 +54,6 @@ class NsgFilePicker extends StatefulWidget {
 class _NsgFilePickerState extends State<NsgFilePicker> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   String error = '';
-  List<NsgFilePickerObject> objectsList = [];
   bool galleryPage = true;
   ScrollController scrollController = ScrollController();
 
@@ -61,8 +62,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   Widget _appBar() {
     return NsgAppBar(
       //text: controller.currentItem.isEmpty ? _textTitleNew : _textTitle,
-      text: objectsList.isEmpty ? 'Добавление фотографий'.toUpperCase() : 'Сохранение фотографий'.toUpperCase(),
-      text2: objectsList.isNotEmpty ? 'вы добавили ${objectsList.length} фото' : null,
+      text: widget.objectsList.isEmpty ? 'Добавление фотографий'.toUpperCase() : 'Сохранение фотографий'.toUpperCase(),
+      text2: widget.objectsList.isNotEmpty ? 'вы добавили ${widget.objectsList.length} фото' : null,
       icon: Icons.arrow_back_ios_new,
       color: ControlOptions.instance.colorInverted,
       colorsInverted: true,
@@ -73,7 +74,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       },
       icon2: Icons.check,
       onPressed2: () {
-        widget.callback(objectsList);
+        widget.callback(widget.objectsList);
         Get.back();
       },
     );
@@ -91,7 +92,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         setState(() {
           galleryPage = true;
           for (var element in result) {
-            objectsList.add(NsgFilePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path)));
+            widget.objectsList
+                .add(NsgFilePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path));
           }
         });
       }
@@ -108,11 +110,11 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             String? fileType = extension(element.path).replaceAll('.', '');
 
             if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
-              objectsList
-                  .add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType));
+              widget.objectsList.add(NsgFilePickerObject(
+                  image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
             } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
-              objectsList
-                  .add(NsgFilePickerObject(file: File(element.path), image: null, description: basenameWithoutExtension(element.path), fileType: fileType));
+              widget.objectsList.add(NsgFilePickerObject(
+                  file: File(element.path), image: null, description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
             } else {
               error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
               setState(() {});
@@ -131,7 +133,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         setState(() {
           galleryPage = true;
           for (var element in result) {
-            objectsList.add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path)));
+            widget.objectsList
+                .add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), filePath: element.path));
           }
         });
       }
@@ -154,9 +157,11 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           return;
         }
         if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
-          objectsList.add(NsgFilePickerObject(image: Image.file(File(element.name)), description: basenameWithoutExtension(element.name), fileType: fileType));
+          widget.objectsList.add(NsgFilePickerObject(
+              image: Image.file(File(element.name)), description: basenameWithoutExtension(element.name), fileType: fileType, filePath: element.path ?? ''));
         } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
-          objectsList.add(NsgFilePickerObject(file: File(element.name), image: null, description: basenameWithoutExtension(element.name), fileType: fileType));
+          widget.objectsList.add(NsgFilePickerObject(
+              file: File(element.name), image: null, description: basenameWithoutExtension(element.name), fileType: fileType, filePath: element.path ?? ''));
         } else {
           error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
           setState(() {});
@@ -174,7 +179,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
     if (image != null) {
       setState(() {
-        objectsList.add(NsgFilePickerObject(image: Image.file(File(image.path)), description: basenameWithoutExtension(image.path)));
+        widget.objectsList
+            .add(NsgFilePickerObject(image: Image.file(File(image.path)), description: basenameWithoutExtension(image.path), filePath: image.path));
         galleryPage = false;
       });
     } else {
@@ -206,7 +212,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   /// Вывод галереи на экран
   Widget _getImages() {
     List<Widget> list = [];
-    for (var element in objectsList) {
+    for (var element in widget.objectsList) {
       list.add(Container(
         decoration: BoxDecoration(border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: Column(
@@ -237,7 +243,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                           title: 'Удаление фотографии',
                           text: 'После удаления, фотографию нельзя будет восстановить. Удалить?',
                           onConfirm: () {
-                            objectsList.remove(element);
+                            widget.objectsList.remove(element);
                             setState(() {});
                             Get.back();
                           },
@@ -260,7 +266,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                 onTap: () {
                   if (element.image != null) {
                     List<NsgFilePickerObject> imagesList = [];
-                    for (var el in objectsList) {
+                    for (var el in widget.objectsList) {
                       if (el.image != null) {
                         imagesList.add(el);
                       }
