@@ -9,7 +9,7 @@ class NsgDialogSaveOrCancel {
     bool? value;
     await Get.dialog(
         NsgPopUp(
-          title: 'Вы внесли изменения. Хотитие сохранить?',
+          title: 'Вы внесли изменения. Сохранить?',
           getContent: () {
             return [
               Padding(
