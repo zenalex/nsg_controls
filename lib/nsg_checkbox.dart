@@ -33,10 +33,13 @@ class NsgCheckBox extends StatefulWidget {
   _NsgCheckBoxState createState() => _NsgCheckBoxState();
 }
 
+late bool _value;
+
 class _NsgCheckBoxState extends State<NsgCheckBox> {
   @override
   void initState() {
     super.initState();
+    _value = widget.value;
   }
 
   @override
@@ -60,6 +63,7 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
             Align(
               alignment: Alignment.topLeft,
               child: Container(
+                width: double.infinity,
                 decoration: BoxDecoration(
                     border: widget.simple != true
                         ? Border(
@@ -77,6 +81,7 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                 child: InkWell(
                   onTap: () {
                     widget.onPressed();
+                    _value = !_value;
                     setState(() {});
                   },
                   hoverColor: ControlOptions.instance.colorMain.withOpacity(0.1),
@@ -89,14 +94,13 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (widget.radio == true)
-                          Icon(
-                              widget.value == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
-                              color: widget.value == true
+                          Icon(_value == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
+                              color: _value == true
                                   ? ControlOptions.instance.colorMainDark
                                   : ControlOptions.instance.colorMainDark)
                         else
-                          Icon(widget.value == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                              color: widget.value == true
+                          Icon(_value == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                              color: _value == true
                                   ? ControlOptions.instance.colorMainDark
                                   : ControlOptions.instance.colorMainDark),
                         const SizedBox(width: 4),
