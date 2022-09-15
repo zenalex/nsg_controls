@@ -10,6 +10,7 @@ class NsgCheckBox extends StatefulWidget {
   final double? height;
   final VoidCallback onPressed;
   final EdgeInsets margin;
+  final bool toggleInside;
 
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
@@ -18,6 +19,7 @@ class NsgCheckBox extends StatefulWidget {
   final String validateText;
   const NsgCheckBox(
       {Key? key,
+      this.toggleInside = false,
       this.validateText = '',
       required this.label,
       this.disabled,
@@ -33,17 +35,18 @@ class NsgCheckBox extends StatefulWidget {
   _NsgCheckBoxState createState() => _NsgCheckBoxState();
 }
 
-late bool _value;
+late bool boxValue;
 
 class _NsgCheckBoxState extends State<NsgCheckBox> {
   @override
   void initState() {
     super.initState();
-    _value = widget.value;
+    boxValue = widget.value;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.toggleInside) boxValue = widget.value;
     return Material(
       color: Colors.transparent,
       child: Padding(
@@ -81,8 +84,8 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                 child: InkWell(
                   onTap: () {
                     widget.onPressed();
-                    _value = !_value;
-                    setState(() {});
+                    boxValue = !boxValue;
+                    if (widget.toggleInside) setState(() {});
                   },
                   hoverColor: ControlOptions.instance.colorMain.withOpacity(0.1),
                   splashColor: ControlOptions.instance.colorMain.withOpacity(0.2),
@@ -94,13 +97,13 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (widget.radio == true)
-                          Icon(_value == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
-                              color: _value == true
+                          Icon(boxValue == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
+                              color: boxValue == true
                                   ? ControlOptions.instance.colorMainDark
                                   : ControlOptions.instance.colorMainDark)
                         else
-                          Icon(_value == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                              color: _value == true
+                          Icon(boxValue == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                              color: boxValue == true
                                   ? ControlOptions.instance.colorMainDark
                                   : ControlOptions.instance.colorMainDark),
                         const SizedBox(width: 4),

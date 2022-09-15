@@ -23,6 +23,7 @@ class _NsgTableColumnsReorderState extends State<NsgTableColumnsReorder> {
     List<Widget> list = [];
     for (var value in widget.columns) {
       //assert(widget.fieldNameDict[value.name] != null);
+
       list.add(SizedBox(
           width: 280,
           height: 30,
@@ -31,8 +32,9 @@ class _NsgTableColumnsReorderState extends State<NsgTableColumnsReorder> {
               label: value.presentation ?? NsgDataClient.client.getFieldList(widget.controller.dataType).fields[value.name]?.presentation ?? '',
               value: value.visible,
               onPressed: () {
-                value.visible = !value.visible;
-                setState(() {});
+                setState(() {
+                  value.visible = !value.visible;
+                });
               })));
     }
     return NsgReorderable(
