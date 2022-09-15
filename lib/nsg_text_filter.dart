@@ -5,6 +5,7 @@ import 'package:nsg_controls/widgets/nsg_snackbar.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgTextFilter extends StatelessWidget {
+  // ignore: prefer_const_constructors_in_immutables
   NsgTextFilter({Key? key, required this.controller, this.isOpen, this.onSetFilter}) : super(key: key);
 
   final NsgDataController controller;

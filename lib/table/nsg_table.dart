@@ -139,15 +139,15 @@ class NsgTable extends StatefulWidget {
   final List<NsgTableRowState> rowStateList = [];
 
   closeAllSlided(List<NsgTableRow> tableRowList) {
-    rowStateList.forEach((element) {
+    for (var element in rowStateList) {
       element.slideClose();
-    });
+    }
   }
 
   closeAllSlidedKeepOne(NsgTableRowState row) {
-    rowStateList.forEach((element) {
+    for (var element in rowStateList) {
       if (element != row) element.slideClose();
-    });
+    }
   }
 
   @override
@@ -213,7 +213,7 @@ class _NsgTableState extends State<NsgTable> {
     Widget showCell;
 
     showCell = Container(
-        constraints: BoxConstraints(minHeight: 36),
+        constraints: const BoxConstraints(minHeight: 36),
         padding: padding,
         alignment: align,
         width: width,
@@ -232,13 +232,13 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   late NsgUpdateKey _tableKey;
-  late NsgUpdateKey _tableRefreshKey;
+  //late NsgUpdateKey _tableRefreshKey;
 /* ---------------------- InitState таблицы. Присвоение значений переменным --------------------- */
   @override
   void initState() {
     super.initState();
     _tableKey = widget.controller.getUpdateKey('nsg_table', NsgUpdateKeyType.list);
-    _tableRefreshKey = widget.controller.getUpdateKey('nsg_table_refresh', NsgUpdateKeyType.list);
+    //_tableRefreshKey = widget.controller.getUpdateKey('nsg_table_refresh', NsgUpdateKeyType.list);
     editModeLast = NsgTableEditMode.view;
     isMobile = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
     listRowsToDelete = [];
@@ -702,7 +702,7 @@ class _NsgTableState extends State<NsgTable> {
           for (var row in items) {
             List<Widget> tableRow = [];
             bool isSelected = false;
-            bool isFavorite = widget.controller.favorites.contains(row);
+            //bool isFavorite = widget.controller.favorites.contains(row);
             if (listRowsToDelete.contains(row)) {
               isSelected = true;
             }
@@ -1152,36 +1152,31 @@ class _NsgTableState extends State<NsgTable> {
 
 /* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
 
-        table.add(Container(
-          decoration: BoxDecoration(
-            border: Border(left: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))
-          ),
-          child: _rowcolumn(children: [
-            if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
-              _expanded(
-                child: NsgTextFilter(
-                  onSetFilter: () {
-                    setState(() {
-                      editModeLast = NsgTableEditMode.view;
-                      editMode = NsgTableEditMode.view;
-                    });
-                  },
-                  controller: widget.controller,
-                  isOpen: isSearchStringFilterOpen,
-                ),
+        table.add(_rowcolumn(children: [
+          if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+            _expanded(
+              child: NsgTextFilter(
+                onSetFilter: () {
+                  setState(() {
+                    editModeLast = NsgTableEditMode.view;
+                    editMode = NsgTableEditMode.view;
+                  });
+                },
+                controller: widget.controller,
+                isOpen: isSearchStringFilterOpen,
               ),
-            if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-              _expanded(
-                child: NsgPeriodFilter(
-                  //showCompact: isPeriodFilterOpen,
-                  key: GlobalKey(),
-                  margin: EdgeInsets.zero,
-                  label: "Фильтр по периоду",
-                  controller: widget.controller,
-                ),
+            ),
+          if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+            _expanded(
+              child: NsgPeriodFilter(
+                //showCompact: isPeriodFilterOpen,
+                key: GlobalKey(),
+                margin: EdgeInsets.zero,
+                label: "Фильтр по периоду",
+                controller: widget.controller,
               ),
-          ]),
-        ));
+            ),
+        ]));
 /* ------------------------------- // Фильтры по Тексту и Периоду ------------------------------- */
 
         /// Если showHeader, то показываем Header

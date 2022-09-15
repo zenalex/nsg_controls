@@ -3,7 +3,6 @@ import 'package:nsg_data/controllers/nsgDataController.dart';
 import 'package:nsg_data/nsg_data_item.dart';
 
 import '../nsg_control_options.dart';
-import 'nsg_table.dart';
 
 /// Виджет строки таблицы
 
@@ -14,7 +13,7 @@ class NsgTableRow extends StatefulWidget {
   final List<NsgTableRowState> rowStateList;
   final Function(NsgTableRowState) rowStateCloseOthers;
 
-  NsgTableRow(
+  const NsgTableRow(
       {Key? key, required this.tableRow, required this.dataItem, required this.controller, required this.rowStateList, required this.rowStateCloseOthers})
       : super(key: key);
 
@@ -101,7 +100,7 @@ class NsgTableRowState extends State<NsgTableRow> {
                                 child: Icon(isFavorite ? Icons.star : Icons.star_outline, color: ControlOptions.instance.colorMain)))),
                 AnimatedContainer(
                     transform: Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, _translateX, 0, 0, 1),
-                    duration: Duration(milliseconds: 100),
+                    duration: const Duration(milliseconds: 100),
                     child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: widget.tableRow)),
               ],
             )));

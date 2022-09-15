@@ -45,7 +45,7 @@ class NsgButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color _backColor = backColor ?? ControlOptions.instance.colorMain;
-    Color _backHoverColor = backHoverColor ?? ControlOptions.instance.colorMainDarker;
+    //Color _backHoverColor = backHoverColor ?? ControlOptions.instance.colorMainDarker;
     double _fontSize = fontSize ?? ControlOptions.instance.sizeM;
     // fontSize ??= ControlOptions.instance.sizeM;
     //backColor ??= ControlOptions.instance.colorMain;
@@ -77,7 +77,7 @@ class NsgButton extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
                         ),
-                        primary: _backColor,
+                        backgroundColor: _backColor,
                         padding: padding,
                         textStyle: TextStyle(fontSize: _fontSize)),
                     onPressed: onPressed,
@@ -130,7 +130,7 @@ class NsgButton extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    primary: ControlOptions.instance.colorMain,
+                    backgroundColor: ControlOptions.instance.colorMain,
                     padding: padding,
                     textStyle: TextStyle(fontSize: _fontSize)),
                 onPressed: onPressed,

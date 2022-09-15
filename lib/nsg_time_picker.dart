@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/nsg_controls.dart';
@@ -184,7 +183,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
     super.dispose();
   }
 
-  bool _ignoreChange = false;
+  //bool _ignoreChange = false;
   void textChanged() {
     _initialTime = textController.text;
     DateTime? _initialTimeNew;
@@ -202,11 +201,11 @@ class _TimePickerContentState extends State<TimePickerContent> {
     }
     if (textController.text != _initialTime) {
       var start = textController.selection.start;
-      _ignoreChange = true;
+      //_ignoreChange = true;
       textController.text = _initialTime;
 
       textController.selection = TextSelection.fromPosition(TextPosition(offset: start));
-      _ignoreChange = false;
+      //_ignoreChange = false;
     }
   }
 
@@ -261,10 +260,10 @@ class _TimePickerContentState extends State<TimePickerContent> {
       onDateTimeChanged: (DateTime value) {
         //widget.onChange(value);
         _initialTime = NsgDateFormat.dateFormat(value, format: 'HH:mm');
-        _ignoreChange = true;
+        //_ignoreChange = true;
         textController.text = _initialTime;
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
-        _ignoreChange = false;
+        //_ignoreChange = false;
       },
     );
     return datepicker!;

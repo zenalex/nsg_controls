@@ -5,7 +5,7 @@ import '../nsg_control_options.dart';
 
 class NsgShowAppVersion extends StatefulWidget {
   final Color? color;
-  NsgShowAppVersion({Key? key, this.color}) : super(key: key);
+  const NsgShowAppVersion({Key? key, this.color}) : super(key: key);
 
   @override
   State<NsgShowAppVersion> createState() => _NsgShowAppVersionState();

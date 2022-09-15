@@ -1,7 +1,6 @@
 // импорт
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsgDataController.dart';
 
@@ -76,7 +75,7 @@ class NsgAppBar extends StatelessWidget {
                           ),
                         );
                       } else {
-                        return SizedBox();
+                        return const SizedBox();
                       }
                     }),
                   IconButton(

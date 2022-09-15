@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 
 import 'widgets/nsg_snackbar.dart';

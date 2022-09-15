@@ -13,7 +13,7 @@ class NsgDialogSaveOrCancel {
           getContent: () {
             return [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -26,7 +26,7 @@ class NsgDialogSaveOrCancel {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -36,7 +36,7 @@ class NsgDialogSaveOrCancel {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

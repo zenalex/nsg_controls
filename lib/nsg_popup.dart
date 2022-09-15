@@ -208,7 +208,6 @@ class _NsgPopUpState extends State<NsgPopUp> {
   }
 
   Widget _getContent() {
-    print('_getContent');
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

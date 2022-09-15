@@ -4,7 +4,7 @@ import 'package:nsg_controls/nsg_controls.dart';
 class BodyWrap extends StatelessWidget {
   final Widget child;
   final bool fullWidth;
-  const BodyWrap({required this.child, this.fullWidth = false}) : super();
+  const BodyWrap({super.key, required this.child, this.fullWidth = false});
 
   @override
   Widget build(BuildContext context) {

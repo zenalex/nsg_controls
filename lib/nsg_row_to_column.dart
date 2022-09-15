@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class NsgRowToColumn extends StatefulWidget {
   final List<Widget> children;
-  NsgRowToColumn({Key? key, required this.children}) : super(key: key);
+  const NsgRowToColumn({Key? key, required this.children}) : super(key: key);
 
   @override
   State<NsgRowToColumn> createState() => _NsgRowToColumnState();
