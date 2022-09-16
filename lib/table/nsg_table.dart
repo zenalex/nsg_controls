@@ -697,7 +697,7 @@ class _NsgTableState extends State<NsgTable> {
           column.totalSum = 0;
         });
 
-        /* ------------------------- /// Цикл построения ячеек таблицы (строки) ------------------------- */
+        /* -------------------------  Цикл построения ячеек таблицы (строки) --------------------------------------------------------------------------- */
         if (items.isNotEmpty) {
           for (var row in items) {
             List<Widget> tableRow = [];
@@ -746,7 +746,7 @@ class _NsgTableState extends State<NsgTable> {
               ));
             }
 
-            /* ------------------------- /// Цикл построения ячеек таблицы (колонки) ------------------------ */
+            /* -------------------------  Цикл построения ячеек таблицы (колонки) ---------------------------------------------------------------------- */
             visibleColumns.asMap().forEach((index, column) {
               if (widget.showTotals) {
                 if (column.totalType == NsgTableColumnTotalType.sum) {
@@ -806,9 +806,11 @@ class _NsgTableState extends State<NsgTable> {
                           },
                           child: showCell(
                               align: column.verticalAlign ?? defaultRowAlign,
-                              backColor: isSelected
-                                  ? ControlOptions.instance.colorMain.withOpacity(0.2)
-                                  : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                              backColor: column.getBackColor != null
+                                  ? column.getBackColor!(row, column)
+                                  : isSelected
+                                      ? ControlOptions.instance.colorMain.withOpacity(0.2)
+                                      : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
                               width: column.width,
                               child: _rowWidget(row, column),
                               isSelected: row == _selectedRow && (_selectedColumn == null || _selectedColumn == column))),
@@ -817,14 +819,18 @@ class _NsgTableState extends State<NsgTable> {
                   : wrapExpanded(
                       child: showCell(
                           align: column.verticalAlign ?? defaultRowAlign,
-                          backColor: isSelected
-                              ? ControlOptions.instance.colorError.withOpacity(0.3)
-                              : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                          backColor: column.getBackColor != null
+                              ? column.getBackColor!(row, column)
+                              : isSelected
+                                  ? ControlOptions.instance.colorError.withOpacity(0.3)
+                                  : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
                           width: column.width,
                           child: _rowWidget(row, column)),
                       expanded: column.expanded,
                       flex: column.flex));
             });
+
+            /* --------------------------- Добавлени виджета строки в тело таблицы ------------------------------------------------------------------- */
             var currentRow = NsgTableRow(
                 controller: widget.controller,
                 dataItem: row,

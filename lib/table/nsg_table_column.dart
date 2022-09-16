@@ -70,6 +70,8 @@ class NsgTableColumn {
 
   Widget Function(NsgDataItem item, NsgTableColumn column)? getColumnWidget;
 
+  Color Function(NsgDataItem item, NsgTableColumn column)? getBackColor;
+
   NsgTableColumn(
       {required this.name,
       this.columns,
@@ -92,7 +94,8 @@ class NsgTableColumn {
       this.showTotals = false,
       this.allowSort = true,
       this.getColumnText,
-      this.getColumnWidget});
+      this.getColumnWidget,
+      this.getBackColor});
 
   static const String usVisible = 'visible';
   static const String usWidth = 'width';
