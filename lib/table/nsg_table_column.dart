@@ -99,6 +99,8 @@ class NsgTableColumn {
 
   static const String usVisible = 'visible';
   static const String usWidth = 'width';
+  static const String usFlex = 'flex';
+  static const String usPresentation = 'presentation';
 
   ///Чтение полей объекта из JSON
   void fromJson(Map<String, dynamic> json) {
@@ -113,6 +115,12 @@ class NsgTableColumn {
           width = jsonValue;
         }
       }
+      if (name == usPresentation) {
+        presentation = jsonValue;
+      }
+      if (name == usFlex) {
+        flex = jsonValue;
+      }
     });
   }
 
@@ -122,6 +130,8 @@ class NsgTableColumn {
 
     map[usVisible] = visible;
     map[usWidth] = width;
+    map[usFlex] = flex;
+    map[usPresentation] = presentation;
     return map;
   }
 }
