@@ -191,7 +191,7 @@ class _NsgTableState extends State<NsgTable> {
 
   /// Оборачивание виджета в Expanded
   Widget wrapExpanded({required Widget child, bool? expanded, int? flex}) {
-    if (expanded == true) {
+    if (expanded == true && editMode != NsgTableEditMode.columnsWidth) {
       horizontalScrollEnabled = false;
       return Expanded(flex: flex ?? 1, child: child);
     } else {
@@ -474,6 +474,7 @@ class _NsgTableState extends State<NsgTable> {
 
   @override
   Widget build(BuildContext context) {
+    //print(">> Build table ${DateTime.now()}");
     // return GetBuilder(
     //     id: _tableKey,
     //     init: widget.controller,
@@ -502,7 +503,43 @@ class _NsgTableState extends State<NsgTable> {
         /// Массив видимых колонок (или подколонок), по которому мы строим ячейки таблицы
         List<NsgTableColumn> visibleColumns = [];
 
-        /// Цикл построения заголовка таблицы
+        /* ------------------------- Цикл обработки колонок для перевода ширины Expanded колонок в пиксельный размер ------------------------------------- */
+        int expandedColumnsCount = 0;
+        int expandedColumnsFlexCount = 0;
+        double notExpandedColumnsWidth = 0;
+
+        widget.columns.asMap().forEach((index, column) {
+          column.totalSum = 0;
+          if (column.expanded) {
+            expandedColumnsCount++;
+            expandedColumnsFlexCount = expandedColumnsFlexCount + column.flex;
+          } else if (column.width != null) {
+            //print('>> column width ${column.width}');
+            notExpandedColumnsWidth += column.width!;
+          }
+        });
+        double screenWidth = 0;
+        if (Get.width < ControlOptions.instance.appMaxWidth) {
+          screenWidth = Get.width;
+        } else {
+          screenWidth = ControlOptions.instance.appMaxWidth;
+        }
+        screenWidth = screenWidth - 16;
+
+        double expandedColumnWidth = (screenWidth - notExpandedColumnsWidth) / expandedColumnsFlexCount;
+        widget.columns.asMap().forEach((index, column) {
+          if (column.expanded) {
+            column.width = expandedColumnWidth * column.flex;
+          }
+        });
+        /*  if (items.length != 0) {
+          print('>> items count ${items.length}');
+          print('>> count $expandedColumnsCount');
+          print('>> screenWidth $screenWidth');
+          print('>> expandedColumnWidth $expandedColumnWidth');
+          print('>> horizontalScrollEnabled $horizontalScrollEnabled');
+        }*/
+        /* ------------------------------------------------------------------------------- Цикл построения заголовка таблицы ----------------------------- */
         if (widget.showHeader) {
           // Проверяем есть ли хоть одна sub колонка
           for (var column in tableColumns.where((element) => element.visible)) {
@@ -937,11 +974,12 @@ class _NsgTableState extends State<NsgTable> {
                       }
                     },
                   ),
-                if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize) && horizontalScrollEnabled)
+                if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize)) //&& horizontalScrollEnabled)
                   NsgTableMenuButton(
                     tooltip: 'Ширина колонок',
                     icon: NsgTableMenuButtonType.columnsSize.icon,
                     onPressed: () {
+                      horizontalScrollEnabled = true;
                       editModeLast = editMode;
                       editMode = NsgTableEditMode.columnsWidth;
                       scrollHor.dispose();
@@ -1344,6 +1382,7 @@ class _NsgTableState extends State<NsgTable> {
                           controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
                           scrollDirection: Axis.horizontal,
                           child: ResizeLines(
+                              expandedColumnsCount: expandedColumnsCount,
                               onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
                               columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
                               columnsOnResize: (resizedColumns) {

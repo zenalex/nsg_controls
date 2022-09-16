@@ -14,7 +14,14 @@ class ColumnLineResizer extends StatelessWidget {
   final Function(int) onDragEnd;
   final Function(int) onHover;
   const ColumnLineResizer(
-      {Key? key, required this.number, this.touchY = 0, this.isSelected, this.showIcon, required this.onDrag, required this.onDragEnd, required this.onHover})
+      {Key? key,
+      required this.number,
+      this.touchY = 0,
+      this.isSelected,
+      this.showIcon,
+      required this.onDrag,
+      required this.onDragEnd,
+      required this.onHover})
       : super(key: key);
 
   @override
@@ -51,7 +58,9 @@ class ColumnLineResizer extends StatelessWidget {
             child: showIcon == true
                 ? Transform.translate(
                     offset: Offset(7, touchY - 5),
-                    child: Transform.rotate(angle: -pi / 2, child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
+                    child: Transform.rotate(
+                        angle: -pi / 2,
+                        child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
                 : const SizedBox(),
           ),
         ),
@@ -64,13 +73,21 @@ class ColumnLineResizer extends StatelessWidget {
 class ResizeLines extends StatefulWidget {
   final Function(List<NsgTableColumn>) columnsOnResize;
 
+  final int expandedColumnsCount;
+
   /// Функция возврата колонок
   final Function(List<NsgTableColumn>)? onColumnsChange;
 
   /// Параметры колонок
   final List<NsgTableColumn> columns;
   final bool columnsEditMode;
-  const ResizeLines({Key? key, required this.columns, required this.columnsOnResize, required this.columnsEditMode, required this.onColumnsChange})
+  const ResizeLines(
+      {Key? key,
+      required this.expandedColumnsCount,
+      required this.columns,
+      required this.columnsOnResize,
+      required this.columnsEditMode,
+      required this.onColumnsChange})
       : super(key: key);
 
   @override
@@ -101,9 +118,18 @@ class _ResizeLinesState extends State<ResizeLines> {
               },
               onDrag: (details, number) {
                 double dif = widget.columns[number].width! + details.primaryDelta!;
+                // Выбор линии справа у expanded блока
+                print('$number > ${widget.columns.length}');
                 if (dif > 50 && dif < 500) {
-                  widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
+                  if (!widget.columns[number].expanded) {
+                    widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;
+                  } else if (widget.expandedColumnsCount == 1 && (number + 1) < widget.columns.length) {
+                    widget.columns[number + 1].width = widget.columns[number + 1].width! - details.primaryDelta!;
+                  } else {
+                    ///
+                  }
                 }
+
                 widget.columnsOnResize(widget.columns);
                 selectedColumn = number;
                 showIcon = number;
