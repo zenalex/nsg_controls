@@ -1,28 +1,37 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
+import 'package:dotted_line/dotted_line.dart';
+import '../nsg_control_options.dart';
 import 'nsg_table_column.dart';
 
 /// Виджет вертикальной линий, меняющей ширину колонки
 class ColumnLineResizer extends StatelessWidget {
   final int number;
   final bool? isSelected;
+  final bool isExpanded;
   final bool? showIcon;
   final double touchY;
+  final Color? color;
   final Function(DragUpdateDetails, int) onDrag;
   final Function(int) onDragEnd;
   final Function(int) onHover;
   const ColumnLineResizer(
       {Key? key,
       required this.number,
+      this.isExpanded = false,
       this.touchY = 0,
       this.isSelected,
       this.showIcon,
+      this.color,
       required this.onDrag,
       required this.onDragEnd,
       required this.onHover})
       : super(key: key);
+
+  Color getColor() {
+    return color ?? ControlOptions.instance.colorMainLight;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,21 +56,31 @@ class ColumnLineResizer extends StatelessWidget {
           width: 32,
           child: Container(
             alignment: Alignment.topCenter,
-            decoration: BoxDecoration(
-                border: Border(
-              right: BorderSide(
-                color: isSelected == true ? Colors.red : Colors.yellow,
-                width: 2.0,
-              ),
-            )),
             width: 15,
-            child: showIcon == true
-                ? Transform.translate(
-                    offset: Offset(7, touchY - 5),
-                    child: Transform.rotate(
-                        angle: -pi / 2,
-                        child: const SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: Colors.red))))
-                : const SizedBox(),
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 13),
+                  child: DottedLine(
+                    direction: Axis.vertical,
+                    lineLength: double.infinity,
+                    lineThickness: 2.0,
+                    dashLength: isExpanded ? 24 : 4,
+                    dashGapLength: isExpanded ? 12 : 2,
+                    dashRadius: 1,
+                    dashColor: isSelected == true ? ControlOptions.instance.colorMainDark : getColor(),
+                    dashGapColor: ControlOptions.instance.colorMainText,
+                  ),
+                ),
+                showIcon == true
+                    ? Transform.translate(
+                        offset: Offset(6, touchY - 5),
+                        child: Transform.rotate(
+                            angle: -pi / 2, child: SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: ControlOptions.instance.colorMain))))
+                    : const SizedBox(),
+              ],
+            ),
           ),
         ),
       ),
@@ -99,6 +118,13 @@ class _ResizeLinesState extends State<ResizeLines> {
   double touchY = 0;
   int showIcon = -2;
 
+  bool setLinesAroundExpanded(int number) {
+    if ((number + 1) < widget.columns.length && (widget.columns[number].expanded || widget.columns[number + 1].expanded)) {
+      return true;
+    }
+    return false;
+  }
+
   Widget showLines() {
     List<Widget> list = [const Padding(padding: EdgeInsets.only(left: 10))];
     widget.columns.asMap().forEach((index, column) {
@@ -110,6 +136,7 @@ class _ResizeLinesState extends State<ResizeLines> {
             width: widget.columns[index].width! - 32,
           ),
           ColumnLineResizer(
+              isExpanded: setLinesAroundExpanded(index),
               isSelected: selectedColumn == index ? true : false,
               touchY: touchY,
               onHover: (number) {
@@ -119,7 +146,7 @@ class _ResizeLinesState extends State<ResizeLines> {
               onDrag: (details, number) {
                 double dif = widget.columns[number].width! + details.primaryDelta!;
                 // Выбор линии справа у expanded блока
-                print('$number > ${widget.columns.length}');
+
                 if (dif > 50 && dif < 500) {
                   if (!widget.columns[number].expanded) {
                     widget.columns[number].width = widget.columns[number].width! + details.primaryDelta!;

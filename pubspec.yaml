@@ -41,6 +41,7 @@ dependencies:
   vector_math: ^2.1.2
   path: ^1.8.1
   flutter_multi_formatter: ^2.6.2
+  dotted_line: ^3.1.0
 
 dev_dependencies:
   flutter_test:
