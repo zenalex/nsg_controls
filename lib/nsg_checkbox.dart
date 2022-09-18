@@ -1,5 +1,6 @@
 // импорт
 import 'package:flutter/material.dart';
+import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 
 class NsgCheckBox extends StatefulWidget {
@@ -35,18 +36,19 @@ class NsgCheckBox extends StatefulWidget {
   _NsgCheckBoxState createState() => _NsgCheckBoxState();
 }
 
-late bool boxValue;
-
 class _NsgCheckBoxState extends State<NsgCheckBox> {
+  late bool _boxValue;
+
   @override
   void initState() {
     super.initState();
-    boxValue = widget.value;
+    _boxValue = widget.value;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.toggleInside) boxValue = widget.value;
+    //if (!widget.toggleInside) boxValue = widget.value;
+
     return Material(
       color: Colors.transparent,
       child: Padding(
@@ -63,40 +65,37 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 10, color: ControlOptions.instance.colorError),
                   )),
-            Align(
-              alignment: Alignment.topLeft,
-              child: InkWell(
-                onTap: () {
-                  boxValue = !boxValue;
-                  widget.onPressed(boxValue);
-                  if (widget.toggleInside) setState(() {});
-                },
-                hoverColor: ControlOptions.instance.colorMain.withOpacity(0.1),
-                splashColor: ControlOptions.instance.colorMain.withOpacity(0.2),
-                //focusColor: ControlOptions.instance.colorMain.withOpacity(0.5),
-                highlightColor: ControlOptions.instance.colorMain.withOpacity(0.2),
-                child: SizedBox(
-                  height: widget.height,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (widget.radio == true)
-                        Icon(boxValue == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
-                            color: boxValue == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark)
-                      else
-                        Icon(boxValue == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                            color: boxValue == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(
-                          widget.label,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(height: 1, color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
-                        ),
-                      )
-                    ],
-                  ),
+            InkWell(
+              onTap: () {
+                _boxValue = !_boxValue;
+                widget.onPressed(_boxValue);
+                if (widget.toggleInside) setState(() {});
+              },
+              hoverColor: ControlOptions.instance.colorMain.withOpacity(0.1),
+              splashColor: ControlOptions.instance.colorMain.withOpacity(0.2),
+              //focusColor: ControlOptions.instance.colorMain.withOpacity(0.5),
+              highlightColor: ControlOptions.instance.colorMain.withOpacity(0.2),
+              child: SizedBox(
+                height: widget.height,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (widget.radio == true)
+                      Icon(_boxValue == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
+                          color: _boxValue == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark)
+                    else
+                      Icon(_boxValue == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                          color: _boxValue == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        widget.label,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(height: 1, color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
+                      ),
+                    )
+                  ],
                 ),
               ),
             )
