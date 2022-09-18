@@ -31,7 +31,7 @@ class _NsgTableColumnsReorderState extends State<NsgTableColumnsReorder> {
               simple: true,
               label: value.presentation ?? NsgDataClient.client.getFieldList(widget.controller.dataType).fields[value.name]?.presentation ?? '',
               value: value.visible,
-              onPressed: () {
+              onPressed: (currentValue) {
                 setState(() {
                   value.visible = !value.visible;
                 });

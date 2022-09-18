@@ -61,7 +61,7 @@ class ColumnLineResizer extends StatelessWidget {
               alignment: Alignment.topCenter,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 13),
+                  padding: const EdgeInsets.only(left: 13),
                   child: DottedLine(
                     direction: Axis.vertical,
                     lineLength: double.infinity,

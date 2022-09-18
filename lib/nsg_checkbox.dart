@@ -8,7 +8,7 @@ class NsgCheckBox extends StatefulWidget {
   final bool? radio;
   final bool value;
   final double? height;
-  final VoidCallback onPressed;
+  final Function(bool currentValue) onPressed;
   final EdgeInsets margin;
   final bool toggleInside;
 
@@ -67,8 +67,8 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
               alignment: Alignment.topLeft,
               child: InkWell(
                 onTap: () {
-                  widget.onPressed();
                   boxValue = !boxValue;
+                  widget.onPressed(boxValue);
                   if (widget.toggleInside) setState(() {});
                 },
                 hoverColor: ControlOptions.instance.colorMain.withOpacity(0.1),
