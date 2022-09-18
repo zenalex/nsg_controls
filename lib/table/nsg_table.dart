@@ -472,9 +472,10 @@ class _NsgTableState extends State<NsgTable> {
     }
   }
 
+/* ------------------------------------------------------------- BUILD виджета таблицы ------------------------------------------------------------ */
   @override
   Widget build(BuildContext context) {
-    //print(">> Build table ${DateTime.now()}");
+    print(">> Build table ${DateTime.now()}");
     // return GetBuilder(
     //     id: _tableKey,
     //     init: widget.controller,

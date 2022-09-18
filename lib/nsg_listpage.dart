@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:nsg_data/nsg_data.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+//import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'nsg_period_filter.dart';
 import 'nsg_text_filter.dart';
 import 'widgets/nsg_errorpage.dart';
@@ -17,6 +17,12 @@ enum NsgListPageMode { list, grid, table }
 ///В качестве виджетов для отображения элементов, можно использовать стандартные, например, NsgTextBlock
 // ignore: must_be_immutable
 class NsgListPage extends StatelessWidget {
+  /// Контроллер пользовательских настроек
+  NsgUserSettingsController<NsgDataItem>? userSettingsController;
+
+  /// Уникальное поле контроллера пользовательских настроек
+  String userSettingsId;
+
   /// Колонки для вывода в режиме "таблица"
   List<NsgTableColumn>? columns;
 
@@ -66,7 +72,7 @@ class NsgListPage extends StatelessWidget {
   /// Вертикальные и горизонтальные отступы внутри Grid
   double gridYSpacing, gridXSpacing;
 
-  final RefreshController _refreshController = RefreshController();
+  //final RefreshController _refreshController = RefreshController();
 
   /// Контроллер, содержащий кол-во нотификаций
   final NsgDataController? notificationController;
@@ -85,6 +91,8 @@ class NsgListPage extends StatelessWidget {
   final bool showLastAndFavourites;
   NsgListPage(
       {Key? key,
+      this.userSettingsController,
+      this.userSettingsId = '',
       this.widgetBottom,
       this.showLastAndFavourites = false,
       required this.controller,
@@ -117,7 +125,6 @@ class NsgListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _refresherKey = GlobalKey();
     if (controller.lateInit) {
       controller.requestItems();
     }
@@ -188,13 +195,7 @@ class NsgListPage extends StatelessWidget {
                           (state) => Container(
                               key: GlobalKey(),
                               padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
-                              child: SmartRefresher(
-                                key: _refresherKey,
-                                enablePullDown: true,
-                                controller: _refreshController,
-                                onRefresh: _onRefresh,
-                                child: _wrapTabs(child: _content()),
-                              )),
+                              child: _wrapTabs(child: _content())),
                           onLoading: const NsgProgressBar(),
                           onError: (text) => NsgErrorPage(text: text)),
                     ),
@@ -267,7 +268,8 @@ class NsgListPage extends StatelessWidget {
   }
 
   int _crossAxisCount() {
-    double screenWidth = Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
+    double screenWidth =
+        Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
     return screenWidth ~/ gridCellMinWidth;
   }
 
@@ -277,7 +279,10 @@ class NsgListPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: ListView(
           children: [
-            FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
+            FadeIn(
+                duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed),
+                curve: Curves.easeIn,
+                child: Column(children: _showItems())),
           ],
         ),
       );
@@ -297,6 +302,8 @@ class NsgListPage extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: NsgTable(
+          userSettingsController: userSettingsController,
+          userSettingsId: userSettingsId,
           removeVerticalScrollIfNotNeeded: false,
           headerColor: ControlOptions.instance.colorMain,
           columns: columns!,
@@ -314,13 +321,13 @@ class NsgListPage extends StatelessWidget {
       return const Text('Несуществующий тип отображения NsgListPage');
     }
   }
-
+/*
   void _onRefresh() async {
     // monitor network fetch
     await Future.delayed(const Duration(milliseconds: 100));
     controller.refreshData();
     _refreshController.refreshCompleted();
-  }
+  }*/
 
   List<Widget> _showItems() {
     List<Widget> list = [];
@@ -335,7 +342,9 @@ class NsgListPage extends StatelessWidget {
       ));
     } else {
       for (var element in controller.items) {
-        list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
+        list.add(InkWell(
+            onTap: () => _elementTap(element),
+            child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
       }
     }
     return list;
