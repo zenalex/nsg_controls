@@ -89,24 +89,17 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                     children: [
                       if (widget.radio == true)
                         Icon(_boxValue == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
-                            color: _boxValue == true
-                                ? ControlOptions.instance.colorMainDark
-                                : ControlOptions.instance.colorMainDark)
+                            color: _boxValue == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark)
                       else
                         Icon(_boxValue == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                            color: _boxValue == true
-                                ? ControlOptions.instance.colorMainDark
-                                : ControlOptions.instance.colorMainDark),
+                            color: _boxValue == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark),
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
                           widget.label,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              height: 1,
-                              color: ControlOptions.instance.colorText,
-                              fontSize: ControlOptions.instance.sizeM),
+                          style: TextStyle(height: 1, color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
                         ),
                       )
                     ],
