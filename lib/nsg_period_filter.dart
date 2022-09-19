@@ -59,7 +59,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   void showPopup(BuildContext context, Function(NsgPeriod date) onClose) {
     Get.dialog(
         NsgPopUp(
-            height: 370,
+            height: 400,
             title: 'Выберите период',
             getContent: () => [
                   NsgPeriodFilterContent(
