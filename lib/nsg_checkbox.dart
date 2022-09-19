@@ -6,7 +6,7 @@ import 'package:nsg_controls/nsg_control_options.dart';
 class NsgCheckBox extends StatefulWidget {
   final String label;
   final bool? disabled;
-  final bool? radio;
+  final bool radio;
   final bool value;
   final double? height;
   final double? width;
@@ -25,7 +25,7 @@ class NsgCheckBox extends StatefulWidget {
       this.validateText = '',
       required this.label,
       this.disabled,
-      this.radio,
+      this.radio = false,
       required this.value,
       this.height = 44,
       this.width,
@@ -71,9 +71,13 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                     )),
               InkWell(
                 onTap: () {
-                  _boxValue = !_boxValue;
-                  widget.onPressed(_boxValue);
-                  if (widget.toggleInside) setState(() {});
+                  if (!widget.radio) {
+                    _boxValue = !_boxValue;
+                    widget.onPressed(_boxValue);
+                    if (widget.toggleInside) setState(() {});
+                  } else {
+                    widget.onPressed(_boxValue);
+                  }
                 },
                 hoverColor: ControlOptions.instance.colorMain.withOpacity(0.1),
                 splashColor: ControlOptions.instance.colorMain.withOpacity(0.2),

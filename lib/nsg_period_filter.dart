@@ -308,6 +308,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 children: [
                                   Expanded(
                                     child: NsgCheckBox(
+                                        key: GlobalKey(),
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
@@ -321,6 +322,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   ),
                                   Expanded(
                                     child: NsgCheckBox(
+                                        key: GlobalKey(),
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
@@ -339,6 +341,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 children: [
                                   Expanded(
                                     child: NsgCheckBox(
+                                        key: GlobalKey(),
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
@@ -352,6 +355,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   ),
                                   Expanded(
                                     child: NsgCheckBox(
+                                        key: GlobalKey(),
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
@@ -370,6 +374,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 children: [
                                   Expanded(
                                     child: NsgCheckBox(
+                                        key: GlobalKey(),
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
@@ -409,6 +414,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                                   NsgCheckBox(
+                                      key: GlobalKey(),
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),
                                       radio: true,
