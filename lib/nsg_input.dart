@@ -278,6 +278,9 @@ class _NsgInputState extends State<NsgInput> {
                   FocusScope.of(context).requestFocus(focus);
                 });
                 textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+                if (widget.onEditingComplete != null) {
+                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                }
                 // setState(() {});
               },
               icon: Icons.close_outlined),
