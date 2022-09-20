@@ -10,7 +10,7 @@ class NsgPeriodFilter extends StatefulWidget {
   final NsgDataController controller;
   final EdgeInsets margin;
   final EdgeInsets padding;
-  final String label;
+  final String? label;
   final bool disabled;
   final double? width;
   final TextAlign textAlign;
@@ -104,7 +104,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                     SizedBox(
                       height: 13,
                       child: Text(
-                        widget.disabled == false ? widget.label : '🔒 ${widget.label}',
+                        widget.disabled == false ? widget.label! : '🔒 ${widget.label}',
                         textAlign: widget.textAlign,
                         style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
                       ),

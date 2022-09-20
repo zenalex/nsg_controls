@@ -27,6 +27,7 @@ class NsgTable extends StatefulWidget {
       this.cellFixedLines,
       this.showTotals = false,
       this.columns = const [],
+      this.periodFilterLabel = "Фильтр по периоду",
       this.showBoolIconsWithMonochromeColors = false,
       this.selectCellOnHover = false,
       this.headerBackColor,
@@ -45,6 +46,9 @@ class NsgTable extends StatefulWidget {
       this.userSettingsController,
       this.userSettingsId = ''})
       : super(key: key);
+
+  /// Текст лейбла NsgPeriodFilter
+  final String? periodFilterLabel;
 
   /// Убираем отступы справа если контент поместился без вертикального скролла
   final bool removeVerticalScrollIfNotNeeded;
@@ -1217,7 +1221,7 @@ class _NsgTableState extends State<NsgTable> {
                 //showCompact: isPeriodFilterOpen,
                 key: GlobalKey(),
                 margin: EdgeInsets.zero,
-                label: "Фильтр по периоду",
+                label: widget.periodFilterLabel,
                 controller: widget.controller,
               ),
             ),
