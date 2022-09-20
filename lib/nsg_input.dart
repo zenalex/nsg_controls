@@ -451,7 +451,8 @@ class _NsgInputState extends State<NsgInput> {
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
           if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-          setState(() {});
+          //TODO: эксперимент. Нужен ли здесь setState?
+          //setState(() {});
         };
         Get.toNamed(widget.selectionForm);
       }
