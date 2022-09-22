@@ -108,10 +108,7 @@ class NsgButton extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: <Color>[
-                      ControlOptions.instance.colorMainText.withOpacity(0.0),
-                      ControlOptions.instance.colorMainText.withOpacity(0.3)
-                    ],
+                    colors: <Color>[ControlOptions.instance.colorMainText.withOpacity(0.0), ControlOptions.instance.colorMainText.withOpacity(0.3)],
                   ),
                   borderRadius: BorderRadius.circular(25),
                 ),
@@ -170,18 +167,16 @@ class NsgButton extends StatelessWidget {
       // Кнопка обычная
       return Container(
           margin: margin,
-          constraints: const BoxConstraints(minHeight: 38),
+          constraints: const BoxConstraints(minHeight: 38, maxWidth: 800),
           width: width ?? double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-              boxShadow: <BoxShadow>[
-                shadow ??
-                    BoxShadow(
-                      color: ControlOptions.instance.colorMain.withOpacity(0.2),
-                      blurRadius: 2,
-                      offset: const Offset(0, 2),
-                    )
-              ]),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius), boxShadow: <BoxShadow>[
+            shadow ??
+                BoxShadow(
+                  color: ControlOptions.instance.colorMain.withOpacity(0.2),
+                  blurRadius: 2,
+                  offset: const Offset(0, 2),
+                )
+          ]),
           child: Material(
             borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
             color: disabled == true ? _backColor.withOpacity(0.5) : _backColor,
@@ -191,8 +186,7 @@ class NsgButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (icon != null)
-                    SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorMainText)),
+                  if (icon != null) SizedBox(width: 30, child: Icon(icon, color: color ?? ControlOptions.instance.colorMainText)),
                   if (text != '' && icon != null) const SizedBox(width: 0),
                   Flexible(
                     //fit: FlexFit.loose,
