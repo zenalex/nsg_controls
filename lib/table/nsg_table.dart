@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_controls/nsg_text.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';
 import 'package:nsg_controls/table/nsg_table_editmode.dart';
 import 'package:nsg_controls/widgets/nsg_error_widget.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/services.dart';
 import '../nsg_period_filter.dart';
 import '../nsg_text_filter.dart';
 import '../widgets/nsg_errorpage.dart';
+import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
 import 'nsg_table_menu_button.dart';
@@ -819,17 +821,33 @@ class _NsgTableState extends State<NsgTable> {
                           },
                           onLongPress: () {
                             var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(row) ?? '';
-                            Clipboard.setData(ClipboardData(text: textValue));
-                            Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
-                                icon: Icon(Icons.info, size: 32, color: ControlOptions.instance.colorMainText),
-                                titleText: null,
-                                duration: const Duration(seconds: 3),
-                                maxWidth: 320,
-                                snackPosition: SnackPosition.BOTTOM,
-                                barBlur: 0,
-                                overlayBlur: 0,
-                                colorText: ControlOptions.instance.colorMainText,
-                                backgroundColor: ControlOptions.instance.colorMainDark);
+
+                            Get.dialog(
+                                NsgPopUp(
+                                    hideBackButton: true,
+                                    title: 'Данные ячейки',
+                                    contentTop: Padding(
+                                      padding: const EdgeInsets.all(15),
+                                      child: NsgText(
+                                        textValue,
+                                        type: NsgTextType.textL,
+                                      ),
+                                    ),
+                                    contentBottom: Center(
+                                      child: NsgButton(
+                                        width: 260,
+                                        icon: Icons.copy,
+                                        text: 'Скопировать в буфер',
+                                        onPressed: () {
+                                          Clipboard.setData(ClipboardData(text: textValue));
+                                          nsgSnackbar(text: 'Данные ячейки скопированы в буфер');
+                                        },
+                                      ),
+                                    ),
+                                    onConfirm: () {
+                                      Get.back();
+                                    }),
+                                barrierDismissible: false);
                           },
                           onHover: (b) {
                             /// Раскрашиваем строку в цет при наведении на неё - OnHover

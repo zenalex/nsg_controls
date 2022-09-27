@@ -11,6 +11,8 @@ class NsgTextType {
   static NsgTextType h1 = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.w500));
   static NsgTextType h2 = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.w500));
   static NsgTextType h3 = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500));
+  static NsgTextType textXL = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.normal));
+  static NsgTextType textL = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.normal));
   static NsgTextType text = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.normal));
   static NsgTextType textS = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeS, fontWeight: FontWeight.normal));
   static NsgTextType textXS = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXS, fontWeight: FontWeight.normal));
@@ -65,12 +67,19 @@ class NsgText extends StatelessWidget {
         child: backColor == null
             ? Padding(
                 padding: margin,
-                child: Text(
-                  text,
-                  textAlign: textAlign,
-                  style: mergedStyle,
-                  maxLines: maxLines,
-                  overflow: overflow,
+                child: Theme(
+                  data: ThemeData(
+                      textSelectionTheme: TextSelectionThemeData(
+                    selectionColor: ControlOptions.instance.colorMain.withOpacity(0.3),
+                  )),
+                  child: SelectableText(
+                    text,
+                    textAlign: textAlign,
+                    style: mergedStyle,
+                    maxLines: maxLines,
+
+                    //overflow: overflow,
+                  ),
                 ),
               )
             : Container(
