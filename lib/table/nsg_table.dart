@@ -1322,11 +1322,12 @@ class _NsgTableState extends State<NsgTable> {
                                   style: TextStyle(
                                       color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500),
                                 ),
-                                Text(
-                                  column.totalSum.toString(),
-                                  style: TextStyle(
-                                      color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500),
-                                )
+                                if (column.totalSum > 0)
+                                  Text(
+                                    column.totalSum.toString(),
+                                    style: TextStyle(
+                                        color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500),
+                                  )
                               ],
                             )
                           : SizedBox(
