@@ -7,6 +7,7 @@ import '../nsg_control_options.dart';
 /// Виджет строки таблицы
 
 class NsgTableRow extends StatefulWidget {
+  final double? rowFixedHeight;
   final List<Widget> tableRow;
   final NsgDataItem dataItem;
   final NsgDataController controller;
@@ -14,7 +15,13 @@ class NsgTableRow extends StatefulWidget {
   final Function(NsgTableRowState) rowStateCloseOthers;
 
   const NsgTableRow(
-      {Key? key, required this.tableRow, required this.dataItem, required this.controller, required this.rowStateList, required this.rowStateCloseOthers})
+      {Key? key,
+      this.rowFixedHeight,
+      required this.tableRow,
+      required this.dataItem,
+      required this.controller,
+      required this.rowStateList,
+      required this.rowStateCloseOthers})
       : super(key: key);
 
   @override
@@ -47,7 +54,7 @@ class NsgTableRowState extends State<NsgTableRow> {
   @override
   Widget build(BuildContext context) {
     isFavorite = widget.controller.favorites.contains(widget.dataItem);
-    return IntrinsicHeight(
+    return intrinsicHeight(
         child: GestureDetector(
             onHorizontalDragEnd: (a) {
               if (_opened) {
@@ -101,8 +108,19 @@ class NsgTableRowState extends State<NsgTableRow> {
                 AnimatedContainer(
                     transform: Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, _translateX, 0, 0, 1),
                     duration: const Duration(milliseconds: 100),
-                    child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: widget.tableRow)),
+                    child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
+                        children: widget.tableRow)),
               ],
             )));
+  }
+
+  Widget intrinsicHeight({required Widget child}) {
+    if (widget.rowFixedHeight == null) {
+      return IntrinsicHeight(child: child);
+    } else {
+      return child;
+    }
   }
 }
