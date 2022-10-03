@@ -1034,6 +1034,10 @@ class _NsgTableState extends State<NsgTable> {
                     icon: isSearchStringFilterOpen ? Icons.filter_alt : NsgTableMenuButtonType.filterText.icon,
                     onPressed: () {
                       isSearchStringFilterOpen = !isSearchStringFilterOpen;
+                      widget.controller.controllerFilter.isOpen = isSearchStringFilterOpen;
+                      if (widget.controller.controllerFilter.searchString.isNotEmpty) {
+                        widget.controller.refreshData();
+                      }
                       setState(() {});
                     },
                   ),
