@@ -25,8 +25,8 @@ class NsgPeriodFilter extends StatefulWidget {
       this.width,
       this.textAlign = TextAlign.center,
       // this.onConfirm,
-      this.margin = const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      this.padding = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       this.showCompact = false,
       this.isOpen,
       this.period})
@@ -39,6 +39,7 @@ class NsgPeriodFilter extends StatefulWidget {
 NsgPeriod selectedDate = NsgPeriod();
 
 class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
+  double devicePixelRatio = 1;
   var isOpen = false;
 
   late NsgPeriod period;
@@ -84,6 +85,8 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
 
   @override
   Widget build(BuildContext context) {
+    devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+
     /// Тело виджета
     return SizedBox(
       width: widget.width,
@@ -96,41 +99,35 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
       child: !widget.showCompact
           ? Padding(
               padding: widget.margin,
-              child: Container(
-                padding: const EdgeInsets.only(top: 3.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(
-                      height: 13,
-                      child: Text(
-                        widget.disabled == false ? widget.label! : '🔒 ${widget.label}',
-                        textAlign: widget.textAlign,
-                        style: TextStyle(fontSize: 12, color: ControlOptions.instance.colorMainDark),
-                      ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    height: 12 * devicePixelRatio,
+                    child: Text(
+                      widget.disabled == false ? widget.label! : '🔒 ${widget.label}',
+                      textAlign: widget.textAlign,
+                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                     ),
-                    Container(
-                        margin: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
-                        padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-                        child: Text(
-                          _showPeriod(),
-                          textAlign: widget.textAlign,
-                          style: const TextStyle(fontSize: 16),
-                        )),
-                  ],
-                ),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                      child: Text(
+                        _showPeriod(),
+                        textAlign: widget.textAlign,
+                        style: TextStyle(fontSize: ControlOptions.instance.sizeM),
+                      )),
+                ],
               ),
             )
           : Padding(
               padding: widget.margin,
-              child: Container(
-                  margin: const EdgeInsets.fromLTRB(0, 3, 0, 3),
-                  child: Text(
-                    'Период: ${_showPeriod()}'.toUpperCase(),
-                    textAlign: widget.textAlign,
-                    style: const TextStyle(fontSize: 10),
-                  )),
+              child: Text(
+                'Период: ${_showPeriod()}'.toUpperCase(),
+                textAlign: widget.textAlign,
+                style: const TextStyle(fontSize: 10),
+              ),
             ),
     );
   }

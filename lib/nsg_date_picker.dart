@@ -59,6 +59,7 @@ class NsgDatePicker extends StatefulWidget {
 
 class _NsgDatePickerState extends State<NsgDatePicker> {
   DateTime _initTime = DateTime.now();
+  late double devicePixelRatio;
 
   @override
   void initState() {
@@ -68,6 +69,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
 
   @override
   Widget build(BuildContext context) {
+    devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
     _inkWellWrapper({required Widget child}) {
       if (widget.disabled == true) {
         return child;
@@ -89,48 +91,45 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
     return _inkWellWrapper(
       child: Padding(
         padding: widget.margin,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 5.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (widget.simple != true)
-                SizedBox(
-                  height: 14,
-                  child: Text(
-                    widget.label!,
-                    textAlign: widget.textAlign,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 11, color: ControlOptions.instance.colorMainDark),
-                  ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (widget.simple != true)
+              SizedBox(
+                height: 12 * devicePixelRatio,
+                child: Text(
+                  widget.label!,
+                  textAlign: widget.textAlign,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                 ),
-              Container(
-                  //constraints: const BoxConstraints(minHeight: 40),
-                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (widget.disabled == true)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 3.0),
-                          child: Icon(
-                            Icons.lock,
-                            size: 12,
-                            color: ControlOptions.instance.colorMain,
-                          ),
+              ),
+            Container(
+                //constraints: const BoxConstraints(minHeight: 40),
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (widget.disabled == true)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 3.0),
+                        child: Icon(
+                          Icons.lock,
+                          size: 12,
+                          color: ControlOptions.instance.colorMain,
                         ),
-                      Text(
-                        NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
-                        textAlign: widget.textAlign,
-                        style: const TextStyle(fontSize: 16),
                       ),
-                    ],
-                  )),
-            ],
-          ),
+                    Text(
+                      NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
+                      textAlign: widget.textAlign,
+                      style: TextStyle(fontSize: ControlOptions.instance.sizeM),
+                    ),
+                  ],
+                )),
+          ],
         ),
       ),
     );

@@ -17,9 +17,10 @@ class NsgDialogSaveOrCancel {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'Вы можете сохранить изменения ',
                       textAlign: TextAlign.center,
+                      style: TextStyle(color: ControlOptions.instance.colorText),
                     ),
                     Icon(Icons.check, color: ControlOptions.instance.colorGrey)
                   ],
@@ -30,7 +31,11 @@ class NsgDialogSaveOrCancel {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('продолжить редактирование ', textAlign: TextAlign.center),
+                    Text(
+                      'продолжить редактирование ',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: ControlOptions.instance.colorText),
+                    ),
                     Icon(Icons.arrow_back_ios_new_outlined, color: ControlOptions.instance.colorGrey)
                   ],
                 ),
@@ -40,7 +45,11 @@ class NsgDialogSaveOrCancel {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('или выйти назад без сохранения ', textAlign: TextAlign.center),
+                    Text(
+                      'или выйти назад без сохранения ',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: ControlOptions.instance.colorText),
+                    ),
                     Icon(Icons.close, color: ControlOptions.instance.colorGrey)
                   ],
                 ),

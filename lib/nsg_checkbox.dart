@@ -67,7 +67,7 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                       widget.validateText,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 10, color: ControlOptions.instance.colorError),
+                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
                     )),
               InkWell(
                 onTap: () {

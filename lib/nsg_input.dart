@@ -88,9 +88,9 @@ class NsgInput extends StatefulWidget {
       this.label = '',
       this.imagesList,
       this.disabled = false,
-      this.fontSize = 16,
+      this.fontSize,
       this.borderRadius = 15,
-      this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       this.gesture,
       this.hint,
       this.onChanged,
@@ -147,6 +147,8 @@ class NsgInput extends StatefulWidget {
 }
 
 class _NsgInputState extends State<NsgInput> {
+  late double devicePixelRatio;
+  late double fontSize;
   FocusNode focus = FocusNode();
   late TextInputType? keyboard;
   late NsgInputType inputType;
@@ -162,9 +164,10 @@ class _NsgInputState extends State<NsgInput> {
   @override
   void initState() {
     super.initState();
+    fontSize = widget.fontSize ?? ControlOptions.instance.sizeM;
     focus.addListener(() {
       if (focus.hasFocus) {
-        textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+        setState(() {});
       }
 
       if (!focus.hasFocus && widget.onEditingComplete != null) {
@@ -234,7 +237,8 @@ class _NsgInputState extends State<NsgInput> {
       var sc = widget.selectionController ?? widget.dataItem.defaultController;
       if (sc == null) {
         assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
-        sc = NsgDefaultController(dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType);
+        sc = NsgDefaultController(
+            dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType);
       }
       selectionController = sc;
     }
@@ -251,6 +255,131 @@ class _NsgInputState extends State<NsgInput> {
     focus.dispose();
   }
 
+/* --------------------------------------------------------------------- BUILD -------------------------------------------------------------------- */
+  @override
+  Widget build(BuildContext context) {
+    devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+
+    var fieldValue = widget.dataItem.getFieldValue(widget.fieldName);
+    if (widget.dataItem.isReferenceField(widget.fieldName)) {
+      var refItem = widget.dataItem.getReferentOrNull(widget.fieldName);
+      fieldValue = refItem == null ? '' : refItem.toString();
+    }
+    textController.text = fieldValue.toString();
+    if (inputType == NsgInputType.boolValue) {
+      return _buildBoolWidget(fieldValue);
+    }
+    int? _maxLength;
+    if (widget.dataItem.getField(widget.fieldName) is NsgDataStringField) {
+      _maxLength = (widget.dataItem.getField(widget.fieldName) as NsgDataStringField).maxLength;
+      if (_maxLength == 0) {
+        _maxLength = null;
+      }
+    }
+
+    if (focus.hasFocus) {
+      textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+    }
+
+    return _gestureWrap(
+        Container(
+            margin: widget.margin,
+            child: widget.widget ??
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: 12 * devicePixelRatio,
+                      child: Text(
+                        focus.hasFocus || textController.text != ''
+                            ? widget.required
+                                ? widget.label + ' *'
+                                : widget.label
+                            : '',
+                        style: TextStyle(
+                            fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
+                      ),
+                    ),
+                    Container(
+                      height: 16 * devicePixelRatio,
+                      decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                      child: Stack(
+                        children: [
+                          if (!focus.hasFocus && textController.text == '')
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                widget.label,
+                                style: TextStyle(
+                                    fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                              ),
+                            ),
+                          TextFormField(
+                            controller: textController,
+                            inputFormatters: widget.maskType == NsgInputMaskType.phone
+                                ? [phoneFormatter]
+                                : widget.mask != null
+                                    ? [
+                                        MaskTextInputFormatter(
+                                          initialText: fieldValue.toString(),
+                                          mask: widget.mask,
+                                        )
+                                      ]
+                                    : null,
+                            maxLength: _maxLength,
+                            autofocus: false,
+                            focusNode: focus,
+                            maxLines: widget.maxLines,
+                            minLines: widget.minLines,
+                            keyboardType: keyboard,
+                            cursorColor: ControlOptions.instance.colorText,
+                            decoration: InputDecoration(
+                              prefix: _disabled == false
+                                  ? null
+                                  : Padding(
+                                      padding: const EdgeInsets.only(right: 3.0),
+                                      child: Icon(
+                                        Icons.lock,
+                                        size: 12,
+                                        color: ControlOptions.instance.colorMain,
+                                      ),
+                                    ),
+
+                              counterText: "",
+                              contentPadding: EdgeInsets.fromLTRB(
+                                  0, 5, useSelectionController ? 25 : 25, 5), //  <- you can it to 0.0 for no space
+                              isDense: true,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              labelStyle: TextStyle(
+                                  color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                            ),
+                            onFieldSubmitted: (string) {
+                              if (widget.onEditingComplete != null) {
+                                widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                              }
+                            },
+                            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
+                            readOnly: _disabled,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (widget.validateText != '')
+                      SizedBox(
+                        height: 12 * devicePixelRatio,
+                        child: Text(
+                          widget.validateText,
+                          style: TextStyle(
+                              fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                        ),
+                      ),
+                  ],
+                )),
+        fieldValue.toString() != '');
+  }
+
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
   Widget _gestureWrap(Widget interactiveWidget, bool clearIcon) {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
@@ -264,11 +393,11 @@ class _NsgInputState extends State<NsgInput> {
 
   /// Оборачиваем Stack и добавляем иконку "очистить поле"
   Widget _addClearIcon(Widget child) {
-    return Stack(alignment: Alignment.centerRight, children: [
+    return Stack(alignment: Alignment.topRight, children: [
       child,
       if (_disabled != true)
         Padding(
-          padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+          padding: EdgeInsets.only(top: 12 * devicePixelRatio + 4),
           child: NsgIconButton(
               onPressed: () {
                 widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
@@ -281,149 +410,11 @@ class _NsgInputState extends State<NsgInput> {
                 if (widget.onEditingComplete != null) {
                   widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                 }
-                // setState(() {});
+                setState(() {});
               },
               icon: Icons.close_outlined),
         )
     ]);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var fieldValue = widget.dataItem.getFieldValue(widget.fieldName);
-    if (widget.dataItem.isReferenceField(widget.fieldName)) {
-      var refItem = widget.dataItem.getReferentOrNull(widget.fieldName);
-      fieldValue = refItem == null ? '' : refItem.toString();
-    }
-    textController.text = fieldValue.toString();
-    if (inputType == NsgInputType.boolValue) {
-      return _buildBoolWidget(fieldValue);
-    }
-
-    int? _maxLength;
-    if (widget.dataItem.getField(widget.fieldName) is NsgDataStringField) {
-      _maxLength = (widget.dataItem.getField(widget.fieldName) as NsgDataStringField).maxLength;
-      if (_maxLength == 0) {
-        _maxLength = null;
-      }
-    }
-
-    return _gestureWrap(
-        Container(
-            //height: widget.height,
-            margin: widget.margin,
-            padding: widget.widget == null ? const EdgeInsets.fromLTRB(0, 0, 0, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            /* decoration: BoxDecoration(
-                color: ControlOptions.instance.colorInverted,
-                borderRadius: BorderRadius.circular(widget.borderRadius),
-                border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),*/
-            child: widget.widget ??
-                /*   Focus(
-                    canRequestFocus: false,
-                    //autofocus: true,
-                    onFocusChange: (hasFocus) {
-                      isFocused = hasFocus;
-                      if (widget.onEditingComplete != null) {
-                        if (!hasFocus) {
-                          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                        }
-                      }
-                    },*/
-                Stack(
-                  alignment: Alignment.bottomLeft,
-                  children: [
-                    if (widget.validateText != '')
-                      Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text(
-                            widget.validateText,
-                            style: TextStyle(fontSize: 10, color: ControlOptions.instance.colorError),
-                          )),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 15),
-                        child: TextFormField(
-                          controller: textController,
-                          /*   onTap: () {
-                            print('Widget ${focus.hasFocus}');
-                            if (!focus.hasFocus) {
-                              //print(textController.text.length);
-                              textController.selection =
-                                  TextSelection(baseOffset: 0, extentOffset: textController.text.length);
-                            }
-                          },*/
-                          inputFormatters: widget.maskType == NsgInputMaskType.phone
-                              ? [phoneFormatter]
-                              : widget.mask != null
-                                  ? [
-                                      MaskTextInputFormatter(
-                                        initialText: fieldValue.toString(),
-                                        mask: widget.mask,
-                                      )
-                                    ]
-                                  : null,
-                          maxLength: _maxLength,
-                          autofocus: false,
-                          focusNode: focus,
-                          maxLines: widget.maxLines,
-                          minLines: widget.minLines,
-                          keyboardType: keyboard,
-                          cursorColor: ControlOptions.instance.colorText,
-                          decoration: InputDecoration(
-                            prefix: _disabled == false
-                                ? null
-                                : Padding(
-                                    padding: const EdgeInsets.only(right: 3.0),
-                                    child: Icon(
-                                      Icons.lock,
-                                      size: 12,
-                                      color: ControlOptions.instance.colorMain,
-                                    ),
-                                  ),
-
-                            counterText: "",
-                            labelText: widget.required ? widget.label + ' *' : widget.label,
-                            hintText: widget.hint,
-                            alignLabelWithHint: true,
-                            contentPadding: EdgeInsets.fromLTRB(0, 10, useSelectionController ? 25 : 25, 10), //  <- you can it to 0.0 for no space
-                            isDense: true,
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 2, color: widget.validateText != '' ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain)),
-                            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ControlOptions.instance.colorMainLight)),
-                            labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                          ),
-                          //key: GlobalKey(),
-                          onFieldSubmitted: (string) {
-                            //FocusScope.of(context).nextFocus();
-
-                            if (widget.onEditingComplete != null) {
-                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                            }
-                          },
-                          /*      onEditingComplete: () {
-                            //FocusScope.of(context).nextFocus();
-                            if (widget.onEditingComplete != null) {
-                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                            }
-                          },*/
-                          /* onChanged: (String value) {
-                            if (inputType == NsgInputType.stringValue) {
-                              widget.dataItem.setFieldValue(widget.fieldName, value);
-                            }
-                            if (widget.onChanged != null) {
-                              widget.onChanged!(widget.dataItem);
-                            }
-                          },*/
-                          style: TextStyle(color: ControlOptions.instance.colorText, fontSize: widget.fontSize),
-                          readOnly: _disabled,
-                        ),
-                      ),
-                    ),
-                  ],
-                )),
-        fieldValue.toString() != '');
   }
 
   void _onPressed() {
@@ -461,7 +452,11 @@ class _NsgInputState extends State<NsgInput> {
     } else if (inputType == NsgInputType.enumReference && _disabled != true) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
-      var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
+      var form = NsgSelection(
+          allValues: itemsArray,
+          selectedElement: enumItem,
+          rowWidget: widget.rowWidget,
+          inputType: NsgInputType.enumReference);
       form.selectFromArray(
         widget.label,
         (item) {
