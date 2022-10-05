@@ -343,9 +343,8 @@ class _NsgInputState extends State<NsgInput> {
                                         color: ControlOptions.instance.colorMain,
                                       ),
                                     ),
-
                               counterText: "",
-                              contentPadding: EdgeInsets.fromLTRB(0, 2, useSelectionController ? 25 : 25, 2), //  <- you can it to 0.0 for no space
+                              contentPadding: EdgeInsets.fromLTRB(0, 2, useSelectionController ? 25 : 25, 2),
                               isDense: true,
                               focusedBorder: InputBorder.none,
                               enabledBorder: InputBorder.none,
