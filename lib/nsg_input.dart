@@ -300,7 +300,7 @@ class _NsgInputState extends State<NsgInput> {
                     ),
                     Container(
                       alignment: Alignment.center,
-                      height: 20 * widget.maxLines * textScaleFactor,
+                      height: 20 * (textController.text == '' ? 1 : widget.maxLines) * textScaleFactor,
                       decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                       child: Stack(
                         alignment: Alignment.center,
