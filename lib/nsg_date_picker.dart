@@ -59,7 +59,7 @@ class NsgDatePicker extends StatefulWidget {
 
 class _NsgDatePickerState extends State<NsgDatePicker> {
   DateTime _initTime = DateTime.now();
-  late double devicePixelRatio;
+  late double textScaleFactor;
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    textScaleFactor = MediaQuery.of(context).textScaleFactor;
     _inkWellWrapper({required Widget child}) {
       if (widget.disabled == true) {
         return child;
@@ -96,7 +96,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
           children: [
             if (widget.simple != true)
               SizedBox(
-                height: 12 * devicePixelRatio,
+                height: 12 * textScaleFactor,
                 child: Text(
                   widget.label!,
                   textAlign: widget.textAlign,
@@ -106,10 +106,9 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                 ),
               ),
             Container(
-                //constraints: const BoxConstraints(minHeight: 40),
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                alignment: Alignment.center,
+                height: 20 * textScaleFactor,
                 decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

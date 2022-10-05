@@ -147,7 +147,7 @@ class NsgInput extends StatefulWidget {
 }
 
 class _NsgInputState extends State<NsgInput> {
-  late double devicePixelRatio;
+  late double textScaleFactor;
   late double fontSize;
   FocusNode focus = FocusNode();
   late TextInputType? keyboard;
@@ -237,8 +237,7 @@ class _NsgInputState extends State<NsgInput> {
       var sc = widget.selectionController ?? widget.dataItem.defaultController;
       if (sc == null) {
         assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
-        sc = NsgDefaultController(
-            dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType);
+        sc = NsgDefaultController(dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType);
       }
       selectionController = sc;
     }
@@ -258,7 +257,7 @@ class _NsgInputState extends State<NsgInput> {
 /* --------------------------------------------------------------------- BUILD -------------------------------------------------------------------- */
   @override
   Widget build(BuildContext context) {
-    devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    textScaleFactor = MediaQuery.of(context).textScaleFactor;
 
     var fieldValue = widget.dataItem.getFieldValue(widget.fieldName);
     if (widget.dataItem.isReferenceField(widget.fieldName)) {
@@ -289,30 +288,29 @@ class _NsgInputState extends State<NsgInput> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(
-                      height: 12 * devicePixelRatio,
+                      height: 12 * textScaleFactor,
                       child: Text(
                         focus.hasFocus || textController.text != ''
                             ? widget.required
                                 ? widget.label + ' *'
                                 : widget.label
                             : '',
-                        style: TextStyle(
-                            fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
+                        style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                       ),
                     ),
                     Container(
-                      height: 16 * devicePixelRatio,
-                      decoration: BoxDecoration(
-                          border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                      alignment: Alignment.center,
+                      height: 20 * textScaleFactor,
+                      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                       child: Stack(
+                        alignment: Alignment.center,
                         children: [
                           if (!focus.hasFocus && textController.text == '')
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 widget.label,
-                                style: TextStyle(
-                                    fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
                               ),
                             ),
                           TextFormField(
@@ -347,13 +345,11 @@ class _NsgInputState extends State<NsgInput> {
                                     ),
 
                               counterText: "",
-                              contentPadding: EdgeInsets.fromLTRB(
-                                  0, 5, useSelectionController ? 25 : 25, 5), //  <- you can it to 0.0 for no space
+                              contentPadding: EdgeInsets.fromLTRB(0, 2, useSelectionController ? 25 : 25, 2), //  <- you can it to 0.0 for no space
                               isDense: true,
                               focusedBorder: InputBorder.none,
                               enabledBorder: InputBorder.none,
-                              labelStyle: TextStyle(
-                                  color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                              labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                             ),
                             onFieldSubmitted: (string) {
                               if (widget.onEditingComplete != null) {
@@ -368,11 +364,10 @@ class _NsgInputState extends State<NsgInput> {
                     ),
                     if (widget.validateText != '')
                       SizedBox(
-                        height: 12 * devicePixelRatio,
+                        height: 12 * textScaleFactor,
                         child: Text(
                           widget.validateText,
-                          style: TextStyle(
-                              fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                          style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
                         ),
                       ),
                   ],
@@ -397,7 +392,7 @@ class _NsgInputState extends State<NsgInput> {
       child,
       if (_disabled != true)
         Padding(
-          padding: EdgeInsets.only(top: 12 * devicePixelRatio + 4),
+          padding: EdgeInsets.only(top: 12 * textScaleFactor + 4),
           child: NsgIconButton(
               onPressed: () {
                 widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
@@ -452,11 +447,7 @@ class _NsgInputState extends State<NsgInput> {
     } else if (inputType == NsgInputType.enumReference && _disabled != true) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
-      var form = NsgSelection(
-          allValues: itemsArray,
-          selectedElement: enumItem,
-          rowWidget: widget.rowWidget,
-          inputType: NsgInputType.enumReference);
+      var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
       form.selectFromArray(
         widget.label,
         (item) {

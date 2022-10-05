@@ -60,6 +60,7 @@ class NsgTimePicker extends StatefulWidget {
 }
 
 class _NsgTimePickerState extends State<NsgTimePicker> {
+  late double textScaleFactor;
   Duration _initialTime = const Duration();
 
   @override
@@ -70,6 +71,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
 
   @override
   Widget build(BuildContext context) {
+    textScaleFactor = MediaQuery.of(context).textScaleFactor;
     int hours = _initialTime.inHours;
     int minutes = _initialTime.inMinutes - hours * 60;
     String minutesString;
@@ -107,47 +109,44 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
     return _inkWellWrapper(
       child: Padding(
         padding: widget.margin,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 5.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (widget.simple != true)
-                SizedBox(
-                  height: 14,
-                  child: Text(
-                    widget.label!,
-                    textAlign: widget.textAlign,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 11, color: ControlOptions.instance.colorMainDark),
-                  ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (widget.simple != true)
+              SizedBox(
+                height: 12 * textScaleFactor,
+                child: Text(
+                  widget.label!,
+                  textAlign: widget.textAlign,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                 ),
-              Container(
-                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 2, color: ControlOptions.instance.colorMain))),
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (widget.disabled == true)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5.0),
-                          child: Icon(
-                            Icons.lock,
-                            size: 12,
-                            color: ControlOptions.instance.colorMain,
-                          ),
+              ),
+            Container(
+                alignment: Alignment.center,
+                height: 20 * textScaleFactor,
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (widget.disabled == true)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: Icon(
+                          Icons.lock,
+                          size: 12,
+                          color: ControlOptions.instance.colorMain,
                         ),
-                      Text(
-                        "$hours:$minutesString",
-                        textAlign: widget.textAlign,
-                        style: const TextStyle(fontSize: 16),
                       ),
-                    ],
-                  )),
-            ],
-          ),
+                    Text(
+                      "$hours:$minutesString",
+                      textAlign: widget.textAlign,
+                      style: TextStyle(fontSize: ControlOptions.instance.sizeM),
+                    ),
+                  ],
+                )),
+          ],
         ),
       ),
     );
