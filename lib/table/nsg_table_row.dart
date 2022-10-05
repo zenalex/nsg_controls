@@ -7,6 +7,7 @@ import '../nsg_control_options.dart';
 /// Виджет строки таблицы
 
 class NsgTableRow extends StatefulWidget {
+  final bool slideEnable;
   final double? rowFixedHeight;
   final List<Widget> tableRow;
   final NsgDataItem dataItem;
@@ -16,6 +17,7 @@ class NsgTableRow extends StatefulWidget {
 
   const NsgTableRow(
       {Key? key,
+      this.slideEnable = false,
       this.rowFixedHeight,
       required this.tableRow,
       required this.dataItem,
@@ -68,24 +70,26 @@ class NsgTableRowState extends State<NsgTableRow> {
               }
               setState(() {});
             },
-            onHorizontalDragUpdate: (details) {
-              widget.rowStateCloseOthers(this);
-              _translateX += details.delta.dx;
-              setState(() {});
-              if (_translateX < 40 && _opened) {
-                _opened = false;
-              }
-              if (_translateX > 39) {
-                // widget.element.seen = true;
-                //techNotificationController.markAsRead(widget.element);
-                _translateX = 40;
-                _opened = true;
-                setState(() {});
-              }
-              if (_translateX < 0) {
-                _translateX = 0;
-              }
-            },
+            onHorizontalDragUpdate: !widget.slideEnable
+                ? (details) {}
+                : (details) {
+                    widget.rowStateCloseOthers(this);
+                    _translateX += details.delta.dx;
+                    setState(() {});
+                    if (_translateX < 40 && _opened) {
+                      _opened = false;
+                    }
+                    if (_translateX > 39) {
+                      // widget.element.seen = true;
+                      //techNotificationController.markAsRead(widget.element);
+                      _translateX = 40;
+                      _opened = true;
+                      setState(() {});
+                    }
+                    if (_translateX < 0) {
+                      _translateX = 0;
+                    }
+                  },
             child: Stack(
               alignment: Alignment.topLeft,
               children: [

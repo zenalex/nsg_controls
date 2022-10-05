@@ -51,7 +51,7 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
   Widget build(BuildContext context) {
     //if (!widget.toggleInside) boxValue = widget.value;
 
-    return Container(
+    return SizedBox(
       width: widget.width ?? double.infinity,
       child: Material(
         color: Colors.transparent,
