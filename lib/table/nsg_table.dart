@@ -942,7 +942,7 @@ class _NsgTableState extends State<NsgTable> {
 
             /* --------------------------- Добавлени виджета строки в тело таблицы ------------------------------------------------------------------- */
             var currentRow = NsgTableRow(
-                slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites) ? true : false,
+                slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites) && !horizontalScrollEnabled ? true : false,
                 rowFixedHeight: widget.rowFixedHeight,
                 controller: widget.controller,
                 dataItem: row,
