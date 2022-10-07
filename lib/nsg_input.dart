@@ -301,7 +301,7 @@ class _NsgInputState extends State<NsgInput> {
                     Container(
                       padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                       alignment: Alignment.center,
-                      height: widget.maxLines > 1 ? null : 20 * textScaleFactor,
+                      height: widget.maxLines > 1 ? null : 24 * textScaleFactor,
                       decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                       child: Stack(
                         alignment: Alignment.center,
@@ -345,7 +345,7 @@ class _NsgInputState extends State<NsgInput> {
                                       ),
                                     ),
                               counterText: "",
-                              contentPadding: EdgeInsets.fromLTRB(0, 2, useSelectionController ? 25 : 25, 2),
+                              contentPadding: EdgeInsets.fromLTRB(0, 4, useSelectionController ? 25 : 25, 4),
                               isDense: true,
                               focusedBorder: InputBorder.none,
                               enabledBorder: InputBorder.none,
