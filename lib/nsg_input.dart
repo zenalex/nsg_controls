@@ -299,8 +299,9 @@ class _NsgInputState extends State<NsgInput> {
                       ),
                     ),
                     Container(
+                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                       alignment: Alignment.center,
-                      height: 20 * (textController.text == '' ? 1 : widget.maxLines) * textScaleFactor,
+                      height: widget.maxLines > 1 ? null : 20 * textScaleFactor,
                       decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                       child: Stack(
                         alignment: Alignment.center,
