@@ -125,14 +125,15 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
               ),
             Container(
                 alignment: Alignment.center,
-                height: 20 * textScaleFactor,
+                padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
+                height: 24 * textScaleFactor - 1,
                 decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (widget.disabled == true)
                       Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
+                        padding: const EdgeInsets.only(right: 3.0),
                         child: Icon(
                           Icons.lock,
                           size: 12,
