@@ -474,15 +474,20 @@ class _NsgInputState extends State<NsgInput> {
             child: Row(
               children: [
                 Expanded(child: Text(widget.label)),
-                CupertinoSwitch(
-                    value: fieldValue,
-                    activeColor: ControlOptions.instance.colorMain,
-                    onChanged: (value) {
-                      widget.dataItem.setFieldValue(widget.fieldName, !fieldValue);
-                      if (widget.updateController != null) {
-                        widget.updateController!.update();
-                      }
-                    })
+                StatefulBuilder(
+                  builder: ((context, setState) => CupertinoSwitch(
+                      value: fieldValue,
+                      activeColor: ControlOptions.instance.colorMain,
+                      onChanged: (value) {
+                        fieldValue = !fieldValue;
+                        widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                        if (widget.updateController != null) {
+                          widget.updateController!.update();
+                        } else {
+                          setState(() {});
+                        }
+                      })),
+                )
               ],
             )));
   }

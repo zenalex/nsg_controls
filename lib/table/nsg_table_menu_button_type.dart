@@ -35,4 +35,8 @@ enum NsgTableMenuButtonType {
     recent,
     favorites
   ];
+
+  static allExceptSelected(List<NsgTableMenuButtonType> excepted) {
+    return allValues.where((element) => !excepted.contains(element)).toList();
+  }
 }
