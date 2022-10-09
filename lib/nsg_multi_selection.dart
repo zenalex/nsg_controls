@@ -31,10 +31,7 @@ class NsgMultiSelection {
                   child: Center(
                       child: Text(
                     element.toString(),
-                    style: TextStyle(
-                        color: element == selectedElement
-                            ? ControlOptions.instance.colorInverted
-                            : ControlOptions.instance.colorText),
+                    style: TextStyle(color: element == selectedElement ? ControlOptions.instance.colorInverted : ControlOptions.instance.colorText),
                   ))),
             )));
       }
@@ -57,9 +54,7 @@ class NsgMultiSelection {
                 children: [
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      color: element == selectedElement
-                          ? ControlOptions.instance.colorMain
-                          : Colors.transparent,
+                      color: element == selectedElement ? ControlOptions.instance.colorMain : Colors.transparent,
                       height: 40,
                       child: Center(
                           child: Row(
@@ -67,13 +62,11 @@ class NsgMultiSelection {
                         children: [
                           Text(
                             element.toString(),
-                            style: TextStyle(
-                                color: ControlOptions.instance.colorText),
+                            style: TextStyle(color: ControlOptions.instance.colorText),
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                            child: Icon(Icons.clear,
-                                color: ControlOptions.instance.colorMain),
+                            child: Icon(Icons.clear, color: ControlOptions.instance.colorMain),
                           )
                         ],
                       ))),
@@ -85,12 +78,11 @@ class NsgMultiSelection {
     return list;
   }
 
-  void selectFromArray(
-      String title, String title2, Function(List<NsgDataItem>) onSelected) {
+  void selectFromArray(String title, String title2, Function(List<NsgDataItem>) onSelected) {
     allItems = [];
-    allItems.addAll(controller.dataItemList
-        .where((element) => !ignoredItems.contains(element)));
+    allItems.addAll(controller.dataItemList.where((element) => !ignoredItems.contains(element)));
     selectedElement = controller.selectedItem;
+    controller.refreshData();
     Get.dialog(
         controller.obxBase((state) => NsgPopUp(
             title: title,
