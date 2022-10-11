@@ -18,7 +18,6 @@ import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
 import 'nsg_table_menu_button.dart';
-import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 
 /// Виджет отображения таблицы
 class NsgTable extends StatefulWidget {
