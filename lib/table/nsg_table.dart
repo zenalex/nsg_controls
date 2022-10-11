@@ -448,7 +448,7 @@ class _NsgTableState extends State<NsgTable> {
 
   Widget _rowcolumn({required List<Widget> children}) {
     if (Get.width > 400) {
-      return Row(children: children);
+      return Row(crossAxisAlignment: CrossAxisAlignment.end, children: children);
     } else {
       return Column(children: children);
     }
