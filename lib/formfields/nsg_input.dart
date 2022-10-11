@@ -293,7 +293,7 @@ class _NsgInputState extends State<NsgInput> {
                         ? widget.required
                             ? widget.label + ' *'
                             : widget.label
-                        : '',
+                        : ' ',
                     style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                   ),
                 ),
@@ -335,6 +335,7 @@ class _NsgInputState extends State<NsgInput> {
                           keyboardType: keyboard,
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
+                            //label: SizedBox(),
                             prefix: _disabled == false
                                 ? null
                                 : Padding(
@@ -348,9 +349,12 @@ class _NsgInputState extends State<NsgInput> {
                             counterText: "",
                             contentPadding: EdgeInsets.fromLTRB(0, 4, useSelectionController ? 25 : 25, 4),
                             isDense: true,
+                            border: InputBorder.none,
                             focusedBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,
-                            labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            //labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                           ),
                           onFieldSubmitted: (string) {
                             if (widget.onEditingComplete != null) {
