@@ -280,103 +280,104 @@ class _NsgInputState extends State<NsgInput> {
       textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
     }
 
-    return _gestureWrap(
-        Container(
-            margin: widget.margin,
-            child: widget.widget ??
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(
-                      height: 12 * textScaleFactor,
-                      child: Text(
-                        focus.hasFocus || textController.text != ''
-                            ? widget.required
-                                ? widget.label + ' *'
-                                : widget.label
-                            : '',
-                        style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
+    return Container(
+        margin: widget.margin,
+        child: widget.widget ??
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  //height: 12 * textScaleFactor,
+                  child: Text(
+                    focus.hasFocus || textController.text != ''
+                        ? widget.required
+                            ? widget.label + ' *'
+                            : widget.label
+                        : '',
+                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
+                  ),
+                ),
+                _gestureWrap(
+                  clearIcon: fieldValue.toString() != '',
+                  interactiveWidget: Container(
+                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
+                    alignment: Alignment.center,
+                    //height: widget.maxLines > 1 ? null : 24 * textScaleFactor,
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                    child: Stack(
                       alignment: Alignment.center,
-                      height: widget.maxLines > 1 ? null : 24 * textScaleFactor,
-                      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          if (!focus.hasFocus && textController.text == '')
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                widget.label,
-                                style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
-                              ),
+                      children: [
+                        if (!focus.hasFocus && textController.text == '')
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              widget.label,
+                              style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
                             ),
-                          TextFormField(
-                            controller: textController,
-                            inputFormatters: widget.maskType == NsgInputMaskType.phone
-                                ? [phoneFormatter]
-                                : widget.mask != null
-                                    ? [
-                                        MaskTextInputFormatter(
-                                          initialText: fieldValue.toString(),
-                                          mask: widget.mask,
-                                        )
-                                      ]
-                                    : null,
-                            maxLength: _maxLength,
-                            autofocus: false,
-                            focusNode: focus,
-                            maxLines: widget.maxLines,
-                            minLines: widget.minLines,
-                            keyboardType: keyboard,
-                            cursorColor: ControlOptions.instance.colorText,
-                            decoration: InputDecoration(
-                              prefix: _disabled == false
-                                  ? null
-                                  : Padding(
-                                      padding: const EdgeInsets.only(right: 3.0),
-                                      child: Icon(
-                                        Icons.lock,
-                                        size: 12,
-                                        color: ControlOptions.instance.colorMain,
-                                      ),
-                                    ),
-                              counterText: "",
-                              contentPadding: EdgeInsets.fromLTRB(0, 4, useSelectionController ? 25 : 25, 4),
-                              isDense: true,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                            ),
-                            onFieldSubmitted: (string) {
-                              if (widget.onEditingComplete != null) {
-                                widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                              }
-                            },
-                            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
-                            readOnly: _disabled,
                           ),
-                        ],
-                      ),
-                    ),
-                    if (widget.validateText != '')
-                      SizedBox(
-                        height: 12 * textScaleFactor,
-                        child: Text(
-                          widget.validateText,
-                          style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                        TextFormField(
+                          controller: textController,
+                          inputFormatters: widget.maskType == NsgInputMaskType.phone
+                              ? [phoneFormatter]
+                              : widget.mask != null
+                                  ? [
+                                      MaskTextInputFormatter(
+                                        initialText: fieldValue.toString(),
+                                        mask: widget.mask,
+                                      )
+                                    ]
+                                  : null,
+                          maxLength: _maxLength,
+                          autofocus: false,
+                          focusNode: focus,
+                          maxLines: widget.maxLines,
+                          minLines: widget.minLines,
+                          keyboardType: keyboard,
+                          cursorColor: ControlOptions.instance.colorText,
+                          decoration: InputDecoration(
+                            prefix: _disabled == false
+                                ? null
+                                : Padding(
+                                    padding: const EdgeInsets.only(right: 3.0),
+                                    child: Icon(
+                                      Icons.lock,
+                                      size: 12,
+                                      color: ControlOptions.instance.colorMain,
+                                    ),
+                                  ),
+                            counterText: "",
+                            contentPadding: EdgeInsets.fromLTRB(0, 4, useSelectionController ? 25 : 25, 4),
+                            isDense: true,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                          ),
+                          onFieldSubmitted: (string) {
+                            if (widget.onEditingComplete != null) {
+                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                            }
+                          },
+                          style: TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
+                          readOnly: _disabled,
                         ),
-                      ),
-                  ],
-                )),
-        fieldValue.toString() != '');
+                      ],
+                    ),
+                  ),
+                ),
+                if (widget.validateText != '')
+                  SizedBox(
+                    //height: 12 * textScaleFactor,
+                    child: Text(
+                      widget.validateText,
+                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                    ),
+                  ),
+              ],
+            ));
   }
 
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
-  Widget _gestureWrap(Widget interactiveWidget, bool clearIcon) {
+  Widget _gestureWrap({required Widget interactiveWidget, required bool clearIcon}) {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
       return clearIcon == true ? _addClearIcon(interactiveWidget) : interactiveWidget;
     } else {
@@ -388,27 +389,24 @@ class _NsgInputState extends State<NsgInput> {
 
   /// Оборачиваем Stack и добавляем иконку "очистить поле"
   Widget _addClearIcon(Widget child) {
-    return Stack(alignment: Alignment.topRight, children: [
+    return Stack(alignment: Alignment.centerRight, children: [
       child,
       if (_disabled != true)
-        Padding(
-          padding: EdgeInsets.only(top: 12 * textScaleFactor + 4),
-          child: NsgIconButton(
-              onPressed: () {
-                widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
-                textController.text = widget.dataItem[widget.fieldName].toString();
+        NsgIconButton(
+            onPressed: () {
+              widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
+              textController.text = widget.dataItem[widget.fieldName].toString();
 
-                Future.delayed(const Duration(milliseconds: 10), () {
-                  FocusScope.of(context).requestFocus(focus);
-                });
-                textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
-                if (widget.onEditingComplete != null) {
-                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                }
-                setState(() {});
-              },
-              icon: Icons.close_outlined),
-        )
+              Future.delayed(const Duration(milliseconds: 10), () {
+                FocusScope.of(context).requestFocus(focus);
+              });
+              textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+              if (widget.onEditingComplete != null) {
+                widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+              }
+              setState(() {});
+            },
+            icon: Icons.close_outlined)
     ]);
   }
 
