@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_data/nsg_data.dart';
-import '../nsg_checkbox.dart';
+import '../formfields/nsg_checkbox.dart';
 import '../widgets/nsg_reorderable.dart';
 import 'nsg_table_column.dart';
 

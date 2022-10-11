@@ -4,7 +4,7 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/widgets/nsg_snackbar.dart';
 import 'package:nsg_data/nsg_data.dart';
 
-import 'nsg_icon_button.dart';
+import '../nsg_icon_button.dart';
 
 class NsgTextFilter extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables
@@ -93,7 +93,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SizedBox(
-                        height: 12 * textScaleFactor,
+                        // height: 12 * textScaleFactor,
                         child: Text(
                           focus.hasFocus || textController.text != ''
                               ? widget.required
@@ -105,7 +105,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
                       ),
                       Container(
                           alignment: Alignment.center,
-                          height: 20 * textScaleFactor,
+                          //height: 20 * textScaleFactor,
                           decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                           child: Stack(
                             alignment: Alignment.center,

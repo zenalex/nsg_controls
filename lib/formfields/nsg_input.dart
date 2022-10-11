@@ -3,13 +3,13 @@ import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
-import 'nsg_icon_button.dart';
+import '../nsg_icon_button.dart';
 import 'nsg_input_mask_type.dart';
 import 'nsg_input_type.dart';
-import 'nsg_selection.dart';
+import '../nsg_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:nsg_data/nsg_data.dart';
-import 'nsg_control_options.dart';
+import '../nsg_control_options.dart';
 
 class NsgInput extends StatefulWidget {
   final String label;
@@ -468,25 +468,29 @@ class _NsgInputState extends State<NsgInput> {
             borderRadius: BorderRadius.circular(widget.borderRadius),
             border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: SizedBox(
-            height: 38,
+            // height: 38,
             child: Row(
-              children: [
-                Expanded(child: Text(widget.label)),
-                StatefulBuilder(
-                  builder: ((context, setState) => CupertinoSwitch(
-                      value: fieldValue,
-                      activeColor: ControlOptions.instance.colorMain,
-                      onChanged: (value) {
-                        fieldValue = !fieldValue;
-                        widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
-                        if (widget.updateController != null) {
-                          widget.updateController!.update();
-                        } else {
-                          setState(() {});
-                        }
-                      })),
-                )
-              ],
-            )));
+          children: [
+            Expanded(
+                child: Text(
+              widget.label,
+              style: TextStyle(fontSize: ControlOptions.instance.sizeM),
+            )),
+            StatefulBuilder(
+              builder: ((context, setState) => CupertinoSwitch(
+                  value: fieldValue,
+                  activeColor: ControlOptions.instance.colorMain,
+                  onChanged: (value) {
+                    fieldValue = !fieldValue;
+                    widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                    if (widget.updateController != null) {
+                      widget.updateController!.update();
+                    } else {
+                      setState(() {});
+                    }
+                  })),
+            )
+          ],
+        )));
   }
 }

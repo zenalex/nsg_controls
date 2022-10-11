@@ -103,7 +103,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(
-                    height: 12 * textScaleFactor,
+                    //  height: 12 * textScaleFactor,
                     child: Text(
                       widget.disabled == false ? widget.label! : '🔒 ${widget.label}',
                       textAlign: widget.textAlign,
@@ -112,7 +112,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                   ),
                   Container(
                       alignment: Alignment.center,
-                      height: 20 * textScaleFactor,
+                      // height: 20 * textScaleFactor,
                       decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                       child: Text(
                         _showPeriod(),

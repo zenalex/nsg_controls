@@ -96,7 +96,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
           children: [
             if (widget.simple != true)
               SizedBox(
-                height: 12 * textScaleFactor,
+                //  height: 12 * textScaleFactor,
                 child: Text(
                   widget.label!,
                   textAlign: widget.textAlign,
@@ -108,7 +108,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
             Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
-                height: 24 * textScaleFactor - 1,
+                //  height: 24 * textScaleFactor - 1,
                 decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

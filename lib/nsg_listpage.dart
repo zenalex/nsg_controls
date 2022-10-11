@@ -6,8 +6,8 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:nsg_data/nsg_data.dart';
 //import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'nsg_period_filter.dart';
-import 'nsg_text_filter.dart';
+import 'formfields/nsg_period_filter.dart';
+import 'formfields/nsg_text_filter.dart';
 import 'widgets/nsg_errorpage.dart';
 
 enum NsgListPageMode { list, grid, table }
