@@ -466,8 +466,11 @@ class _NsgInputState extends State<NsgInput> {
   Widget _buildBoolWidget(bool fieldValue) {
     return Container(
         margin: widget.margin,
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+        decoration: BoxDecoration(
+            color: ControlOptions.instance.colorInverted,
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+            border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: SizedBox(
             // height: 38,
             child: Row(
