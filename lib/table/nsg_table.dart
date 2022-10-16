@@ -853,7 +853,6 @@ class _NsgTableState extends State<NsgTable> {
                                   rowEdit(row);
                                 }
                               }
-
                               // Добаввляем в последнее
                               widget.controller.addRecent(row);
                             } else if (editMode == NsgTableEditMode.rowDelete) {
