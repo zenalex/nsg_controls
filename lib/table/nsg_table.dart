@@ -487,8 +487,10 @@ class _NsgTableState extends State<NsgTable> {
 
   /// Редатирование строки
   void rowEdit(NsgDataItem row) {
-    if (widget.controller.currentItem.defaultListPage != null) {
-      widget.controller.itemPageOpen(row, widget.controller.currentItem.defaultListPage!);
+    var pageName = widget.elementEditPageName;
+    pageName ??= widget.controller.currentItem.defaultListPage;
+    if (pageName != null) {
+      widget.controller.itemPageOpen(row, pageName);
     }
     setState(() {
       editMode = NsgTableEditMode.view;
@@ -838,12 +840,19 @@ class _NsgTableState extends State<NsgTable> {
               if (listRowsToDelete.contains(row)) {
                 isSelected = true;
               }
-              tableRow.add(widget.rowOnTap != null
+              tableRow.add(widget.rowOnTap != null || widget.elementEditPageName != null
                   ? wrapExpanded(
                       child: InkWell(
                           onTap: () {
+                            //Обработка события нажатия на строку
                             if (editMode == NsgTableEditMode.view || editMode == NsgTableEditMode.recent || editMode == NsgTableEditMode.favorites) {
-                              widget.rowOnTap!(row, column.name);
+                              if (widget.rowOnTap != null) {
+                                widget.rowOnTap!(row, column.name);
+                              } else {
+                                if (editMode == NsgTableEditMode.view) {
+                                  rowEdit(row);
+                                }
+                              }
                               // Добаввляем в последнее
                               widget.controller.addRecent(row);
                             } else if (editMode == NsgTableEditMode.rowDelete) {
