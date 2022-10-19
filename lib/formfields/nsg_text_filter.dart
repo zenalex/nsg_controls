@@ -69,7 +69,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
     var isFilterOpen = widget.isOpen ?? widget.controller.controllerFilter.isOpen;
 
     void setFilter() {
-      if (widget.controller.controllerFilter.searchString != textController.text) {
+      if (widget.controller.controllerFilter.searchString != textController.text || widget.controller.controllerFilter.searchString == '') {
         widget.controller.controllerFilter.searchString = textController.text;
         //controller.controllerFilter.refreshControllerWithDelay();
         widget.controller.refreshData();
@@ -166,6 +166,8 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
     return NsgIconButton(
         onPressed: () {
           textController.text = '';
+          widget.controller.controllerFilter.searchString = '';
+          //widget.controller.refreshData();
           Future.delayed(const Duration(milliseconds: 10), () {
             FocusScope.of(context).requestFocus(focus);
           });

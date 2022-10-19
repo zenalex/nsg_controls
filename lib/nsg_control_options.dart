@@ -54,6 +54,8 @@ class ControlOptions {
   final Color colorGrey;
   final Color colorGreyLight;
   final Color colorGreyLighter;
+  final Color colorGreyDark;
+  final Color colorGreyDarker;
 
   final Color tableHeaderColor;
   final Color tableHeaderLinesColor;
@@ -61,12 +63,12 @@ class ControlOptions {
 
   final Map<String, List<Color>> gradients;
 
-  double sizeXXL = 20;
-  double sizeXL = 18;
-  double sizeL = 16;
-  double sizeM = 14;
-  double sizeS = 12;
-  double sizeXS = 10;
+  double sizeXXL;
+  double sizeXL;
+  double sizeL;
+  double sizeM;
+  double sizeS;
+  double sizeXS;
 
   final double borderRadius;
 
@@ -76,10 +78,10 @@ class ControlOptions {
   double get slideBlockWidth => screenWidth > 640 ? 1 / 640 * 60 : 1 / Get.width * 60;
 
   /// Минимальная ширина экрана приложения
-  double appMinWidth = 320;
+  double appMinWidth;
 
   /// Максимальная ширина экрана приложения
-  double appMaxWidth = 640;
+  double appMaxWidth;
 
   /// Скорость анимации появления блоков в миллисекундах
   int fadeSpeed = 500;
@@ -88,6 +90,14 @@ class ControlOptions {
   String dateformat = 'dd.MM.yy';
 
   ControlOptions({
+    this.appMaxWidth = 640,
+    this.appMinWidth = 320,
+    this.sizeXXL = 20,
+    this.sizeXL = 18,
+    this.sizeL = 16,
+    this.sizeM = 14,
+    this.sizeS = 12,
+    this.sizeXS = 10,
     this.borderRadius = 15.0,
     this.gradients = const {
       'main': [Color.fromRGBO(233, 200, 45, 1), Color.fromARGB(255, 153, 128, 16)]
@@ -115,6 +125,8 @@ class ControlOptions {
     this.colorGrey = const Color.fromARGB(255, 77, 77, 77),
     this.colorGreyLight = const Color.fromARGB(255, 150, 150, 150),
     this.colorGreyLighter = const Color.fromARGB(255, 230, 230, 230),
+    this.colorGreyDark = const Color.fromARGB(255, 55, 55, 55),
+    this.colorGreyDarker = const Color.fromARGB(255, 33, 33, 33),
   }) {
     NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
 
