@@ -24,7 +24,7 @@ class NsgTimePicker extends StatefulWidget {
       this.label = '',
       this.textAlign = TextAlign.center,
       this.disabled = false,
-      this.margin = const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       this.simple = false})
       : super(key: key);
 
@@ -124,12 +124,10 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
                 ),
               ),
             Container(
-                alignment: Alignment.center,
                 padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                 //height: 24 * textScaleFactor - 1,
                 decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (widget.disabled == true)
                       Padding(
@@ -140,10 +138,12 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
                           color: ControlOptions.instance.colorMain,
                         ),
                       ),
-                    Text(
-                      "$hours:$minutesString",
-                      textAlign: widget.textAlign,
-                      style: TextStyle(fontSize: ControlOptions.instance.sizeM),
+                    Expanded(
+                      child: Text(
+                        "$hours:$minutesString",
+                        textAlign: widget.textAlign,
+                        style: TextStyle(fontSize: ControlOptions.instance.sizeM),
+                      ),
                     ),
                   ],
                 )),

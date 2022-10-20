@@ -169,6 +169,8 @@ class _NsgInputState extends State<NsgInput> {
     focus.addListener(() {
       if (focus.hasFocus) {
         setState(() {});
+      } else {
+        setState(() {});
       }
 
       if (!focus.hasFocus && widget.onEditingComplete != null) {
@@ -322,7 +324,7 @@ class _NsgInputState extends State<NsgInput> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              widget.label,
+                              widget.required ? widget.label + ' *' : widget.label,
                               style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
                             ),
                           ),
