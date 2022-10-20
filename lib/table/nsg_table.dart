@@ -211,6 +211,7 @@ class _NsgTableState extends State<NsgTable> {
 
   Widget showCell(
       {double? height,
+      bool? isFinal,
       bool? isSelected,
       Color? backColor,
       Color? color,
@@ -221,22 +222,44 @@ class _NsgTableState extends State<NsgTable> {
       EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 5, vertical: 5)}) {
     Widget showCell;
 
-    showCell = Container(
-        constraints: const BoxConstraints(minHeight: 36),
-        height: height,
-        padding: padding,
-        alignment: align,
-        width: width,
-        decoration: BoxDecoration(
+    if (isFinal == true) {
+      showCell = Container(
+          constraints: const BoxConstraints(minHeight: 36),
+          height: height,
+          padding: padding,
+          alignment: align,
+          width: width,
+          decoration: BoxDecoration(
 
-            /// Меняем цвет ячейки при наведении мыши
-            color: isSelected == true ? ControlOptions.instance.colorMain.withOpacity(0.2) : backColor,
-            border: Border(
+              /// Меняем цвет ячейки при наведении мыши
+              color: isSelected == true ? ControlOptions.instance.colorMain.withOpacity(0.2) : backColor,
+              border: Border(
                 left: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
-                top: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain))),
+                top: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
+                bottom: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
+              )),
 
-        // Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
-        child: child);
+          // Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
+          child: child);
+    } else {
+      showCell = Container(
+          constraints: const BoxConstraints(minHeight: 36),
+          height: height,
+          padding: padding,
+          alignment: align,
+          width: width,
+          decoration: BoxDecoration(
+
+              /// Меняем цвет ячейки при наведении мыши
+              color: isSelected == true ? ControlOptions.instance.colorMain.withOpacity(0.2) : backColor,
+              border: Border(
+                left: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
+                top: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
+              )),
+
+          // Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
+          child: child);
+    }
 
     return showCell;
   }
@@ -389,7 +412,17 @@ class _NsgTableState extends State<NsgTable> {
                 padding: const EdgeInsets.only(bottom: 0), // отступ снизу под скроллбар
                 controller: scrollHor,
                 scrollDirection: Axis.horizontal,
-                child: child,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    child,
+                    Container(
+                      height: 16,
+                      decoration: BoxDecoration(
+                          color: ControlOptions.instance.colorMain, border: Border(left: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -790,6 +823,7 @@ class _NsgTableState extends State<NsgTable> {
                     rowDelete(row);
                   },
                   child: showCell(
+                    isFinal: row == items.last,
                     height: widget.rowFixedHeight,
                     padding: const EdgeInsets.all(0),
                     backColor: isSelected ? ControlOptions.instance.colorMainLighter : ControlOptions.instance.tableCellBackColor,
@@ -804,6 +838,7 @@ class _NsgTableState extends State<NsgTable> {
                   rowEdit(row);
                 },
                 child: showCell(
+                    isFinal: row == items.last,
                     height: widget.rowFixedHeight,
                     padding: const EdgeInsets.all(0),
                     //backColor: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
@@ -818,6 +853,7 @@ class _NsgTableState extends State<NsgTable> {
                   rowCopy(row);
                 },
                 child: showCell(
+                    isFinal: row == items.last,
                     height: widget.rowFixedHeight,
                     padding: const EdgeInsets.all(0),
                     color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
@@ -909,6 +945,7 @@ class _NsgTableState extends State<NsgTable> {
                             //setState(() {});
                           },
                           child: showCell(
+                              isFinal: row == items.last,
                               height: widget.rowFixedHeight,
                               align: column.verticalAlign ?? defaultRowAlign,
                               backColor: column.getBackColor != null
@@ -923,6 +960,7 @@ class _NsgTableState extends State<NsgTable> {
                       flex: column.flex)
                   : wrapExpanded(
                       child: showCell(
+                          isFinal: row == items.last,
                           height: widget.rowFixedHeight,
                           align: column.verticalAlign ?? defaultRowAlign,
                           backColor: column.getBackColor != null
