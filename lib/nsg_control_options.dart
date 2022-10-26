@@ -63,6 +63,10 @@ class ControlOptions {
 
   final Map<String, List<Color>> gradients;
 
+  double sizeH1;
+  double sizeH2;
+  double sizeH3;
+  double sizeH4;
   double sizeXXL;
   double sizeXL;
   double sizeL;
@@ -92,6 +96,10 @@ class ControlOptions {
   ControlOptions({
     this.appMaxWidth = 640,
     this.appMinWidth = 320,
+    this.sizeH1 = 36,
+    this.sizeH2 = 32,
+    this.sizeH3 = 28,
+    this.sizeH4 = 24,
     this.sizeXXL = 20,
     this.sizeXL = 18,
     this.sizeL = 16,
