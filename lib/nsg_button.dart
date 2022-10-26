@@ -37,7 +37,7 @@ class NsgButton extends StatelessWidget {
       this.borderRadius,
       this.width,
       this.height = 50,
-      this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       this.color,
       this.borderColor,
       this.backColor,
@@ -89,10 +89,7 @@ class NsgButton extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (icon != null)
-                          Padding(
-                              padding: iconMargin,
-                              child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
+                        if (icon != null) Padding(padding: iconMargin, child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
@@ -113,10 +110,7 @@ class NsgButton extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: <Color>[
-                      ControlOptions.instance.colorMainText.withOpacity(0.0),
-                      ControlOptions.instance.colorMainText.withOpacity(0.3)
-                    ],
+                    colors: <Color>[ControlOptions.instance.colorMainText.withOpacity(0.0), ControlOptions.instance.colorMainText.withOpacity(0.3)],
                   ),
                   borderRadius: BorderRadius.circular(25),
                 ),
@@ -178,6 +172,7 @@ class NsgButton extends StatelessWidget {
           width: width ?? double.infinity,
           height: height,
           decoration: BoxDecoration(
+            border: borderColor == null ? null : Border.all(width: 2, color: ControlOptions.instance.colorMain),
             borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
             /* boxShadow: <BoxShadow>[
                 shadow ??
@@ -193,25 +188,25 @@ class NsgButton extends StatelessWidget {
             color: disabled == true ? _backColor.withOpacity(0.5) : _backColor,
             child: InkWell(
               onTap: disabled == true ? onDisabledPressed : onPressed,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (icon != null)
-                    Padding(
-                        padding: iconMargin,
-                        child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
-                  Flexible(
-                    //fit: FlexFit.loose,
+              child: Padding(
+                padding: padding,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (icon != null) Padding(padding: iconMargin, child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
+                    Flexible(
+                      //fit: FlexFit.loose,
 
-                    child: Text('$text'.toUpperCase(),
-                        maxLines: 2,
-                        overflow: TextOverflow.fade,
-                        softWrap: true,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: color ?? ControlOptions.instance.colorMainText)),
-                  ),
-                ],
+                      child: Text('$text'.toUpperCase(),
+                          maxLines: 2,
+                          overflow: TextOverflow.fade,
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: color ?? ControlOptions.instance.colorMainText)),
+                    ),
+                  ],
+                ),
               ),
             ),
           ));
