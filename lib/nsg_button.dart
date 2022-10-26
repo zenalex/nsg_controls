@@ -37,7 +37,7 @@ class NsgButton extends StatelessWidget {
       this.borderRadius,
       this.width,
       this.height = 50,
-      this.padding = const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       this.color,
       this.borderColor,
       this.backColor,
@@ -178,6 +178,7 @@ class NsgButton extends StatelessWidget {
           width: width ?? double.infinity,
           height: height,
           decoration: BoxDecoration(
+            border: borderColor == null ? null : Border.all(width: 2, color: ControlOptions.instance.colorMain),
             borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
             /* boxShadow: <BoxShadow>[
                 shadow ??
@@ -193,25 +194,28 @@ class NsgButton extends StatelessWidget {
             color: disabled == true ? _backColor.withOpacity(0.5) : _backColor,
             child: InkWell(
               onTap: disabled == true ? onDisabledPressed : onPressed,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (icon != null)
-                    Padding(
-                        padding: iconMargin,
-                        child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
-                  Flexible(
-                    //fit: FlexFit.loose,
+              child: Padding(
+                padding: padding,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (icon != null)
+                      Padding(
+                          padding: iconMargin,
+                          child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
+                    Flexible(
+                      //fit: FlexFit.loose,
 
-                    child: Text('$text'.toUpperCase(),
-                        maxLines: 2,
-                        overflow: TextOverflow.fade,
-                        softWrap: true,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: color ?? ControlOptions.instance.colorMainText)),
-                  ),
-                ],
+                      child: Text('$text',
+                          maxLines: 2,
+                          overflow: TextOverflow.clip,
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: fontSize, color: color ?? ControlOptions.instance.colorMainText)),
+                    ),
+                  ],
+                ),
               ),
             ),
           ));
