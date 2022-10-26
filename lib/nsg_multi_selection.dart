@@ -9,18 +9,25 @@ class NsgMultiSelection {
 
   NsgMultiSelection({required this.controller, this.ignoredItems = const []});
 
-  List<NsgDataItem> allItems = [];
-  List<NsgDataItem> selectedItems = [];
+  //List<NsgDataItem> allItems = [];
+  final List<NsgDataItem> _selectedItems = [];
+  set selectedItems(List<NsgDataItem> list) {
+    _selectedItems.addAll(list);
+  }
+
   final List<NsgDataItem> ignoredItems;
 
   List<Widget> _itemList() {
     List<Widget> list = [];
+    var allItems = [];
+    allItems.addAll(controller.dataItemList.where((element) =>
+        !ignoredItems.contains(element) && !_selectedItems.contains(element)));
     for (var element in allItems) {
       if (element.toString() != '') {
         list.add(GestureDetector(
             onTap: () {
-              allItems.remove(element);
-              selectedItems.add(element);
+              //allItems.remove(element);
+              _selectedItems.add(element);
               controller.update();
             },
             child: controller.obxBase(
@@ -31,7 +38,10 @@ class NsgMultiSelection {
                   child: Center(
                       child: Text(
                     element.toString(),
-                    style: TextStyle(color: element == selectedElement ? ControlOptions.instance.colorInverted : ControlOptions.instance.colorText),
+                    style: TextStyle(
+                        color: element == selectedElement
+                            ? ControlOptions.instance.colorInverted
+                            : ControlOptions.instance.colorText),
                   ))),
             )));
       }
@@ -41,12 +51,12 @@ class NsgMultiSelection {
 
   List<Widget> _selectedItemList() {
     List<Widget> list = [];
-    for (var element in selectedItems) {
+    for (var element in _selectedItems) {
       if (element.toString() != '') {
         list.add(GestureDetector(
             onTap: () {
-              selectedItems.remove(element);
-              allItems.add(element);
+              _selectedItems.remove(element);
+              //allItems.add(element);
               controller.update();
             },
             child: controller.obxBase(
@@ -54,7 +64,9 @@ class NsgMultiSelection {
                 children: [
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      color: element == selectedElement ? ControlOptions.instance.colorMain : Colors.transparent,
+                      color: element == selectedElement
+                          ? ControlOptions.instance.colorMain
+                          : Colors.transparent,
                       height: 40,
                       child: Center(
                           child: Row(
@@ -62,11 +74,13 @@ class NsgMultiSelection {
                         children: [
                           Text(
                             element.toString(),
-                            style: TextStyle(color: ControlOptions.instance.colorText),
+                            style: TextStyle(
+                                color: ControlOptions.instance.colorText),
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                            child: Icon(Icons.clear, color: ControlOptions.instance.colorMain),
+                            child: Icon(Icons.clear,
+                                color: ControlOptions.instance.colorMain),
                           )
                         ],
                       ))),
@@ -78,20 +92,23 @@ class NsgMultiSelection {
     return list;
   }
 
-  void selectFromArray(String title, String title2, Function(List<NsgDataItem>) onSelected) {
-    allItems = [];
-    allItems.addAll(controller.dataItemList.where((element) => !ignoredItems.contains(element)));
+  void selectFromArray(
+      String title, String title2, Function(List<NsgDataItem>) onSelected) {
+    //TODO: вопрос - зачем тут учет выбранного в контроллере одного элемента?
     selectedElement = controller.selectedItem;
     controller.refreshData();
     Get.dialog(
         controller.obxBase((state) => NsgPopUp(
             title: title,
-            title2: title2 + ' (' + selectedItems.length.toString() + ')',
+            title2: title2 +
+                (_selectedItems.isEmpty
+                    ? ''
+                    : ' (' + _selectedItems.length.toString() + ')'),
             getContent: () => _itemList(),
             contentSecondary: _selectedItemList(),
             confirmText: 'Подтвердить',
             onConfirm: () {
-              onSelected(selectedItems);
+              onSelected(_selectedItems);
               Get.back();
             })),
         barrierDismissible: false);

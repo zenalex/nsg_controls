@@ -39,7 +39,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
     super.initState();
 
     focus.addListener(() {
-      print("FOCUS ${focus.hasFocus}");
+      //print("FOCUS ${focus.hasFocus}");
       if (focus.hasFocus) {
         setState(() {});
       }

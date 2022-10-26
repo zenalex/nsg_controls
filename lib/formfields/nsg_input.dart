@@ -1,15 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import '../nsg_icon_button.dart';
-import 'nsg_input_mask_type.dart';
-import 'nsg_input_type.dart';
-import '../nsg_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:nsg_data/nsg_data.dart';
-import '../nsg_control_options.dart';
 
 class NsgInput extends StatefulWidget {
   final String label;
@@ -147,7 +144,7 @@ class NsgInput extends StatefulWidget {
 }
 
 class _NsgInputState extends State<NsgInput> {
-  ValueNotifier<bool> _notifier = ValueNotifier(false);
+  final ValueNotifier<bool> _notifier = ValueNotifier(false);
   late double textScaleFactor;
   late double fontSize;
   FocusNode focus = FocusNode();
@@ -489,6 +486,23 @@ class _NsgInputState extends State<NsgInput> {
           return null;
         },
       );
+    } else if (inputType == NsgInputType.referenceList && _disabled != true) {
+      var form = NsgMultiSelection(controller: selectionController!);
+      form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
+      selectionController!.refreshData();
+      if (widget.selectionForm == '') {
+        //Если формы для выбора не задана: вызываем форму подбора по умолчанию
+        form.selectFromArray(
+          widget.label,
+          '',
+          (items) {
+            widget.dataItem.setFieldValue(widget.fieldName, items);
+            if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+            if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+            setState(() {});
+          },
+        );
+      }
     }
   }
 
