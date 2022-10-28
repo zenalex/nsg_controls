@@ -92,8 +92,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         setState(() {
           galleryPage = true;
           for (var element in result) {
-            widget.objectsList
-                .add(NsgFilePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path));
+            widget.objectsList.add(NsgFilePickerObject(
+                image: Image.network(element.path),
+                description: basenameWithoutExtension(element.path),
+                filePath: element.path));
           }
         });
       }
@@ -111,10 +113,17 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
             if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
               widget.objectsList.add(NsgFilePickerObject(
-                  image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
+                  image: Image.file(File(element.path)),
+                  description: basenameWithoutExtension(element.path),
+                  fileType: fileType,
+                  filePath: element.path));
             } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
               widget.objectsList.add(NsgFilePickerObject(
-                  file: File(element.path), image: null, description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
+                  file: File(element.path),
+                  image: null,
+                  description: basenameWithoutExtension(element.path),
+                  fileType: fileType,
+                  filePath: element.path));
             } else {
               error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
               setState(() {});
@@ -133,8 +142,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         setState(() {
           galleryPage = true;
           for (var element in result) {
-            widget.objectsList
-                .add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), filePath: element.path));
+            widget.objectsList.add(NsgFilePickerObject(
+                image: Image.file(File(element.path)),
+                description: basenameWithoutExtension(element.path),
+                filePath: element.path));
           }
         });
       }
@@ -143,8 +154,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   /// Pick an image
   Future pickFile() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: [...widget.allowedFileFormats, ...widget.allowedImageFormats]);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom, allowedExtensions: [...widget.allowedFileFormats, ...widget.allowedImageFormats]);
     if (result != null) {
       galleryPage = true;
       for (var element in result.files) {
@@ -158,10 +169,17 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         }
         if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
           widget.objectsList.add(NsgFilePickerObject(
-              image: Image.file(File(element.name)), description: basenameWithoutExtension(element.name), fileType: fileType, filePath: element.path ?? ''));
+              image: Image.file(File(element.name)),
+              description: basenameWithoutExtension(element.name),
+              fileType: fileType,
+              filePath: element.path ?? ''));
         } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
           widget.objectsList.add(NsgFilePickerObject(
-              file: File(element.name), image: null, description: basenameWithoutExtension(element.name), fileType: fileType, filePath: element.path ?? ''));
+              file: File(element.name),
+              image: null,
+              description: basenameWithoutExtension(element.name),
+              fileType: fileType,
+              filePath: element.path ?? ''));
         } else {
           error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
           setState(() {});
@@ -179,8 +197,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
     if (image != null) {
       setState(() {
-        widget.objectsList
-            .add(NsgFilePickerObject(image: Image.file(File(image.path)), description: basenameWithoutExtension(image.path), filePath: image.path));
+        widget.objectsList.add(NsgFilePickerObject(
+            image: Image.file(File(image.path)),
+            description: basenameWithoutExtension(image.path),
+            filePath: image.path));
         galleryPage = false;
       });
     } else {
@@ -369,7 +389,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             error,
             backColor: ControlOptions.instance.colorError.withOpacity(0.2),
           ),
-        Expanded(
+        Flexible(
             child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: _getImages(),
@@ -542,7 +562,8 @@ class NsgImagePickerButton extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.photo_library_outlined, size: 32, color: ControlOptions.instance.colorInverted),
+                              Icon(Icons.photo_library_outlined,
+                                  size: 32, color: ControlOptions.instance.colorInverted),
                               Padding(
                                 padding: const EdgeInsets.only(top: 0),
                                 child: NsgText('Галерея', color: ControlOptions.instance.colorInverted),
