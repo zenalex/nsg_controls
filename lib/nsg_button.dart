@@ -178,7 +178,7 @@ class NsgButton extends StatelessWidget {
           width: width ?? double.infinity,
           height: height,
           decoration: BoxDecoration(
-            border: borderColor == null ? null : Border.all(width: 2, color: ControlOptions.instance.colorMain),
+            border: borderColor == null ? null : Border.all(width: 2, color: borderColor!),
             borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
             /* boxShadow: <BoxShadow>[
                 shadow ??
