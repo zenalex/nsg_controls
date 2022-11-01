@@ -291,7 +291,11 @@ class _NsgTableState extends State<NsgTable> {
       }
     }
     isPeriodFilterOpen = widget.initialIsPeriodFilterOpen || widget.controller.controllerFilter.isPeriodAllowed;
-    isSearchStringFilterOpen = widget.initialIsSearchStringOpen || widget.controller.controllerFilter.searchString.isNotEmpty;
+    if (widget.controller.controllerFilter.isSearchStringFilterOpen != null) {
+      isSearchStringFilterOpen = widget.controller.controllerFilter.isSearchStringFilterOpen!;
+    } else {
+      isSearchStringFilterOpen = widget.initialIsSearchStringOpen || widget.controller.controllerFilter.searchString.isNotEmpty;
+    }
 
     /// Выставляем режим просмотра таблицы в "Избранное" или "Просмотр"
     /*if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
@@ -1121,6 +1125,7 @@ class _NsgTableState extends State<NsgTable> {
                     icon: isSearchStringFilterOpen ? Icons.filter_alt : NsgTableMenuButtonType.filterText.icon,
                     onPressed: () {
                       isSearchStringFilterOpen = !isSearchStringFilterOpen;
+                      widget.controller.controllerFilter.isSearchStringFilterOpen = isSearchStringFilterOpen;
                       widget.controller.controllerFilter.isOpen = isSearchStringFilterOpen;
                       if (widget.controller.controllerFilter.searchString.isNotEmpty) {
                         widget.controller.refreshData();
@@ -1310,34 +1315,31 @@ class _NsgTableState extends State<NsgTable> {
 
 /* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
 
-        table.add(Container(
-          decoration: BoxDecoration(border: Border(left: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-          child: _rowcolumn(children: [
-            if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
-              _expanded(
-                child: NsgTextFilter(
-                  onSetFilter: () {
-                    setState(() {
-                      editModeLast = NsgTableEditMode.view;
-                      editMode = NsgTableEditMode.view;
-                    });
-                  },
-                  controller: widget.controller,
-                  isOpen: isSearchStringFilterOpen,
-                ),
+        table.add(_rowcolumn(children: [
+          if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+            _expanded(
+              child: NsgTextFilter(
+                onSetFilter: () {
+                  setState(() {
+                    editModeLast = NsgTableEditMode.view;
+                    editMode = NsgTableEditMode.view;
+                  });
+                },
+                controller: widget.controller,
+                isOpen: isSearchStringFilterOpen,
               ),
-            if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-              _expanded(
-                child: NsgPeriodFilter(
-                  //showCompact: isPeriodFilterOpen,
-                  key: GlobalKey(),
+            ),
+          if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+            _expanded(
+              child: NsgPeriodFilter(
+                //showCompact: isPeriodFilterOpen,
+                key: GlobalKey(),
 
-                  label: widget.periodFilterLabel,
-                  controller: widget.controller,
-                ),
+                label: widget.periodFilterLabel,
+                controller: widget.controller,
               ),
-          ]),
-        ));
+            ),
+        ]));
 /* ------------------------------- // Фильтры по Тексту и Периоду ------------------------------- */
 
         /// Если showHeader, то показываем Header
@@ -1505,7 +1507,7 @@ class _NsgTableState extends State<NsgTable> {
                   controller: scrollHor,
                   scrollDirection: Axis.horizontal,
                   child: NsgBorder(
-                    child: Container(
+                    child: SizedBox(
                       width: 1500,
                       child: ListView.builder(
                         //controller: scrollVert,
@@ -1548,41 +1550,33 @@ class _NsgTableState extends State<NsgTable> {
 
           return Align(
             alignment: Alignment.topLeft,
-            child: Container(
-              key: containerKey,
-              width: horizontalScrollEnabled == false ? double.infinity : null,
-              decoration: BoxDecoration(
-                  border: Border(
-                      right: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
-                      bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-              child: editMode == NsgTableEditMode.columnsWidth
-                  ? Stack(alignment: Alignment.topLeft, children: [
-                      Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
-                      Container(
-                        margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
-                        child: SingleChildScrollView(
-                          controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
-                          scrollDirection: Axis.horizontal,
-                          child: ResizeLines(
-                              expandedColumnsCount: expandedColumnsCount,
-                              onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
-                              columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
-                              columnsOnResize: (resizedColumns) {
-                                tableColumns = resizedColumns;
-                                setState(() {});
-                              },
-                              columns: visibleColumns),
-                        ),
-                      )
-                    ])
-                  : intrinsicWidth(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
-                          children: table),
-                    ),
-            ),
+            child: editMode == NsgTableEditMode.columnsWidth
+                ? Stack(alignment: Alignment.topLeft, children: [
+                    Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
+                    Container(
+                      margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
+                      child: SingleChildScrollView(
+                        controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
+                        scrollDirection: Axis.horizontal,
+                        child: ResizeLines(
+                            expandedColumnsCount: expandedColumnsCount,
+                            onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
+                            columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
+                            columnsOnResize: (resizedColumns) {
+                              tableColumns = resizedColumns;
+                              setState(() {});
+                            },
+                            columns: visibleColumns),
+                      ),
+                    )
+                  ])
+                : intrinsicWidth(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
+                        children: table),
+                  ),
           );
         });
       },
