@@ -1,11 +1,1 @@
-enum NsgInputType {
-  autoselect,
-  reference,
-  referenceList,
-  enumReference,
-  multiselection,
-  stringValue,
-  dobleValue,
-  intValue,
-  boolValue
-}
+enum NsgInputType { autoselect, reference, referenceList, enumReference, multiselection, stringValue, doubleValue, intValue, boolValue, dateValue }

@@ -11,7 +11,6 @@ import 'package:responsive_grid/responsive_grid.dart';
 import 'package:path/path.dart';
 import '../nsg_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'nsg_file_picker_object.dart';
 import 'package:file_selector/file_selector.dart' as file;
 
 /// Пикер и загрузчик изображений и файлов заданных форматов
