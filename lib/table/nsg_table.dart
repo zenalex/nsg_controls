@@ -423,7 +423,10 @@ class _NsgTableState extends State<NsgTable> {
                     Container(
                       height: 16,
                       decoration: BoxDecoration(
-                          color: ControlOptions.instance.colorMain, border: Border(left: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                          color: ControlOptions.instance.colorMain,
+                          border: Border(
+                              bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
+                              left: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                     )
                   ],
                 ),
@@ -597,7 +600,7 @@ class _NsgTableState extends State<NsgTable> {
         } else {
           screenWidth = ControlOptions.instance.appMaxWidth;
         }
-        screenWidth = screenWidth - 16;
+        screenWidth = screenWidth - 0;
 
         double expandedColumnWidth = (screenWidth - notExpandedColumnsWidth) / expandedColumnsFlexCount;
         widget.columns.asMap().forEach((index, column) {
@@ -1315,31 +1318,38 @@ class _NsgTableState extends State<NsgTable> {
 
 /* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
 
-        table.add(_rowcolumn(children: [
-          if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
-            _expanded(
-              child: NsgTextFilter(
-                onSetFilter: () {
-                  setState(() {
-                    editModeLast = NsgTableEditMode.view;
-                    editMode = NsgTableEditMode.view;
-                  });
-                },
-                controller: widget.controller,
-                isOpen: isSearchStringFilterOpen,
+        table.add(Container(
+          decoration: BoxDecoration(
+              border: Border(
+            left: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
+            right: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
+          )),
+          child: _rowcolumn(children: [
+            if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+              _expanded(
+                child: NsgTextFilter(
+                  onSetFilter: () {
+                    setState(() {
+                      editModeLast = NsgTableEditMode.view;
+                      editMode = NsgTableEditMode.view;
+                    });
+                  },
+                  controller: widget.controller,
+                  isOpen: isSearchStringFilterOpen,
+                ),
               ),
-            ),
-          if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-            _expanded(
-              child: NsgPeriodFilter(
-                //showCompact: isPeriodFilterOpen,
-                key: GlobalKey(),
+            if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+              _expanded(
+                child: NsgPeriodFilter(
+                  //showCompact: isPeriodFilterOpen,
+                  key: GlobalKey(),
 
-                label: widget.periodFilterLabel,
-                controller: widget.controller,
+                  label: widget.periodFilterLabel,
+                  controller: widget.controller,
+                ),
               ),
-            ),
-        ]));
+          ]),
+        ));
 /* ------------------------------- // Фильтры по Тексту и Периоду ------------------------------- */
 
         /// Если showHeader, то показываем Header

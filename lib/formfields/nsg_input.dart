@@ -317,16 +317,13 @@ class _NsgInputState extends State<NsgInput> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(
-                  //height: 12 * textScaleFactor,
-                  child: Text(
-                    focus.hasFocus || textController.text != ''
-                        ? widget.required
-                            ? widget.label + ' *'
-                            : widget.label
-                        : ' ',
-                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
-                  ),
+                Text(
+                  focus.hasFocus || textController.text != ''
+                      ? widget.required
+                          ? widget.label + ' *'
+                          : widget.label
+                      : ' ',
+                  style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                 ),
                 _gestureWrap(
                   clearIcon: fieldValue.toString() != '',
@@ -416,12 +413,9 @@ class _NsgInputState extends State<NsgInput> {
                   ),
                 ),
                 if (widget.validateText != '')
-                  SizedBox(
-                    //height: 12 * textScaleFactor,
-                    child: Text(
-                      widget.validateText,
-                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
-                    ),
+                  Text(
+                    widget.validateText,
+                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
                   ),
               ],
             ));
@@ -545,9 +539,7 @@ class _NsgInputState extends State<NsgInput> {
             color: ControlOptions.instance.colorInverted,
             borderRadius: BorderRadius.circular(widget.borderRadius),
             border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
-        child: SizedBox(
-            // height: 38,
-            child: Row(
+        child: Row(
           children: [
             Expanded(
                 child: Text(
@@ -569,6 +561,6 @@ class _NsgInputState extends State<NsgInput> {
                   })),
             )
           ],
-        )));
+        ));
   }
 }
