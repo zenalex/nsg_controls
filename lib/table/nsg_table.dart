@@ -1016,7 +1016,7 @@ class _NsgTableState extends State<NsgTable> {
                         }
                       }),
 
-                if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement) && widget.controller.currentItem.defaultListPage != null)
+                if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement) && widget.elementEditPageName != null)
                   NsgTableMenuButton(
                     tooltip: 'Редактировать строку',
                     icon: NsgTableMenuButtonType.editElement.icon,
