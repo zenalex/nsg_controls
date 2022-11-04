@@ -26,8 +26,8 @@ class NsgInput extends StatefulWidget {
   /// Красный текст валидации под текстовым полем
   final String validateText;
 
-  /// Обязательное поле
-  final bool required;
+  /// Обязательное поле (будет помечено звездочкой)
+  final bool? required;
 
   /// Высота
   final double? height;
@@ -104,7 +104,7 @@ class NsgInput extends StatefulWidget {
       this.mask,
       this.maskType,
       this.itemsToSelect,
-      this.required = false})
+      this.required})
       : super(key: key);
 
   @override
@@ -319,7 +319,7 @@ class _NsgInputState extends State<NsgInput> {
               children: [
                 Text(
                   focus.hasFocus || textController.text != ''
-                      ? widget.required
+                      ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
                           ? widget.label + ' *'
                           : widget.label
                       : ' ',
@@ -339,7 +339,7 @@ class _NsgInputState extends State<NsgInput> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              widget.required ? widget.label + ' *' : widget.label,
+                              (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
                               style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
                             ),
                           ),
