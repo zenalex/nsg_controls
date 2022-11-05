@@ -2,10 +2,19 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
+import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgImage extends StatelessWidget {
   ///Элемент данных, поле которого отображаем в качестве картинки
+  final bool masterSlaveMode;
+
+  ///Имя поля-master объекта по значению которого будет осуществляться поиск в подчиненном контроллере
+  ///item.masterFieldName == controller.item.id
+  final String masterFieldName;
+
+  ///Элемент данных, поле которого отображаем в качестве картинки
+  ///или master элемент, по которому будет проиходить поиск элемента-картинки по связке detailField
   final NsgDataItem item;
 
   ///Имя поля-картинки для отображения
@@ -115,8 +124,10 @@ class NsgImage extends StatelessWidget {
   /// Виджет, если картинка не задана
   final Widget? noImage;
 
-  const NsgImage(
+  NsgImage(
       {Key? key,
+      this.masterSlaveMode = false,
+      this.masterFieldName = '',
       required this.item,
       required this.fieldName,
       required this.controller,
@@ -131,14 +142,35 @@ class NsgImage extends StatelessWidget {
       this.filterQuality = FilterQuality.low,
       this.child,
       this.noImage})
-      : super(key: key);
+      : super(key: key) {
+    if (masterSlaveMode) {
+      assert(item.fieldList.fields[masterFieldName] is NsgDataReferenceField,
+          'Если задан режим master-slave, masterFieldName должно указывать на поле с идентификатором картинки');
+    } else {
+      assert(item.getField(fieldName) is NsgDataImageField);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    assert(item.getField(fieldName) is NsgDataImageField);
-
     return controller.obxBase((state) {
-      var data = item[fieldName] as Uint8List;
+      NsgDataItem? imageItem = item;
+      if (masterSlaveMode) {
+        if (controller.status.isLoading) {
+          return const CircularProgressIndicator();
+        }
+        imageItem = controller.items
+            .firstWhereOrNull((e) => e.id == item[masterFieldName]);
+      }
+
+      if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
+        return noImage ??
+            SizedBox(
+              width: width,
+              height: height,
+            );
+      }
+      var data = imageItem[fieldName] as Uint8List;
       if (data.isEmpty) {
         return noImage ??
             SizedBox(
