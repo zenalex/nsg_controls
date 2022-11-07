@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
+import 'package:nsg_data/controllers/nsgImageController.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgImage extends StatelessWidget {
@@ -13,6 +14,9 @@ class NsgImage extends StatelessWidget {
   ///item.masterFieldName == controller.item.id
   final String masterFieldName;
 
+  ///Имя поля-slave объекта по значению которого будет осуществляться поиск в подчиненном контроллере
+  final String slaveFieldName;
+
   ///Элемент данных, поле которого отображаем в качестве картинки
   ///или master элемент, по которому будет проиходить поиск элемента-картинки по связке detailField
   final NsgDataItem item;
@@ -21,7 +25,7 @@ class NsgImage extends StatelessWidget {
   final String fieldName;
 
   ///Контроллер загрузки картинок
-  final NsgDataController controller;
+  final NsgImageController controller;
 
   /// If non-null, require the image to have this width.
   ///
@@ -128,6 +132,7 @@ class NsgImage extends StatelessWidget {
       {Key? key,
       this.masterSlaveMode = false,
       this.masterFieldName = '',
+      this.slaveFieldName = '',
       required this.item,
       required this.fieldName,
       required this.controller,
@@ -144,8 +149,7 @@ class NsgImage extends StatelessWidget {
       this.noImage})
       : super(key: key) {
     if (masterSlaveMode) {
-      assert(item.fieldList.fields[masterFieldName] is NsgDataReferenceField,
-          'Если задан режим master-slave, masterFieldName должно указывать на поле с идентификатором картинки');
+      assert(masterFieldName.isNotEmpty, 'Если задан режим master-slave, masterFieldName не может быть пустым');
     } else {
       assert(item.getField(fieldName) is NsgDataImageField);
     }
@@ -156,11 +160,18 @@ class NsgImage extends StatelessWidget {
     return controller.obxBase((state) {
       NsgDataItem? imageItem = item;
       if (masterSlaveMode) {
+        var slaveName = slaveFieldName;
+        if (slaveName.isEmpty) {
+          slaveName = NsgDataClient.client.getNewObject(controller.dataType).primaryKeyField;
+        }
         if (controller.status.isLoading) {
           return const CircularProgressIndicator();
         }
-        imageItem = controller.items
-            .firstWhereOrNull((e) => e.id == item[masterFieldName]);
+        imageItem = controller.items.firstWhereOrNull((e) => e[slaveName] == item[masterFieldName]);
+      }
+
+      if (controller.lateImageRead && imageItem != null) {
+        controller.addImageToQueue(ImageQueueParam(imageItem.id.toString(), fieldName));
       }
 
       if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
