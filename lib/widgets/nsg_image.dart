@@ -149,7 +149,8 @@ class NsgImage extends StatelessWidget {
       this.noImage})
       : super(key: key) {
     if (masterSlaveMode) {
-      assert(masterFieldName.isNotEmpty, 'Если задан режим master-slave, masterFieldName не может быть пустым');
+      assert(masterFieldName.isNotEmpty,
+          'Если задан режим master-slave, masterFieldName не может быть пустым');
     } else {
       assert(item.getField(fieldName) is NsgDataImageField);
     }
@@ -157,21 +158,34 @@ class NsgImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (controller.lateImageRead) {
+      return lateRegime();
+    } else {
+      return syncRegime();
+    }
+  }
+
+  ///Режим одновременной загрузки картинок
+  Widget syncRegime() {
     return controller.obxBase((state) {
       NsgDataItem? imageItem = item;
       if (masterSlaveMode) {
         var slaveName = slaveFieldName;
         if (slaveName.isEmpty) {
-          slaveName = NsgDataClient.client.getNewObject(controller.dataType).primaryKeyField;
+          slaveName = NsgDataClient.client
+              .getNewObject(controller.dataType)
+              .primaryKeyField;
         }
         if (controller.status.isLoading) {
           return const CircularProgressIndicator();
         }
-        imageItem = controller.items.firstWhereOrNull((e) => e[slaveName] == item[masterFieldName]);
+        imageItem = controller.items
+            .firstWhereOrNull((e) => e[slaveName] == item[masterFieldName]);
       }
 
       if (controller.lateImageRead && imageItem != null) {
-        controller.addImageToQueue(ImageQueueParam(imageItem.id.toString(), fieldName));
+        controller.addImageToQueue(
+            ImageQueueParam(imageItem.id.toString(), fieldName));
       }
 
       if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
@@ -208,4 +222,88 @@ class NsgImage extends StatelessWidget {
       }
     }, onLoading: child);
   }
+
+  ///Режим отложенной загрузки картинок
+  Widget lateRegime() {
+    return controller.obx(
+      (c) {
+        if (controller.status.isLoading) {
+          return child ?? const CircularProgressIndicator();
+        }
+        NsgDataItem? imageItem = item;
+        if (masterSlaveMode) {
+          var slaveName = slaveFieldName;
+          if (slaveName.isEmpty) {
+            slaveName = NsgDataClient.client
+                .getNewObject(controller.dataType)
+                .primaryKeyField;
+          }
+          if (controller.status.isLoading) {
+            return const CircularProgressIndicator();
+          }
+          imageItem = controller.items
+              .firstWhereOrNull((e) => e[slaveName] == item[masterFieldName]);
+        }
+
+        if (controller.lateImageRead &&
+            imageItem != null &&
+            (imageItem[fieldName] as Uint8List).isEmpty) {
+          controller.addImageToQueue(
+              ImageQueueParam(imageItem.id.toString(), fieldName));
+        }
+        var builderId = imageItem == null ? '' : imageItem.id.toString();
+        return GetBuilder(
+            id: NsgUpdateKey(id: builderId, type: NsgUpdateKeyType.element),
+            init: controller,
+            //autoRemove: true,
+            //assignId: true,
+            builder: (c) {
+              if (imageItem == null ||
+                  (imageItem[fieldName] as Uint8List).isEmpty) {
+                return noImage ??
+                    SizedBox(
+                      width: width,
+                      height: height,
+                    );
+              }
+              var data = imageItem[fieldName] as Uint8List;
+              if (data.isEmpty) {
+                return noImage ??
+                    SizedBox(
+                      width: width,
+                      height: height,
+                    );
+              } else {
+                return FadeIn(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  child: Image.memory(
+                    data,
+                    width: width,
+                    height: height,
+                    color: color,
+                    fit: fit,
+                    alignment: alignment,
+                    repeat: repeat,
+                    centerSlice: centerSlice,
+                    isAntiAlias: isAntiAlias,
+                    filterQuality: filterQuality,
+                  ),
+                );
+              }
+            });
+      },
+    );
+  }
+
+  // void vrem(){
+  // var builderId = imageItem == null ? '':imageItem.id.toString();
+  //     return GetBuilder(
+  //        id: builderId,
+  //        init: controller,
+  //        builder: (c) {
+  //         if (controller.status.isLoading){
+  //           return const CircularProgressIndicator();
+  //         }
+  //        }
 }

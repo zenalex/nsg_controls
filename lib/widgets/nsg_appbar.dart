@@ -1,6 +1,5 @@
 // импорт
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsgDataController.dart';
 
