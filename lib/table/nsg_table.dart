@@ -1091,7 +1091,8 @@ class _NsgTableState extends State<NsgTable> {
                       }
                     },
                   ),
-                if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize)) //&& horizontalScrollEnabled)
+                if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize) &&
+                    !(visibleColumns.length == 1 && visibleColumns.first.expanded == true)) //&& horizontalScrollEnabled)
                   NsgTableMenuButton(
                     tooltip: 'Ширина колонок',
                     icon: NsgTableMenuButtonType.columnsSize.icon,
@@ -1465,6 +1466,7 @@ class _NsgTableState extends State<NsgTable> {
           // Если высота строк нефиксированная
           table.add(Flexible(
             child: Container(
+              width: double.infinity,
               child: crossWrap(Container(
                   padding: editMode == NsgTableEditMode.columnsWidth
                       ? const EdgeInsets.only(right: 500, bottom: 0)
