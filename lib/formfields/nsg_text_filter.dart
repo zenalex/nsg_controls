@@ -50,6 +50,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
 
     textController = TextEditingController();
     textController.addListener(() {});
+    textController.text = widget.controller.controllerFilter.searchString;
   }
 
   @override
@@ -63,8 +64,8 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
   @override
   Widget build(BuildContext context) {
     textScaleFactor = MediaQuery.of(context).textScaleFactor;
-    TextEditingController textController = TextEditingController();
-    textController.text = widget.controller.controllerFilter.searchString;
+//    TextEditingController textController = TextEditingController();
+//    textController.text = widget.controller.controllerFilter.searchString;
     var isFilterOpen = widget.isOpen ?? widget.controller.controllerFilter.isOpen;
 
     void setFilter() {
@@ -164,7 +165,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
   Widget _addClearIcon() {
     return NsgIconButton(
         onPressed: () {
-          textController.text = '';
+          textController.clear();
           widget.controller.controllerFilter.searchString = '';
           //widget.controller.refreshData();
           Future.delayed(const Duration(milliseconds: 10), () {
