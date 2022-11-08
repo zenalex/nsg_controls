@@ -29,11 +29,10 @@ class NsgTextFilter extends StatefulWidget {
   State<NsgTextFilter> createState() => _NsgTextFilterState();
 }
 
-late double textScaleFactor;
-FocusNode focus = FocusNode();
-late TextEditingController textController;
-
 class _NsgTextFilterState extends State<NsgTextFilter> {
+  late double textScaleFactor;
+  FocusNode focus = FocusNode();
+  late TextEditingController textController;
   @override
   void initState() {
     super.initState();
