@@ -98,7 +98,7 @@ class NsgButton extends StatelessWidget {
                           padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                           child: Text('$text',
                               maxLines: 1,
-                              overflow: TextOverflow.fade,
+                              overflow: TextOverflow.clip,
                               softWrap: false,
                               textAlign: TextAlign.center,
                               style: TextStyle(color: ControlOptions.instance.colorMainText)),
