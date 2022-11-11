@@ -10,7 +10,7 @@ import 'formfields/nsg_period_filter.dart';
 import 'formfields/nsg_text_filter.dart';
 import 'widgets/nsg_errorpage.dart';
 
-enum NsgListPageMode { list, grid, table }
+enum NsgListPageMode { list, grid, table, tree }
 
 ///Страница, отображающая данные из контроллера в форме списка
 ///Имеет функционал добавления и удаления элементов
@@ -192,10 +192,7 @@ class NsgListPage extends StatelessWidget {
                     }, onLoading: const SizedBox(), onError: (error) => const SizedBox()),*/
                     Expanded(
                       child: controller.obx(
-                          (state) => Container(
-                              key: GlobalKey(),
-                              padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
-                              child: _wrapTabs(child: _content())),
+                          (state) => Container(key: GlobalKey(), padding: const EdgeInsets.fromLTRB(0, 2, 0, 0), child: _wrapTabs(child: _content())),
                           onLoading: const NsgProgressBar(),
                           onError: (text) => NsgErrorPage(text: text)),
                     ),
@@ -268,21 +265,26 @@ class NsgListPage extends StatelessWidget {
   }
 
   int _crossAxisCount() {
-    double screenWidth =
-        Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
+    double screenWidth = Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
     return screenWidth ~/ gridCellMinWidth;
   }
 
   Widget _content() {
-    if (type == NsgListPageMode.list) {
+    if (type == NsgListPageMode.tree) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: ListView(
           children: [
-            FadeIn(
-                duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed),
-                curve: Curves.easeIn,
-                child: Column(children: _showItems())),
+            FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showTreeItems())),
+          ],
+        ),
+      );
+    } else if (type == NsgListPageMode.list) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: ListView(
+          children: [
+            FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
           ],
         ),
       );
@@ -342,9 +344,26 @@ class NsgListPage extends StatelessWidget {
       ));
     } else {
       for (var element in controller.items) {
-        list.add(InkWell(
-            onTap: () => _elementTap(element),
-            child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
+        list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
+      }
+    }
+    return list;
+  }
+
+  List<Widget> _showTreeItems() {
+    List<Widget> list = [];
+    if (controller.items.isEmpty) {
+      list.add(Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        child: Text(
+          textNoItems,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: ControlOptions.instance.colorText),
+        ),
+      ));
+    } else {
+      for (var element in controller.items) {
+        list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
       }
     }
     return list;

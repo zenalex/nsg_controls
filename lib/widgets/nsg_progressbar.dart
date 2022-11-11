@@ -71,33 +71,35 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 210,
-      height: 210,
-      child: Stack(
-        children: <Widget>[
-          Center(
-            child: CustomPaint(
-              key: GlobalKey(),
-              painter: OpenPainter(
-                  value: widget.percent == null ? _animation.value : widget.percent!.toDouble(),
-                  arc1: arc1,
-                  arc2: arc2,
-                  percent: widget.percent == null ? false : true),
-            ),
-          ),
-          Center(
-            child: Text(
-              widget.percent == null ? widget.text : '${widget.text} ${widget.percent}%',
-              style: const TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 1.2,
-                color: Colors.black87,
+    return Center(
+      child: SizedBox(
+        width: 210,
+        height: 210,
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: CustomPaint(
+                key: GlobalKey(),
+                painter: OpenPainter(
+                    value: widget.percent == null ? _animation.value : widget.percent!.toDouble(),
+                    arc1: arc1,
+                    arc2: arc2,
+                    percent: widget.percent == null ? false : true),
               ),
             ),
-          ),
-        ],
+            Center(
+              child: Text(
+                widget.percent == null ? widget.text : '${widget.text} ${widget.percent}%',
+                style: const TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.2,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
