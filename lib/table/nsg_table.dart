@@ -13,7 +13,6 @@ import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../formfields/nsg_period_filter.dart';
 import '../formfields/nsg_text_filter.dart';
-import '../widgets/nsg_errorpage.dart';
 import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
@@ -47,7 +46,8 @@ class NsgTable extends StatefulWidget {
       this.initialIsSearchStringOpen = false,
       this.removeVerticalScrollIfNotNeeded = false,
       this.userSettingsController,
-      this.userSettingsId = ''})
+      this.userSettingsId = '',
+      this.externaltableKey})
       : super(key: key);
 
   /// Фиксированная высота строки
@@ -104,6 +104,8 @@ class NsgTable extends StatefulWidget {
 
   /// Показывать или нет Header
   final bool showHeader;
+
+  final NsgUpdateKey? externaltableKey;
 
   /// Перечисление доступных для пользователя Кнопок управления таблицей
   /*
@@ -178,6 +180,7 @@ class _NsgTableState extends State<NsgTable> {
   late ScrollController scrollVert;
   late List<NsgTableColumn> tableColumns;
   late List<NsgDataItem> listRowsToDelete;
+  late NsgUpdateKey _updatetableKey;
 
   bool horizontalScrollEnabled = true;
 
@@ -264,14 +267,13 @@ class _NsgTableState extends State<NsgTable> {
     return showCell;
   }
 
-  late NsgUpdateKey _tableKey;
   //late NsgUpdateKey _tableRefreshKey;
 /* ---------------------- InitState таблицы. Присвоение значений переменным --------------------- */
   @override
   void initState() {
     super.initState();
-    _tableKey = widget.controller.getUpdateKey('nsg_table', NsgUpdateKeyType.list);
-    //_tableRefreshKey = widget.controller.getUpdateKey('nsg_table_refresh', NsgUpdateKeyType.list);
+    _updatetableKey = widget.externaltableKey ?? widget.controller.getUpdateKey('nsg_table ${Guid.newGuid()}', NsgUpdateKeyType.list);
+    widget.controller.registerUpdateKey(_updatetableKey);
     editModeLast = NsgTableEditMode.view;
     isMobile = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
     listRowsToDelete = [];
@@ -312,6 +314,7 @@ class _NsgTableState extends State<NsgTable> {
 
   @override
   void dispose() {
+    widget.controller.unregisterUpdateKey(_updatetableKey);
     scrollHor.dispose();
     scrollHorHeader.dispose();
     scrollHorResizers.dispose();
@@ -551,12 +554,14 @@ class _NsgTableState extends State<NsgTable> {
   @override
   Widget build(BuildContext context) {
     //print(">> Build table ${DateTime.now()}");
-    // return GetBuilder(
-    //     id: _tableKey,
-    //     init: widget.controller,
-    //     builder: (c)
-    return widget.controller.obx(
-      (state) {
+    return GetBuilder(
+      id: _updatetableKey,
+      init: widget.controller,
+      builder: (c)
+          //TODO: 1011
+          //return widget.controller.obx(
+          //(state)
+          {
         //if (widget.controller.currentStatus.isSuccess) {
         /// Если выбран режим "Избранное", вместо массива объектов, подставляем массив избранных объектов favorites
         if (editMode == NsgTableEditMode.favorites || editModeLast == NsgTableEditMode.favorites) {
@@ -681,7 +686,7 @@ class _NsgTableState extends State<NsgTable> {
                           name: column.name,
                           direction: (column.sort == NsgTableColumnSort.forward ? NsgSortingDirection.ascending : NsgSortingDirection.descending));
                     }
-                    widget.controller.refreshData();
+                    widget.controller.refreshData(keys: [_updatetableKey]);
                     setState(() {});
                   }
                 },
@@ -774,7 +779,7 @@ class _NsgTableState extends State<NsgTable> {
                               name: subcolumn.name,
                               direction: (subcolumn.sort == NsgTableColumnSort.forward ? NsgSortingDirection.ascending : NsgSortingDirection.descending));
                         }
-                        widget.controller.refreshData();
+                        widget.controller.refreshData(keys: [_updatetableKey]);
                         setState(() {});
                       }
                     },
@@ -816,7 +821,9 @@ class _NsgTableState extends State<NsgTable> {
         });
 
         /* -------------------------  Цикл построения ячеек таблицы (строки) --------------------------------------------------------------------------- */
-        if (items.isNotEmpty) {
+        if (widget.controller.currentStatus.isLoading) {
+          tableBody.add(const NsgProgressBar());
+        } else if (items.isNotEmpty) {
           for (var row in items) {
             List<Widget> tableRow = [];
             bool isSelected = false;
@@ -871,74 +878,75 @@ class _NsgTableState extends State<NsgTable> {
             }
 
             /* -------------------------  Цикл построения ячеек таблицы (колонки) ---------------------------------------------------------------------- */
-            visibleColumns.asMap().forEach((index, column) {
-              if (widget.showTotals) {
-                if (column.totalType == NsgTableColumnTotalType.sum) {
-                  column.totalSum += row[column.name];
-                } else if (column.totalType == NsgTableColumnTotalType.count) {
-                  column.totalSum += 1;
+            {
+              visibleColumns.asMap().forEach((index, column) {
+                if (widget.showTotals) {
+                  if (column.totalType == NsgTableColumnTotalType.sum) {
+                    column.totalSum += row[column.name];
+                  } else if (column.totalType == NsgTableColumnTotalType.count) {
+                    column.totalSum += 1;
+                  }
                 }
-              }
-              var isSelected = false;
-              if (listRowsToDelete.contains(row)) {
-                isSelected = true;
-              }
-              tableRow.add(widget.rowOnTap != null || widget.elementEditPageName != null
-                  ? wrapExpanded(
-                      child: InkWell(
-                          onTap: () {
-                            //Обработка события нажатия на строку
-                            if (editMode == NsgTableEditMode.view || editMode == NsgTableEditMode.recent || editMode == NsgTableEditMode.favorites) {
-                              if (widget.rowOnTap != null) {
-                                widget.rowOnTap!(row, column.name);
-                              } else {
-                                if (editMode == NsgTableEditMode.view) {
-                                  rowEdit(row);
+                var isSelected = false;
+                if (listRowsToDelete.contains(row)) {
+                  isSelected = true;
+                }
+                tableRow.add(widget.rowOnTap != null || widget.elementEditPageName != null
+                    ? wrapExpanded(
+                        child: InkWell(
+                            onTap: () {
+                              //Обработка события нажатия на строку
+                              if (editMode == NsgTableEditMode.view || editMode == NsgTableEditMode.recent || editMode == NsgTableEditMode.favorites) {
+                                if (widget.rowOnTap != null) {
+                                  widget.rowOnTap!(row, column.name);
+                                } else {
+                                  if (editMode == NsgTableEditMode.view) {
+                                    rowEdit(row);
+                                  }
                                 }
+                                // Добаввляем в последнее
+                                widget.controller.addRecent(row);
+                              } else if (editMode == NsgTableEditMode.rowDelete) {
+                                rowDelete(row);
+                              } else if (editMode == NsgTableEditMode.rowEdit) {
+                                rowEdit(row);
+                              } else if (editMode == NsgTableEditMode.rowCopy) {
+                                rowCopy(row);
                               }
-                              // Добаввляем в последнее
-                              widget.controller.addRecent(row);
-                            } else if (editMode == NsgTableEditMode.rowDelete) {
-                              rowDelete(row);
-                            } else if (editMode == NsgTableEditMode.rowEdit) {
-                              rowEdit(row);
-                            } else if (editMode == NsgTableEditMode.rowCopy) {
-                              rowCopy(row);
-                            }
-                          },
-                          onLongPress: () {
-                            var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(row) ?? '';
+                            },
+                            onLongPress: () {
+                              var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(row) ?? '';
 
-                            Get.dialog(
-                                NsgPopUp(
-                                    hideBackButton: true,
-                                    title: 'Данные ячейки',
-                                    contentTop: Padding(
-                                      padding: const EdgeInsets.all(15),
-                                      child: NsgText(
-                                        textValue,
-                                        type: NsgTextType.textL,
+                              Get.dialog(
+                                  NsgPopUp(
+                                      hideBackButton: true,
+                                      title: 'Данные ячейки',
+                                      contentTop: Padding(
+                                        padding: const EdgeInsets.all(15),
+                                        child: NsgText(
+                                          textValue,
+                                          type: NsgTextType.textL,
+                                        ),
                                       ),
-                                    ),
-                                    contentBottom: Center(
-                                      child: NsgButton(
-                                        width: 260,
-                                        icon: Icons.copy,
-                                        text: 'Скопировать в буфер',
-                                        onPressed: () {
-                                          Clipboard.setData(ClipboardData(text: textValue));
-                                          nsgSnackbar(text: 'Данные ячейки скопированы в буфер');
-                                        },
+                                      contentBottom: Center(
+                                        child: NsgButton(
+                                          width: 260,
+                                          icon: Icons.copy,
+                                          text: 'Скопировать в буфер',
+                                          onPressed: () {
+                                            Clipboard.setData(ClipboardData(text: textValue));
+                                            nsgSnackbar(text: 'Данные ячейки скопированы в буфер');
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                    onConfirm: () {
-                                      Get.back();
-                                    }),
-                                barrierDismissible: false);
-                          },
-                          onHover: (b) {
-                            /// Раскрашиваем строку в цет при наведении на неё - OnHover
-                            /*
+                                      onConfirm: () {
+                                        Get.back();
+                                      }),
+                                  barrierDismissible: false);
+                            },
+                            onHover: (b) {
+                              /// Раскрашиваем строку в цет при наведении на неё - OnHover
+                              /*
                       if (widget.selectCellOnHover == true) {
                         // Ячейке присваиваем isSelected
                         _selectedRow = row;
@@ -949,52 +957,53 @@ class _NsgTableState extends State<NsgTable> {
                         _selectedColumn = null;
                       }
                       */
-                            //setState(() {});
-                          },
-                          child: showCell(
-                              isFinal: row == items.last,
-                              height: widget.rowFixedHeight,
-                              align: column.verticalAlign ?? defaultRowAlign,
-                              backColor: column.getBackColor != null
-                                  ? column.getBackColor!(row, column)
-                                  : isSelected
-                                      ? ControlOptions.instance.colorMain.withOpacity(0.2)
-                                      : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
-                              width: column.width,
-                              child: _rowWidget(row, column),
-                              isSelected: row == _selectedRow && (_selectedColumn == null || _selectedColumn == column))),
-                      expanded: column.expanded,
-                      flex: column.flex)
-                  : wrapExpanded(
-                      child: showCell(
-                          isFinal: row == items.last,
-                          height: widget.rowFixedHeight,
-                          align: column.verticalAlign ?? defaultRowAlign,
-                          backColor: column.getBackColor != null
-                              ? column.getBackColor!(row, column)
-                              : isSelected
-                                  ? ControlOptions.instance.colorError.withOpacity(0.3)
-                                  : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
-                          width: column.width,
-                          child: _rowWidget(row, column)),
-                      expanded: column.expanded,
-                      flex: column.flex));
-            });
+                              //setState(() {});
+                            },
+                            child: showCell(
+                                isFinal: row == items.last,
+                                height: widget.rowFixedHeight,
+                                align: column.verticalAlign ?? defaultRowAlign,
+                                backColor: column.getBackColor != null
+                                    ? column.getBackColor!(row, column)
+                                    : isSelected
+                                        ? ControlOptions.instance.colorMain.withOpacity(0.2)
+                                        : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                                width: column.width,
+                                child: _rowWidget(row, column),
+                                isSelected: row == _selectedRow && (_selectedColumn == null || _selectedColumn == column))),
+                        expanded: column.expanded,
+                        flex: column.flex)
+                    : wrapExpanded(
+                        child: showCell(
+                            isFinal: row == items.last,
+                            height: widget.rowFixedHeight,
+                            align: column.verticalAlign ?? defaultRowAlign,
+                            backColor: column.getBackColor != null
+                                ? column.getBackColor!(row, column)
+                                : isSelected
+                                    ? ControlOptions.instance.colorError.withOpacity(0.3)
+                                    : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                            width: column.width,
+                            child: _rowWidget(row, column)),
+                        expanded: column.expanded,
+                        flex: column.flex));
+              });
 
-            /* --------------------------- Добавлени виджета строки в тело таблицы ------------------------------------------------------------------- */
-            var currentRow = NsgTableRow(
-                slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites) && !horizontalScrollEnabled ? true : false,
-                rowFixedHeight: widget.rowFixedHeight,
-                controller: widget.controller,
-                dataItem: row,
-                tableRow: tableRow,
-                rowStateList: widget.rowStateList,
-                rowStateCloseOthers: (item) {
-                  widget.closeAllSlidedKeepOne(item);
-                });
-            //tableRowList.add(currentRow);
+              /* --------------------------- Добавлени виджета строки в тело таблицы ------------------------------------------------------------------- */
+              var currentRow = NsgTableRow(
+                  slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites) && !horizontalScrollEnabled ? true : false,
+                  rowFixedHeight: widget.rowFixedHeight,
+                  controller: widget.controller,
+                  dataItem: row,
+                  tableRow: tableRow,
+                  rowStateList: widget.rowStateList,
+                  rowStateCloseOthers: (item) {
+                    widget.closeAllSlidedKeepOne(item);
+                  });
+              //tableRowList.add(currentRow);
 
-            tableBody.add(currentRow);
+              tableBody.add(currentRow);
+            }
           }
         }
 
@@ -1056,7 +1065,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Обновить таблицу',
                     icon: NsgTableMenuButtonType.refreshTable.icon,
                     onPressed: () {
-                      widget.controller.refreshData(keys: [_tableKey]);
+                      widget.controller.refreshData(keys: [_updatetableKey]);
                     },
                   ),
 
@@ -1132,7 +1141,7 @@ class _NsgTableState extends State<NsgTable> {
                       widget.controller.controllerFilter.isSearchStringFilterOpen = isSearchStringFilterOpen;
                       widget.controller.controllerFilter.isOpen = isSearchStringFilterOpen;
                       if (widget.controller.controllerFilter.searchString.isNotEmpty) {
-                        widget.controller.refreshData();
+                        widget.controller.refreshData(keys: [_updatetableKey]);
                       }
                       setState(() {});
                     },
@@ -1319,38 +1328,31 @@ class _NsgTableState extends State<NsgTable> {
 
 /* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
 
-        table.add(Container(
-          decoration: BoxDecoration(
-              border: Border(
-            left: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
-            right: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
-          )),
-          child: _rowcolumn(children: [
-            if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
-              _expanded(
-                child: NsgTextFilter(
-                  onSetFilter: () {
-                    setState(() {
-                      editModeLast = NsgTableEditMode.view;
-                      editMode = NsgTableEditMode.view;
-                    });
-                  },
-                  controller: widget.controller,
-                  isOpen: isSearchStringFilterOpen,
-                ),
+        table.add(_rowcolumn(children: [
+          if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+            _expanded(
+              child: NsgTextFilter(
+                onSetFilter: () {
+                  setState(() {
+                    editModeLast = NsgTableEditMode.view;
+                    editMode = NsgTableEditMode.view;
+                  });
+                },
+                controller: widget.controller,
+                isOpen: isSearchStringFilterOpen,
               ),
-            if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-              _expanded(
-                child: NsgPeriodFilter(
-                  //showCompact: isPeriodFilterOpen,
-                  key: GlobalKey(),
+            ),
+          if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+            _expanded(
+              child: NsgPeriodFilter(
+                //showCompact: isPeriodFilterOpen,
+                key: GlobalKey(),
 
-                  label: widget.periodFilterLabel,
-                  controller: widget.controller,
-                ),
+                label: widget.periodFilterLabel,
+                controller: widget.controller,
               ),
-          ]),
-        ));
+            ),
+        ]));
 /* ------------------------------- // Фильтры по Тексту и Периоду ------------------------------- */
 
         /// Если showHeader, то показываем Header
@@ -1465,7 +1467,7 @@ class _NsgTableState extends State<NsgTable> {
         if (widget.rowFixedHeight == null) {
           // Если высота строк нефиксированная
           table.add(Flexible(
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               child: crossWrap(Container(
                   padding: editMode == NsgTableEditMode.columnsWidth
@@ -1592,8 +1594,6 @@ class _NsgTableState extends State<NsgTable> {
           );
         });
       },
-      onLoading: const NsgProgressBar(),
-      onError: (error) => NsgErrorPage(text: error),
     );
 
     //    else if (widget.controller.currentStatus.isLoading) {
