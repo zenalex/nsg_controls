@@ -555,8 +555,11 @@ class _NsgTableState extends State<NsgTable> {
   Widget build(BuildContext context) {
     //print(">> Build table ${DateTime.now()}");
     return GetBuilder(
+      key: GlobalKey(),
       id: _updatetableKey,
       init: widget.controller,
+      assignId: true,
+      global: false,
       builder: (c)
           //TODO: 1011
           //return widget.controller.obx(

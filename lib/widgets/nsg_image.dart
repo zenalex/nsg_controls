@@ -149,8 +149,7 @@ class NsgImage extends StatelessWidget {
       this.noImage})
       : super(key: key) {
     if (masterSlaveMode) {
-      assert(masterFieldName.isNotEmpty,
-          'Если задан режим master-slave, masterFieldName не может быть пустым');
+      assert(masterFieldName.isNotEmpty, 'Если задан режим master-slave, masterFieldName не может быть пустым');
     } else {
       assert(item.getField(fieldName) is NsgDataImageField);
     }
@@ -172,20 +171,16 @@ class NsgImage extends StatelessWidget {
       if (masterSlaveMode) {
         var slaveName = slaveFieldName;
         if (slaveName.isEmpty) {
-          slaveName = NsgDataClient.client
-              .getNewObject(controller.dataType)
-              .primaryKeyField;
+          slaveName = NsgDataClient.client.getNewObject(controller.dataType).primaryKeyField;
         }
         if (controller.status.isLoading) {
           return const CircularProgressIndicator();
         }
-        imageItem = controller.items
-            .firstWhereOrNull((e) => e[slaveName] == item[masterFieldName]);
+        imageItem = controller.items.firstWhereOrNull((e) => e[slaveName] == item[masterFieldName]);
       }
 
       if (controller.lateImageRead && imageItem != null) {
-        controller.addImageToQueue(
-            ImageQueueParam(imageItem.id.toString(), fieldName));
+        controller.addImageToQueue(ImageQueueParam(imageItem.id.toString(), fieldName));
       }
 
       if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
@@ -234,32 +229,26 @@ class NsgImage extends StatelessWidget {
         if (masterSlaveMode) {
           var slaveName = slaveFieldName;
           if (slaveName.isEmpty) {
-            slaveName = NsgDataClient.client
-                .getNewObject(controller.dataType)
-                .primaryKeyField;
+            slaveName = NsgDataClient.client.getNewObject(controller.dataType).primaryKeyField;
           }
           if (controller.status.isLoading) {
             return const CircularProgressIndicator();
           }
-          imageItem = controller.items
-              .firstWhereOrNull((e) => e[slaveName] == item[masterFieldName]);
+          imageItem = controller.items.firstWhereOrNull((e) => e[slaveName] == item[masterFieldName]);
         }
 
-        if (controller.lateImageRead &&
-            imageItem != null &&
-            (imageItem[fieldName] as Uint8List).isEmpty) {
-          controller.addImageToQueue(
-              ImageQueueParam(imageItem.id.toString(), fieldName));
+        if (controller.lateImageRead && imageItem != null && (imageItem[fieldName] as Uint8List).isEmpty) {
+          controller.addImageToQueue(ImageQueueParam(imageItem.id.toString(), fieldName));
         }
         var builderId = imageItem == null ? '' : imageItem.id.toString();
         return GetBuilder(
             id: NsgUpdateKey(id: builderId, type: NsgUpdateKeyType.element),
             init: controller,
+            global: false,
             //autoRemove: true,
             //assignId: true,
             builder: (c) {
-              if (imageItem == null ||
-                  (imageItem[fieldName] as Uint8List).isEmpty) {
+              if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
                 return noImage ??
                     SizedBox(
                       width: width,
