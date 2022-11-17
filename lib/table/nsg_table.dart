@@ -1469,7 +1469,11 @@ class _NsgTableState extends State<NsgTable> {
                 padding: editMode == NsgTableEditMode.columnsWidth
                     ? const EdgeInsets.only(right: 500, bottom: 0)
                     : EdgeInsets.only(
-                        bottom: widget.controller.currentStatus.isLoading ? 0 : 16,
+                        bottom: widget.controller.currentStatus.isLoading
+                            ? 0
+                            : horizontalScrollEnabled
+                                ? 16
+                                : 0,
                         right: horizontalScrollEnabled
                             ? 0
                             : hasScrollbar
