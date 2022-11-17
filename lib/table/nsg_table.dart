@@ -421,17 +421,7 @@ class _NsgTableState extends State<NsgTable> {
                 scrollDirection: Axis.horizontal,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    child,
-                    Container(
-                      height: 16,
-                      decoration: BoxDecoration(
-                          color: ControlOptions.instance.colorMain,
-                          border: Border(
-                              bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
-                              left: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-                    )
-                  ],
+                  children: [child],
                 ),
               ),
             ),
@@ -824,9 +814,7 @@ class _NsgTableState extends State<NsgTable> {
         });
 
         /* -------------------------  Цикл построения ячеек таблицы (строки) --------------------------------------------------------------------------- */
-        if (widget.controller.currentStatus.isLoading) {
-          tableBody.add(const NsgProgressBar());
-        } else if (items.isNotEmpty) {
+        if (!widget.controller.currentStatus.isLoading && items.isNotEmpty) {
           for (var row in items) {
             List<Widget> tableRow = [];
             bool isSelected = false;
@@ -1331,31 +1319,38 @@ class _NsgTableState extends State<NsgTable> {
 
 /* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
 
-        table.add(_rowcolumn(children: [
-          if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
-            _expanded(
-              child: NsgTextFilter(
-                onSetFilter: () {
-                  setState(() {
-                    editModeLast = NsgTableEditMode.view;
-                    editMode = NsgTableEditMode.view;
-                  });
-                },
-                controller: widget.controller,
-                isOpen: isSearchStringFilterOpen,
+        table.add(Container(
+          decoration: BoxDecoration(
+              border: Border(
+            left: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
+            right: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
+          )),
+          child: _rowcolumn(children: [
+            if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+              _expanded(
+                child: NsgTextFilter(
+                  onSetFilter: () {
+                    setState(() {
+                      editModeLast = NsgTableEditMode.view;
+                      editMode = NsgTableEditMode.view;
+                    });
+                  },
+                  controller: widget.controller,
+                  isOpen: isSearchStringFilterOpen,
+                ),
               ),
-            ),
-          if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-            _expanded(
-              child: NsgPeriodFilter(
-                //showCompact: isPeriodFilterOpen,
-                key: GlobalKey(),
+            if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+              _expanded(
+                child: NsgPeriodFilter(
+                  //showCompact: isPeriodFilterOpen,
+                  key: GlobalKey(),
 
-                label: widget.periodFilterLabel,
-                controller: widget.controller,
+                  label: widget.periodFilterLabel,
+                  controller: widget.controller,
+                ),
               ),
-            ),
-        ]));
+          ]),
+        ));
 /* ------------------------------- // Фильтры по Тексту и Периоду ------------------------------- */
 
         /// Если showHeader, то показываем Header
@@ -1366,7 +1361,7 @@ class _NsgTableState extends State<NsgTable> {
                 padding: const EdgeInsets.all(0),
                 backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
                 color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
-                width: 16,
+                width: 18,
                 child: const SizedBox()));
           }
 
@@ -1470,26 +1465,23 @@ class _NsgTableState extends State<NsgTable> {
         if (widget.rowFixedHeight == null) {
           // Если высота строк нефиксированная
           table.add(Flexible(
-            child: SizedBox(
-              width: double.infinity,
-              child: crossWrap(Container(
-                  padding: editMode == NsgTableEditMode.columnsWidth
-                      ? const EdgeInsets.only(right: 500, bottom: 0)
-                      : EdgeInsets.only(
-                          bottom: 0,
-                          right: horizontalScrollEnabled
-                              ? 0
-                              : hasScrollbar
-                                  ? !isMobile
-                                      ? 16
-                                      : 0
-                                  : 0),
-                  //margin: EdgeInsets.only(bottom: 10, right: 10),
-                  //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
-            ),
+            child: crossWrap(Container(
+                padding: editMode == NsgTableEditMode.columnsWidth
+                    ? const EdgeInsets.only(right: 500, bottom: 0)
+                    : EdgeInsets.only(
+                        bottom: widget.controller.currentStatus.isLoading ? 0 : 16,
+                        right: horizontalScrollEnabled
+                            ? 0
+                            : hasScrollbar
+                                ? !isMobile
+                                    ? 16
+                                    : 0
+                                : 0),
+                //margin: EdgeInsets.only(bottom: 10, right: 10),
+                //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+                child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
           ));
-        } else {
+        } /* else {
           // Если высота строк фиксированная
           // FIXME проблема с бесконечной шириной - тут
           table.add(Flexible(
@@ -1540,6 +1532,17 @@ class _NsgTableState extends State<NsgTable> {
               ),
             ),
           ));
+        }*/
+
+/* ----------------------------------------------- Прогрессбар в процессе загрузки контента таблицы ----------------------------------------------- */
+        if (widget.controller.currentStatus.isLoading) {
+          table.add(Container(
+              decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+              child: const Center(
+                  child: Padding(
+                padding: EdgeInsets.only(top: 30, bottom: 30),
+                child: NsgProgressBar(),
+              ))));
         }
 
         // BUILD TABLE ------------------------------------------------------------------------------------------------------------------------------------------>
