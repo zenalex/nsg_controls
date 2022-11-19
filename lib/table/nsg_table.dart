@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_text.dart';
 import 'package:nsg_controls/table/nsg_table_column_total_type.dart';

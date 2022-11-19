@@ -211,7 +211,9 @@ class _NsgInputState extends State<NsgInput> {
         try {
           if (textController.text != text) {
             textController.text = text;
-            if (start != -1 && end != -1) textController.selection = TextSelection(baseOffset: start, extentOffset: end);
+            if (start != -1 && end != -1) {
+              textController.selection = TextSelection(baseOffset: start, extentOffset: end);
+            }
           }
         } finally {
           _ignoreChange = false;
@@ -248,7 +250,9 @@ class _NsgInputState extends State<NsgInput> {
       var sc = widget.selectionController ?? widget.dataItem.defaultController;
       if (sc == null) {
         assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
-        sc = NsgDefaultController(dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType);
+        sc = NsgDefaultController(
+            dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType,
+            controllerMode: NsgDataControllerMode(storageType: widget.dataItem.storageType));
       }
       selectionController = sc;
     }
@@ -470,7 +474,9 @@ class _NsgInputState extends State<NsgInput> {
           (item) {
             widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
             if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
-            if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+            if (widget.onEditingComplete != null) {
+              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+            }
             setState(() {});
             return null;
           },
@@ -485,7 +491,9 @@ class _NsgInputState extends State<NsgInput> {
           selectionController!.onSelected = null;
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
-          if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+          if (widget.onEditingComplete != null) {
+            widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+          }
           setState(() {});
         };
         Get.toNamed(widget.selectionForm);
@@ -499,7 +507,9 @@ class _NsgInputState extends State<NsgInput> {
         (item) {
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
-          if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+          if (widget.onEditingComplete != null) {
+            widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+          }
           setState(() {});
           return null;
         },
@@ -516,7 +526,9 @@ class _NsgInputState extends State<NsgInput> {
           (items) {
             widget.dataItem.setFieldValue(widget.fieldName, items);
             if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
-            if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+            if (widget.onEditingComplete != null) {
+              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+            }
             setState(() {});
           },
         );
@@ -524,7 +536,9 @@ class _NsgInputState extends State<NsgInput> {
     } else if (inputType == NsgInputType.dateValue) {
       NsgDatePicker(initialTime: widget.dataItem[widget.fieldName], onClose: (value) {}).showPopup(context, widget.dataItem[widget.fieldName], (value) {
         if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
-        if (widget.onEditingComplete != null) widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+        if (widget.onEditingComplete != null) {
+          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+        }
         widget.dataItem[widget.fieldName] = value;
         setState(() {});
       });
