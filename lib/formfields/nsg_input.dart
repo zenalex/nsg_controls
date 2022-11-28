@@ -327,7 +327,8 @@ class _NsgInputState extends State<NsgInput> {
                           ? widget.label + ' *'
                           : widget.label
                       : ' ',
-                  style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
+                  style:
+                      TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                 ),
                 _gestureWrap(
                   clearIcon: fieldValue.toString() != '',
@@ -335,7 +336,8 @@ class _NsgInputState extends State<NsgInput> {
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                     alignment: Alignment.center,
                     //height: widget.maxLines > 1 ? null : 24 * textScaleFactor,
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                    decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -343,8 +345,11 @@ class _NsgInputState extends State<NsgInput> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
-                              style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                              (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
+                                  ? widget.label + ' *'
+                                  : widget.label,
+                              style: TextStyle(
+                                  fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
                             ),
                           ),
                         if (widget.hint != null && focus.hasFocus && textController.text == '')
@@ -356,7 +361,9 @@ class _NsgInputState extends State<NsgInput> {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       widget.hint!,
-                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                      style: TextStyle(
+                                          fontSize: ControlOptions.instance.sizeM,
+                                          color: ControlOptions.instance.colorGrey),
                                     ),
                                   );
                                 } else {
@@ -406,7 +413,7 @@ class _NsgInputState extends State<NsgInput> {
                           ),
                           onFieldSubmitted: (string) {
                             if (widget.onEditingComplete != null) {
-                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                              //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                             }
                           },
                           style: TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
@@ -419,7 +426,8 @@ class _NsgInputState extends State<NsgInput> {
                 if (widget.validateText != '')
                   Text(
                     widget.validateText,
-                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                    style:
+                        TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
                   ),
               ],
             ));
@@ -501,7 +509,11 @@ class _NsgInputState extends State<NsgInput> {
     } else if (inputType == NsgInputType.enumReference) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
-      var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
+      var form = NsgSelection(
+          allValues: itemsArray,
+          selectedElement: enumItem,
+          rowWidget: widget.rowWidget,
+          inputType: NsgInputType.enumReference);
       form.selectFromArray(
         widget.label,
         (item) {
@@ -534,7 +546,8 @@ class _NsgInputState extends State<NsgInput> {
         );
       }
     } else if (inputType == NsgInputType.dateValue) {
-      NsgDatePicker(initialTime: widget.dataItem[widget.fieldName], onClose: (value) {}).showPopup(context, widget.dataItem[widget.fieldName], (value) {
+      NsgDatePicker(initialTime: widget.dataItem[widget.fieldName], onClose: (value) {})
+          .showPopup(context, widget.dataItem[widget.fieldName], (value) {
         if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
         if (widget.onEditingComplete != null) {
           widget.onEditingComplete!(widget.dataItem, widget.fieldName);

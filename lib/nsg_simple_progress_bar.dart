@@ -10,10 +10,10 @@ class NsgSimpleProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        width: size ?? 100.0,
-        height: size ?? 100.0,
+        width: size ?? 30.0,
+        height: size ?? 30.0,
         child: CircularProgressIndicator(
-          strokeWidth: width ?? 4,
+          strokeWidth: width ?? 2,
           backgroundColor: ControlOptions.instance.colorMain,
           valueColor: AlwaysStoppedAnimation<Color>(ControlOptions.instance.colorMainLighter),
         ),
