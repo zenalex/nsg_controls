@@ -540,11 +540,12 @@ class _NsgTableState extends State<NsgTable> {
   }
 
 /* ------------------------------------------------------------- BUILD виджета таблицы ------------------------------------------------------------ */
+  var bkey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     //print(">> Build table ${DateTime.now()}");
     return GetBuilder(
-      key: GlobalKey(),
+      key: bkey,
       id: _updatetableKey,
       init: widget.controller,
       assignId: true,
