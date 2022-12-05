@@ -34,6 +34,7 @@ class NsgTableRowState extends State<NsgTableRow> {
   double _translateX = 0;
   bool _opened = false;
   late bool isFavorite;
+  List<NsgDataItem> favorites = [];
 
   void slideClose() {
     _translateX = 0;
@@ -41,10 +42,15 @@ class NsgTableRowState extends State<NsgTableRow> {
     setState(() {});
   }
 
+  getFavorites() async {
+    return await widget.controller.getFavorites();
+  }
+
   @override
   void initState() {
     super.initState();
     widget.rowStateList.add(this);
+    favorites = getFavorites();
   }
 
   @override
@@ -55,7 +61,8 @@ class NsgTableRowState extends State<NsgTableRow> {
 
   @override
   Widget build(BuildContext context) {
-    isFavorite = widget.controller.favorites.contains(widget.dataItem);
+    isFavorite = favorites.contains(widget.dataItem);
+    // isFavorite = widget.controller.favorites.contains(widget.dataItem);
 
     if (!widget.slideEnable) {
       return intrinsicHeight(child: block());

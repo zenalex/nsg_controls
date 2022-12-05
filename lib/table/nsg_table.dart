@@ -558,7 +558,7 @@ class _NsgTableState extends State<NsgTable> {
         //if (widget.controller.currentStatus.isSuccess) {
         /// Если выбран режим "Избранное", вместо массива объектов, подставляем массив избранных объектов favorites
         if (editMode == NsgTableEditMode.favorites || editModeLast == NsgTableEditMode.favorites) {
-          items = widget.controller.favorites;
+          //items = widget.controller.favorites; // TODO вернуть после изменения избранного
         } else if (editMode == NsgTableEditMode.recent || editModeLast == NsgTableEditMode.recent) {
           items = widget.controller.recent;
         } else {
