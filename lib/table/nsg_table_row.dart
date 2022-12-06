@@ -42,15 +42,16 @@ class NsgTableRowState extends State<NsgTableRow> {
     setState(() {});
   }
 
-  // Future<List<T>> getFavorites() async {
-  //   return await widget.controller.getFavorites();
-  // }
+  Future getFavorites() async {
+    favorites = await widget.controller.getFavorites();
+  }
 
   @override
   void initState() {
     super.initState();
     widget.rowStateList.add(this);
-    //favorites = getFavorites();
+    //TODO: добавить учет состояния загружены ли данные в отображение
+    getFavorites();
   }
 
   @override
