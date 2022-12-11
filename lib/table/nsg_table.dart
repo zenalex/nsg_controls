@@ -553,7 +553,7 @@ class _NsgTableState extends State<NsgTable> {
       builder: (c) {
         /// Если выбран режим "Избранное", вместо массива объектов, подставляем массив избранных объектов favorites
         if (editMode == NsgTableEditMode.favorites || editModeLast == NsgTableEditMode.favorites) {
-          //items = widget.controller.favorites; // TODO вернуть после изменения избранного
+          items = widget.controller.favorites;
         } else if (editMode == NsgTableEditMode.recent || editModeLast == NsgTableEditMode.recent) {
           items = widget.controller.recent;
         } else {
@@ -813,7 +813,7 @@ class _NsgTableState extends State<NsgTable> {
           for (var row in items) {
             List<Widget> tableRow = [];
             bool isSelected = false;
-            //bool isFavorite = widget.controller.favorites.contains(row);
+            bool isFavorite = widget.controller.favorites.contains(row);
             if (listRowsToDelete.contains(row)) {
               isSelected = true;
             }
@@ -977,7 +977,9 @@ class _NsgTableState extends State<NsgTable> {
 
               /* --------------------------- Добавлени виджета строки в тело таблицы ------------------------------------------------------------------- */
               var currentRow = NsgTableRow(
-                  slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites) && !horizontalScrollEnabled ? true : false,
+                  //TODO: Андрей
+                  //slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites) && !horizontalScrollEnabled,
+                  slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites),
                   rowFixedHeight: widget.rowFixedHeight,
                   controller: widget.controller,
                   dataItem: row,
@@ -1568,7 +1570,7 @@ class _NsgTableState extends State<NsgTable> {
                     Container(
                       margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
                       child: SingleChildScrollView(
-                        controller: scrollHorResizers,
+                        controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
                         scrollDirection: Axis.horizontal,
                         child: ResizeLines(
                             expandedColumnsCount: expandedColumnsCount,
