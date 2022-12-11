@@ -1570,7 +1570,7 @@ class _NsgTableState extends State<NsgTable> {
                     Container(
                       margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
                       child: SingleChildScrollView(
-                        controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
+                        controller: scrollHorResizers,
                         scrollDirection: Axis.horizontal,
                         child: ResizeLines(
                             expandedColumnsCount: expandedColumnsCount,
