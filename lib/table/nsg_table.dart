@@ -550,12 +550,7 @@ class _NsgTableState extends State<NsgTable> {
       init: widget.controller,
       assignId: true,
       global: false,
-      builder: (c)
-          //TODO: 1011
-          //return widget.controller.obx(
-          //(state)
-          {
-        //if (widget.controller.currentStatus.isSuccess) {
+      builder: (c) {
         /// Если выбран режим "Избранное", вместо массива объектов, подставляем массив избранных объектов favorites
         if (editMode == NsgTableEditMode.favorites || editModeLast == NsgTableEditMode.favorites) {
           //items = widget.controller.favorites; // TODO вернуть после изменения избранного
@@ -1573,7 +1568,7 @@ class _NsgTableState extends State<NsgTable> {
                     Container(
                       margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
                       child: SingleChildScrollView(
-                        controller: scrollHorResizers, // TODO выдаёт ошибку multiple скроллконтроллеров при SetState
+                        controller: scrollHorResizers,
                         scrollDirection: Axis.horizontal,
                         child: ResizeLines(
                             expandedColumnsCount: expandedColumnsCount,
