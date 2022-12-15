@@ -400,8 +400,7 @@ class NsgListPage extends StatelessWidget {
               ? null
               : appBarOnPressed2 ??
                   () {
-                    controller.createNewItemAsync();
-                    Get.toNamed(elementEditPage);
+                    controller.newItemPageOpen(pageName: elementEditPage);
                   },
 
           /// Фильтр
