@@ -30,6 +30,10 @@ class NsgTable extends StatefulWidget {
       this.columns = const [],
       this.periodFilterLabel = "Фильтр по периоду",
       this.showBoolIconsWithMonochromeColors = false,
+      this.iconTrue = Icons.check,
+      this.iconFalse = Icons.close,
+      this.showIconTrue = true,
+      this.showIconFalse = true,
       this.selectCellOnHover = false,
       this.headerBackColor,
       this.headerColor,
@@ -96,6 +100,14 @@ class NsgTable extends StatefulWidget {
 
   /// Отображать цвета иконок булов в Ч/Б
   final bool showBoolIconsWithMonochromeColors;
+
+  /// Виджет для иконок 'True' и 'False'
+  final IconData iconTrue;
+  final IconData iconFalse;
+
+  /// Показывать или нет иконки 'True' и 'False'
+  final bool showIconTrue;
+  final bool showIconFalse;
 
   /// Функция, срабатывающая при нажатии на строку заголовка
   /// Если обработчик вернет true - это остановит дальнейшую обработку события
@@ -1707,11 +1719,15 @@ class _NsgTableState extends State<NsgTable> {
       /// Если Bool
     } else if (field is NsgDataBoolField) {
       if (fieldkey == true) {
-        icon = Icon(Icons.check,
-            color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorConfirmed, size: 24);
+        icon = widget.showIconTrue == false
+            ? SizedBox()
+            : Icon(widget.iconTrue,
+                color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorConfirmed, size: 24);
       } else if (fieldkey == false) {
-        icon = Icon(Icons.close,
-            color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorError, size: 24);
+        icon = widget.showIconFalse == false
+            ? SizedBox()
+            : Icon(widget.iconFalse,
+                color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorError, size: 24);
       }
 
       /// Если другой вид поля
