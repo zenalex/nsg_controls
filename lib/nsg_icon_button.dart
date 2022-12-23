@@ -5,14 +5,16 @@ class NsgIconButton extends StatefulWidget {
   final VoidCallback onPressed;
   final IconData icon;
   final double size;
-  const NsgIconButton({Key? key, required this.icon, required this.onPressed, this.size = 16}) : super(key: key);
+  Color? color;
+  Color? backColor;
+  NsgIconButton({Key? key, required this.icon, required this.onPressed, this.color, this.backColor, this.size = 16}) : super(key: key);
 
   @override
   State<NsgIconButton> createState() => _NsgIconButtonState();
 }
 
 class _NsgIconButtonState extends State<NsgIconButton> {
-  Color _color = ControlOptions.instance.colorMain.withOpacity(0.5);
+  double opac = 1;
 
   @override
   void initState() {
@@ -22,24 +24,31 @@ class _NsgIconButtonState extends State<NsgIconButton> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 24,
-      height: 24,
+      width: 36,
+      height: 36,
       child: InkWell(
         focusColor: Colors.transparent,
         hoverColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onHover: (hover) {
-          _color = hover == true ? ControlOptions.instance.colorMain.withOpacity(1) : ControlOptions.instance.colorMain.withOpacity(0.5);
+          opac = hover == true ? 0.5 : 1;
           setState(() {});
         },
         onTap: () {
           widget.onPressed();
         },
         child: Center(
-          child: Icon(
-            widget.icon,
-            size: widget.size,
-            color: _color,
+          child: Opacity(
+            opacity: opac,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: widget.backColor ?? Colors.transparent),
+              child: Icon(
+                widget.icon,
+                size: widget.size,
+                color: widget.color ?? ControlOptions.instance.colorMain,
+              ),
+            ),
           ),
         ),
       ),
