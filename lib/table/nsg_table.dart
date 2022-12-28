@@ -311,13 +311,15 @@ class _NsgTableState extends State<NsgTable> {
     }
 
     /// Выставляем режим просмотра таблицы в "Избранное" или "Просмотр"
-    /*if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
+    if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
       editMode = NsgTableEditMode.recent;
       isSearchStringFilterOpen = true;
+      widget.controller.controllerFilter.isOpen = true;
+      widget.controller.controllerFilter.isSearchStringFilterOpen = true;
     } else {
       editMode = NsgTableEditMode.view;
-    }*/ // TODO вернуть обратно после обновления контроллера внутри таблицы
-    editMode = NsgTableEditMode.view;
+    }
+    //editMode = NsgTableEditMode.view;
     editModeLast = editMode;
 
     setInitialSorting();
@@ -825,7 +827,7 @@ class _NsgTableState extends State<NsgTable> {
           for (var row in items) {
             List<Widget> tableRow = [];
             bool isSelected = false;
-            bool isFavorite = widget.controller.favorites.contains(row);
+            //bool isFavorite = widget.controller.favorites.contains(row);
             if (listRowsToDelete.contains(row)) {
               isSelected = true;
             }
@@ -1342,6 +1344,7 @@ class _NsgTableState extends State<NsgTable> {
                 },
                 controller: widget.controller,
                 isOpen: isSearchStringFilterOpen,
+                updateKey: [_updatetableKey],
               ),
             ),
           if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
@@ -1722,12 +1725,12 @@ class _NsgTableState extends State<NsgTable> {
     } else if (field is NsgDataBoolField) {
       if (fieldkey == true) {
         icon = widget.showIconTrue == false
-            ? SizedBox()
+            ? const SizedBox()
             : Icon(widget.iconTrue,
                 color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorConfirmed, size: 24);
       } else if (fieldkey == false) {
         icon = widget.showIconFalse == false
-            ? SizedBox()
+            ? const SizedBox()
             : Icon(widget.iconFalse,
                 color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorError, size: 24);
       }

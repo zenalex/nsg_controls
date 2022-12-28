@@ -1,7 +1,6 @@
 // импорт
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'nsg_control_options.dart';
 
@@ -83,7 +82,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
   }
 
   Widget _widgetData() {
-    var mediaQuery = MediaQuery.of(context);
+    //var mediaQuery = MediaQuery.of(context);
     return AnimatedContainer(
       //padding: mediaQuery.viewInsets,
       padding: EdgeInsets.zero,

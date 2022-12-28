@@ -15,7 +15,8 @@ class NsgTextFilter extends StatefulWidget {
       this.required = false,
       required this.controller,
       this.isOpen,
-      this.onSetFilter})
+      this.onSetFilter,
+      this.updateKey})
       : super(key: key);
 
   final NsgDataController controller;
@@ -24,6 +25,7 @@ class NsgTextFilter extends StatefulWidget {
   final String label;
   final bool required;
   final EdgeInsets margin;
+  final List<NsgUpdateKey>? updateKey;
 
   @override
   State<NsgTextFilter> createState() => _NsgTextFilterState();
@@ -72,7 +74,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
       if (widget.controller.controllerFilter.searchString != textController.text || widget.controller.controllerFilter.searchString == '') {
         widget.controller.controllerFilter.searchString = textController.text;
         //controller.controllerFilter.refreshControllerWithDelay();
-        widget.controller.refreshData();
+        widget.controller.refreshData(keys: widget.updateKey);
         if (widget.onSetFilter != null) widget.onSetFilter!();
       } else {
         nsgSnackbar(text: 'Фильтр по тексту не изменился', type: NsgSnarkBarType.warning);
