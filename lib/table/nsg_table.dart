@@ -903,7 +903,9 @@ class _NsgTableState extends State<NsgTable> {
                                   }
                                 }
                                 // Добаввляем в последнее
-                                widget.controller.addRecent(row);
+                                if (widget.availableButtons.contains(NsgTableMenuButtonType.recent)) {
+                                  widget.controller.addRecent(row);
+                                }
                               } else if (editMode == NsgTableEditMode.rowDelete) {
                                 rowDelete(row);
                               } else if (editMode == NsgTableEditMode.rowEdit) {
