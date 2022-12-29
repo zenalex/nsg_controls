@@ -1024,6 +1024,7 @@ class _NsgTableState extends State<NsgTable> {
                       tooltip: 'Добавить строку',
                       icon: NsgTableMenuButtonType.createNewElement.icon,
                       onPressed: () {
+                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.createNewElement.toString());
                         if (widget.elementEditPageName != null) {
                           widget.controller.itemNewPageOpen(widget.elementEditPageName!);
                         }
@@ -1034,6 +1035,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Редактировать строку',
                     icon: NsgTableMenuButtonType.editElement.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.editElement.toString());
                       setState(() {
                         editModeLast = editMode;
                         editMode = NsgTableEditMode.rowEdit;
@@ -1045,6 +1047,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Копировать строку',
                     icon: NsgTableMenuButtonType.copyElement.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.copyElement.toString());
                       setState(() {
                         editModeLast = editMode;
                         editMode = NsgTableEditMode.rowCopy;
@@ -1056,6 +1059,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Удалить строку',
                     icon: NsgTableMenuButtonType.removeElement.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.removeElement.toString());
                       // Обнуляем массив строк на удаление
                       listRowsToDelete = [];
                       setState(() {
@@ -1069,6 +1073,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Обновить таблицу',
                     icon: NsgTableMenuButtonType.refreshTable.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.refreshTable.toString());
                       widget.controller.refreshData(keys: [_updatetableKey]);
                     },
                   ),
@@ -1078,6 +1083,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Отображение колонок',
                     icon: NsgTableMenuButtonType.columnsSelect.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.columnsSelect.toString());
                       if (widget.userSettingsController != null) {
                         Get.dialog(
                             NsgPopUp(
@@ -1110,6 +1116,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Ширина колонок',
                     icon: NsgTableMenuButtonType.columnsSize.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.columnsSize.toString());
                       horizontalScrollEnabled = true;
                       editModeLast = editMode;
                       editMode = NsgTableEditMode.columnsWidth;
@@ -1141,6 +1148,7 @@ class _NsgTableState extends State<NsgTable> {
                     backColor: isSearchStringFilterOpen ? ControlOptions.instance.colorMainDark : null,
                     icon: isSearchStringFilterOpen ? Icons.filter_alt : NsgTableMenuButtonType.filterText.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.filterText.toString());
                       isSearchStringFilterOpen = !isSearchStringFilterOpen;
                       widget.controller.controllerFilter.isSearchStringFilterOpen = isSearchStringFilterOpen;
                       widget.controller.controllerFilter.isOpen = isSearchStringFilterOpen;
@@ -1157,6 +1165,7 @@ class _NsgTableState extends State<NsgTable> {
                     backColor: isPeriodFilterOpen ? ControlOptions.instance.colorMainDark : null,
                     icon: isPeriodFilterOpen ? Icons.date_range : NsgTableMenuButtonType.filterPeriod.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.filterPeriod.toString());
                       isPeriodFilterOpen = !isPeriodFilterOpen;
                       setState(() {});
                     },
@@ -1167,6 +1176,7 @@ class _NsgTableState extends State<NsgTable> {
                     backColor: editMode == NsgTableEditMode.recent ? ControlOptions.instance.colorMainDark : null,
                     icon: editMode == NsgTableEditMode.recent ? Icons.history : NsgTableMenuButtonType.recent.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.recent.toString());
                       setState(() {
                         if (editMode != NsgTableEditMode.recent) {
                           editModeLast = NsgTableEditMode.recent;
@@ -1184,6 +1194,7 @@ class _NsgTableState extends State<NsgTable> {
                     backColor: editMode == NsgTableEditMode.favorites ? ControlOptions.instance.colorMainDark : null,
                     icon: editMode == NsgTableEditMode.favorites ? Icons.star : NsgTableMenuButtonType.favorites.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.favorites.toString());
                       setState(() {
                         widget.closeAllSlided(tableRowList);
                         if (editMode != NsgTableEditMode.favorites) {
