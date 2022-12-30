@@ -11,11 +11,16 @@ class NsgTextType {
   static NsgTextType h1 = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.w500));
   static NsgTextType h2 = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.w500));
   static NsgTextType h3 = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500));
-  static NsgTextType textXL = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.normal));
-  static NsgTextType textL = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.normal));
-  static NsgTextType text = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.normal));
-  static NsgTextType textS = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeS, fontWeight: FontWeight.normal));
-  static NsgTextType textXS = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXS, fontWeight: FontWeight.normal));
+  static NsgTextType textXL =
+      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.normal));
+  static NsgTextType textL =
+      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.normal));
+  static NsgTextType text =
+      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.normal));
+  static NsgTextType textS =
+      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeS, fontWeight: FontWeight.normal));
+  static NsgTextType textXS =
+      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXS, fontWeight: FontWeight.normal));
 }
 
 class NsgTextStyle {
@@ -29,6 +34,7 @@ class NsgTextStyle {
 
 class NsgText extends StatelessWidget {
   final EdgeInsets margin;
+  final EdgeInsets padding;
   final int? maxLines;
   final TextOverflow? overflow;
   final Color? color;
@@ -38,7 +44,16 @@ class NsgText extends StatelessWidget {
   final NsgTextStyle? style;
   final TextAlign? textAlign;
   const NsgText(this.text,
-      {Key? key, this.margin = EdgeInsets.zero, this.overflow, this.maxLines, this.color, this.backColor, this.type, this.style, this.textAlign})
+      {Key? key,
+      this.margin = EdgeInsets.zero,
+      this.padding = const EdgeInsets.all(2),
+      this.overflow,
+      this.maxLines,
+      this.color,
+      this.backColor,
+      this.type,
+      this.style,
+      this.textAlign})
       : super(key: key);
 
   @override
@@ -49,6 +64,10 @@ class NsgText extends StatelessWidget {
     mergedStyle = mergedStyle.merge(_type.style);
     if (style != null) mergedStyle = mergedStyle.merge(style!.style);
     mergedStyle = mergedStyle.merge(TextStyle(color: color));
+
+    mergedStyle = mergedStyle.merge(const TextStyle(
+      overflow: TextOverflow.ellipsis,
+    ));
     return GestureDetector(
         onLongPress: () {
           Clipboard.setData(ClipboardData(text: text));
@@ -77,19 +96,16 @@ class NsgText extends StatelessWidget {
                     textAlign: textAlign,
                     style: mergedStyle,
                     maxLines: maxLines,
-
-                    //overflow: overflow,
                   ),
                 ),
               )
             : Container(
                 margin: margin,
-                padding: const EdgeInsets.all(2),
+                padding: padding,
                 decoration: BoxDecoration(color: backColor),
-                child: Text(
+                child: SelectableText(
                   text,
                   textAlign: textAlign,
-                  overflow: TextOverflow.visible,
                   maxLines: maxLines,
                   style: mergedStyle,
                 )));
