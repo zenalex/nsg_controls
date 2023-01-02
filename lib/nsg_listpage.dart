@@ -429,6 +429,7 @@ class NsgListPage extends StatelessWidget {
         controller.itemPageOpen(element, elementEditPage, needRefreshSelectedItem: true);
       } else {
         if (controller.onSelected != null) {
+          NsgMetrica.reportEvent('select element', map: {'type': element.typeName});
           controller.onSelected!(element);
         } else {
           Get.back();

@@ -311,13 +311,15 @@ class _NsgTableState extends State<NsgTable> {
     }
 
     /// Выставляем режим просмотра таблицы в "Избранное" или "Просмотр"
-    /*if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
+    if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
       editMode = NsgTableEditMode.recent;
       isSearchStringFilterOpen = true;
+      widget.controller.controllerFilter.isOpen = true;
+      widget.controller.controllerFilter.isSearchStringFilterOpen = true;
     } else {
       editMode = NsgTableEditMode.view;
-    }*/ // TODO вернуть обратно после обновления контроллера внутри таблицы
-    editMode = NsgTableEditMode.view;
+    }
+    //editMode = NsgTableEditMode.view;
     editModeLast = editMode;
 
     setInitialSorting();
@@ -825,7 +827,7 @@ class _NsgTableState extends State<NsgTable> {
           for (var row in items) {
             List<Widget> tableRow = [];
             bool isSelected = false;
-            bool isFavorite = widget.controller.favorites.contains(row);
+            //bool isFavorite = widget.controller.favorites.contains(row);
             if (listRowsToDelete.contains(row)) {
               isSelected = true;
             }
@@ -903,7 +905,9 @@ class _NsgTableState extends State<NsgTable> {
                                   }
                                 }
                                 // Добаввляем в последнее
-                                widget.controller.addRecent(row);
+                                if (widget.availableButtons.contains(NsgTableMenuButtonType.recent)) {
+                                  widget.controller.addRecent(row);
+                                }
                               } else if (editMode == NsgTableEditMode.rowDelete) {
                                 rowDelete(row);
                               } else if (editMode == NsgTableEditMode.rowEdit) {
@@ -1020,6 +1024,7 @@ class _NsgTableState extends State<NsgTable> {
                       tooltip: 'Добавить строку',
                       icon: NsgTableMenuButtonType.createNewElement.icon,
                       onPressed: () {
+                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.createNewElement.toString());
                         if (widget.elementEditPageName != null) {
                           widget.controller.itemNewPageOpen(widget.elementEditPageName!);
                         }
@@ -1030,6 +1035,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Редактировать строку',
                     icon: NsgTableMenuButtonType.editElement.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.editElement.toString());
                       setState(() {
                         editModeLast = editMode;
                         editMode = NsgTableEditMode.rowEdit;
@@ -1041,6 +1047,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Копировать строку',
                     icon: NsgTableMenuButtonType.copyElement.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.copyElement.toString());
                       setState(() {
                         editModeLast = editMode;
                         editMode = NsgTableEditMode.rowCopy;
@@ -1052,6 +1059,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Удалить строку',
                     icon: NsgTableMenuButtonType.removeElement.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.removeElement.toString());
                       // Обнуляем массив строк на удаление
                       listRowsToDelete = [];
                       setState(() {
@@ -1065,6 +1073,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Обновить таблицу',
                     icon: NsgTableMenuButtonType.refreshTable.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.refreshTable.toString());
                       widget.controller.refreshData(keys: [_updatetableKey]);
                     },
                   ),
@@ -1074,6 +1083,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Отображение колонок',
                     icon: NsgTableMenuButtonType.columnsSelect.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.columnsSelect.toString());
                       if (widget.userSettingsController != null) {
                         Get.dialog(
                             NsgPopUp(
@@ -1106,6 +1116,7 @@ class _NsgTableState extends State<NsgTable> {
                     tooltip: 'Ширина колонок',
                     icon: NsgTableMenuButtonType.columnsSize.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.columnsSize.toString());
                       horizontalScrollEnabled = true;
                       editModeLast = editMode;
                       editMode = NsgTableEditMode.columnsWidth;
@@ -1137,6 +1148,7 @@ class _NsgTableState extends State<NsgTable> {
                     backColor: isSearchStringFilterOpen ? ControlOptions.instance.colorMainDark : null,
                     icon: isSearchStringFilterOpen ? Icons.filter_alt : NsgTableMenuButtonType.filterText.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.filterText.toString());
                       isSearchStringFilterOpen = !isSearchStringFilterOpen;
                       widget.controller.controllerFilter.isSearchStringFilterOpen = isSearchStringFilterOpen;
                       widget.controller.controllerFilter.isOpen = isSearchStringFilterOpen;
@@ -1153,6 +1165,7 @@ class _NsgTableState extends State<NsgTable> {
                     backColor: isPeriodFilterOpen ? ControlOptions.instance.colorMainDark : null,
                     icon: isPeriodFilterOpen ? Icons.date_range : NsgTableMenuButtonType.filterPeriod.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.filterPeriod.toString());
                       isPeriodFilterOpen = !isPeriodFilterOpen;
                       setState(() {});
                     },
@@ -1163,6 +1176,7 @@ class _NsgTableState extends State<NsgTable> {
                     backColor: editMode == NsgTableEditMode.recent ? ControlOptions.instance.colorMainDark : null,
                     icon: editMode == NsgTableEditMode.recent ? Icons.history : NsgTableMenuButtonType.recent.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.recent.toString());
                       setState(() {
                         if (editMode != NsgTableEditMode.recent) {
                           editModeLast = NsgTableEditMode.recent;
@@ -1180,6 +1194,7 @@ class _NsgTableState extends State<NsgTable> {
                     backColor: editMode == NsgTableEditMode.favorites ? ControlOptions.instance.colorMainDark : null,
                     icon: editMode == NsgTableEditMode.favorites ? Icons.star : NsgTableMenuButtonType.favorites.icon,
                     onPressed: () {
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.favorites.toString());
                       setState(() {
                         widget.closeAllSlided(tableRowList);
                         if (editMode != NsgTableEditMode.favorites) {
@@ -1340,6 +1355,7 @@ class _NsgTableState extends State<NsgTable> {
                 },
                 controller: widget.controller,
                 isOpen: isSearchStringFilterOpen,
+                updateKey: [_updatetableKey],
               ),
             ),
           if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
@@ -1720,12 +1736,12 @@ class _NsgTableState extends State<NsgTable> {
     } else if (field is NsgDataBoolField) {
       if (fieldkey == true) {
         icon = widget.showIconTrue == false
-            ? SizedBox()
+            ? const SizedBox()
             : Icon(widget.iconTrue,
                 color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorConfirmed, size: 24);
       } else if (fieldkey == false) {
         icon = widget.showIconFalse == false
-            ? SizedBox()
+            ? const SizedBox()
             : Icon(widget.iconFalse,
                 color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorError, size: 24);
       }

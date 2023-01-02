@@ -43,7 +43,7 @@ class NsgTableRowState extends State<NsgTableRow> {
   }
 
   Future getFavorites() async {
-    favorites = await widget.controller.getFavorites();
+    favorites = widget.controller.favorites;
   }
 
   @override
