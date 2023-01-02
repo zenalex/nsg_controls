@@ -158,7 +158,9 @@ class _NsgInputState extends State<NsgInput> {
   PhoneInputFormatter phoneFormatter = PhoneInputFormatter();
   bool _disabled = false;
   late TextEditingController textController;
-  get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
+  get useSelectionController =>
+      inputType == NsgInputType.reference ||
+      inputType == NsgInputType.referenceList;
 
   bool _ignoreChange = false;
 
@@ -186,7 +188,8 @@ class _NsgInputState extends State<NsgInput> {
       keyboard = TextInputType.number;
     } else if (widget.dataItem.getField(widget.fieldName) is NsgDataIntField) {
       keyboard = TextInputType.number;
-    } else if (inputType == NsgInputType.stringValue && widget.maskType == NsgInputMaskType.car) {
+    } else if (inputType == NsgInputType.stringValue &&
+        widget.maskType == NsgInputMaskType.car) {
       keyboard = TextInputType.number;
     }
 
@@ -212,7 +215,8 @@ class _NsgInputState extends State<NsgInput> {
           if (textController.text != text) {
             textController.text = text;
             if (start != -1 && end != -1) {
-              textController.selection = TextSelection(baseOffset: start, extentOffset: end);
+              textController.selection =
+                  TextSelection(baseOffset: start, extentOffset: end);
             }
           }
         } finally {
@@ -233,13 +237,15 @@ class _NsgInputState extends State<NsgInput> {
           try {
             textController.text = text;
             if (start != -1 && end != -1) {
-              textController.selection = TextSelection(baseOffset: start, extentOffset: end);
+              textController.selection =
+                  TextSelection(baseOffset: start, extentOffset: end);
             }
           } finally {
             _ignoreChange = false;
           }
         }
-        widget.dataItem.setFieldValue(widget.fieldName, textController.value.text);
+        widget.dataItem
+            .setFieldValue(widget.fieldName, textController.value.text);
       }
       if (widget.onChanged != null) {
         widget.onChanged!(widget.dataItem);
@@ -249,10 +255,16 @@ class _NsgInputState extends State<NsgInput> {
     if (useSelectionController) {
       var sc = widget.selectionController ?? widget.dataItem.defaultController;
       if (sc == null) {
-        assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
+        assert(
+            widget.dataItem.getField(widget.fieldName)
+                is NsgDataBaseReferenceField,
+            widget.fieldName);
         sc = NsgDefaultController(
-            dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType,
-            controllerMode: NsgDataControllerMode(storageType: widget.dataItem.storageType));
+            dataType: (widget.dataItem.getField(widget.fieldName)
+                    as NsgDataBaseReferenceField)
+                .referentElementType,
+            controllerMode: NsgDataControllerMode(
+                storageType: widget.dataItem.storageType));
       }
       selectionController = sc;
     }
@@ -291,7 +303,8 @@ class _NsgInputState extends State<NsgInput> {
       }
     }
     if (inputType == NsgInputType.dateValue) {
-      if (DateTime(01, 01, 01).isAtSameMomentAs(fieldValue) || DateTime(1754, 01, 01).isAtSameMomentAs(fieldValue)) {
+      if (DateTime(01, 01, 01).isAtSameMomentAs(fieldValue) ||
+          DateTime(1754, 01, 01).isAtSameMomentAs(fieldValue)) {
         textController.text = '   ';
       } else {
         textController.text = NsgDateFormat.dateFormat(fieldValue);
@@ -305,14 +318,17 @@ class _NsgInputState extends State<NsgInput> {
 
     int? _maxLength;
     if (widget.dataItem.getField(widget.fieldName) is NsgDataStringField) {
-      _maxLength = (widget.dataItem.getField(widget.fieldName) as NsgDataStringField).maxLength;
+      _maxLength =
+          (widget.dataItem.getField(widget.fieldName) as NsgDataStringField)
+              .maxLength;
       if (_maxLength == 0) {
         _maxLength = null;
       }
     }
 
     if (focus.hasFocus) {
-      textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+      textController.selection = TextSelection(
+          baseOffset: 0, extentOffset: textController.text.length);
     }
 
     return Container(
@@ -323,12 +339,14 @@ class _NsgInputState extends State<NsgInput> {
               children: [
                 Text(
                   focus.hasFocus || textController.text != ''
-                      ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
+                      ? (widget.required ??
+                              widget.dataItem.isFieldRequired(widget.fieldName))
                           ? widget.label + ' *'
                           : widget.label
                       : ' ',
-                  style:
-                      TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
+                  style: TextStyle(
+                      fontSize: ControlOptions.instance.sizeS,
+                      color: ControlOptions.instance.colorMainDark),
                 ),
                 _gestureWrap(
                   clearIcon: fieldValue.toString() != '',
@@ -337,7 +355,10 @@ class _NsgInputState extends State<NsgInput> {
                     alignment: Alignment.center,
                     //height: widget.maxLines > 1 ? null : 24 * textScaleFactor,
                     decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                        border: Border(
+                            bottom: BorderSide(
+                                width: 1,
+                                color: ControlOptions.instance.colorMain))),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -345,25 +366,33 @@ class _NsgInputState extends State<NsgInput> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
+                              (widget.required ??
+                                      widget.dataItem
+                                          .isFieldRequired(widget.fieldName))
                                   ? widget.label + ' *'
                                   : widget.label,
                               style: TextStyle(
-                                  fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                  fontSize: ControlOptions.instance.sizeM,
+                                  color: ControlOptions.instance.colorGrey),
                             ),
                           ),
-                        if (widget.hint != null && focus.hasFocus && textController.text == '')
+                        if (widget.hint != null &&
+                            focus.hasFocus &&
+                            textController.text == '')
                           ValueListenableBuilder(
                               valueListenable: _notifier,
-                              builder: (BuildContext context, bool val, Widget? child) {
+                              builder: (BuildContext context, bool val,
+                                  Widget? child) {
                                 if (_notifier.value == true) {
                                   return Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       widget.hint!,
                                       style: TextStyle(
-                                          fontSize: ControlOptions.instance.sizeM,
-                                          color: ControlOptions.instance.colorGrey),
+                                          fontSize:
+                                              ControlOptions.instance.sizeM,
+                                          color: ControlOptions
+                                              .instance.colorGrey),
                                     ),
                                   );
                                 } else {
@@ -372,16 +401,17 @@ class _NsgInputState extends State<NsgInput> {
                               }),
                         TextFormField(
                           controller: textController,
-                          inputFormatters: widget.maskType == NsgInputMaskType.phone
-                              ? [phoneFormatter]
-                              : widget.mask != null
-                                  ? [
-                                      MaskTextInputFormatter(
-                                        initialText: fieldValue.toString(),
-                                        mask: widget.mask,
-                                      )
-                                    ]
-                                  : null,
+                          inputFormatters:
+                              widget.maskType == NsgInputMaskType.phone
+                                  ? [phoneFormatter]
+                                  : widget.mask != null
+                                      ? [
+                                          MaskTextInputFormatter(
+                                            initialText: fieldValue.toString(),
+                                            mask: widget.mask,
+                                          )
+                                        ]
+                                      : null,
                           maxLength: _maxLength,
                           autofocus: false,
                           focusNode: focus,
@@ -402,7 +432,8 @@ class _NsgInputState extends State<NsgInput> {
                                     ),
                                   ),
                             counterText: "",
-                            contentPadding: EdgeInsets.fromLTRB(0, 4, useSelectionController ? 25 : 25, 4),
+                            contentPadding: EdgeInsets.fromLTRB(
+                                0, 4, useSelectionController ? 25 : 25, 4),
                             isDense: true,
                             border: InputBorder.none,
                             focusedBorder: InputBorder.none,
@@ -416,7 +447,9 @@ class _NsgInputState extends State<NsgInput> {
                               //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                             }
                           },
-                          style: TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
+                          style: TextStyle(
+                              color: ControlOptions.instance.colorText,
+                              fontSize: fontSize),
                           readOnly: _disabled,
                         ),
                       ],
@@ -426,21 +459,29 @@ class _NsgInputState extends State<NsgInput> {
                 if (widget.validateText != '')
                   Text(
                     widget.validateText,
-                    style:
-                        TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                    style: TextStyle(
+                        fontSize: ControlOptions.instance.sizeS,
+                        color: ControlOptions.instance.colorError),
                   ),
               ],
             ));
   }
 
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
-  Widget _gestureWrap({required Widget interactiveWidget, required bool clearIcon}) {
+  Widget _gestureWrap(
+      {required Widget interactiveWidget, required bool clearIcon}) {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
-      return clearIcon == true ? _addClearIcon(interactiveWidget) : interactiveWidget;
+      return clearIcon == true
+          ? _addClearIcon(interactiveWidget)
+          : interactiveWidget;
     } else {
       return clearIcon == true
-          ? _addClearIcon(InkWell(onTap: _onPressed, child: AbsorbPointer(child: interactiveWidget)))
-          : InkWell(onTap: _onPressed, child: AbsorbPointer(child: interactiveWidget));
+          ? _addClearIcon(InkWell(
+              onTap: _onPressed,
+              child: AbsorbPointer(child: interactiveWidget)))
+          : InkWell(
+              onTap: _onPressed,
+              child: AbsorbPointer(child: interactiveWidget));
     }
   }
 
@@ -451,13 +492,16 @@ class _NsgInputState extends State<NsgInput> {
       if (!_disabled)
         NsgIconButton(
             onPressed: () {
-              widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
-              textController.text = widget.dataItem[widget.fieldName].toString();
+              widget.dataItem[widget.fieldName] =
+                  widget.dataItem.getField(widget.fieldName).defaultValue;
+              textController.text =
+                  widget.dataItem[widget.fieldName].toString();
 
               Future.delayed(const Duration(milliseconds: 10), () {
                 FocusScope.of(context).requestFocus(focus);
               });
-              textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+              textController.selection = TextSelection(
+                  baseOffset: 0, extentOffset: textController.text.length);
               if (widget.onEditingComplete != null) {
                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
               }
@@ -472,15 +516,20 @@ class _NsgInputState extends State<NsgInput> {
       return;
     }
     if (inputType == NsgInputType.reference) {
-      selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
+      selectionController!.selectedItem =
+          widget.dataItem.getReferent(widget.fieldName);
       selectionController!.refreshData();
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        var form = NsgSelection(inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
+        var form = NsgSelection(
+            inputType: inputType,
+            controller: selectionController,
+            rowWidget: widget.rowWidget);
         form.selectFromArray(
           widget.label,
           (item) {
-            widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
+            widget.dataItem.setFieldValue(
+                widget.fieldName, selectionController!.selectedItem);
             if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
             if (widget.onEditingComplete != null) {
               widget.onEditingComplete!(widget.dataItem, widget.fieldName);
@@ -528,7 +577,8 @@ class _NsgInputState extends State<NsgInput> {
       );
     } else if (inputType == NsgInputType.referenceList) {
       var form = NsgMultiSelection(controller: selectionController!);
-      form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
+      form.selectedItems =
+          (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
       selectionController!.refreshData();
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
@@ -544,9 +594,13 @@ class _NsgInputState extends State<NsgInput> {
             setState(() {});
           },
         );
+      } else {
+        NsgNavigator.instance.toPage(widget.selectionForm);
       }
     } else if (inputType == NsgInputType.dateValue) {
-      NsgDatePicker(initialTime: widget.dataItem[widget.fieldName], onClose: (value) {})
+      NsgDatePicker(
+              initialTime: widget.dataItem[widget.fieldName],
+              onClose: (value) {})
           .showPopup(context, widget.dataItem[widget.fieldName], (value) {
         if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
         if (widget.onEditingComplete != null) {
@@ -565,7 +619,8 @@ class _NsgInputState extends State<NsgInput> {
         decoration: BoxDecoration(
             color: ControlOptions.instance.colorInverted,
             borderRadius: BorderRadius.circular(widget.borderRadius),
-            border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
+            border:
+                Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: Row(
           children: [
             Expanded(
