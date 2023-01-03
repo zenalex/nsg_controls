@@ -85,6 +85,7 @@ class NsgMultiSelection {
   }
 
   void selectFromArray(String title, String title2, Function(List<NsgDataItem>) onSelected) {
+    var controllerItem = NsgDataClient.client.getNewObject(controller.dataType);
     selectedElement = controller.selectedItem;
     controller.refreshData();
     Get.dialog(
@@ -94,6 +95,8 @@ class NsgMultiSelection {
             getContent: () => _itemList(),
             contentSecondary: _selectedItemList(),
             confirmText: 'Подтвердить',
+            editPageController: controller,
+            elementEditPageName: controllerItem.defaultEditPage,
             onConfirm: () {
               onSelected(_selectedItems);
               Get.back();
