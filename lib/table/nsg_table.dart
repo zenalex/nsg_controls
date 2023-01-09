@@ -1176,7 +1176,8 @@ class _NsgTableState extends State<NsgTable> {
                     backColor: editMode == NsgTableEditMode.recent ? ControlOptions.instance.colorMainDark : null,
                     icon: editMode == NsgTableEditMode.recent ? Icons.history : NsgTableMenuButtonType.recent.icon,
                     onPressed: () {
-                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.recent.toString());
+                      NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.recent.toString(),
+                          state: editMode != NsgTableEditMode.recent ? 'pressed' : 'released');
                       setState(() {
                         if (editMode != NsgTableEditMode.recent) {
                           editModeLast = NsgTableEditMode.recent;

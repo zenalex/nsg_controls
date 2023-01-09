@@ -16,7 +16,8 @@ class NsgTextFilter extends StatefulWidget {
       required this.controller,
       this.isOpen,
       this.onSetFilter,
-      this.updateKey})
+      this.updateKey,
+      this.userSettingsId = ''})
       : super(key: key);
 
   final NsgDataController controller;
@@ -26,6 +27,7 @@ class NsgTextFilter extends StatefulWidget {
   final bool required;
   final EdgeInsets margin;
   final List<NsgUpdateKey>? updateKey;
+  final String userSettingsId;
 
   @override
   State<NsgTextFilter> createState() => _NsgTextFilterState();
@@ -74,6 +76,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
       if (widget.controller.controllerFilter.searchString != textController.text || widget.controller.controllerFilter.searchString == '') {
         widget.controller.controllerFilter.searchString = textController.text;
         //controller.controllerFilter.refreshControllerWithDelay();
+        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.filterText.toString(), state: 'text');
         widget.controller.refreshData(keys: widget.updateKey);
         if (widget.onSetFilter != null) widget.onSetFilter!();
       } else {
