@@ -68,7 +68,9 @@ class NsgSelection {
     return Container(
         //key: GlobalKey(),
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        color: element == selectedElement ? ControlOptions.instance.colorMain : Colors.transparent,
+        color: element == selectedElement
+            ? ControlOptions.instance.colorMain
+            : Colors.transparent,
         height: 50,
         child: Center(child: _showRowWidget(element)));
   }
@@ -79,15 +81,17 @@ class NsgSelection {
     } else {
       return Text(
         element.toString(),
-        style: TextStyle(color: element == selectedElement ? colorInverted : textColor),
+        style: TextStyle(
+            color: element == selectedElement ? colorInverted : textColor),
       );
     }
   }
 
-  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected) {
+  void selectFromArray(
+      String title, Function(NsgDataItem dataItem) onSelected) {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
-      controller!.requestItems();
+      controller!.refreshData();
     }
     Get.dialog(
         NsgPopUp(
