@@ -10,7 +10,19 @@ class NsgCircle extends StatelessWidget {
   final double height;
   final double width;
   final double fontSize;
-  const NsgCircle({Key? key, this.text = '', this.color, this.backColor, this.borderColor, this.height = 28, this.width = 28, this.fontSize = 16})
+  final double borderWidth;
+  final BoxShadow? shadow;
+  const NsgCircle(
+      {Key? key,
+      this.text = '',
+      this.color,
+      this.backColor,
+      this.borderColor,
+      this.shadow,
+      this.borderWidth = 1,
+      this.height = 28,
+      this.width = 28,
+      this.fontSize = 16})
       : super(key: key);
 
   @override
@@ -21,21 +33,25 @@ class NsgCircle extends StatelessWidget {
         Container(
           width: width,
           height: height,
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
               boxShadow: [
-                BoxShadow(
-                  color: ControlOptions.instance.colorText.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(3, 3), // changes position of shadow
-                ),
+                shadow ??
+                    BoxShadow(
+                      color: ControlOptions.instance.colorText.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: const Offset(3, 3), // changes position of shadow
+                    )
               ],
               color: backColor ?? ControlOptions.instance.colorInverted,
-              border: Border.all(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
+              border: Border.all(width: borderWidth, color: borderColor ?? ControlOptions.instance.colorMain),
               shape: BoxShape.circle),
         ),
         Text(text,
-            textAlign: TextAlign.center, style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w600, color: color ?? ControlOptions.instance.colorMain))
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: fontSize, fontWeight: FontWeight.w600, color: color ?? ControlOptions.instance.colorMain))
       ],
     );
   }
