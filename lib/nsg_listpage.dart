@@ -215,7 +215,7 @@ class NsgListPage extends StatelessWidget {
       //  initialIndex: controller.contextMachinery,
       length: 3,
       child: Builder(builder: (BuildContext contextMachinery) {
-        final TabController tabMachineryController = DefaultTabController.of(contextMachinery);
+        final TabController tabMachineryController = DefaultTabController.of(contextMachinery)!;
         tabMachineryController.addListener(() {
           if (!tabMachineryController.indexIsChanging) {
             // controller.contextMachinery = tabMachineryController.index;
