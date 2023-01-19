@@ -57,15 +57,24 @@ class NsgProgressDialogWidget extends StatefulWidget {
 }
 
 class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
+  bool destroyed = false;
   bool loadingTooLong = false;
+
+  @override
+  void dispose() {
+    destroyed = true;
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
-
     Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        loadingTooLong = true;
-      });
+      if (!destroyed) {
+        setState(() {
+          loadingTooLong = true;
+        });
+      }
     });
   }
 
