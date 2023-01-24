@@ -42,6 +42,9 @@ class NsgProgressDialogWidget extends StatefulWidget {
   final String textDialog;
   final NsgCancelToken? cancelToken;
   final bool visible;
+
+  /// Задержка в миллисекундах до появления прогрессбара
+  final int delay;
   const NsgProgressDialogWidget(
       {super.key,
       required this.text,
@@ -50,7 +53,8 @@ class NsgProgressDialogWidget extends StatefulWidget {
       required this.requestStop,
       required this.textDialog,
       required this.cancelToken,
-      required this.visible});
+      required this.visible,
+      this.delay = 500});
 
   @override
   State<NsgProgressDialogWidget> createState() => _NsgProgressDialogWidgetState();
@@ -69,7 +73,7 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(Duration(milliseconds: widget.delay), () {
       if (!destroyed) {
         setState(() {
           loadingTooLong = true;
