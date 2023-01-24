@@ -88,46 +88,42 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         maxWidth: widget.imageMaxWidth,
         maxHeight: widget.imageMaxHeight,
       );
-      if (result != null) {
-        setState(() {
-          galleryPage = true;
-          for (var element in result) {
-            widget.objectsList
-                .add(NsgFilePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path));
-          }
-        });
-      }
+      setState(() {
+        galleryPage = true;
+        for (var element in result) {
+          widget.objectsList
+              .add(NsgFilePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path));
+        }
+      });
     } else if (GetPlatform.isWindows) {
       final result = await ImagePicker().pickMultiImage(
         imageQuality: widget.imageQuality,
         maxWidth: widget.imageMaxWidth,
         maxHeight: widget.imageMaxHeight,
       );
-      if (result != null) {
-        setState(() {
-          galleryPage = true;
-          for (var element in result) {
-            String? fileType = extension(element.path).replaceAll('.', '');
+      setState(() {
+        galleryPage = true;
+        for (var element in result) {
+          String? fileType = extension(element.path).replaceAll('.', '');
 
-            if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
-              widget.objectsList.add(NsgFilePickerObject(
-                  image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
-            } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
-              widget.objectsList.add(NsgFilePickerObject(
-                  file: File(element.path), image: null, description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
-            } else {
-              error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
-              setState(() {});
-            }
+          if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
+            widget.objectsList.add(NsgFilePickerObject(
+                image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
+          } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
+            widget.objectsList.add(NsgFilePickerObject(
+                file: File(element.path), image: null, description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
+          } else {
+            error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+            setState(() {});
           }
-        });
-      }
+        }
+      });
     } else if (GetPlatform.isMacOS) {
-      var jpgsTypeGroup = file.XTypeGroup(
+      var jpgsTypeGroup = const file.XTypeGroup(
         label: 'JPEGs',
         extensions: <String>['jpg', 'jpeg'],
       );
-      var pngTypeGroup = file.XTypeGroup(
+      var pngTypeGroup = const file.XTypeGroup(
         label: 'PNGs',
         extensions: <String>['png'],
       );
@@ -162,15 +158,13 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         maxHeight: widget.imageMaxHeight,
       );
 
-      if (result != null) {
-        setState(() {
-          galleryPage = true;
-          for (var element in result) {
-            widget.objectsList
-                .add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), filePath: element.path));
-          }
-        });
-      }
+      setState(() {
+        galleryPage = true;
+        for (var element in result) {
+          widget.objectsList
+              .add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), filePath: element.path));
+        }
+      });
     }
   }
 

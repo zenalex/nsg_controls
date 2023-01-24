@@ -8,14 +8,8 @@ class NsgIconButton extends StatefulWidget {
   final EdgeInsets padding;
   final Color? color;
   final Color? backColor;
-  NsgIconButton(
-      {Key? key,
-      required this.icon,
-      required this.onPressed,
-      this.color,
-      this.backColor,
-      this.size = 16,
-      this.padding = const EdgeInsets.all(10)})
+  const NsgIconButton(
+      {Key? key, required this.icon, required this.onPressed, this.color, this.backColor, this.size = 16, this.padding = const EdgeInsets.all(10)})
       : super(key: key);
 
   @override

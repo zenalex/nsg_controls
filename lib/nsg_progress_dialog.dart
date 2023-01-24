@@ -42,7 +42,7 @@ class NsgProgressDialogWidget extends StatefulWidget {
   final String textDialog;
   final NsgCancelToken? cancelToken;
   final bool visible;
-  NsgProgressDialogWidget(
+  const NsgProgressDialogWidget(
       {super.key,
       required this.text,
       required this.percent,
