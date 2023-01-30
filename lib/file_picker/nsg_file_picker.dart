@@ -17,6 +17,7 @@ import 'package:file_selector/file_selector.dart' as file;
 class NsgFilePicker extends StatefulWidget {
   final bool showAsWidget;
   final List<String> allowedImageFormats;
+  final List<String> allowedVideoFormats;
   final List<String> allowedFileFormats;
   final bool useFilePicker;
 
@@ -35,11 +36,18 @@ class NsgFilePicker extends StatefulWidget {
   ///Фунция, вызываемая при подтверждении сохранения картинок пользователем
   final Function(List<NsgFilePickerObject>) callback;
 
+  ///Максисально допустимое количество присоединяемых файлов
+  ///Например, можно использовать для задания картинки профиля, установив ограничение равное 1
+  ///По умолчанию равно нулю - не ограничено
+  final int maxFilesCount;
+  final String textChooseFile;
+
   ///Сохраненные объекты (картинки и документы)
   final List<NsgFilePickerObject> objectsList;
   const NsgFilePicker(
       {Key? key,
       this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
+      this.allowedVideoFormats = const ['mp4'],
       this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
       this.showAsWidget = false,
       this.useFilePicker = false,
@@ -47,8 +55,10 @@ class NsgFilePicker extends StatefulWidget {
       this.imageMaxHeight = 1440.0,
       this.imageQuality = 70,
       this.fileMaxSize = 1000000.0,
+      this.maxFilesCount = 0,
       required this.callback,
-      required this.objectsList})
+      required this.objectsList,
+      this.textChooseFile = 'Добавить фото'})
       : super(key: key);
 
   @override
@@ -352,20 +362,23 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       ));
     }
     List<Widget> listWithPlus = list;
-    listWithPlus.add(NsgImagePickerButton(onPressed: () {
-      if (widget.useFilePicker) {
-        pickFile();
-      }
-      if (kIsWeb) {
-        galleryImage();
-      } else if (GetPlatform.isWindows) {
-        galleryImage();
-      } else {
-        cameraImage();
-      }
-    }, onPressed2: () {
-      galleryImage();
-    }));
+    listWithPlus.add(NsgImagePickerButton(
+        textChooseFile: widget.textChooseFile,
+        onPressed: () {
+          if (widget.useFilePicker) {
+            pickFile();
+          }
+          if (kIsWeb) {
+            galleryImage();
+          } else if (GetPlatform.isWindows) {
+            galleryImage();
+          } else {
+            cameraImage();
+          }
+        },
+        onPressed2: () {
+          galleryImage();
+        }));
 
     return RawScrollbar(
         minOverscrollLength: 100,
@@ -483,7 +496,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 class NsgImagePickerButton extends StatelessWidget {
   final void Function() onPressed;
   final void Function() onPressed2;
-  const NsgImagePickerButton({Key? key, required this.onPressed, required this.onPressed2}) : super(key: key);
+  final String textChooseFile;
+  const NsgImagePickerButton({Key? key, required this.onPressed, required this.onPressed2, required this.textChooseFile}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -503,7 +517,7 @@ class NsgImagePickerButton extends StatelessWidget {
                   Icon(Icons.add, size: 64, color: ControlOptions.instance.colorInverted),
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: NsgText('Добавить фото', color: ControlOptions.instance.colorInverted),
+                    child: NsgText(textChooseFile, color: ControlOptions.instance.colorInverted),
                   ),
                 ],
               ),
@@ -526,7 +540,7 @@ class NsgImagePickerButton extends StatelessWidget {
                       Icon(Icons.add, size: 32, color: ControlOptions.instance.colorInverted),
                       Padding(
                         padding: const EdgeInsets.only(top: 0),
-                        child: NsgText('Добавить фото', color: ControlOptions.instance.colorInverted),
+                        child: NsgText(textChooseFile, color: ControlOptions.instance.colorInverted),
                       ),
                     ],
                   ),

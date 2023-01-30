@@ -234,7 +234,6 @@ class NsgImage extends StatelessWidget {
           if (controller.status.isLoading) {
             return const CircularProgressIndicator();
           }
-          //TODO: убрать лишнюю точку после исправления Сергеем
           imageItem = controller.items.firstWhereOrNull((e) => e[slaveName] == item[masterFieldName] || e[slaveName] == (item[masterFieldName] + '.'));
         }
 

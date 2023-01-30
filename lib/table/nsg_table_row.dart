@@ -50,7 +50,6 @@ class NsgTableRowState extends State<NsgTableRow> {
   void initState() {
     super.initState();
     widget.rowStateList.add(this);
-    //TODO: добавить учет состояния загружены ли данные в отображение
     getFavorites();
   }
 

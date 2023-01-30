@@ -1134,7 +1134,7 @@ class _NsgTableState extends State<NsgTable> {
                     },
                   ),
 
-                //TODO: Временно отключил. Сделать через печать PDF?
+                //Временно отключил. Сделать через печать PDF?
                 // if (widget.availableButtons.contains(NsgTableMenuButtonType.printTable))
                 //   NsgTableMenuButton(
                 //     tooltip: 'Вывод на печать',
