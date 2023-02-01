@@ -37,7 +37,7 @@ class NsgDatePicker extends StatefulWidget {
         context: context,
         builder: (BuildContext context) => NsgPopUp(
               title: 'Введите дату',
-              height: (!kIsWeb && Platform.isIOS || Platform.isAndroid) ? 410 : 120,
+              height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 410 : 120,
               onConfirm: () {
                 onClose(selectedDate);
                 Get.back();
