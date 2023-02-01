@@ -15,14 +15,7 @@ class NsgSelection {
   Color? textColor;
   Color? colorInverted;
 
-  NsgSelection(
-      {required this.inputType,
-      this.controller,
-      this.rowWidget,
-      this.allValues,
-      this.selectedElement,
-      this.textColor,
-      this.colorInverted}) {
+  NsgSelection({required this.inputType, this.controller, this.rowWidget, this.allValues, this.selectedElement, this.textColor, this.colorInverted}) {
     if (inputType == NsgInputType.reference) {
       assert(controller != null);
     }
@@ -68,9 +61,7 @@ class NsgSelection {
     return Container(
         //key: GlobalKey(),
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        color: element == selectedElement
-            ? ControlOptions.instance.colorMain
-            : Colors.transparent,
+        color: element == selectedElement ? ControlOptions.instance.colorMain : Colors.transparent,
         height: 50,
         child: Center(child: _showRowWidget(element)));
   }
@@ -81,14 +72,12 @@ class NsgSelection {
     } else {
       return Text(
         element.toString(),
-        style: TextStyle(
-            color: element == selectedElement ? colorInverted : textColor),
+        style: TextStyle(color: element == selectedElement ? colorInverted : textColor),
       );
     }
   }
 
-  void selectFromArray(
-      String title, Function(NsgDataItem dataItem) onSelected) {
+  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected) {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
       controller!.refreshData();
@@ -116,6 +105,6 @@ class _SelectionController extends GetxController with StateMixin<int> {
   }
 
   void updateStatus() {
-    change(null, status: RxStatus.success());
+    change(GetStatus.success(0));
   }
 }

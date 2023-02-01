@@ -332,7 +332,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                     Get.snackbar('Ошибка', 'Этот файл не является изображением',
                         duration: const Duration(seconds: 3),
                         maxWidth: 300,
-                        snackPosition: SnackPosition.BOTTOM,
+                        snackPosition: SnackPosition.bottom,
                         barBlur: 0,
                         overlayBlur: 0,
                         colorText: ControlOptions.instance.colorMainText,

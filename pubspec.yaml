@@ -14,7 +14,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.17.0
-  get: ^4.6.5
+  get: ^5.0.0-beta.52
+  # get:
+  #   path: 
+  #     ../getx
   nsg_data: #^0.2.0
     path: 
       ../nsg_data
