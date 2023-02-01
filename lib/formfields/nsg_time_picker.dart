@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_icon_button.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -269,7 +268,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           NsgIconButton(
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               backColor: ControlOptions.instance.colorMain,
               color: ControlOptions.instance.colorMainText,
               icon: Icons.add,
@@ -278,9 +277,9 @@ class _TimePickerContentState extends State<TimePickerContent> {
                 //     minutes = minutes + 1;
                 setState(() {});
               }),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           NsgIconButton(
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               backColor: ControlOptions.instance.colorMain,
               color: ControlOptions.instance.colorMainText,
               icon: Icons.add,
@@ -303,15 +302,15 @@ class _TimePickerContentState extends State<TimePickerContent> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           NsgIconButton(
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               backColor: ControlOptions.instance.colorMain,
               color: ControlOptions.instance.colorMainText,
               icon: Icons.remove,
               size: 24,
               onPressed: () {}),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           NsgIconButton(
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               backColor: ControlOptions.instance.colorMain,
               color: ControlOptions.instance.colorMainText,
               icon: Icons.remove,
