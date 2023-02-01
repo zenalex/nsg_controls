@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_controls/nsg_icon_button.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgTimePicker extends StatefulWidget {
@@ -34,8 +39,8 @@ class NsgTimePicker extends StatefulWidget {
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
-              height: 410,
-              title: 'Выберите время',
+              height: (!kIsWeb && Platform.isIOS || Platform.isAndroid) ? 410 : 120,
+              title: 'Введите время',
               onConfirm: () {
                 onClose(selectedDate);
                 Get.back();
@@ -196,7 +201,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
     }
     if (_initialTimeNew != null) {
       _initialTime2 = _initialTimeNew;
-      datepicker!.setState(_initialTime2);
+      if (!kIsWeb && Platform.isIOS || Platform.isAndroid) datepicker!.setState(_initialTime2);
       widget.onChange(_initialTime2);
     }
     if (textController.text != _initialTime) {
@@ -248,8 +253,72 @@ class _TimePickerContentState extends State<TimePickerContent> {
             controller: textController,
           ),
         ),
-        SizedBox(width: 300, height: 300, child: getCupertinoPicker())
+        //  if (kIsWeb || Platform.isWindows) getTopPluses(),
+        if (!kIsWeb && Platform.isIOS || Platform.isAndroid) SizedBox(width: 300, height: 300, child: getCupertinoPicker()),
+        //   if (kIsWeb || Platform.isWindows) getBottomMinuses()
       ],
+    );
+  }
+
+  Widget getTopPluses() {
+    //int hours = _initialTime.inHours;
+    // int minutes = _initialTime.inMinutes - hours * 60;
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          NsgIconButton(
+              padding: EdgeInsets.all(4),
+              backColor: ControlOptions.instance.colorMain,
+              color: ControlOptions.instance.colorMainText,
+              icon: Icons.add,
+              size: 24,
+              onPressed: () {
+                //     minutes = minutes + 1;
+                setState(() {});
+              }),
+          SizedBox(width: 8),
+          NsgIconButton(
+              padding: EdgeInsets.all(4),
+              backColor: ControlOptions.instance.colorMain,
+              color: ControlOptions.instance.colorMainText,
+              icon: Icons.add,
+              size: 24,
+              onPressed: () {
+                //  minutes = minutes + 1;
+                setState(() {});
+              }),
+        ],
+      ),
+    );
+  }
+
+  Widget getBottomMinuses() {
+    // int hours = _initialTime.inHours;
+    // int minutes = _initialTime.inMinutes - hours * 60;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          NsgIconButton(
+              padding: EdgeInsets.all(4),
+              backColor: ControlOptions.instance.colorMain,
+              color: ControlOptions.instance.colorMainText,
+              icon: Icons.remove,
+              size: 24,
+              onPressed: () {}),
+          SizedBox(width: 8),
+          NsgIconButton(
+              padding: EdgeInsets.all(4),
+              backColor: ControlOptions.instance.colorMain,
+              color: ControlOptions.instance.colorMainText,
+              icon: Icons.remove,
+              size: 24,
+              onPressed: () {}),
+        ],
+      ),
     );
   }
 
