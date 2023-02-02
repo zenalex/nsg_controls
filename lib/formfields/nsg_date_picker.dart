@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -36,14 +33,15 @@ class NsgDatePicker extends StatefulWidget {
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
-              title: 'Введите дату',
-              height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 410 : 120,
+              title: 'Выберите дату',
+              height: 410,
               onConfirm: () {
                 onClose(selectedDate);
-                Get.back();
+                Navigator.of(context).pop();
               },
               onCancel: () {
-                Get.back();
+                Navigator.of(context).pop();
+                //Get.back();
               },
               getContent: () => [
                 DatePickerContent(
@@ -185,7 +183,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       } catch (e) {}
       if (_initialTimeNew != null) {
         _initialTime2 = _initialTimeNew;
-        if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) datepicker!.setState(_initialTime2);
+        datepicker!.setState(_initialTime2);
         widget.onChange(_initialTime2);
       }
       if (textController.text != _initialTime) {
@@ -244,12 +242,11 @@ class _DatePickerContentState extends State<DatePickerContent> {
             style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
           ),
         ),
-        if (!kIsWeb && (Platform.isIOS || Platform.isAndroid))
-          SizedBox(
-            width: 300,
-            height: 300,
-            child: getCupertinoPicker(),
-          )
+        SizedBox(
+          width: 300,
+          height: 300,
+          child: getCupertinoPicker(),
+        )
       ],
     );
   }

@@ -40,8 +40,7 @@ class NsgSelection {
         list.add(GestureDetector(
           onTap: () {
             selectedElement = element;
-            controller?.update();
-            selectionController?.updateStatus();
+            selectionController?.refresh();
           },
           child: _controllerUpdateWidget(element),
         ));
