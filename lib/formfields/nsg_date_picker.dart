@@ -185,7 +185,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       } catch (e) {}
       if (_initialTimeNew != null) {
         _initialTime2 = _initialTimeNew;
-        if (!kIsWeb && Platform.isIOS || Platform.isAndroid) datepicker!.setState(_initialTime2);
+        if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) datepicker!.setState(_initialTime2);
         widget.onChange(_initialTime2);
       }
       if (textController.text != _initialTime) {
@@ -244,7 +244,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
             style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
           ),
         ),
-        if (!kIsWeb && Platform.isIOS || Platform.isAndroid)
+        if (!kIsWeb && (Platform.isIOS || Platform.isAndroid))
           SizedBox(
             width: 300,
             height: 300,
