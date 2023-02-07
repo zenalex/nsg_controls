@@ -254,7 +254,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
         !kIsWeb && (Platform.isAndroid || Platform.isIOS)
             ? SizedBox(
                 width: 300,
-                height: 300,
+                height: 280,
                 child: getCupertinoPicker(),
               )
             : SizedBox(
