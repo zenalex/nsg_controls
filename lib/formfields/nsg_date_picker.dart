@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -30,11 +32,12 @@ class NsgDatePicker extends StatefulWidget {
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
     DateTime selectedDate = date;
+
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
               title: 'Выберите дату',
-              height: 410,
+              //height: 410,
               onConfirm: () {
                 onClose(selectedDate);
                 Navigator.of(context).pop();
@@ -151,7 +154,8 @@ class _DatePickerContentState extends State<DatePickerContent> {
   String _initialTime = '';
   DateTime _initialTime2 = DateTime.now();
   final textController = TextEditingController();
-
+  var firstDate = DateTime.now().subtract(Duration(days: 200));
+  var lastDate = DateTime.now().add(Duration(days: 200));
   @override
   void initState() {
     _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy');
@@ -183,7 +187,12 @@ class _DatePickerContentState extends State<DatePickerContent> {
       } catch (e) {}
       if (_initialTimeNew != null) {
         _initialTime2 = _initialTimeNew;
-        datepicker!.setState(_initialTime2);
+/* ---------------------------------------------------- только на мобильных обновляем дейтпикер --------------------------------------------------- */
+        if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+          datepicker!.setState(_initialTime2);
+        } else {
+          calendarpicker!.setState(_initialTime2);
+        }
         widget.onChange(_initialTime2);
       }
       if (textController.text != _initialTime) {
@@ -242,13 +251,35 @@ class _DatePickerContentState extends State<DatePickerContent> {
             style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
           ),
         ),
-        SizedBox(
-          width: 300,
-          height: 300,
-          child: getCupertinoPicker(),
-        )
+        !kIsWeb && (Platform.isAndroid || Platform.isIOS)
+            ? SizedBox(
+                width: 300,
+                height: 300,
+                child: getCupertinoPicker(),
+              )
+            : SizedBox(
+                height: 250,
+                width: 300,
+                child: getCalendarPicker(),
+              )
       ],
     );
+  }
+
+  NsgCalendarDatePicker? calendarpicker;
+  Widget getCalendarPicker() {
+    calendarpicker = NsgCalendarDatePicker(
+      initialDateTime: _initialTime2,
+      onDateTimeChanged: (DateTime value) {
+        widget.onChange(value);
+        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy');
+        _ignoreChange = true;
+        textController.text = _initialTime;
+        textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
+        _ignoreChange = false;
+      },
+    );
+    return calendarpicker!;
   }
 
   NsgCupertinoDatePicker? datepicker;
@@ -268,7 +299,6 @@ class _DatePickerContentState extends State<DatePickerContent> {
   }
 }
 
-// ignore: must_be_immutable
 class NsgCupertinoDatePicker extends StatefulWidget {
   DateTime initialDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
@@ -308,6 +338,53 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
       onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
       use24hFormat: true,
       minuteInterval: 1,
+    );
+  }
+}
+
+class NsgCalendarDatePicker extends StatefulWidget {
+  DateTime initialDateTime;
+  final ValueChanged<DateTime> onDateTimeChanged;
+
+  NsgCalendarDatePicker({Key? key, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
+
+  @override
+  State<NsgCalendarDatePicker> createState() => NsgCalendarDatePickerState();
+
+  NsgCalendarDatePickerState? currentState;
+
+  void setState(DateTime date) {
+    if (currentState != null) {
+      initialDateTime = date;
+      currentState!.externalSetState();
+    }
+  }
+}
+
+class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
+  @override
+  void initState() {
+    widget.currentState = this;
+    super.initState();
+  }
+
+  void externalSetState() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, bottom: 15),
+      child: CalendarDatePicker(
+        key: GlobalKey(),
+        firstDate: widget.initialDateTime.subtract(Duration(days: 356 * 2)),
+        lastDate: widget.initialDateTime.add(Duration(days: 356 * 2)),
+        initialDate: widget.initialDateTime,
+        onDateChanged: (d) {
+          widget.onDateTimeChanged(d);
+        },
+      ),
     );
   }
 }
