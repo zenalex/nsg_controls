@@ -286,10 +286,12 @@ class _NsgTableState extends State<NsgTable> {
       tableAlreadyBuilt = true;
       double height = (containerKey.currentContext!.findRenderObject() as RenderBox).size.height;
       double height2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.height;
-      print(height);
-      print(height2);
+      double width = (containerKey.currentContext!.findRenderObject() as RenderBox).size.width;
+      double width2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.width;
+      if (width <= width2) {
+        horizontalScrollEnabled = false;
+      }
       if (height <= height2) {
-        print('horizontalScrollEnabled $horizontalScrollEnabled');
         setState(() {
           hasScrollbar = false;
         });
@@ -1426,16 +1428,16 @@ class _NsgTableState extends State<NsgTable> {
 
             /// Добавляем HEADER в таблицу
             table.add(intrinsicHeight(
-                child: Container(
-                    //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-                    child: horScrollHeaderWrap(Container(
+                child: horScrollHeaderWrap(Container(
+              decoration:
+                  hasScrollbar ? null : BoxDecoration(border: Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
               padding: editMode == NsgTableEditMode.columnsWidth ? const EdgeInsets.only(right: 510) : null,
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
                   children: tableHeader),
-            )))));
+            ))));
           }
 
           /// Цикл построения "Итого" таблицы
@@ -1514,11 +1516,14 @@ class _NsgTableState extends State<NsgTable> {
               key: wrapperKey,
               child: crossWrap(Container(
                   key: containerKey,
+                  decoration:
+                      hasScrollbar ? null : BoxDecoration(border: Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
                   padding: editMode == NsgTableEditMode.columnsWidth
                       ? const EdgeInsets.only(right: 500, bottom: 0)
                       : EdgeInsets.only(
                           bottom: widget.controller.currentStatus.isLoading
                               ? 0
+/* ---------------------------------------------------------- Отступ снизу под скроллбар ---------------------------------------------------------- */
                               : horizontalScrollEnabled
                                   ? 16
                                   : 0,
