@@ -187,10 +187,11 @@ class _DatePickerContentState extends State<DatePickerContent> {
       } catch (e) {}
       if (_initialTimeNew != null) {
         _initialTime2 = _initialTimeNew;
-/* ---------------------------------------------------- только на мобильных обновляем дейтпикер --------------------------------------------------- */
+/* ---------------------------------------------------- только на мобильных обновляем Дейтпикер --------------------------------------------------- */
         if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
           datepicker!.setState(_initialTime2);
         } else {
+/* ----------------------------------------------------- на десктопе обновляем Календарьпикер ----------------------------------------------------- */
           calendarpicker!.setState(_initialTime2);
         }
         widget.onChange(_initialTime2);
@@ -285,6 +286,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
   NsgCupertinoDatePicker? datepicker;
   Widget getCupertinoPicker() {
     datepicker = NsgCupertinoDatePicker(
+      key: GlobalKey(),
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         widget.onChange(value);
