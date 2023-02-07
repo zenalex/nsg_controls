@@ -1344,32 +1344,38 @@ class _NsgTableState extends State<NsgTable> {
 
 /* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
 
-        table.add(_rowcolumn(children: [
-          if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
-            _expanded(
-              child: NsgTextFilter(
-                onSetFilter: () {
-                  setState(() {
-                    editModeLast = NsgTableEditMode.view;
-                    editMode = NsgTableEditMode.view;
-                  });
-                },
-                controller: widget.controller,
-                isOpen: isSearchStringFilterOpen,
-                updateKey: [_updatetableKey],
+        table.add(Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  left: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor),
+                  right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
+          child: _rowcolumn(children: [
+            if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+              _expanded(
+                child: NsgTextFilter(
+                  onSetFilter: () {
+                    setState(() {
+                      editModeLast = NsgTableEditMode.view;
+                      editMode = NsgTableEditMode.view;
+                    });
+                  },
+                  controller: widget.controller,
+                  isOpen: isSearchStringFilterOpen,
+                  updateKey: [_updatetableKey],
+                ),
               ),
-            ),
-          if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
-            _expanded(
-              child: NsgPeriodFilter(
-                //showCompact: isPeriodFilterOpen,
-                key: GlobalKey(),
+            if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+              _expanded(
+                child: NsgPeriodFilter(
+                  //showCompact: isPeriodFilterOpen,
+                  key: GlobalKey(),
 
-                label: widget.periodFilterLabel,
-                controller: widget.controller,
+                  label: widget.periodFilterLabel,
+                  controller: widget.controller,
+                ),
               ),
-            ),
-        ]));
+          ]),
+        ));
 /* ------------------------------- // Фильтры по Тексту и Периоду ------------------------------- */
 
         /// Если showHeader, то показываем Header
