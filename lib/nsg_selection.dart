@@ -22,6 +22,7 @@ class NsgSelection {
     if (inputType == NsgInputType.enumReference) {
       assert(allValues != null);
       selectionController = _SelectionController();
+      selectionController!.status = GetStatus.success(0);
     }
     textColor ??= ControlOptions.instance.colorText;
     colorInverted ??= ControlOptions.instance.colorInverted;
@@ -41,6 +42,7 @@ class NsgSelection {
           onTap: () {
             selectedElement = element;
             selectionController?.refresh();
+            controller?.refresh();
           },
           child: _controllerUpdateWidget(element),
         ));
@@ -104,6 +106,6 @@ class _SelectionController extends GetxController with StateMixin<int> {
   }
 
   void updateStatus() {
-    change(GetStatus.success(0));
+    refresh();
   }
 }
