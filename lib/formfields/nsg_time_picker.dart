@@ -42,10 +42,10 @@ class NsgTimePicker extends StatefulWidget {
               title: 'Введите время',
               onConfirm: () {
                 onClose(selectedDate);
-                Get.back();
+                Navigator.pop(context);
               },
               onCancel: () {
-                Get.back();
+                Navigator.pop(context);
               },
               getContent: () => [
                 TimePickerContent(
