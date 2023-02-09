@@ -38,7 +38,7 @@ class NsgTimePicker extends StatefulWidget {
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
-              height: (!kIsWeb && Platform.isIOS || Platform.isAndroid) ? 410 : 120,
+              height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 410 : 120,
               title: 'Введите время',
               onConfirm: () {
                 onClose(selectedDate);
@@ -200,7 +200,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
     }
     if (_initialTimeNew != null) {
       _initialTime2 = _initialTimeNew;
-      if (!kIsWeb && Platform.isIOS || Platform.isAndroid) datepicker!.setState(_initialTime2);
+      if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) datepicker!.setState(_initialTime2);
       widget.onChange(_initialTime2);
     }
     if (textController.text != _initialTime) {
@@ -253,7 +253,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
           ),
         ),
         //  if (kIsWeb || Platform.isWindows) getTopPluses(),
-        if (!kIsWeb && Platform.isIOS || Platform.isAndroid) SizedBox(width: 300, height: 300, child: getCupertinoPicker()),
+        if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) SizedBox(width: 300, height: 300, child: getCupertinoPicker()),
         //   if (kIsWeb || Platform.isWindows) getBottomMinuses()
       ],
     );

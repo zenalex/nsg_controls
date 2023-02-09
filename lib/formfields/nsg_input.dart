@@ -501,8 +501,12 @@ class _NsgInputState extends State<NsgInput> {
             if (widget.onEditingComplete != null) {
               widget.onEditingComplete!(widget.dataItem, widget.fieldName);
             }
-            setState(() {});
-            return null;
+            if (widget.controller != null) {
+              widget.controller!.sendNotify();
+            } else {
+              setState(() {});
+            }
+            return;
           },
         );
       } else {
