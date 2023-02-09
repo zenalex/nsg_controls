@@ -5,9 +5,12 @@ class NsgGrid extends StatelessWidget {
   /// List виджетов
   final List<Widget> children;
 
+  /// Выравнивание по центру
+  final bool centered;
+
   /// Количество виджетов по горизонтали
   final int crossAxisCount;
-  const NsgGrid({Key? key, required this.children, this.crossAxisCount = 3}) : super(key: key);
+  const NsgGrid({Key? key, required this.children, this.crossAxisCount = 3, this.centered = true}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,7 @@ class NsgGrid extends StatelessWidget {
     List<Widget> list = [];
     List<Widget> row = [];
     for (var element in children) {
-      row.add(Expanded(flex: 1, child: element));
+      row.add(Expanded(flex: 2, child: element));
       count++;
       rowCount++;
       if (count > crossAxisCount - 1) {
@@ -27,10 +30,25 @@ class NsgGrid extends StatelessWidget {
       }
     }
     if (row.isNotEmpty) {
-      for (var i = 0; i < crossAxisCount - rowCount; i++) {
-        row.add(const Expanded(child: SizedBox()));
+/* --------------------------------------------------------- если выравнивание по левому краю -------------------------------------------------------- */
+      var dif = crossAxisCount - rowCount;
+      var difAdd = (dif / 2).floor();
+      if (!centered) {
+        for (var i = 0; i < dif; i++) {
+          row.add(Expanded(flex: 2, child: SizedBox()));
+        }
+        list.add(Row(children: row));
+      } else {
+        for (var i = 0; i < difAdd; i++) {
+          row.insert(0, const Expanded(flex: 2, child: SizedBox()));
+          row.add(const Expanded(flex: 2, child: SizedBox()));
+        }
+        if (dif.isOdd) {
+          row.insert(0, Expanded(flex: 1, child: SizedBox()));
+          row.add(Expanded(flex: 1, child: SizedBox()));
+        }
+        list.add(Row(children: row));
       }
-      list.add(Row(children: row));
     }
 
     return Column(children: list);
