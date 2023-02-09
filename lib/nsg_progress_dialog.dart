@@ -9,17 +9,20 @@ class NsgProgressDialog {
   bool? canStopped = false;
   Function? requestStop;
   String textDialog;
+  NsgProgressDialogWidget? dialogWidget;
 
   ///Если пользователь нажмет отменить, будет передан запрос на отмену сетевого соединения
   NsgCancelToken? cancelToken;
   bool visible = false;
   NsgProgressDialog({this.percent, this.canStopped, this.requestStop, this.textDialog = 'Загрузка данных...', this.cancelToken});
+
   void show({String text = 'Загрузка'}) {
     visible = true;
     // открываем popup с прогрессбаром NsgProgressBar
     //print("SHOW");
+
     Get.dialog(
-        NsgProgressDialogWidget(
+        dialogWidget = NsgProgressDialogWidget(
             canStopped: canStopped, cancelToken: cancelToken, percent: percent, requestStop: requestStop, text: text, textDialog: textDialog, visible: visible),
         barrierColor: Colors.transparent,
         barrierDismissible: false);
@@ -28,7 +31,10 @@ class NsgProgressDialog {
   void hide() {
     if (visible) {
       visible = false;
-      Get.back();
+      if (dialogWidget != null) {
+        dialogWidget!.isClosed = true;
+      }
+      Navigator.pop(Get.context!);
     }
   }
   // При нажатии на кнопку отмены вызываем requestStop - убираем кнопку отмены, пишем "обработка отмены"
@@ -42,10 +48,11 @@ class NsgProgressDialogWidget extends StatefulWidget {
   final String textDialog;
   final NsgCancelToken? cancelToken;
   final bool visible;
+  bool isClosed = false;
 
   /// Задержка в миллисекундах до появления прогрессбара
   final int delay;
-  const NsgProgressDialogWidget(
+  NsgProgressDialogWidget(
       {super.key,
       required this.text,
       required this.percent,
@@ -62,7 +69,7 @@ class NsgProgressDialogWidget extends StatefulWidget {
 
 class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
   bool destroyed = false;
-  bool loadingTooLong = false;
+  bool loadingTooLong = true;
 
   @override
   void dispose() {
@@ -73,13 +80,14 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: widget.delay), () {
-      if (!destroyed) {
-        setState(() {
-          loadingTooLong = true;
-        });
-      }
-    });
+
+    // Future.delayed(Duration(milliseconds: widget.delay), () {
+    //   if (!destroyed && !widget.isClosed) {
+    //     setState(() {
+    //       loadingTooLong = true;
+    //     });
+    //   }
+    // });
   }
 
   @override

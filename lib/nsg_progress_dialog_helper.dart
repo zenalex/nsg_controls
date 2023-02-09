@@ -11,8 +11,11 @@ class NsgProgressDialogHelper {
     if (showProgress) {
       cancelToken = isStoppable ? NsgCancelToken() : null;
       progress = NsgProgressDialog(canStopped: true, requestStop: () => true, cancelToken: cancelToken, textDialog: textDialog ?? 'Сохранение данных');
-      progress!.show();
     }
+  }
+
+  Future show() async {
+    progress!.show();
   }
 
   void hide() {
