@@ -7,7 +7,8 @@ class NsgGrid extends StatelessWidget {
 
   /// Количество виджетов по горизонтали
   final int crossAxisCount;
-  const NsgGrid({Key? key, required this.children, this.crossAxisCount = 3}) : super(key: key);
+  const NsgGrid({Key? key, required this.children, this.crossAxisCount = 3})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class NsgGrid extends StatelessWidget {
         row = [];
       }
     }
-    if (count.isOdd) {
+    if (row.isNotEmpty) {
       row.add(const Expanded(child: SizedBox()));
       row.insert(0, const Expanded(child: SizedBox()));
       list.add(Row(children: row));
