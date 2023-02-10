@@ -44,6 +44,9 @@ class NsgFilePicker extends StatefulWidget {
 
   ///Сохраненные объекты (картинки и документы)
   final List<NsgFilePickerObject> objectsList;
+
+  final bool oneFile;
+
   const NsgFilePicker(
       {Key? key,
       this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
@@ -58,8 +61,18 @@ class NsgFilePicker extends StatefulWidget {
       this.maxFilesCount = 0,
       required this.callback,
       required this.objectsList,
-      this.textChooseFile = 'Добавить фото'})
+      this.textChooseFile = 'Добавить фото',
+      this.oneFile = false})
       : super(key: key);
+
+  // popup() {
+  //   Get.dialog(
+  //       NsgPopUp(
+  //         title: 'Загрузите фотографию',
+  //         contentTop: SizedBox(width: 300, height: 300, child: this),
+  //       ),
+  //       barrierDismissible: true);
+  // }
 
   @override
   State<NsgFilePicker> createState() => _NsgFilePickerState();
@@ -93,26 +106,38 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   /// Pick an image
   Future galleryImage() async {
     if (kIsWeb) {
-      final result = await ImagePicker().pickMultiImage(
+      var result = await ImagePicker().pickMultiImage(
         imageQuality: widget.imageQuality,
         maxWidth: widget.imageMaxWidth,
         maxHeight: widget.imageMaxHeight,
       );
       setState(() {
         galleryPage = true;
+
+        /// Если стоит ограничение на 1 файл
+        if (widget.oneFile) {
+          result = [result[0]];
+          widget.objectsList.clear();
+        }
         for (var element in result) {
           widget.objectsList
               .add(NsgFilePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path));
         }
       });
     } else if (GetPlatform.isWindows) {
-      final result = await ImagePicker().pickMultiImage(
+      var result = await ImagePicker().pickMultiImage(
         imageQuality: widget.imageQuality,
         maxWidth: widget.imageMaxWidth,
         maxHeight: widget.imageMaxHeight,
       );
       setState(() {
         galleryPage = true;
+
+        /// Если стоит ограничение на 1 файл
+        if (widget.oneFile) {
+          result = [result[0]];
+          widget.objectsList.clear();
+        }
         for (var element in result) {
           String? fileType = extension(element.path).replaceAll('.', '');
 
@@ -137,7 +162,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         label: 'PNGs',
         extensions: <String>['png'],
       );
-      final List<XFile> result = await file.openFiles(acceptedTypeGroups: <file.XTypeGroup>[
+      List<XFile> result = await file.openFiles(acceptedTypeGroups: <file.XTypeGroup>[
         jpgsTypeGroup,
         pngTypeGroup,
       ]);
@@ -162,7 +187,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         });
       }
     } else {
-      final result = await ImagePicker().pickMultiImage(
+      var result = await ImagePicker().pickMultiImage(
         imageQuality: widget.imageQuality,
         maxWidth: widget.imageMaxWidth,
         maxHeight: widget.imageMaxHeight,
@@ -232,8 +257,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         decoration: BoxDecoration(
           color: ControlOptions.instance.colorMain.withOpacity(0.2),
         ),
-        width: 150,
-        height: 150,
+        width: 36,
+        height: 36,
         child: Center(
             child: Opacity(
           opacity: 0.5,
@@ -395,7 +420,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             controller: scrollController,
             child: Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: ResponsiveGridList(scroll: false, minSpacing: 10, desiredItemWidth: 150, children: listWithPlus),
+              child: ResponsiveGridList(scroll: false, minSpacing: 10, desiredItemWidth: 100, children: listWithPlus),
             )));
   }
 
@@ -416,52 +441,6 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         )),
       ],
     );
-    /*else {
-      return Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: NsgText('Добавление фотографий'),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    NsgImagePickerButton(
-                      icon: Icons.photo_library_outlined,
-                      text: 'Галерея',
-                      onPressed: () {
-                        galleryImage();
-                      },
-                    ),
-                    if (!kIsWeb)
-                      if (Platform.isAndroid || Platform.isIOS)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 15),
-                          child: NsgImagePickerButton(
-                            icon: Icons.photo_camera_outlined,
-                            text: 'Камера',
-                            onPressed: () {
-                              cameraImage();
-                            },
-                          ),
-                        ),
-                  ],
-                ),
-                Text(
-                  error,
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          ),
-        ),
-      );
-    }*/
   }
 
   @override
@@ -509,15 +488,16 @@ class NsgImagePickerButton extends StatelessWidget {
               decoration: BoxDecoration(
                 color: ControlOptions.instance.colorMain,
               ),
-              width: 150,
-              height: 150,
+              width: 100,
+              height: 100,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.add, size: 64, color: ControlOptions.instance.colorInverted),
+                  Icon(Icons.add, size: 24, color: ControlOptions.instance.colorInverted),
                   Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: NsgText(textChooseFile, color: ControlOptions.instance.colorInverted),
+                    padding: const EdgeInsets.only(top: 10, left: 5, right: 5),
+                    child: Text(textChooseFile,
+                        textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 12)),
                   ),
                 ],
               ),
@@ -532,20 +512,22 @@ class NsgImagePickerButton extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: ControlOptions.instance.colorMainDark,
                   ),
-                  width: 175,
-                  height: 72,
+                  width: 100,
+                  height: 46,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.add, size: 32, color: ControlOptions.instance.colorInverted),
                       Padding(
-                        padding: const EdgeInsets.only(top: 0),
-                        child: NsgText(textChooseFile, color: ControlOptions.instance.colorInverted),
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Text(textChooseFile,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
                       ),
+                      Icon(Icons.arrow_downward, size: 16, color: ControlOptions.instance.colorInverted),
                     ],
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 2),
                 Row(
                   children: [
                     Expanded(
@@ -556,14 +538,15 @@ class NsgImagePickerButton extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: ControlOptions.instance.colorMain,
                           ),
-                          height: 72,
+                          height: 46,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.camera_alt_outlined, size: 32, color: ControlOptions.instance.colorInverted),
+                              Icon(Icons.camera_alt_outlined, size: 24, color: ControlOptions.instance.colorInverted),
                               Padding(
                                 padding: const EdgeInsets.only(top: 0),
-                                child: NsgText('Камера', color: ControlOptions.instance.colorInverted),
+                                child:
+                                    Text('Камера', style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
                               ),
                             ],
                           ),
@@ -579,14 +562,15 @@ class NsgImagePickerButton extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: ControlOptions.instance.colorMain,
                           ),
-                          height: 72,
+                          height: 46,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.photo_library_outlined, size: 32, color: ControlOptions.instance.colorInverted),
+                              Icon(Icons.photo_library_outlined, size: 24, color: ControlOptions.instance.colorInverted),
                               Padding(
                                 padding: const EdgeInsets.only(top: 0),
-                                child: NsgText('Галерея', color: ControlOptions.instance.colorInverted),
+                                child:
+                                    Text('Галерея', style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
                               ),
                             ],
                           ),
@@ -629,7 +613,10 @@ class __GalleryState extends State<_Gallery> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        NsgText('${_indx + 1} / ${widget.imagesList.length}'),
+        Text(
+          '${_indx + 1} / ${widget.imagesList.length}',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
         Stack(
           alignment: Alignment.center,
           children: [
@@ -689,7 +676,10 @@ class __GalleryState extends State<_Gallery> {
                     ))),
           ],
         ),
-        NsgText(_desc),
+        Text(
+          _desc,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
       ],
     );
   }
