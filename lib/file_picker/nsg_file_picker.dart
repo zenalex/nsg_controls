@@ -46,6 +46,7 @@ class NsgFilePicker extends StatefulWidget {
   final List<NsgFilePickerObject> objectsList;
 
   final bool oneFile;
+  final bool skipInterface;
 
   const NsgFilePicker(
       {Key? key,
@@ -62,7 +63,8 @@ class NsgFilePicker extends StatefulWidget {
       required this.callback,
       required this.objectsList,
       this.textChooseFile = 'Добавить фото',
-      this.oneFile = false})
+      this.oneFile = false,
+      this.skipInterface = false})
       : super(key: key);
 
   // popup() {
@@ -111,26 +113,71 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         maxWidth: widget.imageMaxWidth,
         maxHeight: widget.imageMaxHeight,
       );
-      setState(() {
-        galleryPage = true;
 
-        /// Если стоит ограничение на 1 файл
-        if (widget.oneFile) {
-          result = [result[0]];
-          widget.objectsList.clear();
-        }
-        for (var element in result) {
-          widget.objectsList
-              .add(NsgFilePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path));
-        }
-      });
+      galleryPage = true;
+
+      /// Если стоит ограничение на 1 файл
+      if (widget.oneFile) {
+        result = [result[0]];
+        widget.objectsList.clear();
+      }
+      for (var element in result) {
+        widget.objectsList
+            .add(NsgFilePickerObject(image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path));
+      }
+      if (widget.skipInterface) {
+        widget.callback(widget.objectsList);
+      } else {
+        setState(() {});
+      }
     } else if (GetPlatform.isWindows) {
       var result = await ImagePicker().pickMultiImage(
         imageQuality: widget.imageQuality,
         maxWidth: widget.imageMaxWidth,
         maxHeight: widget.imageMaxHeight,
       );
-      setState(() {
+
+      galleryPage = true;
+
+      /// Если стоит ограничение на 1 файл
+      if (widget.oneFile) {
+        result = [result[0]];
+        widget.objectsList.clear();
+      }
+      for (var element in result) {
+        String? fileType = extension(element.path).replaceAll('.', '');
+
+        if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
+          widget.objectsList.add(NsgFilePickerObject(
+              image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
+        } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
+          widget.objectsList.add(NsgFilePickerObject(
+              file: File(element.path), image: null, description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
+        } else {
+          error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+          setState(() {});
+        }
+      }
+      if (widget.skipInterface) {
+        widget.callback(widget.objectsList);
+      } else {
+        setState(() {});
+      }
+    } else if (GetPlatform.isMacOS) {
+      var jpgsTypeGroup = const file.XTypeGroup(
+        label: 'JPEGs',
+        extensions: <String>['jpg', 'jpeg'],
+      );
+      var pngTypeGroup = const file.XTypeGroup(
+        label: 'PNGs',
+        extensions: <String>['png'],
+      );
+      List<XFile> result = await file.openFiles(acceptedTypeGroups: <file.XTypeGroup>[
+        jpgsTypeGroup,
+        pngTypeGroup,
+      ]);
+
+      if (result.isNotEmpty) {
         galleryPage = true;
 
         /// Если стоит ограничение на 1 файл
@@ -152,39 +199,11 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             setState(() {});
           }
         }
-      });
-    } else if (GetPlatform.isMacOS) {
-      var jpgsTypeGroup = const file.XTypeGroup(
-        label: 'JPEGs',
-        extensions: <String>['jpg', 'jpeg'],
-      );
-      var pngTypeGroup = const file.XTypeGroup(
-        label: 'PNGs',
-        extensions: <String>['png'],
-      );
-      List<XFile> result = await file.openFiles(acceptedTypeGroups: <file.XTypeGroup>[
-        jpgsTypeGroup,
-        pngTypeGroup,
-      ]);
-
-      if (result.isNotEmpty) {
-        setState(() {
-          galleryPage = true;
-          for (var element in result) {
-            String? fileType = extension(element.path).replaceAll('.', '');
-
-            if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
-              widget.objectsList.add(NsgFilePickerObject(
-                  image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
-            } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
-              widget.objectsList.add(NsgFilePickerObject(
-                  file: File(element.path), image: null, description: basenameWithoutExtension(element.path), fileType: fileType, filePath: element.path));
-            } else {
-              error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
-              setState(() {});
-            }
-          }
-        });
+      }
+      if (widget.skipInterface) {
+        widget.callback(widget.objectsList);
+      } else {
+        setState(() {});
       }
     } else {
       var result = await ImagePicker().pickMultiImage(
@@ -193,13 +212,23 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         maxHeight: widget.imageMaxHeight,
       );
 
-      setState(() {
-        galleryPage = true;
-        for (var element in result) {
-          widget.objectsList
-              .add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), filePath: element.path));
-        }
-      });
+      galleryPage = true;
+
+      /// Если стоит ограничение на 1 файл
+      if (widget.oneFile) {
+        result = [result[0]];
+        widget.objectsList.clear();
+      }
+      for (var element in result) {
+        widget.objectsList
+            .add(NsgFilePickerObject(image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), filePath: element.path));
+      }
+
+      if (widget.skipInterface) {
+        widget.callback(widget.objectsList);
+      } else {
+        setState(() {});
+      }
     }
   }
 
@@ -390,15 +419,12 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     listWithPlus.add(NsgImagePickerButton(
         textChooseFile: widget.textChooseFile,
         onPressed: () {
-          if (widget.useFilePicker) {
-            pickFile();
-          }
           if (kIsWeb) {
             galleryImage();
           } else if (GetPlatform.isWindows) {
             galleryImage();
           } else {
-            cameraImage();
+            galleryImage();
           }
         },
         onPressed2: () {
@@ -450,25 +476,36 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.showAsWidget == true
-        ? body()
-        : BodyWrap(
-            child: Scaffold(
-              key: scaffoldKey,
-              backgroundColor: Colors.white,
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _appBar(),
-                  Expanded(
-                    child: body(),
-                  ),
+    if (widget.skipInterface) {
+      if (kIsWeb) {
+        galleryImage();
+      } else if (GetPlatform.isWindows) {
+        galleryImage();
+      } else {
+        cameraImage();
+      }
+      return SizedBox();
+    } else {
+      return widget.showAsWidget == true
+          ? body()
+          : BodyWrap(
+              child: Scaffold(
+                key: scaffoldKey,
+                backgroundColor: Colors.white,
+                body: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    _appBar(),
+                    Expanded(
+                      child: body(),
+                    ),
 
-                  //SizedBox(height: MediaQuery.of(context).padding.bottom),
-                ],
+                    //SizedBox(height: MediaQuery.of(context).padding.bottom),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+    }
   }
 }
 
