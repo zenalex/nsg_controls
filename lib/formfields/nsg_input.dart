@@ -580,10 +580,8 @@ class _NsgInputState extends State<NsgInput> {
     return Container(
         margin: widget.margin,
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        decoration: BoxDecoration(
-            color: ControlOptions.instance.colorInverted,
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-            border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
+        decoration:
+            BoxDecoration(color: ControlOptions.instance.colorInverted, border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
         child: Row(
           children: [
             Expanded(
