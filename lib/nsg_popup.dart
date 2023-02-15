@@ -84,16 +84,14 @@ class _NsgPopUpState extends State<NsgPopUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-        color: Colors.black.withOpacity(0.7),
-        child: SimpleDialog(
-          contentPadding: EdgeInsets.zero,
-          insetPadding: widget.margin,
-          titlePadding: EdgeInsets.zero,
-          // backgroundColor: Colors.black.withOpacity(0.8),
-          // filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          children: [widget.dataController == null ? _widgetData() : widget.dataController!.obx((state) => _widgetData())],
-        ));
+    return SimpleDialog(
+      contentPadding: EdgeInsets.zero,
+      insetPadding: widget.margin,
+      titlePadding: EdgeInsets.zero,
+      // backgroundColor: Colors.black.withOpacity(0.8),
+      // filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+      children: [widget.dataController == null ? _widgetData() : widget.dataController!.obx((state) => _widgetData())],
+    );
   }
 
   Widget _widgetData() {
