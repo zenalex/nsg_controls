@@ -50,8 +50,12 @@ class NsgAppBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              borderRadius: bottomCircular == true ? const BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)) : null,
-              color: colorsInverted == true ? backColor ?? ControlOptions.instance.colorMain : ControlOptions.instance.colorInverted),
+              borderRadius: bottomCircular == true
+                  ? const BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))
+                  : null,
+              color: colorsInverted == true
+                  ? backColor ?? ControlOptions.instance.colorMain
+                  : ControlOptions.instance.colorInverted),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -60,7 +64,8 @@ class NsgAppBar extends StatelessWidget {
                 child: Stack(children: [
                   if (notificationController != null)
                     notificationController!.obx((c) {
-                      if (notificationPosition == NsgAppBarNotificationPosition.leftIcon && getNotificationCount!() > 0) {
+                      if (notificationPosition == NsgAppBarNotificationPosition.leftIcon &&
+                          getNotificationCount!() > 0) {
                         return Padding(
                           padding: const EdgeInsets.only(left: 30),
                           child: NsgCircle(
@@ -79,7 +84,9 @@ class NsgAppBar extends StatelessWidget {
                     }),
                   IconButton(
                       icon: Icon(icon,
-                          color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                          color: colorsInverted == true
+                              ? color ?? ControlOptions.instance.colorMainText
+                              : ControlOptions.instance.colorMain,
                           size: 24), // set your color here
                       onPressed: onPressed),
                 ]),
@@ -94,18 +101,24 @@ class NsgAppBar extends StatelessWidget {
                       Text(
                         text,
                         style: TextStyle(
-                            color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                            color: colorsInverted == true
+                                ? color ?? ControlOptions.instance.colorMainText
+                                : ControlOptions.instance.colorMain,
                             fontSize: ControlOptions.instance.sizeL),
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         overflow: TextOverflow.clip,
                       ),
-                      if (notificationController != null && notificationPosition == NsgAppBarNotificationPosition.title && getNotificationCount!() > 0)
+                      if (notificationController != null &&
+                          notificationPosition == NsgAppBarNotificationPosition.title &&
+                          getNotificationCount!() > 0)
                         notificationController!.obx(
                           (c) => Text(
                             'Непрочитанных оповещений: ${getNotificationCount!()}',
                             style: TextStyle(
-                                color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                                color: colorsInverted == true
+                                    ? color ?? ControlOptions.instance.colorMainText
+                                    : ControlOptions.instance.colorMain,
                                 fontSize: ControlOptions.instance.sizeXS),
                             textAlign: TextAlign.center,
                             maxLines: 2,
@@ -116,7 +129,9 @@ class NsgAppBar extends StatelessWidget {
                         Text(
                           '$text2',
                           style: TextStyle(
-                              color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                              color: colorsInverted == true
+                                  ? color ?? ControlOptions.instance.colorMainText
+                                  : ControlOptions.instance.colorMain,
                               fontSize: ControlOptions.instance.sizeXS),
                           textAlign: TextAlign.center,
                           maxLines: 2,
@@ -136,7 +151,9 @@ class NsgAppBar extends StatelessWidget {
                           constraints: const BoxConstraints(maxWidth: 36),
                           icon: Icon(
                             icon3,
-                            color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                            color: colorsInverted == true
+                                ? color ?? ControlOptions.instance.colorMainText
+                                : ControlOptions.instance.colorMain,
                             size: 24,
                           ),
                           onPressed: onPressed3),
@@ -145,7 +162,9 @@ class NsgAppBar extends StatelessWidget {
                           constraints: const BoxConstraints(maxWidth: 36),
                           icon: Icon(
                             icon2,
-                            color: colorsInverted == true ? color ?? ControlOptions.instance.colorText : ControlOptions.instance.colorMain,
+                            color: colorsInverted == true
+                                ? color ?? ControlOptions.instance.colorMainText
+                                : ControlOptions.instance.colorMain,
                             size: 24,
                           ),
                           onPressed: onPressed2)
