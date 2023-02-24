@@ -35,7 +35,7 @@ class NsgGrid extends StatelessWidget {
       var difAdd = (dif / 2).floor();
       if (!centered) {
         for (var i = 0; i < dif; i++) {
-          row.add(Expanded(flex: 2, child: SizedBox()));
+          row.add(const Expanded(flex: 2, child: SizedBox()));
         }
         list.add(Row(children: row));
       } else {
@@ -44,8 +44,8 @@ class NsgGrid extends StatelessWidget {
           row.add(const Expanded(flex: 2, child: SizedBox()));
         }
         if (dif.isOdd) {
-          row.insert(0, Expanded(flex: 1, child: SizedBox()));
-          row.add(Expanded(flex: 1, child: SizedBox()));
+          row.insert(0, const Expanded(flex: 1, child: SizedBox()));
+          row.add(const Expanded(flex: 1, child: SizedBox()));
         }
         list.add(Row(children: row));
       }

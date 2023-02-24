@@ -154,8 +154,8 @@ class _DatePickerContentState extends State<DatePickerContent> {
   String _initialTime = '';
   DateTime _initialTime2 = DateTime.now();
   final textController = TextEditingController();
-  var firstDate = DateTime.now().subtract(Duration(days: 200));
-  var lastDate = DateTime.now().add(Duration(days: 200));
+  var firstDate = DateTime.now().subtract(const Duration(days: 200));
+  var lastDate = DateTime.now().add(const Duration(days: 200));
   @override
   void initState() {
     _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy');
@@ -380,8 +380,8 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
       padding: const EdgeInsets.only(top: 10, bottom: 15),
       child: CalendarDatePicker(
         key: GlobalKey(),
-        firstDate: widget.initialDateTime.subtract(Duration(days: 356 * 2)),
-        lastDate: widget.initialDateTime.add(Duration(days: 356 * 2)),
+        firstDate: widget.initialDateTime.subtract(const Duration(days: 356 * 2)),
+        lastDate: widget.initialDateTime.add(const Duration(days: 356 * 2)),
         initialDate: widget.initialDateTime,
         onDateChanged: (d) {
           widget.onDateTimeChanged(d);
