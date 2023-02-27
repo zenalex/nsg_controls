@@ -12,6 +12,7 @@ class NsgFilePickerObject {
   String? fileType = '';
   String description = '';
   bool isNew = true;
+  bool markToDelete = false;
   NsgFilePickerObject({this.image, this.fileType, this.file, required this.description, this.id = '', this.filePath = '', required this.isNew}) {
     if (isNew) {
       id = Guid.newGuid();

@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:file_picker/file_picker.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +10,8 @@ import 'package:path/path.dart';
 import '../nsg_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:file_selector/file_selector.dart' as file;
+
+import 'nsg_file_picker_gallery.dart';
 
 /// Пикер и загрузчик изображений и файлов заданных форматов
 class NsgFilePicker extends StatefulWidget {
@@ -405,7 +405,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                             width: Get.width,
                             height: Get.height,
                             getContent: () => [
-                                  _Gallery(
+                                  NsgGallery(
                                     imagesList: imagesList,
                                     currentPage: currentPage,
                                   )
@@ -649,105 +649,5 @@ class NsgImagePickerButton extends StatelessWidget {
               ],
             ),
           );
-  }
-}
-
-class _Gallery extends StatefulWidget {
-  final List<NsgFilePickerObject> imagesList;
-  final int currentPage;
-  const _Gallery({Key? key, required this.imagesList, required this.currentPage}) : super(key: key);
-
-  @override
-  State<_Gallery> createState() => __GalleryState();
-}
-
-String _desc = '';
-int _indx = 0;
-PageController pageController = PageController();
-
-class __GalleryState extends State<_Gallery> {
-  @override
-  void initState() {
-    super.initState();
-
-    _indx = widget.currentPage;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    pageController = PageController(initialPage: _indx);
-    _desc = widget.imagesList[_indx].description;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          '${_indx + 1} / ${widget.imagesList.length}',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox(
-              height: Get.height - 150,
-              child: PhotoViewGallery.builder(
-                key: GlobalKey(),
-                onPageChanged: (value) {
-                  _desc = widget.imagesList[value].description;
-                  _indx = value;
-                },
-                pageController: pageController,
-                scrollPhysics: const BouncingScrollPhysics(),
-                builder: (BuildContext context, int index) {
-                  return PhotoViewGalleryPageOptions(
-                    imageProvider: widget.imagesList[index].image!.image,
-                    initialScale: PhotoViewComputedScale.contained * 0.9,
-                    // heroAttributes: PhotoViewHeroAttributes(tag: imagesList[index].description),
-                  );
-                },
-                itemCount: widget.imagesList.length,
-                loadingBuilder: (context, event) => const NsgProgressBar(),
-                backgroundDecoration: BoxDecoration(color: ControlOptions.instance.colorInverted),
-                /*pageController: widget.pageController,
-                        onPageChanged: onPageChanged,*/
-              ),
-            ),
-            Align(
-                alignment: Alignment.centerLeft,
-                child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _indx--;
-                        if (_indx < 0) {
-                          _indx = widget.imagesList.length - 1;
-                        }
-                      });
-                    },
-                    child: const Icon(
-                      Icons.arrow_left_outlined,
-                      size: 48,
-                    ))),
-            Align(
-                alignment: Alignment.centerRight,
-                child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _indx++;
-                        if (_indx > widget.imagesList.length - 1) {
-                          _indx = 0;
-                        }
-                      });
-                    },
-                    child: const Icon(
-                      Icons.arrow_right_outlined,
-                      size: 48,
-                    ))),
-          ],
-        ),
-        Text(
-          _desc,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
-      ],
-    );
   }
 }

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -56,5 +58,40 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
       images.add(await dataItemToFileObject(element));
     }
     return;
+  }
+
+  //Функция вызывается при тапе на иконке картинки в тексте. Должно вызывыать открытие окна просмотра или обработки файла/излображения
+  void tapFile(NsgFilePickerObject? fileObject) {
+    if (fileObject == null) return;
+    var curIndex = 0;
+    for (var e in images) {
+      if (e.id == fileObject.id) {
+        break;
+      }
+      curIndex++;
+    }
+    if (curIndex >= images.length) {
+      curIndex = 0;
+    }
+
+    Get.dialog(
+        NsgPopUp(
+            onCancel: () {
+              Get.back();
+            },
+            onConfirm: () {
+              Get.back();
+            },
+            margin: const EdgeInsets.all(15),
+            title: "Просмотр изображений",
+            width: Get.width,
+            height: Get.height,
+            getContent: () => [
+                  NsgGallery(
+                    imagesList: images,
+                    currentPage: curIndex,
+                  )
+                ]),
+        barrierDismissible: true);
   }
 }
