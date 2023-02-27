@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../nsg_control_options.dart';
 import '../widgets/nsg_progressbar.dart';
@@ -53,6 +56,11 @@ class NsgGalleryState extends State<NsgGallery> {
                 pageController: pageController,
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: (BuildContext context, int index) {
+                  var obj = widget.imagesList[index];
+                  if (obj.fileType == 'pdf') {
+                    //TODO: PDF!!!!!!!!!!!!!!!!!!!!!!
+                    //return SfPdfViewer.file(File(obj.filePath));
+                  }
                   return PhotoViewGalleryPageOptions(
                     imageProvider: widget.imagesList[index].image!.image,
                     initialScale: PhotoViewComputedScale.contained * 0.9,

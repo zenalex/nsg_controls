@@ -66,7 +66,11 @@ class NsgTableColumn {
   ///Разрешить сортировку по данному столбцу
   bool allowSort;
 
-  String Function(NsgDataItem item, NsgTableColumn column, String defaultText)? getColumnText;
+  ///Строка форматирования. Используется не для всех типов. Пока реализовано только для даты
+  String format;
+
+  String Function(NsgDataItem item, NsgTableColumn column, String defaultText)?
+      getColumnText;
 
   Widget Function(NsgDataItem item, NsgTableColumn column)? getColumnWidget;
 
@@ -95,7 +99,8 @@ class NsgTableColumn {
       this.allowSort = true,
       this.getColumnText,
       this.getColumnWidget,
-      this.getBackColor});
+      this.getBackColor,
+      this.format = ''});
 
   static const String usVisible = 'visible';
   static const String usWidth = 'width';
@@ -106,7 +111,8 @@ class NsgTableColumn {
   void fromJson(Map<String, dynamic> json) {
     json.forEach((name, jsonValue) {
       if (name == usVisible) {
-        visible = (jsonValue.toString().toLowerCase() == 'true' || jsonValue.toString().toLowerCase() == '1');
+        visible = (jsonValue.toString().toLowerCase() == 'true' ||
+            jsonValue.toString().toLowerCase() == '1');
       }
       if (name == usWidth) {
         if (jsonValue is int) {

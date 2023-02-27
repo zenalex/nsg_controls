@@ -8,6 +8,7 @@ class NsgFilePickerObject {
   String id;
   String filePath;
   Image? image;
+  List<int>? fileContent;
   File? file;
   String? fileType = '';
   String description = '';
