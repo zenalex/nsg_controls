@@ -58,8 +58,7 @@ class NsgGalleryState extends State<NsgGallery> {
                 builder: (BuildContext context, int index) {
                   var obj = widget.imagesList[index];
                   if (obj.fileType == 'pdf') {
-                    //TODO: PDF!!!!!!!!!!!!!!!!!!!!!!
-                    //return SfPdfViewer.file(File(obj.filePath));
+                    return PhotoViewGalleryPageOptions.customChild(child: SfPdfViewer.file(File(obj.filePath)));
                   }
                   return PhotoViewGalleryPageOptions(
                     imageProvider: widget.imagesList[index].image!.image,
