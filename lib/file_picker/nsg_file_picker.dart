@@ -312,11 +312,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   Widget _showFileType(NsgFilePickerObject element) {
     return Container(
+        height: 100,
         decoration: BoxDecoration(
           color: ControlOptions.instance.colorMain.withOpacity(0.2),
         ),
-        width: 36,
-        height: 36,
         child: Center(
             child: Opacity(
           opacity: 0.5,
@@ -324,7 +323,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             '${element.fileType}',
             margin: const EdgeInsets.only(top: 10),
             color: ControlOptions.instance.colorMain,
-            type: NsgTextType(const TextStyle(fontSize: 48, fontWeight: FontWeight.w500)),
+            type: NsgTextType(const TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
           ),
         )));
   }
@@ -345,11 +344,14 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                   padding: const EdgeInsets.fromLTRB(5, 0, 30, 0),
                   alignment: Alignment.centerLeft,
                   height: 40,
-                  child: NsgText(
-                    color: ControlOptions.instance.colorInverted,
-                    element.description,
-                    maxLines: 2,
+                  child: Text(
+                    '${element.description}',
+                    maxLines: 3,
                     overflow: TextOverflow.clip,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: ControlOptions.instance.colorInverted,
+                    ),
                   ),
                 ),
                 Align(
