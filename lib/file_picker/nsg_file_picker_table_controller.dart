@@ -8,7 +8,8 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 import 'package:nsg_data/nsg_data.dart';
 
-class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T> with NsgFilePickerInterface {
+///Контроллер, для работы с картинками, хранящимися в табличной части объекта
+class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableController<T> with NsgFilePickerInterface {
   var _files = <NsgFilePickerObject>[];
   @override
   List<NsgFilePickerObject> get files => _files;
@@ -18,6 +19,8 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
   }
 
   String descriptionFieldName = '';
+
+  NsgFilePickerTableController({required super.masterController, required super.tableFieldName});
 
   @override
   Future<NsgDataItem> fileObjectToDataItem(NsgFilePickerObject fileObject, File imageFile) async {
@@ -34,18 +37,22 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
     var progress = NsgProgressDialog(textDialog: 'Сохранение фото');
     progress.show();
     var ids = <String>[];
-
+    var table = NsgDataTable(owner: masterController!.selectedItem!, fieldName: tableFieldName);
     try {
       for (var img in files) {
         if (img.image == null) continue;
         if (img.isNew && img.id.isNotEmpty) {
           File imageFile = kIsWeb ? File.fromUri(Uri(path: img.filePath)) : File(img.filePath);
+
           var pic = await fileObjectToDataItem(img, imageFile);
-          await pic.post();
+          if (!table.rows.any((e) => e.id == pic.id)) {
+            table.rows.add(pic);
+          }
         }
         ids.add(img.id);
       }
       //Удаляем "лишние" картинки
+      //TODO: УДАЛЕНИЕ ФАЙЛОВ!!!!!
       var itemsToDelete = items.where((e) => !ids.contains(e.id)).toList();
       if (itemsToDelete.isNotEmpty) {
         deleteItems(itemsToDelete);
@@ -95,7 +102,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
               Get.back();
             },
             margin: const EdgeInsets.all(15),
-            title: "Просмотр изображений",
+            title: "Просмотр файлов",
             width: Get.width,
             height: Get.height,
             getContent: () => [

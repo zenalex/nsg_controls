@@ -89,10 +89,7 @@ class NsgButton extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (icon != null)
-                          Padding(
-                              padding: iconMargin,
-                              child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
+                        if (icon != null) Padding(padding: iconMargin, child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
@@ -113,10 +110,7 @@ class NsgButton extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: <Color>[
-                      ControlOptions.instance.colorMainText.withOpacity(0.0),
-                      ControlOptions.instance.colorMainText.withOpacity(0.3)
-                    ],
+                    colors: <Color>[ControlOptions.instance.colorMainText.withOpacity(0.0), ControlOptions.instance.colorMainText.withOpacity(0.3)],
                   ),
                   borderRadius: BorderRadius.circular(25),
                 ),
@@ -200,10 +194,7 @@ class NsgButton extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (icon != null)
-                      Padding(
-                          padding: iconMargin,
-                          child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
+                    if (icon != null) Padding(padding: iconMargin, child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
                     Flexible(
                       //fit: FlexFit.loose,
 
