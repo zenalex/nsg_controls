@@ -54,8 +54,8 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
       //Удаляем "лишние" картинки
       //TODO: УДАЛЕНИЕ ФАЙЛОВ!!!!!
       var itemsToDelete = items.where((e) => !ids.contains(e.id)).toList();
-      if (itemsToDelete.isNotEmpty) {
-        deleteItems(itemsToDelete);
+      for (var row in itemsToDelete) {
+        table.rows.remove(row);
       }
       progress.hide();
       // Get.back();
