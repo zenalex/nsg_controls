@@ -75,7 +75,6 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
     for (var element in items) {
       files.add(await dataItemToFileObject(element));
     }
-    return;
   }
 
   ///Функция вызывается при тапе на иконке картинки в тексте. Должно вызывыать открытие окна просмотра или обработки файла/излображения

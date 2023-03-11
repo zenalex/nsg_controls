@@ -287,6 +287,11 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           setState(() {});
         }
       }
+      if (widget.skipInterface) {
+        widget.callback(widget.objectsList);
+      } else {
+        setState(() {});
+      }
     }
   }
 
@@ -386,10 +391,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
               child: InkWell(
                 //hoverColor: ControlOptions.instance.colorMain,
                 onTap: () {
-                  if (element.image != null) {
+                  if (element.image != null || element.fileType == 'pdf') {
                     List<NsgFilePickerObject> imagesList = [];
                     for (var el in widget.objectsList) {
-                      if (el.image != null) {
+                      if (el.image != null || element.fileType == 'pdf') {
                         imagesList.add(el);
                       }
                     }
@@ -453,7 +458,9 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           if (kIsWeb) {
             galleryImage();
           } else if (GetPlatform.isWindows) {
-            galleryImage();
+            pickFile();
+            //TODO: тест выбора файла
+            //galleryImage();
           } else {
             galleryImage();
           }
