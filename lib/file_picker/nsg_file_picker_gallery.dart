@@ -57,9 +57,9 @@ class NsgGalleryState extends State<NsgGallery> {
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: (BuildContext context, int index) {
                   var obj = widget.imagesList[index];
-                  if (obj.fileType == 'pdf') {
+                  if (obj.fileType == NsgFilePickerObjectType.pdf) {
                     return PhotoViewGalleryPageOptions.customChild(child: SfPdfViewer.file(File(obj.filePath)));
-                  }
+                  } else if (obj.fileType == NsgFilePickerObjectType.video) {}
                   return PhotoViewGalleryPageOptions(
                     imageProvider: widget.imagesList[index].image!.image,
                     initialScale: PhotoViewComputedScale.contained * 0.9,

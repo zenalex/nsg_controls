@@ -7,11 +7,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:path/path.dart';
+import 'package:video_player_win/video_player_win.dart';
 import '../nsg_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:file_selector/file_selector.dart' as file;
-
-import 'nsg_file_picker_gallery.dart';
 
 /// Пикер и загрузчик изображений и файлов заданных форматов
 class NsgFilePicker extends StatefulWidget {
@@ -48,7 +47,7 @@ class NsgFilePicker extends StatefulWidget {
   final bool oneFile;
   final bool skipInterface;
 
-  const NsgFilePicker(
+  NsgFilePicker(
       {Key? key,
       this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
       this.allowedVideoFormats = const ['mp4'],
@@ -65,7 +64,19 @@ class NsgFilePicker extends StatefulWidget {
       this.textChooseFile = 'Добавить фото',
       this.oneFile = false,
       this.skipInterface = false})
-      : super(key: key);
+      : super(key: key) {
+    _resisterComponents();
+  }
+
+  static bool _isComponentsRegistered = false;
+  static _resisterComponents() {
+    if (_isComponentsRegistered) {
+      if (!kIsWeb && Platform.isWindows) {
+        WindowsVideoPlayer.registerWith();
+      }
+      _isComponentsRegistered = true;
+    }
+  }
 
   // popup() {
   //   Get.dialog(
@@ -78,6 +89,28 @@ class NsgFilePicker extends StatefulWidget {
 
   @override
   State<NsgFilePicker> createState() => _NsgFilePickerState();
+
+  static List<String> globalAllowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'];
+  static List<String> globalAllowedVideoFormats = const ['mp4'];
+  static List<String> globalAllowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'];
+
+  static NsgFilePickerObjectType getFileType(String ext) {
+    if (globalAllowedImageFormats.contains(ext)) {
+      return NsgFilePickerObjectType.image;
+    }
+    if (globalAllowedVideoFormats.contains(ext)) {
+      return NsgFilePickerObjectType.image;
+    }
+    if (globalAllowedFileFormats.contains(ext)) {
+      if (ext == 'pdf') {
+        return NsgFilePickerObjectType.pdf;
+      } else {
+        return NsgFilePickerObjectType.other;
+      }
+    }
+
+    return NsgFilePickerObjectType.unknown;
+  }
 }
 
 class _NsgFilePickerState extends State<NsgFilePicker> {
@@ -147,16 +180,16 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         }
       }
       for (var element in result) {
-        String? fileType = extension(element.path).replaceAll('.', '');
+        var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', '').toLowerCase());
 
-        if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
+        if (fileType == NsgFilePickerObjectType.image) {
           widget.objectsList.add(NsgFilePickerObject(
               isNew: true,
               image: Image.file(File(element.path)),
               description: basenameWithoutExtension(element.path),
               fileType: fileType,
               filePath: element.path));
-        } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
+        } else if (fileType != NsgFilePickerObjectType.unknown) {
           widget.objectsList.add(NsgFilePickerObject(
               isNew: true,
               file: File(element.path),
@@ -197,16 +230,16 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           widget.objectsList.clear();
         }
         for (var element in result) {
-          String? fileType = extension(element.path).replaceAll('.', '');
+          var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', ''));
 
-          if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
+          if (fileType == NsgFilePickerObjectType.image) {
             widget.objectsList.add(NsgFilePickerObject(
                 isNew: true,
                 image: Image.file(File(element.path)),
                 description: basenameWithoutExtension(element.path),
                 fileType: fileType,
                 filePath: element.path));
-          } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
+          } else if (fileType != NsgFilePickerObjectType.unknown) {
             widget.objectsList.add(NsgFilePickerObject(
                 isNew: true,
                 file: File(element.path),
@@ -254,12 +287,12 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   /// Pick an image
   Future pickFile() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: [...widget.allowedFileFormats, ...widget.allowedImageFormats]);
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: [...widget.allowedFileFormats, ...widget.allowedImageFormats, ...widget.allowedVideoFormats]);
     if (result != null) {
       galleryPage = true;
       for (var element in result.files) {
-        String? fileType = extension(element.name).replaceAll('.', '');
+        var fileType = NsgFilePicker.getFileType(extension(element.name).replaceAll('.', '').toLowerCase());
 
         var file = File(element.name);
         if ((await file.length()) > widget.fileMaxSize) {
@@ -267,14 +300,14 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           setState(() {});
           return;
         }
-        if (widget.allowedImageFormats.contains(fileType.toLowerCase())) {
+        if (fileType == NsgFilePickerObjectType.image) {
           widget.objectsList.add(NsgFilePickerObject(
               isNew: true,
               image: Image.file(File(element.name)),
               description: basenameWithoutExtension(element.name),
               fileType: fileType,
               filePath: element.path ?? ''));
-        } else if (widget.allowedFileFormats.contains(fileType.toLowerCase())) {
+        } else if (fileType != NsgFilePickerObjectType.unknown) {
           widget.objectsList.add(NsgFilePickerObject(
               isNew: true,
               file: File(element.name),
@@ -350,7 +383,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                   alignment: Alignment.centerLeft,
                   height: 40,
                   child: Text(
-                    '${element.description}',
+                    element.description,
                     maxLines: 3,
                     overflow: TextOverflow.clip,
                     style: TextStyle(
@@ -391,10 +424,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
               child: InkWell(
                 //hoverColor: ControlOptions.instance.colorMain,
                 onTap: () {
-                  if (element.image != null || element.fileType == 'pdf') {
+                  if (element.fileType != NsgFilePickerObjectType.other && element.fileType != NsgFilePickerObjectType.unknown) {
                     List<NsgFilePickerObject> imagesList = [];
                     for (var el in widget.objectsList) {
-                      if (el.image != null || element.fileType == 'pdf') {
+                      if (el.fileType != NsgFilePickerObjectType.other && el.fileType != NsgFilePickerObjectType.unknown) {
                         imagesList.add(el);
                       }
                     }
@@ -459,8 +492,6 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             galleryImage();
           } else if (GetPlatform.isWindows) {
             pickFile();
-            //TODO: тест выбора файла
-            //galleryImage();
           } else {
             galleryImage();
           }

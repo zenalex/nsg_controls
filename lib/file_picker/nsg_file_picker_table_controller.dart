@@ -34,14 +34,13 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
 
   @override
   Future<bool> saveImages() async {
-    var progress = NsgProgressDialog(textDialog: 'Сохранение фото');
+    var progress = NsgProgressDialog(textDialog: 'Сохранение файлов');
     progress.show();
     var ids = <String>[];
     var table = NsgDataTable(owner: masterController!.selectedItem!, fieldName: tableFieldName);
     try {
       for (var img in files) {
         ids.add(img.id);
-        if (img.image == null) continue;
         if (img.isNew && img.id.isNotEmpty) {
           File imageFile = kIsWeb ? File.fromUri(Uri(path: img.filePath)) : File(img.filePath);
 

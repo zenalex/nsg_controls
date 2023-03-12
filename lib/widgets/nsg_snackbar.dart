@@ -20,7 +20,7 @@ void nsgSnackbar({String? title, required String text, NsgSnarkBarType? type, Du
     messageColor: ControlOptions.instance.colorMainText,
     title: type?.title,
     message: text,
-    duration: duration ?? Duration(seconds: 3),
+    duration: duration ?? const Duration(seconds: 3),
     maxWidth: 640,
     icon: type == null ? null : Icon(type.icon, color: ControlOptions.instance.colorMainText),
   ).show(Get.context!);

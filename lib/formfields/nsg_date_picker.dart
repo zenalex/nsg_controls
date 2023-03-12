@@ -301,6 +301,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
   }
 }
 
+// ignore: must_be_immutable
 class NsgCupertinoDatePicker extends StatefulWidget {
   DateTime initialDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
@@ -344,6 +345,7 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
   }
 }
 
+// ignore: must_be_immutable
 class NsgCalendarDatePicker extends StatefulWidget {
   DateTime initialDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;

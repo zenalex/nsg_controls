@@ -41,7 +41,9 @@ class NsgSelection {
         list.add(GestureDetector(
           onTap: () {
             selectedElement = element;
+            // ignore: invalid_use_of_protected_member
             selectionController?.refresh();
+            // ignore: invalid_use_of_protected_member
             controller?.refresh();
           },
           child: _controllerUpdateWidget(element),

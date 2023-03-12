@@ -40,6 +40,7 @@ class NsgProgressDialog {
   // При нажатии на кнопку отмены вызываем requestStop - убираем кнопку отмены, пишем "обработка отмены"
 }
 
+// ignore: must_be_immutable
 class NsgProgressDialogWidget extends StatefulWidget {
   final String? text;
   final double? percent;
