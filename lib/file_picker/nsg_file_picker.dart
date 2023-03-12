@@ -99,7 +99,7 @@ class NsgFilePicker extends StatefulWidget {
       return NsgFilePickerObjectType.image;
     }
     if (globalAllowedVideoFormats.contains(ext)) {
-      return NsgFilePickerObjectType.image;
+      return NsgFilePickerObjectType.video;
     }
     if (globalAllowedFileFormats.contains(ext)) {
       if (ext == 'pdf') {
@@ -358,7 +358,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             child: Opacity(
           opacity: 0.5,
           child: NsgText(
-            '${element.fileType}',
+            extension(element.filePath).replaceAll('.', ''),
             margin: const EdgeInsets.only(top: 10),
             color: ControlOptions.instance.colorMain,
             type: NsgTextType(const TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),

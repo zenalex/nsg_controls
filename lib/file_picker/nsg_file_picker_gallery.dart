@@ -59,7 +59,9 @@ class NsgGalleryState extends State<NsgGallery> {
                   var obj = widget.imagesList[index];
                   if (obj.fileType == NsgFilePickerObjectType.pdf) {
                     return PhotoViewGalleryPageOptions.customChild(child: SfPdfViewer.file(File(obj.filePath)));
-                  } else if (obj.fileType == NsgFilePickerObjectType.video) {}
+                  } else if (obj.fileType == NsgFilePickerObjectType.video) {
+                    return PhotoViewGalleryPageOptions.customChild(child: SfPdfViewer.file(File(obj.filePath)));
+                  }
                   return PhotoViewGalleryPageOptions(
                     imageProvider: widget.imagesList[index].image!.image,
                     initialScale: PhotoViewComputedScale.contained * 0.9,
