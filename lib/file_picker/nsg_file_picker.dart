@@ -7,10 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:path/path.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:video_player_win/video_player_win.dart';
 import '../nsg_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:file_selector/file_selector.dart' as file;
+import 'package:dio/dio.dart' as dio;
 
 /// Пикер и загрузчик изображений и файлов заданных форматов
 class NsgFilePicker extends StatefulWidget {
@@ -70,7 +72,7 @@ class NsgFilePicker extends StatefulWidget {
 
   static bool _isComponentsRegistered = false;
   static _resisterComponents() {
-    if (_isComponentsRegistered) {
+    if (!_isComponentsRegistered) {
       if (!kIsWeb && Platform.isWindows) {
         WindowsVideoPlayer.registerWith();
       }
@@ -366,6 +368,40 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         )));
   }
 
+  Future saveFile(NsgFilePickerObject fileObject) async {
+    FileType fileType = FileType.any;
+    switch (fileObject.fileType) {
+      case NsgFilePickerObjectType.image:
+        fileType = FileType.image;
+        break;
+      case NsgFilePickerObjectType.video:
+        fileType = FileType.video;
+        break;
+      case NsgFilePickerObjectType.pdf:
+        fileType = FileType.any;
+        break;
+      default:
+        fileType = FileType.any;
+    }
+    var fileName = await FilePicker.platform
+        .saveFile(dialogTitle: 'Сохранить файл', type: fileType, allowedExtensions: [extension(fileObject.filePath).replaceAll('.', '')]);
+    if (fileName == null) return;
+    var ext = extension(fileName);
+    if (ext.isEmpty) {
+      fileName += extension(fileObject.filePath);
+    }
+
+    //TODO: add progress
+    dio.Dio io = dio.Dio();
+    await io.download(fileObject.filePath, fileName, onReceiveProgress: (receivedBytes, totalBytes) {
+      //setState(() {
+      // downloading = true;
+      // progress =
+      //     ((receivedBytes / totalBytes) * 100).toStringAsFixed(0) + "%";
+    });
+    await launchUrlString('file:$fileName');
+  }
+
   /// Вывод галереи на экран
   Widget _getImages() {
     List<Widget> list = [];
@@ -389,6 +425,23 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                     style: TextStyle(
                       fontSize: 10,
                       color: ControlOptions.instance.colorInverted,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Material(
+                    color: ControlOptions.instance.colorMain.withOpacity(0),
+                    child: InkWell(
+                      hoverColor: ControlOptions.instance.colorMainDark,
+                      onTap: () {
+                        saveFile(element);
+                      },
+                      child: Container(
+                        height: 38,
+                        padding: const EdgeInsets.all(5),
+                        child: Icon(Icons.save_as, size: 18, color: ControlOptions.instance.colorInverted),
+                      ),
                     ),
                   ),
                 ),

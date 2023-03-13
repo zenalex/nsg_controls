@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nsg_controls/file_picker/nsg_video_player.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -58,9 +59,13 @@ class NsgGalleryState extends State<NsgGallery> {
                 builder: (BuildContext context, int index) {
                   var obj = widget.imagesList[index];
                   if (obj.fileType == NsgFilePickerObjectType.pdf) {
-                    return PhotoViewGalleryPageOptions.customChild(child: SfPdfViewer.file(File(obj.filePath)));
+                    if (obj.isNew) {
+                      return PhotoViewGalleryPageOptions.customChild(child: SfPdfViewer.file(File(obj.filePath)));
+                    } else {
+                      return PhotoViewGalleryPageOptions.customChild(child: SfPdfViewer.network(obj.filePath));
+                    }
                   } else if (obj.fileType == NsgFilePickerObjectType.video) {
-                    return PhotoViewGalleryPageOptions.customChild(child: SfPdfViewer.file(File(obj.filePath)));
+                    return PhotoViewGalleryPageOptions.customChild(child: NsgVideoPlayer(obj));
                   }
                   return PhotoViewGalleryPageOptions(
                     imageProvider: widget.imagesList[index].image!.image,
