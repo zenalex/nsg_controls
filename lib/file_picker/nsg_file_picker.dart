@@ -183,6 +183,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           widget.objectsList.clear();
         }
       }
+
       for (var element in result) {
         var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', '').toLowerCase());
 
@@ -277,8 +278,27 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         widget.objectsList.clear();
       }
       for (var element in result) {
-        widget.objectsList.add(NsgFilePickerObject(
-            isNew: true, image: Image.file(File(element.path)), description: basenameWithoutExtension(element.path), filePath: element.path));
+        var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', ''));
+
+        if (fileType == NsgFilePickerObjectType.image) {
+          widget.objectsList.add(NsgFilePickerObject(
+              isNew: true,
+              image: Image.file(File(element.path)),
+              description: basenameWithoutExtension(element.path),
+              fileType: fileType,
+              filePath: element.path));
+        } else if (fileType != NsgFilePickerObjectType.unknown) {
+          widget.objectsList.add(NsgFilePickerObject(
+              isNew: true,
+              file: File(element.path),
+              image: null,
+              description: basenameWithoutExtension(element.path),
+              fileType: fileType,
+              filePath: element.path));
+        } else {
+          error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+          setState(() {});
+        }
       }
 
       if (widget.skipInterface) {
