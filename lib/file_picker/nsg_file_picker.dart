@@ -157,8 +157,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         widget.objectsList.clear();
       }
       for (var element in result) {
-        widget.objectsList.add(
-            NsgFilePickerObject(isNew: true, image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path));
+        var obj =
+            NsgFilePickerObject(isNew: true, image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path);
+        obj.fileContent = await element.readAsBytes();
+        widget.objectsList.add(obj);
       }
       if (widget.skipInterface) {
         widget.callback(widget.objectsList);

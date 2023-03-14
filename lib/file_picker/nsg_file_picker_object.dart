@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -7,7 +8,7 @@ class NsgFilePickerObject {
   String id;
   String filePath;
   Image? image;
-  List<int>? fileContent;
+  Uint8List? fileContent;
   File? file;
   NsgFilePickerObjectType fileType = NsgFilePickerObjectType.unknown;
   String description = '';
