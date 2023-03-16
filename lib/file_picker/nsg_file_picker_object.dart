@@ -28,4 +28,4 @@ class NsgFilePickerObject {
   }
 }
 
-enum NsgFilePickerObjectType { unknown, image, pdf, video, other }
+enum NsgFilePickerObjectType { unknown, image, pdf, csv, video, other }
