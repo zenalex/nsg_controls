@@ -24,7 +24,16 @@ void nsgSnackbar(
   Flushbar(
     backgroundColor: ControlOptions.instance.colorMain,
     messageColor: ControlOptions.instance.colorMainText,
-    title: type?.title,
+    titleText: title == null
+        ? null
+        : Text(
+            title!,
+            textAlign: textAlign ?? TextAlign.center,
+            style: TextStyle(
+                fontSize: fontSize ?? ControlOptions.instance.sizeL,
+                color: ControlOptions.instance.colorMainText,
+                fontWeight: FontWeight.w500),
+          ),
     messageText: Text(
       '$text',
       textAlign: textAlign ?? TextAlign.center,
