@@ -9,7 +9,13 @@ class NsgIconButton extends StatefulWidget {
   final Color? color;
   final Color? backColor;
   const NsgIconButton(
-      {Key? key, required this.icon, required this.onPressed, this.color, this.backColor, this.size = 16, this.padding = const EdgeInsets.all(10)})
+      {Key? key,
+      required this.icon,
+      required this.onPressed,
+      this.color,
+      this.backColor,
+      this.size = 16,
+      this.padding = const EdgeInsets.all(10)})
       : super(key: key);
 
   @override
@@ -27,8 +33,6 @@ class _NsgIconButtonState extends State<NsgIconButton> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 36,
-      height: 36,
       child: InkWell(
         focusColor: Colors.transparent,
         hoverColor: Colors.transparent,
