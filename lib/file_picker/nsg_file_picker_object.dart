@@ -11,14 +11,14 @@ class NsgFilePickerObject {
   Uint8List? fileContent;
   File? file;
   NsgFilePickerObjectType fileType = NsgFilePickerObjectType.unknown;
-  String description = '';
-  bool isNew = true;
+  String description;
+  bool isNew;
   bool markToDelete = false;
   NsgFilePickerObject(
       {this.image,
       this.fileType = NsgFilePickerObjectType.unknown,
       this.file,
-      required this.description,
+      this.description = '',
       this.id = '',
       this.filePath = '',
       required this.isNew}) {
