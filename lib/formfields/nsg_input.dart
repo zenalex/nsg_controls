@@ -473,6 +473,7 @@ class _NsgInputState extends State<NsgInput> {
                                         : 25,
                                 4),
                             isDense: true,
+                            isCollapsed: true,
                             filled: widget.filled,
                             fillColor: widget.filledColor,
                             border: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
@@ -486,6 +487,14 @@ class _NsgInputState extends State<NsgInput> {
                             disabledBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
                                 ? defaultOutlineBorder(color: widget.borderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor),
+                            focusedErrorBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                            // border: InputBorder.none,
+                            // errorBorder: InputBorder.none,
+                            // enabledBorder: InputBorder.none,
+                            // focusedBorder: InputBorder.none,
+                            // disabledBorder: InputBorder.none,
+                            // focusedErrorBorder: InputBorder.none,
+
                             //labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                           ),
                           onFieldSubmitted: (string) {
