@@ -21,7 +21,8 @@ class NsgFilePickerObject {
       this.description = '',
       this.id = '',
       this.filePath = '',
-      required this.isNew}) {
+      required this.isNew,
+      this.fileContent}) {
     if (isNew) {
       id = Guid.newGuid();
     }

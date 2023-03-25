@@ -14,31 +14,21 @@ enum NsgSnarkBarType {
   const NsgSnarkBarType(this.title, this.icon);
 }
 
-void nsgSnackbar(
-    {String? title,
-    required String text,
-    NsgSnarkBarType? type,
-    Duration? duration,
-    double? fontSize,
-    TextAlign? textAlign}) {
+void nsgSnackbar({String? title, required String text, NsgSnarkBarType? type, Duration? duration, double? fontSize, TextAlign? textAlign}) {
   Flushbar(
     backgroundColor: ControlOptions.instance.colorMain,
     messageColor: ControlOptions.instance.colorMainText,
     titleText: title == null
         ? null
         : Text(
-            title!,
+            title,
             textAlign: textAlign ?? TextAlign.center,
-            style: TextStyle(
-                fontSize: fontSize ?? ControlOptions.instance.sizeL,
-                color: ControlOptions.instance.colorMainText,
-                fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: fontSize ?? ControlOptions.instance.sizeL, color: ControlOptions.instance.colorMainText, fontWeight: FontWeight.w500),
           ),
     messageText: Text(
-      '$text',
+      text,
       textAlign: textAlign ?? TextAlign.center,
-      style:
-          TextStyle(color: ControlOptions.instance.colorMainText, fontSize: fontSize ?? ControlOptions.instance.sizeL),
+      style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: fontSize ?? ControlOptions.instance.sizeL),
     ),
     duration: duration ?? const Duration(seconds: 3),
     maxWidth: 640,

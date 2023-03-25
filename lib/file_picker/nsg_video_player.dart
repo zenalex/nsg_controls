@@ -30,9 +30,8 @@ class NsgVideoPlayerState extends State<NsgVideoPlayer> {
         setState(() {});
       }
     }).catchError((e) {
-      print("controller.initialize() error occurs: $e");
+      debugPrint("controller.initialize() error occurs: $e");
     });
-    ;
   }
 
   @override

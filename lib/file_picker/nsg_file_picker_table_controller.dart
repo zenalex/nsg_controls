@@ -41,8 +41,9 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
     try {
       for (var img in files) {
         ids.add(img.id);
-        if (img.isNew && img.id.isNotEmpty) {
-          File imageFile = kIsWeb ? File.fromUri(Uri(path: img.filePath)) : File(img.filePath);
+        if (img.isNew && img.id.isNotEmpty && img.fileContent != null) {
+          //TODO: убрать imageFile
+          File imageFile = kIsWeb ? File('') : File(img.filePath);
 
           var pic = await fileObjectToDataItem(img, imageFile);
           if (!table.rows.any((e) => e.id == pic.id)) {
@@ -58,9 +59,9 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
       }
       progress.hide();
       // Get.back();
-    } on Exception catch (ex) {
+    } catch (ex) {
       progress.hide();
-      NsgErrorWidget.showError(ex);
+      NsgErrorWidget.showError(ex as Exception);
       rethrow;
     }
     return true;
