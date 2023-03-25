@@ -1,0 +1,1 @@
+enum TextFormFieldType { outlineInputBorder, underlineInputBorder }

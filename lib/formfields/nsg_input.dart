@@ -8,6 +8,7 @@ import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:hovering/hovering.dart';
 import 'package:flutter/material.dart';
 import 'package:nsg_data/nsg_data.dart';
+import 'package:nsg_controls/formfields/nsg_field_type.dart';
 
 class NsgInput extends StatefulWidget {
   final String label;
@@ -84,6 +85,21 @@ class NsgInput extends StatefulWidget {
   /// Выравнивание текста
   final TextAlign textAlign;
 
+  /// Тип поля ввода
+  final TextFormFieldType textFormFieldType;
+
+  /// Цвет границ поля ввода
+  final Color? borderColor;
+
+  /// Закрашивать ли поле цветом
+  final bool filled;
+
+  /// Цвет окрашивания поля
+  final Color? filledColor;
+
+  /// Поджимать поле по высоте (встроенный параметр в textForField)
+  final bool? isDense;
+
   const NsgInput(
       {Key? key,
       this.validateText = '',
@@ -117,7 +133,12 @@ class NsgInput extends StatefulWidget {
       this.mask,
       this.maskType,
       this.itemsToSelect,
-      this.required})
+      this.required,
+      this.textFormFieldType = TextFormFieldType.underlineInputBorder,
+      this.borderColor,
+      this.filled = false,
+      this.filledColor,
+      this.isDense})
       : super(key: key);
 
   @override
@@ -328,6 +349,43 @@ class _NsgInputState extends State<NsgInput> {
       textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
     }
 
+    // Определяем параметры границ текстового поля
+
+    OutlineInputBorder defaultOutlineBorder({Color? color}) {
+      return OutlineInputBorder(
+        borderSide: BorderSide(color: color ?? ControlOptions.instance.colorGreyLighter),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      );
+    }
+
+    OutlineInputBorder errorOutlineBorder = OutlineInputBorder(
+      borderSide: BorderSide(color: ControlOptions.instance.colorError),
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+    );
+    OutlineInputBorder focusedOutlineBorder = OutlineInputBorder(
+      borderSide: BorderSide(color: ControlOptions.instance.colorMain),
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+    );
+
+    UnderlineInputBorder defaultUnderlineBorder({Color? color}) {
+      return UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: color ?? ControlOptions.instance.colorMain,
+          ),
+          borderRadius: BorderRadius.zero);
+    }
+
+    UnderlineInputBorder errorUnderlineBorder = UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: ControlOptions.instance.colorError,
+        ),
+        borderRadius: BorderRadius.zero);
+    UnderlineInputBorder focusedUnderlineBorder = UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: ControlOptions.instance.colorMain,
+        ),
+        borderRadius: BorderRadius.zero);
+
     return Container(
         margin: widget.margin,
         child: widget.widget ??
@@ -349,7 +407,7 @@ class _NsgInputState extends State<NsgInput> {
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                     alignment: Alignment.center,
                     //height: widget.maxLines > 1 ? null : 24 * textScaleFactor,
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                    // decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -418,12 +476,27 @@ class _NsgInputState extends State<NsgInput> {
                                         ? 25
                                         : 25,
                                 4),
-                            isDense: true,
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
+                            isDense: widget.isDense ?? true,
+                            filled: widget.filled,
+                            fillColor: widget.filledColor,
+                            border: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                                ? defaultOutlineBorder(color: widget.borderColor)
+                                : defaultUnderlineBorder(color: widget.borderColor),
+                            focusedBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                            enabledBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                                ? defaultOutlineBorder(color: widget.borderColor)
+                                : defaultUnderlineBorder(color: widget.borderColor),
+                            errorBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                            disabledBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                                ? defaultOutlineBorder(color: widget.borderColor)
+                                : defaultUnderlineBorder(color: widget.borderColor),
+                            focusedErrorBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                            // border: InputBorder.none,
+                            // errorBorder: InputBorder.none,
+                            // enabledBorder: InputBorder.none,
+                            // focusedBorder: InputBorder.none,
+                            // disabledBorder: InputBorder.none,
+                            // focusedErrorBorder: InputBorder.none,
                             //labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                           ),
                           onFieldSubmitted: (string) {
