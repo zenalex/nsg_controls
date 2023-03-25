@@ -91,6 +91,12 @@ class NsgInput extends StatefulWidget {
   /// Цвет границ поля ввода
   final Color? borderColor;
 
+  /// Закрашивать ли поле цветом
+  final bool filled;
+
+  /// Цвет окрашивания поля
+  final Color? filledColor;
+
   const NsgInput(
       {Key? key,
       this.validateText = '',
@@ -126,7 +132,9 @@ class NsgInput extends StatefulWidget {
       this.itemsToSelect,
       this.required,
       this.textFormFieldType = TextFormFieldType.underlineInputBorder,
-      this.borderColor})
+      this.borderColor,
+      this.filled = false,
+      this.filledColor})
       : super(key: key);
 
   @override
@@ -395,7 +403,7 @@ class _NsgInputState extends State<NsgInput> {
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                     alignment: Alignment.center,
                     //height: widget.maxLines > 1 ? null : 24 * textScaleFactor,
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                    // decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -465,6 +473,8 @@ class _NsgInputState extends State<NsgInput> {
                                         : 25,
                                 4),
                             isDense: true,
+                            filled: widget.filled,
+                            fillColor: widget.filledColor,
                             border: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
                                 ? defaultOutlineBorder(color: widget.borderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor),
