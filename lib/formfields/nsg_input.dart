@@ -97,6 +97,9 @@ class NsgInput extends StatefulWidget {
   /// Цвет окрашивания поля
   final Color? filledColor;
 
+  /// Поджимать поле по высоте (встроенный параметр в textForField)
+  final bool? isDense;
+
   const NsgInput(
       {Key? key,
       this.validateText = '',
@@ -134,7 +137,8 @@ class NsgInput extends StatefulWidget {
       this.textFormFieldType = TextFormFieldType.underlineInputBorder,
       this.borderColor,
       this.filled = false,
-      this.filledColor})
+      this.filledColor,
+      this.isDense})
       : super(key: key);
 
   @override
@@ -472,8 +476,7 @@ class _NsgInputState extends State<NsgInput> {
                                         ? 25
                                         : 25,
                                 4),
-                            isDense: true,
-                            isCollapsed: true,
+                            isDense: widget.isDense ?? true,
                             filled: widget.filled,
                             fillColor: widget.filledColor,
                             border: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
@@ -494,7 +497,6 @@ class _NsgInputState extends State<NsgInput> {
                             // focusedBorder: InputBorder.none,
                             // disabledBorder: InputBorder.none,
                             // focusedErrorBorder: InputBorder.none,
-
                             //labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                           ),
                           onFieldSubmitted: (string) {
