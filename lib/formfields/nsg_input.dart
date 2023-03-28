@@ -100,7 +100,9 @@ class NsgInput extends StatefulWidget {
   /// Поджимать поле по высоте (встроенный параметр в textForField)
   final bool? isDense;
 
-  final String? initialValue;
+  final Widget lableWidget;
+
+  final bool showLock;
 
   const NsgInput(
       {Key? key,
@@ -141,7 +143,8 @@ class NsgInput extends StatefulWidget {
       this.filled = false,
       this.filledColor,
       this.isDense,
-      this.initialValue})
+      required this.lableWidget,
+      this.showLock = true})
       : super(key: key);
 
   @override
@@ -439,7 +442,6 @@ class _NsgInputState extends State<NsgInput> {
                                 }
                               }),
                         TextFormField(
-                          initialValue: widget.initialValue,
                           controller: textController,
                           inputFormatters: widget.maskType == NsgInputMaskType.phone
                               ? [phoneFormatter]
@@ -459,17 +461,20 @@ class _NsgInputState extends State<NsgInput> {
                           keyboardType: keyboard,
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
+                            label: widget.lableWidget,
                             //label: SizedBox(),
                             prefix: !_disabled
                                 ? null
-                                : Padding(
-                                    padding: const EdgeInsets.only(right: 3.0),
-                                    child: Icon(
-                                      Icons.lock,
-                                      size: 12,
-                                      color: ControlOptions.instance.colorMain,
-                                    ),
-                                  ),
+                                : widget.showLock
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(right: 3.0),
+                                        child: Icon(
+                                          Icons.lock,
+                                          size: 12,
+                                          color: ControlOptions.instance.colorMain,
+                                        ),
+                                      )
+                                    : null,
                             counterText: "",
                             contentPadding: EdgeInsets.fromLTRB(
                                 0,
