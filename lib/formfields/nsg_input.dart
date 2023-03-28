@@ -100,7 +100,7 @@ class NsgInput extends StatefulWidget {
   /// Поджимать поле по высоте (встроенный параметр в textForField)
   final bool? isDense;
 
-  final Widget lableWidget;
+  final Widget? lableWidget;
 
   final bool showLock;
 
@@ -143,7 +143,7 @@ class NsgInput extends StatefulWidget {
       this.filled = false,
       this.filledColor,
       this.isDense,
-      required this.lableWidget,
+      this.lableWidget,
       this.showLock = true})
       : super(key: key);
 
