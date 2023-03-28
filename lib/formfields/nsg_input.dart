@@ -100,6 +100,8 @@ class NsgInput extends StatefulWidget {
   /// Поджимать поле по высоте (встроенный параметр в textForField)
   final bool? isDense;
 
+  final String? initialValue;
+
   const NsgInput(
       {Key? key,
       this.validateText = '',
@@ -138,7 +140,8 @@ class NsgInput extends StatefulWidget {
       this.borderColor,
       this.filled = false,
       this.filledColor,
-      this.isDense})
+      this.isDense,
+      this.initialValue})
       : super(key: key);
 
   @override
@@ -436,6 +439,7 @@ class _NsgInputState extends State<NsgInput> {
                                 }
                               }),
                         TextFormField(
+                          initialValue: widget.initialValue,
                           controller: textController,
                           inputFormatters: widget.maskType == NsgInputMaskType.phone
                               ? [phoneFormatter]
@@ -477,6 +481,7 @@ class _NsgInputState extends State<NsgInput> {
                                         : 25,
                                 4),
                             isDense: widget.isDense ?? true,
+
                             filled: widget.filled,
                             fillColor: widget.filledColor,
                             border: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
