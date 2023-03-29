@@ -100,9 +100,20 @@ class NsgInput extends StatefulWidget {
   /// Поджимать поле по высоте (встроенный параметр в textForField)
   final bool? isDense;
 
+  /// Виджет для отображения в поле ввода как подсказка
   final Widget? lableWidget;
 
+  /// Показывать значек замка при параметре disabled
   final bool showLock;
+
+  /// Поведение lable при вводе контента
+  final FloatingLabelBehavior? floatingLabelBehavior;
+
+  /// Стиль текста в поле ввода
+  final TextStyle? textStyle;
+
+  ///Заменяет  дефолтный виджет для bool значений на кастомный
+  final Widget? boolWidget;
 
   const NsgInput(
       {Key? key,
@@ -144,7 +155,10 @@ class NsgInput extends StatefulWidget {
       this.filledColor,
       this.isDense,
       this.lableWidget,
-      this.showLock = true})
+      this.showLock = true,
+      this.floatingLabelBehavior = FloatingLabelBehavior.never,
+      this.textStyle,
+      this.boolWidget})
       : super(key: key);
 
   @override
@@ -412,8 +426,6 @@ class _NsgInputState extends State<NsgInput> {
                   interactiveWidget: Container(
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                     alignment: Alignment.center,
-                    //height: widget.maxLines > 1 ? null : 24 * textScaleFactor,
-                    // decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -461,8 +473,8 @@ class _NsgInputState extends State<NsgInput> {
                           keyboardType: keyboard,
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
+                            floatingLabelBehavior: widget.floatingLabelBehavior,
                             label: widget.lableWidget,
-                            //label: SizedBox(),
                             prefix: !_disabled
                                 ? null
                                 : widget.showLock
@@ -486,7 +498,6 @@ class _NsgInputState extends State<NsgInput> {
                                         : 25,
                                 4),
                             isDense: widget.isDense ?? true,
-
                             filled: widget.filled,
                             fillColor: widget.filledColor,
                             border: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
@@ -501,21 +512,12 @@ class _NsgInputState extends State<NsgInput> {
                                 ? defaultOutlineBorder(color: widget.borderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor),
                             focusedErrorBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
-                            // border: InputBorder.none,
-                            // errorBorder: InputBorder.none,
-                            // enabledBorder: InputBorder.none,
-                            // focusedBorder: InputBorder.none,
-                            // disabledBorder: InputBorder.none,
-                            // focusedErrorBorder: InputBorder.none,
-                            //labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                           ),
                           onFieldSubmitted: (string) {
-                            if (widget.onEditingComplete != null) {
-                              //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                            }
+                            if (widget.onEditingComplete != null) {}
                           },
                           textAlign: widget.textAlign,
-                          style: TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
+                          style: widget.textStyle ?? TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
                           readOnly: _disabled,
                         ),
                       ],
@@ -682,33 +684,34 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   Widget _buildBoolWidget(bool fieldValue) {
-    return Container(
-        margin: widget.margin,
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        decoration:
-            BoxDecoration(color: ControlOptions.instance.colorInverted, border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-        child: Row(
-          children: [
-            Expanded(
-                child: Text(
-              widget.label,
-              style: TextStyle(fontSize: ControlOptions.instance.sizeM),
-            )),
-            StatefulBuilder(
-              builder: ((context, setState) => CupertinoSwitch(
-                  value: fieldValue,
-                  activeColor: ControlOptions.instance.colorMain,
-                  onChanged: (value) {
-                    fieldValue = !fieldValue;
-                    widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
-                    if (widget.updateController != null) {
-                      widget.updateController!.update();
-                    } else {
-                      setState(() {});
-                    }
-                  })),
-            )
-          ],
-        ));
+    return widget.boolWidget ??
+        Container(
+            margin: widget.margin,
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            decoration: BoxDecoration(
+                color: ControlOptions.instance.colorInverted, border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Text(
+                  widget.label,
+                  style: TextStyle(fontSize: ControlOptions.instance.sizeM),
+                )),
+                StatefulBuilder(
+                  builder: ((context, setState) => CupertinoSwitch(
+                      value: fieldValue,
+                      activeColor: ControlOptions.instance.colorMain,
+                      onChanged: (value) {
+                        fieldValue = !fieldValue;
+                        widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                        if (widget.updateController != null) {
+                          widget.updateController!.update();
+                        } else {
+                          setState(() {});
+                        }
+                      })),
+                )
+              ],
+            ));
   }
 }
