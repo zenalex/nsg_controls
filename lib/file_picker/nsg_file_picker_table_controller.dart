@@ -41,9 +41,9 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
     try {
       for (var img in files) {
         ids.add(img.id);
-        if (img.isNew && img.id.isNotEmpty && img.fileContent != null) {
+        if (img.isNew && img.id.isNotEmpty && (img.fileContent != null ||  img.filePath.isNotEmpty)) {
           //TODO: убрать imageFile
-          File imageFile = kIsWeb ? File('') : File(img.filePath);
+          File imageFile = kIsWeb ? File(img.filePath) : File(img.filePath);
 
           var pic = await fileObjectToDataItem(img, imageFile);
           if (!table.rows.any((e) => e.id == pic.id)) {
