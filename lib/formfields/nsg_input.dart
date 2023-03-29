@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:nsg_controls/formfields/nsg_position_boolBox.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -115,6 +116,8 @@ class NsgInput extends StatefulWidget {
   ///Заменяет  дефолтный виджет для bool значений на кастомный
   final Widget? boolWidget;
 
+  final BoolBoxPosition? boolBoxPosition;
+
   const NsgInput(
       {Key? key,
       this.validateText = '',
@@ -158,7 +161,8 @@ class NsgInput extends StatefulWidget {
       this.showLock = true,
       this.floatingLabelBehavior = FloatingLabelBehavior.never,
       this.textStyle,
-      this.boolWidget})
+      this.boolWidget,
+      this.boolBoxPosition = BoolBoxPosition.end})
       : super(key: key);
 
   @override
@@ -684,34 +688,37 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   Widget _buildBoolWidget(bool fieldValue) {
-    return widget.boolWidget ??
-        Container(
-            margin: widget.margin,
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            decoration: BoxDecoration(
-                color: ControlOptions.instance.colorInverted, border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-            child: Row(
-              children: [
-                Expanded(
-                    child: Text(
-                  widget.label,
-                  style: TextStyle(fontSize: ControlOptions.instance.sizeM),
-                )),
-                StatefulBuilder(
-                  builder: ((context, setState) => CupertinoSwitch(
-                      value: fieldValue,
-                      activeColor: ControlOptions.instance.colorMain,
-                      onChanged: (value) {
-                        fieldValue = !fieldValue;
-                        widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
-                        if (widget.updateController != null) {
-                          widget.updateController!.update();
-                        } else {
-                          setState(() {});
-                        }
-                      })),
-                )
-              ],
-            ));
+    Widget lable = Expanded(
+        child: Text(
+      widget.label,
+      style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
+    ));
+
+    Widget boolBox = StatefulBuilder(
+      builder: ((context, setState) =>
+          widget.boolWidget ??
+          CupertinoSwitch(
+              value: fieldValue,
+              activeColor: ControlOptions.instance.colorMain,
+              onChanged: (value) {
+                fieldValue = !fieldValue;
+                widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                if (widget.updateController != null) {
+                  widget.updateController!.update();
+                } else {
+                  setState(() {});
+                }
+              })),
+    );
+
+    return Container(
+        margin: widget.margin,
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+        decoration: BoxDecoration(
+            color: ControlOptions.instance.colorInverted,
+            border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? ControlOptions.instance.colorMain))),
+        child: Row(
+          children: widget.boolBoxPosition == BoolBoxPosition.end ? [lable, boolBox] : [boolBox, lable],
+        ));
   }
 }
