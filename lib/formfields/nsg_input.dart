@@ -731,7 +731,7 @@ class _NsgInputState extends State<NsgInput> {
         margin: widget.margin,
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         decoration: BoxDecoration(
-            color: ControlOptions.instance.colorInverted,
+            color: widget.filledColor ?? ControlOptions.instance.colorInverted,
             border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? ControlOptions.instance.colorMain))),
         child: Row(
           children: widget.boolBoxPosition == BoolBoxPosition.end ? [lable, boolBox] : [boolBox, lable],
