@@ -122,8 +122,11 @@ class NsgInput extends StatefulWidget {
   /// Параметры отступа для значений внутри NsgInput
   final EdgeInsetsGeometry? contentPadding;
 
-  /// Виджет для отображения в конце NsgInput
+  /// Виджет для отображения в начале NsgInput
   final Widget? prefix;
+
+  /// Иконка для отображения в конце NsgInput
+  final Widget? suffixIcon;
 
   const NsgInput(
       {Key? key,
@@ -171,7 +174,8 @@ class NsgInput extends StatefulWidget {
       this.boolWidget,
       this.boolBoxPosition = BoolBoxPosition.end,
       this.contentPadding,
-      this.prefix})
+      this.prefix,
+      this.suffixIcon})
       : super(key: key);
 
   @override
@@ -486,6 +490,7 @@ class _NsgInputState extends State<NsgInput> {
                           keyboardType: keyboard,
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
+                            suffixIcon: widget.suffixIcon,
                             floatingLabelBehavior: widget.floatingLabelBehavior,
                             label: widget.lableWidget,
                             prefix: !_disabled
