@@ -1,0 +1,1 @@
+enum BoolBoxPosition { start, end }
