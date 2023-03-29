@@ -113,10 +113,17 @@ class NsgInput extends StatefulWidget {
   /// Стиль текста в поле ввода
   final TextStyle? textStyle;
 
-  ///Заменяет  дефолтный виджет для bool значений на кастомный
+  /// Заменяет  дефолтный виджет для bool значений на кастомный
   final Widget? boolWidget;
 
+  /// Положение bool элемента относително lable или lableWidget
   final BoolBoxPosition? boolBoxPosition;
+
+  /// Параметры отступа для значений внутри NsgInput
+  final EdgeInsetsGeometry? contentPadding;
+
+  /// Виджет для отображения в конце NsgInput
+  final Widget? prefix;
 
   const NsgInput(
       {Key? key,
@@ -162,7 +169,9 @@ class NsgInput extends StatefulWidget {
       this.floatingLabelBehavior = FloatingLabelBehavior.never,
       this.textStyle,
       this.boolWidget,
-      this.boolBoxPosition = BoolBoxPosition.end})
+      this.boolBoxPosition = BoolBoxPosition.end,
+      this.contentPadding,
+      this.prefix})
       : super(key: key);
 
   @override
@@ -482,25 +491,27 @@ class _NsgInputState extends State<NsgInput> {
                             prefix: !_disabled
                                 ? null
                                 : widget.showLock
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(right: 3.0),
-                                        child: Icon(
-                                          Icons.lock,
-                                          size: 12,
-                                          color: ControlOptions.instance.colorMain,
-                                        ),
-                                      )
+                                    ? widget.prefix ??
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 3.0),
+                                          child: Icon(
+                                            Icons.lock,
+                                            size: 12,
+                                            color: ControlOptions.instance.colorMain,
+                                          ),
+                                        )
                                     : null,
                             counterText: "",
-                            contentPadding: EdgeInsets.fromLTRB(
-                                0,
-                                4,
-                                !widget.showDeleteIcon
-                                    ? 0
-                                    : useSelectionController
-                                        ? 25
-                                        : 25,
-                                4),
+                            contentPadding: widget.contentPadding ??
+                                EdgeInsets.fromLTRB(
+                                    0,
+                                    4,
+                                    !widget.showDeleteIcon
+                                        ? 0
+                                        : useSelectionController
+                                            ? 25
+                                            : 25,
+                                    4),
                             isDense: widget.isDense ?? true,
                             filled: widget.filled,
                             fillColor: widget.filledColor,
