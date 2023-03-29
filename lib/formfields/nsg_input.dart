@@ -704,11 +704,12 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   Widget _buildBoolWidget(bool fieldValue) {
-    Widget lable = Expanded(
-        child: Text(
-      widget.label,
-      style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
-    ));
+    Widget lable = widget.lableWidget ??
+        Expanded(
+            child: Text(
+          widget.label,
+          style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
+        ));
 
     Widget boolBox = StatefulBuilder(
       builder: ((context, setState) =>
