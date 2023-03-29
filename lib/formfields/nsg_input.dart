@@ -711,10 +711,9 @@ class _NsgInputState extends State<NsgInput> {
           style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
         ));
 
-    Widget boolBox = StatefulBuilder(
-      builder: ((context, setState) =>
-          widget.boolWidget ??
-          CupertinoSwitch(
+    Widget boolBox = widget.boolWidget ??
+        StatefulBuilder(
+          builder: ((context, setState) => CupertinoSwitch(
               value: fieldValue,
               activeColor: ControlOptions.instance.colorMain,
               onChanged: (value) {
@@ -726,7 +725,7 @@ class _NsgInputState extends State<NsgInput> {
                   setState(() {});
                 }
               })),
-    );
+        );
 
     return Container(
         margin: widget.margin,
