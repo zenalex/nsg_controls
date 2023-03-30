@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:nsg_controls/formfields/nsg_position_boolBox.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -100,6 +101,33 @@ class NsgInput extends StatefulWidget {
   /// Поджимать поле по высоте (встроенный параметр в textForField)
   final bool? isDense;
 
+  /// Виджет для отображения в поле ввода как подсказка
+  final Widget? lableWidget;
+
+  /// Показывать значек замка при параметре disabled
+  final bool showLock;
+
+  /// Поведение lable при вводе контента
+  final FloatingLabelBehavior? floatingLabelBehavior;
+
+  /// Стиль текста в поле ввода
+  final TextStyle? textStyle;
+
+  /// Заменяет  дефолтный виджет для bool значений на кастомный
+  final Widget? boolWidget;
+
+  /// Положение bool элемента относително lable или lableWidget
+  final BoolBoxPosition? boolBoxPosition;
+
+  /// Параметры отступа для значений внутри NsgInput
+  final EdgeInsetsGeometry? contentPadding;
+
+  /// Виджет для отображения в начале NsgInput
+  final Widget? prefix;
+
+  /// Иконка для отображения в конце NsgInput
+  final Widget? suffixIcon;
+
   const NsgInput(
       {Key? key,
       this.validateText = '',
@@ -138,7 +166,16 @@ class NsgInput extends StatefulWidget {
       this.borderColor,
       this.filled = false,
       this.filledColor,
-      this.isDense})
+      this.isDense,
+      this.lableWidget,
+      this.showLock = true,
+      this.floatingLabelBehavior = FloatingLabelBehavior.never,
+      this.textStyle,
+      this.boolWidget,
+      this.boolBoxPosition = BoolBoxPosition.end,
+      this.contentPadding,
+      this.prefix,
+      this.suffixIcon})
       : super(key: key);
 
   @override
@@ -406,8 +443,6 @@ class _NsgInputState extends State<NsgInput> {
                   interactiveWidget: Container(
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                     alignment: Alignment.center,
-                    //height: widget.maxLines > 1 ? null : 24 * textScaleFactor,
-                    // decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -455,27 +490,33 @@ class _NsgInputState extends State<NsgInput> {
                           keyboardType: keyboard,
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
-                            //label: SizedBox(),
+                            suffixIcon: widget.suffixIcon,
+                            floatingLabelBehavior: widget.floatingLabelBehavior,
+                            label: widget.lableWidget,
                             prefix: !_disabled
                                 ? null
-                                : Padding(
-                                    padding: const EdgeInsets.only(right: 3.0),
-                                    child: Icon(
-                                      Icons.lock,
-                                      size: 12,
-                                      color: ControlOptions.instance.colorMain,
-                                    ),
-                                  ),
+                                : widget.showLock
+                                    ? widget.prefix ??
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 3.0),
+                                          child: Icon(
+                                            Icons.lock,
+                                            size: 12,
+                                            color: ControlOptions.instance.colorMain,
+                                          ),
+                                        )
+                                    : null,
                             counterText: "",
-                            contentPadding: EdgeInsets.fromLTRB(
-                                0,
-                                4,
-                                !widget.showDeleteIcon
-                                    ? 0
-                                    : useSelectionController
-                                        ? 25
-                                        : 25,
-                                4),
+                            contentPadding: widget.contentPadding ??
+                                EdgeInsets.fromLTRB(
+                                    0,
+                                    4,
+                                    !widget.showDeleteIcon
+                                        ? 0
+                                        : useSelectionController
+                                            ? 25
+                                            : 25,
+                                    4),
                             isDense: widget.isDense ?? true,
                             filled: widget.filled,
                             fillColor: widget.filledColor,
@@ -491,21 +532,12 @@ class _NsgInputState extends State<NsgInput> {
                                 ? defaultOutlineBorder(color: widget.borderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor),
                             focusedErrorBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
-                            // border: InputBorder.none,
-                            // errorBorder: InputBorder.none,
-                            // enabledBorder: InputBorder.none,
-                            // focusedBorder: InputBorder.none,
-                            // disabledBorder: InputBorder.none,
-                            // focusedErrorBorder: InputBorder.none,
-                            //labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
                           ),
                           onFieldSubmitted: (string) {
-                            if (widget.onEditingComplete != null) {
-                              //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                            }
+                            if (widget.onEditingComplete != null) {}
                           },
                           textAlign: widget.textAlign,
-                          style: TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
+                          style: widget.textStyle ?? TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
                           readOnly: _disabled,
                         ),
                       ],
@@ -672,33 +704,37 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   Widget _buildBoolWidget(bool fieldValue) {
+    Widget lable = widget.lableWidget ??
+        Expanded(
+            child: Text(
+          widget.label,
+          style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
+        ));
+
+    Widget boolBox = widget.boolWidget ??
+        StatefulBuilder(
+          builder: ((context, setState) => CupertinoSwitch(
+              value: fieldValue,
+              activeColor: ControlOptions.instance.colorMain,
+              onChanged: (value) {
+                fieldValue = !fieldValue;
+                widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                if (widget.updateController != null) {
+                  widget.updateController!.update();
+                } else {
+                  setState(() {});
+                }
+              })),
+        );
+
     return Container(
         margin: widget.margin,
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        decoration:
-            BoxDecoration(color: ControlOptions.instance.colorInverted, border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+        decoration: BoxDecoration(
+            color: widget.filledColor ?? ControlOptions.instance.colorInverted,
+            border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? ControlOptions.instance.colorMain))),
         child: Row(
-          children: [
-            Expanded(
-                child: Text(
-              widget.label,
-              style: TextStyle(fontSize: ControlOptions.instance.sizeM),
-            )),
-            StatefulBuilder(
-              builder: ((context, setState) => CupertinoSwitch(
-                  value: fieldValue,
-                  activeColor: ControlOptions.instance.colorMain,
-                  onChanged: (value) {
-                    fieldValue = !fieldValue;
-                    widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
-                    if (widget.updateController != null) {
-                      widget.updateController!.update();
-                    } else {
-                      setState(() {});
-                    }
-                  })),
-            )
-          ],
+          children: widget.boolBoxPosition == BoolBoxPosition.end ? [lable, boolBox] : [boolBox, lable],
         ));
   }
 }
