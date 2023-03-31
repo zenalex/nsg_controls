@@ -12,6 +12,7 @@ class NsgCircle extends StatelessWidget {
   final double fontSize;
   final double borderWidth;
   final BoxShadow? shadow;
+  final EdgeInsets margin;
   const NsgCircle(
       {Key? key,
       this.text = '',
@@ -22,37 +23,39 @@ class NsgCircle extends StatelessWidget {
       this.borderWidth = 1,
       this.height = 28,
       this.width = 28,
-      this.fontSize = 16})
+      this.fontSize = 16,
+      this.margin = EdgeInsets.zero})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          width: width,
-          height: height,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-              boxShadow: [
-                shadow ??
-                    BoxShadow(
-                      color: ControlOptions.instance.colorText.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: const Offset(3, 3), // changes position of shadow
-                    )
-              ],
-              color: backColor ?? ControlOptions.instance.colorInverted,
-              border: Border.all(width: borderWidth, color: borderColor ?? ControlOptions.instance.colorMain),
-              shape: BoxShape.circle),
-        ),
-        Text(text,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: fontSize, fontWeight: FontWeight.w600, color: color ?? ControlOptions.instance.colorMain))
-      ],
+    return Padding(
+      padding: margin,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: width,
+            height: height,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+                boxShadow: [
+                  shadow ??
+                      BoxShadow(
+                        color: ControlOptions.instance.colorText.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: const Offset(3, 3), // changes position of shadow
+                      )
+                ],
+                color: backColor ?? ControlOptions.instance.colorInverted,
+                border: Border.all(width: borderWidth, color: borderColor ?? ControlOptions.instance.colorMain),
+                shape: BoxShape.circle),
+          ),
+          Text(text,
+              textAlign: TextAlign.center, style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w600, color: color ?? ControlOptions.instance.colorMain))
+        ],
+      ),
     );
   }
 }
