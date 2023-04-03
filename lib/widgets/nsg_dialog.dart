@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 
 class NsgDialogBodyController {
   NsgDialogBodyState currentState = NsgDialogBodyState();
+  openDialog(Widget child) {
+    currentState.openDialog(child);
+  }
 }
 
 class NsgDialog {
