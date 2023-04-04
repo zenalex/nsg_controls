@@ -692,7 +692,13 @@ class _NsgInputState extends State<NsgInput> {
         NsgNavigator.instance.toPage(widget.selectionForm);
       }
     } else if (inputType == NsgInputType.dateValue) {
-      NsgDatePicker(initialTime: widget.dataItem[widget.fieldName], onClose: (value) {}).showPopup(context, widget.dataItem[widget.fieldName], (value) {
+      NsgDatePicker(
+              initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
+                      DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
+                  ? DateTime.now()
+                  : widget.dataItem[widget.fieldName],
+              onClose: (value) {})
+          .showPopup(context, widget.dataItem[widget.fieldName], (value) {
         if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
         if (widget.onEditingComplete != null) {
           widget.onEditingComplete!(widget.dataItem, widget.fieldName);
