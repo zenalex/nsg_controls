@@ -22,7 +22,9 @@ class NsgExpansionPanel extends StatefulWidget {
       this.widgetBottomPadding = const EdgeInsets.all(5),
       this.isSimple,
       this.isExpanded,
-      this.linkedPanels})
+      this.linkedPanels,
+      this.iconWidgetDown,
+      this.iconWidgetUp})
       : super(key: key);
 
   /// Контроллер скролла в котором находится панель
@@ -51,6 +53,12 @@ class NsgExpansionPanel extends StatefulWidget {
 
   /// Фон нижнего виджета
   final Color? widgetBottomBackColor;
+
+  /// Иконка отображения для BottomWidget для раскрытия
+  final Widget? iconWidgetDown;
+
+  /// Иконка отображения для BottomWidget для закрытие
+  final Widget? iconWidgetUp;
 
   // Простая панель
   final bool? isSimple;
@@ -159,8 +167,9 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                           Padding(padding: const EdgeInsets.fromLTRB(0, 5, 0, 0), child: widget.widgetTop),
                           SizedBox(
                             height: 20,
-                            child: IconButton(
-                                padding: const EdgeInsets.all(0), onPressed: null, icon: Icon(Icons.expand_more, color: ControlOptions.instance.colorText)),
+                            child: widget.iconWidgetDown ??
+                                IconButton(
+                                    padding: const EdgeInsets.all(0), onPressed: null, icon: Icon(Icons.expand_more, color: ControlOptions.instance.colorText)),
                           ),
                           /* Container(
                                 height: 1,
@@ -204,10 +213,11 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                                   child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                                     SizedBox(
                                       height: 20,
-                                      child: IconButton(
-                                          padding: const EdgeInsets.all(0),
-                                          onPressed: null,
-                                          icon: Icon(Icons.expand_less, color: ControlOptions.instance.colorText)),
+                                      child: widget.iconWidgetUp ??
+                                          IconButton(
+                                              padding: const EdgeInsets.all(0),
+                                              onPressed: null,
+                                              icon: Icon(Icons.expand_less, color: ControlOptions.instance.colorText)),
                                     ),
                                     const Padding(
                                         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
