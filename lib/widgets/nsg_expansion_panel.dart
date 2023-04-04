@@ -24,7 +24,8 @@ class NsgExpansionPanel extends StatefulWidget {
       this.isExpanded,
       this.linkedPanels,
       this.iconWidgetDown,
-      this.iconWidgetUp})
+      this.iconWidgetUp,
+      this.widgetEnd})
       : super(key: key);
 
   /// Контроллер скролла в котором находится панель
@@ -59,6 +60,10 @@ class NsgExpansionPanel extends StatefulWidget {
 
   /// Иконка отображения для BottomWidget для закрытие
   final Widget? iconWidgetUp;
+
+  /// Виджет в крайней части
+
+  final Widget? widgetEnd;
 
   // Простая панель
   final bool? isSimple;
@@ -139,10 +144,12 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                     child: widget.widgetTop,
                   ),
                   if (!widget.isDisabled)
-                    Icon(_expanded == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                        color: _expanded == true
-                            ? widget.widgetTopColor ?? ControlOptions.instance.colorText
-                            : widget.widgetTopColor ?? ControlOptions.instance.colorText)
+                    (_expanded ? widget.iconWidgetDown : widget.iconWidgetUp) ??
+                        Icon(_expanded == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                            color: _expanded == true
+                                ? widget.widgetTopColor ?? ControlOptions.instance.colorText
+                                : widget.widgetTopColor ?? ControlOptions.instance.colorText),
+                  widget.widgetEnd ?? SizedBox.shrink()
                 ]),
               ),
             ),
@@ -167,9 +174,8 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                           Padding(padding: const EdgeInsets.fromLTRB(0, 5, 0, 0), child: widget.widgetTop),
                           SizedBox(
                             height: 20,
-                            child: widget.iconWidgetDown ??
-                                IconButton(
-                                    padding: const EdgeInsets.all(0), onPressed: null, icon: Icon(Icons.expand_more, color: ControlOptions.instance.colorText)),
+                            child: IconButton(
+                                padding: const EdgeInsets.all(0), onPressed: null, icon: Icon(Icons.expand_more, color: ControlOptions.instance.colorText)),
                           ),
                           /* Container(
                                 height: 1,
@@ -213,11 +219,10 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                                   child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                                     SizedBox(
                                       height: 20,
-                                      child: widget.iconWidgetUp ??
-                                          IconButton(
-                                              padding: const EdgeInsets.all(0),
-                                              onPressed: null,
-                                              icon: Icon(Icons.expand_less, color: ControlOptions.instance.colorText)),
+                                      child: IconButton(
+                                          padding: const EdgeInsets.all(0),
+                                          onPressed: null,
+                                          icon: Icon(Icons.expand_less, color: ControlOptions.instance.colorText)),
                                     ),
                                     const Padding(
                                         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
