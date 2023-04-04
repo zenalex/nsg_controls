@@ -350,8 +350,8 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
   @override
   Widget build(BuildContext context) {
     return CupertinoDatePicker(
-      maximumDate: widget.lastDateTime,
-      minimumDate: widget.firstDateTime,
+      maximumDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
+      minimumDate: widget.firstDateTime ?? DateTime(0),
       key: GlobalKey(),
       mode: CupertinoDatePickerMode.date,
       initialDateTime: widget.initialDateTime,
