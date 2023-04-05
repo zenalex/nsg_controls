@@ -49,8 +49,11 @@ class NsgFilePicker extends StatefulWidget {
   final bool oneFile;
   final bool skipInterface;
 
+  final bool needCrop;
+
   NsgFilePicker(
       {Key? key,
+      this.needCrop = false,
       this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
       this.allowedVideoFormats = const ['mp4'],
       this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
@@ -121,6 +124,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   bool galleryPage = true;
   ScrollController scrollController = ScrollController();
   late List<NsgFilePickerObject> objectsList;
+  late List<NsgFilePickerObject> needToCropObj;
 
   Widget _appBar() {
     return NsgAppBar(
