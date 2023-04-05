@@ -144,7 +144,7 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                     child: widget.widgetTop,
                   ),
                   if (!widget.isDisabled)
-                    (_expanded ? widget.iconWidgetDown : widget.iconWidgetUp) ??
+                    (_expanded ? widget.iconWidgetUp : widget.iconWidgetDown) ??
                         Icon(_expanded == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                             color: _expanded == true
                                 ? widget.widgetTopColor ?? ControlOptions.instance.colorText
