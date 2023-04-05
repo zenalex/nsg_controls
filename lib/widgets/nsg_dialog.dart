@@ -9,7 +9,7 @@ class NsgDialogBodyController {
 }
 
 class NsgDialog {
-  Future<void> showNsgBottomDialog(BuildContext context, Widget child) {
+  Future<void> show({required BuildContext context, required Widget child}) {
     return showModalBottomSheet<void>(
       context: context,
       constraints: BoxConstraints(maxHeight: Get.height - 30),
@@ -86,7 +86,7 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
 
   _showNsgDialog(BuildContext context, Widget child) {
     _controller.forward();
-    NsgDialog().showNsgBottomDialog(context, child).then((value) {
+    NsgDialog().show(context: context, child: child).then((value) {
       _controller.reverse();
     });
   }

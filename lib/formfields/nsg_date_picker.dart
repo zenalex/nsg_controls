@@ -14,6 +14,8 @@ class NsgDatePicker extends StatefulWidget {
   final EdgeInsets margin;
   final DateTime initialTime;
   final bool? disabled;
+  final DateTime? firstDateTime;
+  final DateTime? lastDateTime;
 
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
@@ -23,6 +25,8 @@ class NsgDatePicker extends StatefulWidget {
       {Key? key,
       required this.initialTime,
       required this.onClose,
+      this.firstDateTime,
+      this.lastDateTime,
       this.label = '',
       this.textAlign = TextAlign.center,
       this.disabled = false,
@@ -49,6 +53,8 @@ class NsgDatePicker extends StatefulWidget {
               getContent: () => [
                 DatePickerContent(
                     textAlign: textAlign,
+                    firstDateTime: firstDateTime,
+                    lastDateTime: lastDateTime,
                     initialTime: initialTime,
                     onChange: (endDate) {
                       selectedDate = endDate;
@@ -144,7 +150,10 @@ class DatePickerContent extends StatefulWidget {
   final DateTime initialTime;
   final Function(DateTime endDate) onChange;
   final TextAlign textAlign;
-  const DatePickerContent({Key? key, required this.initialTime, required this.textAlign, required this.onChange}) : super(key: key);
+  final DateTime? firstDateTime;
+  final DateTime? lastDateTime;
+  const DatePickerContent({Key? key, this.firstDateTime, this.lastDateTime, required this.initialTime, required this.textAlign, required this.onChange})
+      : super(key: key);
 
   @override
   State<DatePickerContent> createState() => _DatePickerContentState();
@@ -270,6 +279,8 @@ class _DatePickerContentState extends State<DatePickerContent> {
   NsgCalendarDatePicker? calendarpicker;
   Widget getCalendarPicker() {
     calendarpicker = NsgCalendarDatePicker(
+      lastDateTime: widget.lastDateTime,
+      firstDateTime: widget.firstDateTime,
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         widget.onChange(value);
@@ -286,6 +297,8 @@ class _DatePickerContentState extends State<DatePickerContent> {
   NsgCupertinoDatePicker? datepicker;
   Widget getCupertinoPicker() {
     datepicker = NsgCupertinoDatePicker(
+      lastDateTime: widget.lastDateTime,
+      firstDateTime: widget.firstDateTime,
       key: GlobalKey(),
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
@@ -304,9 +317,11 @@ class _DatePickerContentState extends State<DatePickerContent> {
 // ignore: must_be_immutable
 class NsgCupertinoDatePicker extends StatefulWidget {
   DateTime initialDateTime;
+  final DateTime? lastDateTime;
+  final DateTime? firstDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  NsgCupertinoDatePicker({Key? key, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
+  NsgCupertinoDatePicker({Key? key, this.firstDateTime, this.lastDateTime, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
 
   @override
   State<NsgCupertinoDatePicker> createState() => NsgCupertinoDateState();
@@ -335,6 +350,8 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
   @override
   Widget build(BuildContext context) {
     return CupertinoDatePicker(
+      maximumDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
+      minimumDate: widget.firstDateTime ?? DateTime(0),
       key: GlobalKey(),
       mode: CupertinoDatePickerMode.date,
       initialDateTime: widget.initialDateTime,
@@ -348,9 +365,11 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
 // ignore: must_be_immutable
 class NsgCalendarDatePicker extends StatefulWidget {
   DateTime initialDateTime;
+  final DateTime? lastDateTime;
+  final DateTime? firstDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  NsgCalendarDatePicker({Key? key, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
+  NsgCalendarDatePicker({Key? key, this.lastDateTime, this.firstDateTime, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
 
   @override
   State<NsgCalendarDatePicker> createState() => NsgCalendarDatePickerState();
@@ -382,8 +401,8 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
       padding: const EdgeInsets.only(top: 10, bottom: 15),
       child: CalendarDatePicker(
         key: GlobalKey(),
-        firstDate: widget.initialDateTime.subtract(const Duration(days: 356 * 2)),
-        lastDate: widget.initialDateTime.add(const Duration(days: 356 * 2)),
+        firstDate: widget.firstDateTime ?? DateTime(0),
+        lastDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
         initialDate: widget.initialDateTime,
         onDateChanged: (d) {
           widget.onDateTimeChanged(d);

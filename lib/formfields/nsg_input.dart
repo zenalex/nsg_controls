@@ -104,6 +104,15 @@ class NsgInput extends StatefulWidget {
   /// Виджет для отображения в поле ввода как подсказка
   final Widget? lableWidget;
 
+  /// Самая ранняя дата, доступная для выбора
+  final DateTime? firstDateTime;
+
+  /// Самая поздняя дата, доступная для выбора
+  final DateTime? lastDateTime;
+
+  /// Дата с которой будет предложен выбор, если поле равно 0г. или 1754г.
+  final DateTime? initialDateTime;
+
   /// Показывать значек замка при параметре disabled
   final bool showLock;
 
@@ -130,6 +139,9 @@ class NsgInput extends StatefulWidget {
 
   const NsgInput(
       {Key? key,
+      this.initialDateTime,
+      this.firstDateTime,
+      this.lastDateTime,
       this.validateText = '',
       this.textAlign = TextAlign.left,
       required this.dataItem,
@@ -692,7 +704,15 @@ class _NsgInputState extends State<NsgInput> {
         NsgNavigator.instance.toPage(widget.selectionForm);
       }
     } else if (inputType == NsgInputType.dateValue) {
-      NsgDatePicker(initialTime: widget.dataItem[widget.fieldName], onClose: (value) {}).showPopup(context, widget.dataItem[widget.fieldName], (value) {
+      NsgDatePicker(
+              firstDateTime: widget.firstDateTime,
+              lastDateTime: widget.lastDateTime,
+              initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
+                      DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
+                  ? widget.initialDateTime ?? DateTime.now()
+                  : widget.dataItem[widget.fieldName],
+              onClose: (value) {})
+          .showPopup(context, widget.dataItem[widget.fieldName], (value) {
         if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
         if (widget.onEditingComplete != null) {
           widget.onEditingComplete!(widget.dataItem, widget.fieldName);
