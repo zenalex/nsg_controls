@@ -22,7 +22,10 @@ class NsgExpansionPanel extends StatefulWidget {
       this.widgetBottomPadding = const EdgeInsets.all(5),
       this.isSimple,
       this.isExpanded,
-      this.linkedPanels})
+      this.linkedPanels,
+      this.iconWidgetDown,
+      this.iconWidgetUp,
+      this.widgetEnd})
       : super(key: key);
 
   /// Контроллер скролла в котором находится панель
@@ -51,6 +54,16 @@ class NsgExpansionPanel extends StatefulWidget {
 
   /// Фон нижнего виджета
   final Color? widgetBottomBackColor;
+
+  /// Иконка отображения для BottomWidget для раскрытия
+  final Widget? iconWidgetDown;
+
+  /// Иконка отображения для BottomWidget для закрытие
+  final Widget? iconWidgetUp;
+
+  /// Виджет в крайней части
+
+  final Widget? widgetEnd;
 
   // Простая панель
   final bool? isSimple;
@@ -131,10 +144,12 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                     child: widget.widgetTop,
                   ),
                   if (!widget.isDisabled)
-                    Icon(_expanded == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                        color: _expanded == true
-                            ? widget.widgetTopColor ?? ControlOptions.instance.colorText
-                            : widget.widgetTopColor ?? ControlOptions.instance.colorText)
+                    (_expanded ? widget.iconWidgetUp : widget.iconWidgetDown) ??
+                        Icon(_expanded == true ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                            color: _expanded == true
+                                ? widget.widgetTopColor ?? ControlOptions.instance.colorText
+                                : widget.widgetTopColor ?? ControlOptions.instance.colorText),
+                  widget.widgetEnd ?? SizedBox.shrink()
                 ]),
               ),
             ),
