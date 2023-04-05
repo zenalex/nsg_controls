@@ -90,14 +90,6 @@ class NsgCropPageState extends State<NsgCropPage> {
             ],
             rightIcons: [
               NsgLigthAppBarIcon(
-                icon: Icons.crop,
-                onTap: () {
-                  if (!showSplash) {
-                    _controller.crop();
-                  }
-                },
-              ),
-              NsgLigthAppBarIcon(
                 icon: Icons.check,
                 onTap: () {
                   if (!showSplash) {
@@ -108,7 +100,7 @@ class NsgCropPageState extends State<NsgCropPage> {
             ],
           ),
           Expanded(
-              child: Stack(children: [
+              child: Stack(alignment: Alignment.bottomCenter, children: [
             Crop(
               image: widget.imageDataList[_currentImage],
               controller: _controller,
@@ -151,6 +143,17 @@ class NsgCropPageState extends State<NsgCropPage> {
               interactive: false,
               fixArea: !widget.isFree,
             ),
+            Positioned(
+                child: NsgCropToolsMenu(
+              buttons: [
+                NsgCropToolsMenuItem(
+                  icon: Icons.crop,
+                  onTap: () {
+                    _controller.crop();
+                  },
+                )
+              ],
+            )),
             getSpash(showSplash),
           ])),
           if (widget.imageDataList.length > 1)
@@ -190,6 +193,106 @@ class NsgCropPageState extends State<NsgCropPage> {
       splash = Container();
     }
     return splash;
+  }
+}
+
+class NsgCropToolsMenuItem extends StatefulWidget {
+  const NsgCropToolsMenuItem({super.key, this.isSelected = false, required this.icon, this.onTap});
+
+  final bool isSelected;
+  final void Function()? onTap;
+  final IconData icon;
+
+  @override
+  State<NsgCropToolsMenuItem> createState() => _NsgCropToolsMenuItemState();
+}
+
+class _NsgCropToolsMenuItemState extends State<NsgCropToolsMenuItem> {
+  late bool isHover;
+
+  @override
+  void initState() {
+    isHover = false;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onHover: (value) {
+        isHover = value;
+        setState(() {});
+      },
+      onTap: widget.onTap,
+      child: Container(
+        margin: const EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: getBackColor()),
+        child: Icon(
+          widget.icon,
+          color: getIconColor(),
+        ),
+      ),
+    );
+  }
+
+  Color getBackColor() {
+    if (widget.isSelected) {
+      return ControlOptions.instance.colorMainLight;
+    } else {
+      if (isHover) {
+        return ControlOptions.instance.colorMainLighter;
+      } else {
+        return Colors.transparent;
+      }
+    }
+  }
+
+  Color getIconColor() {
+    if (widget.isSelected) {
+      return ControlOptions.instance.colorMain;
+    } else {
+      if (isHover) {
+        return Colors.white;
+      } else {
+        return Colors.white;
+      }
+    }
+  }
+}
+
+class NsgCropToolsMenu extends StatefulWidget {
+  const NsgCropToolsMenu({super.key, this.buttons = const []});
+
+  final List<NsgCropToolsMenuItem> buttons;
+
+  @override
+  State<NsgCropToolsMenu> createState() => _NsgCropToolsMenuState();
+}
+
+class _NsgCropToolsMenuState extends State<NsgCropToolsMenu> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: ControlOptions.instance.colorMain.withAlpha(200),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: widget.buttons.asMap().entries.map((entry) {
+            return NsgCropToolsMenuItem(
+              icon: entry.value.icon,
+              onTap: entry.value.onTap,
+              isSelected: true,
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 }
 
