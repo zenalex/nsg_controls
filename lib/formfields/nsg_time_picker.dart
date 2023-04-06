@@ -9,12 +9,22 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_icon_button.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+import 'nsg_field_type.dart';
+
 class NsgTimePicker extends StatefulWidget {
   final String? label;
   final TextAlign? textAlign;
   final EdgeInsets margin;
   final Duration initialTime;
   final bool disabled;
+
+  final Color? outlineBorderColor;
+
+  final TextFormFieldType textFormFieldType;
+
+  final BorderRadiusGeometry? borderRadius;
+
+  final Color? fieldColor;
 
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
@@ -23,12 +33,16 @@ class NsgTimePicker extends StatefulWidget {
   const NsgTimePicker(
       {Key? key,
       required this.initialTime,
+      this.textFormFieldType = TextFormFieldType.underlineInputBorder,
       required this.onClose,
       this.label = '',
       this.textAlign = TextAlign.center,
       this.disabled = false,
       this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      this.simple = false})
+      this.simple = false,
+      this.outlineBorderColor,
+      this.borderRadius,
+      this.fieldColor})
       : super(key: key);
 
   void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
@@ -129,7 +143,14 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
             Container(
                 padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                 //height: 24 * textScaleFactor - 1,
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                decoration: BoxDecoration(
+                    color: widget.fieldColor ?? Colors.transparent,
+                    borderRadius: widget.borderRadius,
+                    border: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                        ? Border.fromBorderSide(
+                            BorderSide(color: widget.outlineBorderColor ?? ControlOptions.instance.colorGreyLighter),
+                          )
+                        : Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                 child: Row(
                   children: [
                     if (widget.disabled == true)
