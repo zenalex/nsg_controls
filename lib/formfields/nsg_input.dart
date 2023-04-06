@@ -398,43 +398,6 @@ class _NsgInputState extends State<NsgInput> {
       textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
     }
 
-    // Определяем параметры границ текстового поля
-
-    OutlineInputBorder defaultOutlineBorder({Color? color}) {
-      return OutlineInputBorder(
-        borderSide: BorderSide(color: color ?? ControlOptions.instance.colorGreyLighter),
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-      );
-    }
-
-    OutlineInputBorder errorOutlineBorder = OutlineInputBorder(
-      borderSide: BorderSide(color: ControlOptions.instance.colorError),
-      borderRadius: const BorderRadius.all(Radius.circular(10)),
-    );
-    OutlineInputBorder focusedOutlineBorder = OutlineInputBorder(
-      borderSide: BorderSide(color: ControlOptions.instance.colorMain),
-      borderRadius: const BorderRadius.all(Radius.circular(10)),
-    );
-
-    UnderlineInputBorder defaultUnderlineBorder({Color? color}) {
-      return UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: color ?? ControlOptions.instance.colorMain,
-          ),
-          borderRadius: BorderRadius.zero);
-    }
-
-    UnderlineInputBorder errorUnderlineBorder = UnderlineInputBorder(
-        borderSide: BorderSide(
-          color: ControlOptions.instance.colorError,
-        ),
-        borderRadius: BorderRadius.zero);
-    UnderlineInputBorder focusedUnderlineBorder = UnderlineInputBorder(
-        borderSide: BorderSide(
-          color: ControlOptions.instance.colorMain,
-        ),
-        borderRadius: BorderRadius.zero);
-
     return Container(
         margin: widget.margin,
         child: widget.widget ??
@@ -758,3 +721,40 @@ class _NsgInputState extends State<NsgInput> {
         ));
   }
 }
+
+// Определяем параметры границ текстового поля
+
+OutlineInputBorder defaultOutlineBorder({Color? color}) {
+  return OutlineInputBorder(
+    borderSide: BorderSide(color: color ?? ControlOptions.instance.colorGreyLighter),
+    borderRadius: const BorderRadius.all(Radius.circular(10)),
+  );
+}
+
+OutlineInputBorder errorOutlineBorder = OutlineInputBorder(
+  borderSide: BorderSide(color: ControlOptions.instance.colorError),
+  borderRadius: const BorderRadius.all(Radius.circular(10)),
+);
+OutlineInputBorder focusedOutlineBorder = OutlineInputBorder(
+  borderSide: BorderSide(color: ControlOptions.instance.colorMain),
+  borderRadius: const BorderRadius.all(Radius.circular(10)),
+);
+
+UnderlineInputBorder defaultUnderlineBorder({Color? color}) {
+  return UnderlineInputBorder(
+      borderSide: BorderSide(
+        color: color ?? ControlOptions.instance.colorMain,
+      ),
+      borderRadius: BorderRadius.zero);
+}
+
+UnderlineInputBorder errorUnderlineBorder = UnderlineInputBorder(
+    borderSide: BorderSide(
+      color: ControlOptions.instance.colorError,
+    ),
+    borderRadius: BorderRadius.zero);
+UnderlineInputBorder focusedUnderlineBorder = UnderlineInputBorder(
+    borderSide: BorderSide(
+      color: ControlOptions.instance.colorMain,
+    ),
+    borderRadius: BorderRadius.zero);
