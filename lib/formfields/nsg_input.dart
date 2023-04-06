@@ -137,6 +137,9 @@ class NsgInput extends StatefulWidget {
   /// Иконка для отображения в конце NsgInput
   final Widget? suffixIcon;
 
+  /// Форматировать отображение времени для входящего виджета
+  final String? formatDateTime;
+
   const NsgInput(
       {Key? key,
       this.initialDateTime,
@@ -187,7 +190,8 @@ class NsgInput extends StatefulWidget {
       this.boolBoxPosition = BoolBoxPosition.end,
       this.contentPadding,
       this.prefix,
-      this.suffixIcon})
+      this.suffixIcon,
+      this.formatDateTime})
       : super(key: key);
 
   @override
@@ -377,7 +381,7 @@ class _NsgInputState extends State<NsgInput> {
       if (DateTime(01, 01, 01).isAtSameMomentAs(fieldValue) || DateTime(1754, 01, 01).isAtSameMomentAs(fieldValue)) {
         textController.text = '   ';
       } else {
-        textController.text = NsgDateFormat.dateFormat(fieldValue);
+        textController.text = NsgDateFormat.dateFormat(fieldValue, format: widget.formatDateTime);
       }
     } else {
       textController.text = fieldValue.toString();
