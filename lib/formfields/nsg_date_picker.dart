@@ -27,6 +27,10 @@ class NsgDatePicker extends StatefulWidget {
 
   final Color? fieldColor;
 
+  final Widget? lableWidget;
+
+  final TextStyle? textStyle;
+
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
   final Function(DateTime endDate) onClose;
@@ -45,7 +49,9 @@ class NsgDatePicker extends StatefulWidget {
       this.simple = false,
       this.outlineBorderColor,
       this.borderRadius,
-      this.fieldColor})
+      this.fieldColor,
+      this.lableWidget,
+      this.textStyle})
       : super(key: key);
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
@@ -152,11 +158,12 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                         ),
                       ),
                     Expanded(
-                      child: Text(
-                        NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
-                        textAlign: widget.textAlign,
-                        style: TextStyle(fontSize: ControlOptions.instance.sizeM),
-                      ),
+                      child: widget.lableWidget ??
+                          Text(
+                            NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
+                            textAlign: widget.textAlign,
+                            style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
+                          ),
                     ),
                   ],
                 )),

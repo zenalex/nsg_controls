@@ -26,6 +26,10 @@ class NsgTimePicker extends StatefulWidget {
 
   final Color? fieldColor;
 
+  final Widget? lableWidget;
+
+  final TextStyle? textStyle;
+
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
   final Function(Duration endDate) onClose;
@@ -42,7 +46,9 @@ class NsgTimePicker extends StatefulWidget {
       this.simple = false,
       this.outlineBorderColor,
       this.borderRadius,
-      this.fieldColor})
+      this.fieldColor,
+      this.lableWidget,
+      this.textStyle})
       : super(key: key);
 
   void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
@@ -163,11 +169,12 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
                         ),
                       ),
                     Expanded(
-                      child: Text(
-                        "$hours:$minutesString",
-                        textAlign: widget.textAlign,
-                        style: TextStyle(fontSize: ControlOptions.instance.sizeM),
-                      ),
+                      child: widget.lableWidget ??
+                          Text(
+                            "$hours:$minutesString",
+                            textAlign: widget.textAlign,
+                            style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
+                          ),
                     ),
                   ],
                 )),
