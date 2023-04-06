@@ -26,8 +26,8 @@ class NsgDialog {
 }
 
 class NsgDialogBody extends StatefulWidget {
-  const NsgDialogBody({super.key, this.children = const [], this.controller});
-  final List<Widget> children;
+  const NsgDialogBody({super.key, this.child, this.controller});
+  final Widget? child;
   final NsgDialogBodyController? controller;
 
   @override
@@ -73,9 +73,8 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(_padding.value),
                 child: Scaffold(
-                    body: Column(
-                  children: widget.children,
-                )),
+                  body: widget.child,
+                ),
               ),
             ));
   }
