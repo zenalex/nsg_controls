@@ -25,6 +25,8 @@ class NsgDatePicker extends StatefulWidget {
 
   final BorderRadiusGeometry? borderRadius;
 
+  final Color? fieldColor;
+
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
   final Function(DateTime endDate) onClose;
@@ -42,7 +44,8 @@ class NsgDatePicker extends StatefulWidget {
       this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       this.simple = false,
       this.outlineBorderColor,
-      this.borderRadius})
+      this.borderRadius,
+      this.fieldColor})
       : super(key: key);
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
@@ -130,7 +133,8 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                 padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                 //  height: 24 * textScaleFactor - 1,
                 decoration: BoxDecoration(
-                    borderRadius: widget.borderRadius ?? const BorderRadius.all(Radius.circular(10)),
+                    color: widget.fieldColor ?? Colors.transparent,
+                    borderRadius: widget.borderRadius,
                     border: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
                         ? Border.fromBorderSide(
                             BorderSide(color: widget.outlineBorderColor ?? ControlOptions.instance.colorGreyLighter),
