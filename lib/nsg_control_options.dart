@@ -30,6 +30,7 @@ class ControlOptions {
   // Второй главный цвет приложения
   final Color colorSecondary;
   final Color colorSecondaryDark;
+  final Color colorSecondaryLight;
   // Цвет текста который хорошо видно на фоне второго главного цвета приложения colorSecondary
   final Color colorSecondaryText;
 
@@ -125,6 +126,7 @@ class ControlOptions {
     this.colorMainLighter = const Color.fromARGB(255, 255, 245, 201),
     this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
     this.colorSecondaryDark = const Color.fromRGBO(255, 255, 255, 1),
+    this.colorSecondaryLight = const Color.fromRGBO(255, 255, 255, 1),
     this.colorWhite = const Color.fromRGBO(255, 255, 255, 1),
     this.colorSecondaryText = const Color.fromARGB(255, 70, 59, 11),
     this.colorNormal = const Color.fromARGB(255, 29, 180, 95),
