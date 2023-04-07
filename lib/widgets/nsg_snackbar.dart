@@ -14,8 +14,16 @@ enum NsgSnarkBarType {
   const NsgSnarkBarType(this.title, this.icon);
 }
 
-void nsgSnackbar({String? title, required String text, NsgSnarkBarType? type, Duration? duration, double? fontSize, TextAlign? textAlign}) {
+void nsgSnackbar(
+    {void Function(Flushbar<dynamic>)? onTap,
+    String? title,
+    required String text,
+    NsgSnarkBarType? type,
+    Duration? duration,
+    double? fontSize,
+    TextAlign? textAlign}) {
   Flushbar(
+    onTap: onTap,
     backgroundColor: ControlOptions.instance.colorMain,
     messageColor: ControlOptions.instance.colorMainText,
     titleText: title == null
