@@ -8,6 +8,8 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
+import 'nsg_field_type.dart';
+
 class NsgDatePicker extends StatefulWidget {
   final String? label;
   final TextAlign textAlign;
@@ -17,22 +19,40 @@ class NsgDatePicker extends StatefulWidget {
   final DateTime? firstDateTime;
   final DateTime? lastDateTime;
 
+  // final Color? outlineBorderColor;
+
+  // final TextFormFieldType textFormFieldType;
+
+  // final BorderRadiusGeometry? borderRadius;
+
+  // final Color? fieldColor;
+
+  // final Widget? lableWidget;
+
+  // final TextStyle? textStyle;
+
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
   final Function(DateTime endDate) onClose;
 
-  const NsgDatePicker(
-      {Key? key,
-      required this.initialTime,
-      required this.onClose,
-      this.firstDateTime,
-      this.lastDateTime,
-      this.label = '',
-      this.textAlign = TextAlign.center,
-      this.disabled = false,
-      this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      this.simple = false})
-      : super(key: key);
+  const NsgDatePicker({
+    Key? key,
+    required this.initialTime,
+    // this.textFormFieldType = TextFormFieldType.underlineInputBorder,
+    required this.onClose,
+    this.firstDateTime,
+    this.lastDateTime,
+    this.label = '',
+    this.textAlign = TextAlign.center,
+    this.disabled = false,
+    this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+    this.simple = false,
+    // this.outlineBorderColor,
+    // this.borderRadius,
+    // this.fieldColor,
+    // this.lableWidget,
+    // this.textStyle,
+  }) : super(key: key);
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
     DateTime selectedDate = date;
@@ -118,7 +138,15 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
             Container(
                 padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                 //  height: 24 * textScaleFactor - 1,
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                decoration: BoxDecoration(
+                    // color: widget.fieldColor ?? Colors.transparent,
+                    // borderRadius: widget.borderRadius,
+                    border:
+                        // widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                        //     ? Border.fromBorderSide(
+                        //         BorderSide(color: widget.outlineBorderColor ?? ControlOptions.instance.colorGreyLighter),
+                        //       )
+                        Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
                 child: Row(
                   children: [
                     if (widget.disabled == true)
@@ -131,10 +159,14 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                         ),
                       ),
                     Expanded(
-                      child: Text(
+                      child:
+                          // widget.lableWidget ??
+                          Text(
                         NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
                         textAlign: widget.textAlign,
-                        style: TextStyle(fontSize: ControlOptions.instance.sizeM),
+                        style:
+                            // widget.textStyle ??
+                            TextStyle(fontSize: ControlOptions.instance.sizeM),
                       ),
                     ),
                   ],
