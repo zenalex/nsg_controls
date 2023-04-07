@@ -3,16 +3,18 @@ import 'package:get/get.dart';
 
 class NsgDialogBodyController {
   NsgDialogBodyState currentState = NsgDialogBodyState();
+  //AnimationController transitionAnimationController = AnimationController(vsync: vsync);
   openDialog(Widget child) {
     currentState.openDialog(child);
   }
 }
 
 class NsgDialog {
-  Future<void> show({required BuildContext context, required Widget child}) {
+  Future<void> show({required BuildContext context, required Widget child, AnimationController? animationController}) {
     return showModalBottomSheet<void>(
+      transitionAnimationController: animationController,
       context: context,
-      constraints: BoxConstraints(maxHeight: Get.height - 30),
+      constraints: BoxConstraints(maxHeight: Get.height - 40),
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
@@ -85,7 +87,7 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
 
   _showNsgDialog(BuildContext context, Widget child) {
     _controller.forward();
-    NsgDialog().show(context: context, child: child).then((value) {
+    NsgDialog().show(context: context, child: child, animationController: _controller).then((value) {
       _controller.reverse();
     });
   }
