@@ -379,7 +379,7 @@ class _NsgInputState extends State<NsgInput> {
     }
     if (inputType == NsgInputType.dateValue) {
       if (DateTime(01, 01, 01).isAtSameMomentAs(fieldValue) || DateTime(1754, 01, 01).isAtSameMomentAs(fieldValue)) {
-        textController.text = '   ';
+        textController.text = widget.label;
       } else {
         textController.text = NsgDateFormat.dateFormat(fieldValue, format: widget.formatDateTime);
       }
