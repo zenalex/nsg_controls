@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 class NsgDialogBodyController {
   NsgDialogBodyState currentState = NsgDialogBodyState();
   //AnimationController transitionAnimationController = AnimationController(vsync: vsync);
-  openDialog(Widget child) {
-    currentState.openDialog(child);
+  Future openDialog(Widget child) async {
+    return await currentState.openDialog(child);
   }
 }
 
@@ -81,13 +81,13 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
             ));
   }
 
-  openDialog(Widget child) {
-    _showNsgDialog(context, child);
+  Future openDialog(Widget child) async {
+    return await _showNsgDialog(context, child);
   }
 
-  _showNsgDialog(BuildContext context, Widget child) {
+  Future _showNsgDialog(BuildContext context, Widget child) async {
     _controller.forward();
-    NsgDialog().show(context: context, child: child, animationController: _controller).then((value) {
+    return await NsgDialog().show(context: context, child: child, animationController: _controller).then((value) {
       _controller.reverse();
     });
   }
