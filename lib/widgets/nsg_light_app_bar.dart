@@ -13,16 +13,20 @@ class NsgLightAppBar extends StatelessWidget {
     return Container(
       padding: getPaddings(),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ...leftIcons,
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.bold, fontFamily: 'Inter'),
-            ),
-          ],
+        Flexible(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ...leftIcons,
+              Flexible(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.bold, fontFamily: 'Inter'),
+                ),
+              ),
+            ],
+          ),
         ),
         Row(
           children: rightIcons,
