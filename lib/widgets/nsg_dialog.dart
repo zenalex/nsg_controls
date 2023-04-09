@@ -7,6 +7,11 @@ class NsgDialogBodyController {
   Future openDialog(Widget child) async {
     return await currentState.openDialog(child);
   }
+
+  BuildContext getContext() {
+    BuildContext context = currentState.context;
+    return context;
+  }
 }
 
 class NsgDialog {
