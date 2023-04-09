@@ -17,6 +17,7 @@ Future<dynamic> showNsgDialog(
       builder: (context) {
         return SimpleDialog(
           contentPadding: EdgeInsets.zero,
+          insetPadding: EdgeInsets.all(10),
           children: [
             Column(
               mainAxisSize: MainAxisSize.min,
@@ -26,17 +27,21 @@ Future<dynamic> showNsgDialog(
                     width: double.infinity,
                     decoration: BoxDecoration(color: ControlOptions.instance.colorGreyLighter.withOpacity(0.5)),
                     padding: const EdgeInsets.all(20),
-                    child: Text(title)),
+                    child: Text(title, textAlign: TextAlign.center)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                  child: child ?? Text(text),
+                  child: child ??
+                      Text(
+                        text,
+                        textAlign: TextAlign.center,
+                      ),
                 ),
                 Container(
                   alignment: Alignment.center,
                   width: double.infinity,
                   decoration: BoxDecoration(color: ControlOptions.instance.colorGreyLighter.withOpacity(0.2)),
                   padding: const EdgeInsets.all(15),
-                  child: Row(
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: buttons ??
                         [
@@ -54,6 +59,9 @@ Future<dynamic> showNsgDialog(
                             text: 'Отмена',
                             color: ControlOptions.instance.colorText,
                             backColor: ControlOptions.instance.colorGrey,
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           NsgButton(
                             onPressed: () {
