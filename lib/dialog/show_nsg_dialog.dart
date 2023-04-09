@@ -10,7 +10,7 @@ Future<dynamic> showNsgDialog(
     String text = 'Вы уверены?',
     Widget? child,
     List<Widget>? buttons,
-    required VoidCallback onConfirm,
+    VoidCallback? onConfirm,
     VoidCallback? onCancel}) {
   return showDialog(
       context: context,
@@ -66,7 +66,7 @@ Future<dynamic> showNsgDialog(
                           NsgButton(
                             onPressed: () {
                               Navigator.of(context).pop();
-                              onConfirm();
+                              if (onConfirm != null) onConfirm();
                             },
                             margin: const EdgeInsets.symmetric(horizontal: 10),
                             width: 150,
