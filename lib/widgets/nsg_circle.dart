@@ -9,6 +9,7 @@ class NsgCircle extends StatelessWidget {
   final Color? borderColor;
   final double height;
   final double width;
+  final FontWeight fontWeight;
   final double fontSize;
   final double borderWidth;
   final BoxShadow? shadow;
@@ -20,6 +21,7 @@ class NsgCircle extends StatelessWidget {
       this.backColor,
       this.borderColor,
       this.shadow,
+      this.fontWeight = FontWeight.w400,
       this.borderWidth = 1,
       this.height = 28,
       this.width = 28,
@@ -53,7 +55,7 @@ class NsgCircle extends StatelessWidget {
                 shape: BoxShape.circle),
           ),
           Text(text,
-              textAlign: TextAlign.center, style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w600, color: color ?? ControlOptions.instance.colorMain))
+              textAlign: TextAlign.center, style: TextStyle(fontSize: fontSize, fontWeight: fontWeight, color: color ?? ControlOptions.instance.colorMain))
         ],
       ),
     );
