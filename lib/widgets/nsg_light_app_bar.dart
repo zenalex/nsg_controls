@@ -51,11 +51,13 @@ class NsgLightAppBar extends StatelessWidget {
 }
 
 class NsgLigthAppBarIcon extends StatelessWidget {
-  const NsgLigthAppBarIcon({super.key, required this.icon, this.onTap, this.nott});
+  const NsgLigthAppBarIcon({super.key, required this.icon, this.onTap, this.nott, this.height = 40, this.width = 40});
 
   final IconData icon;
   final void Function()? onTap;
   final int? nott;
+  final double width;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +66,14 @@ class NsgLigthAppBarIcon extends StatelessWidget {
         child: Stack(alignment: Alignment.topRight, children: [
           InkWell(
               onTap: onTap,
-              child: Icon(
-                icon,
-                color: ControlOptions.instance.colorMainLight,
-              )),
+              child: SizedBox(
+                  height: height,
+                  width: width,
+                  child: Center(
+                      child: Icon(
+                    icon,
+                    color: ControlOptions.instance.colorMainLight,
+                  )))),
           if (nott != null && nott! > 0)
             ClipOval(
                 child: Container(
