@@ -671,15 +671,10 @@ class _NsgInputState extends State<NsgInput> {
         NsgNavigator.instance.toPage(widget.selectionForm);
       }
     } else if (inputType == NsgInputType.dateValue) {
-      NsgDatePicker(
-              firstDateTime: widget.firstDateTime,
-              lastDateTime: widget.lastDateTime,
-              initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
-                      DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
-                  ? widget.initialDateTime ?? DateTime.now()
-                  : widget.dataItem[widget.fieldName],
-              onClose: (value) {})
-          .showPopup(context, widget.dataItem[widget.fieldName], (value) {
+      NsgTimePicker(
+        initialTime: Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute),
+        onClose: (Duration endDate) {},
+      ).showPopup(context, widget.dataItem[widget.fieldName], widget.dataItem[widget.fieldName], (value) {
         if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
         if (widget.onEditingComplete != null) {
           widget.onEditingComplete!(widget.dataItem, widget.fieldName);
@@ -687,6 +682,22 @@ class _NsgInputState extends State<NsgInput> {
         widget.dataItem[widget.fieldName] = value;
         setState(() {});
       });
+      // NsgDatePicker(
+      //         firstDateTime: widget.firstDateTime,
+      //         lastDateTime: widget.lastDateTime,
+      //         initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
+      //                 DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
+      //             ? widget.initialDateTime ?? DateTime.now()
+      //             : widget.dataItem[widget.fieldName],
+      //         onClose: (value) {})
+      //     .showPopup(context, widget.dataItem[widget.fieldName], (value) {
+      //   if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+      //   if (widget.onEditingComplete != null) {
+      //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+      //   }
+      //   widget.dataItem[widget.fieldName] = value;
+      //   setState(() {});
+      // });
     }
   }
 
