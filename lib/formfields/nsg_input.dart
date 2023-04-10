@@ -329,7 +329,7 @@ class _NsgInputState extends State<NsgInput> {
         widget.dataItem.setFieldValue(widget.fieldName, textController.value.text);
       }
       if (widget.onChanged != null) {
-        widget.onChanged!(widget.dataItem);
+        WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
       }
     });
 
@@ -603,7 +603,9 @@ class _NsgInputState extends State<NsgInput> {
           widget.label,
           (item) {
             widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
-            if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+            if (widget.onChanged != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+            }
             if (widget.onEditingComplete != null) {
               widget.onEditingComplete!(widget.dataItem, widget.fieldName);
             }
@@ -625,7 +627,9 @@ class _NsgInputState extends State<NsgInput> {
           selectionController!.regime = NsgControllerRegime.view;
           selectionController!.onSelected = null;
           widget.dataItem.setFieldValue(widget.fieldName, item);
-          if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+          if (widget.onChanged != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+          }
           if (widget.onEditingComplete != null) {
             widget.onEditingComplete!(widget.dataItem, widget.fieldName);
           }
@@ -641,7 +645,9 @@ class _NsgInputState extends State<NsgInput> {
         widget.label,
         (item) {
           widget.dataItem.setFieldValue(widget.fieldName, item);
-          if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+          if (widget.onChanged != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+          }
           if (widget.onEditingComplete != null) {
             widget.onEditingComplete!(widget.dataItem, widget.fieldName);
           }
@@ -660,7 +666,9 @@ class _NsgInputState extends State<NsgInput> {
           '',
           (items) {
             widget.dataItem.setFieldValue(widget.fieldName, items);
-            if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+            if (widget.onChanged != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+            }
             if (widget.onEditingComplete != null) {
               widget.onEditingComplete!(widget.dataItem, widget.fieldName);
             }
@@ -680,7 +688,9 @@ class _NsgInputState extends State<NsgInput> {
                   : widget.dataItem[widget.fieldName],
               onClose: (value) {})
           .showPopup(context, widget.dataItem[widget.fieldName], (value) {
-        if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
+        if (widget.onChanged != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+        }
         if (widget.onEditingComplete != null) {
           widget.onEditingComplete!(widget.dataItem, widget.fieldName);
         }
