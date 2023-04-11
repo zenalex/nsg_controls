@@ -6,6 +6,7 @@ class NsgIcons {
   static const _kFontFam = 'NsgIcons';
   static const String? _kFontPkg = null;
 
+  /// <i class="nsg-icons md-36">eye_crossed</i> &#x2014; nsg icon named "eye_crossed".
   static const IconData eye_crossed = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData filter_active = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData folder = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
