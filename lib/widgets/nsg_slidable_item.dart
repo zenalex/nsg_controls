@@ -9,7 +9,7 @@ class NsgSlidableItem extends StatelessWidget {
       required this.child,
       this.buttonsListStart,
       this.buttonsListEnd,
-      this.extentRatio = 0.12,
+      this.extentRatio,
       this.borderRadius,
       this.slideMotion = SlideMotion.behindMotion});
 
@@ -18,7 +18,7 @@ class NsgSlidableItem extends StatelessWidget {
   final List<Widget>? buttonsListEnd;
   final Radius? borderRadius;
   final SlideMotion slideMotion;
-  final double extentRatio;
+  final double? extentRatio;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +28,12 @@ class NsgSlidableItem extends StatelessWidget {
         startActionPane: buttonsListStart != null && buttonsListStart!.isNotEmpty
             ? ActionPane(
                 motion: slideMotion.motion,
-                extentRatio: extentRatio,
                 dragDismissible: false,
                 children: buttonsListStart!,
               )
             : null,
         endActionPane: buttonsListEnd != null && buttonsListEnd!.isNotEmpty
-            ? ActionPane(extentRatio: extentRatio, motion: slideMotion.motion, dragDismissible: false, children: buttonsListEnd!)
+            ? ActionPane(motion: slideMotion.motion, dragDismissible: false, children: buttonsListEnd!)
             : null,
         child: child);
   }
