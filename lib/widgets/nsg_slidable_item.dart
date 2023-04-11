@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
-class SlidableItem extends StatelessWidget {
-  const SlidableItem(
-      {super.key, required this.child, this.buttonsList, this.borderRadius});
+class NsgSlidableItem extends StatelessWidget {
+  const NsgSlidableItem({super.key, required this.child, this.buttonsList, this.borderRadius});
 
   final Widget child;
-  final List<SlidableItemButton>? buttonsList;
+  final List<NsgSlidableItemButton>? buttonsList;
   final Radius? borderRadius;
 
   @override
@@ -24,14 +23,10 @@ class SlidableItem extends StatelessWidget {
             Flexible(
                 child: ClipRRect(
                     borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
+                        topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: buttonsList ??
-                          [const SlidableItemButton(icon: Icons.check)],
+                      children: buttonsList ?? [const NsgSlidableItemButton(icon: Icons.check)],
                     )))
           ],
         ),
@@ -39,8 +34,8 @@ class SlidableItem extends StatelessWidget {
   }
 }
 
-class SlidableItemButton extends StatelessWidget {
-  const SlidableItemButton({
+class NsgSlidableItemButton extends StatelessWidget {
+  const NsgSlidableItemButton({
     super.key,
     required this.icon,
     this.widht = 40,
@@ -61,8 +56,7 @@ class SlidableItemButton extends StatelessWidget {
             onTap: onTap ?? () {},
             child: Container(
               width: widht,
-              decoration: BoxDecoration(
-                  color: buttonColor ?? ControlOptions.instance.colorMain),
+              decoration: BoxDecoration(color: buttonColor ?? ControlOptions.instance.colorMain),
               child: Icon(
                 icon,
                 color: iconColor ?? Colors.white,
