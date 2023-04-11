@@ -64,4 +64,8 @@ dev_dependencies:
   
 
 flutter:
+  fonts:
+    - family:  NsgIcons
+      fonts:
+       - asset: fonts/NsgIcons.ttf
 
