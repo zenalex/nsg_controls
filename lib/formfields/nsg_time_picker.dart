@@ -60,6 +60,7 @@ class NsgTimePicker extends StatefulWidget {
               height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 410 : 120,
               title: 'Введите время',
               onConfirm: () {
+                print('onConfirm: ' + '$selectedDate');
                 onClose(selectedDate);
                 Navigator.pop(context);
               },
@@ -70,6 +71,7 @@ class NsgTimePicker extends StatefulWidget {
                 TimePickerContent(
                     initialTime: Jiffy(DateTime(0)).add(duration: initialTime).dateTime,
                     onChange: ((endDate) {
+                      print('onChange: ' + '$endDate');
                       selectedDate = endDate;
                     })
                     //  onClose,
