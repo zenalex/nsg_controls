@@ -17,6 +17,7 @@ class NsgTimePicker extends StatefulWidget {
   final EdgeInsets margin;
   final Duration initialTime;
   final bool disabled;
+  final DateTime? dateForTime;
 
   // final Color? outlineBorderColor;
 
@@ -44,6 +45,7 @@ class NsgTimePicker extends StatefulWidget {
     this.disabled = false,
     this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
     this.simple = false,
+    this.dateForTime,
     // this.outlineBorderColor,
     // this.borderRadius,
     // this.fieldColor,
@@ -68,8 +70,10 @@ class NsgTimePicker extends StatefulWidget {
               },
               getContent: () => [
                 TimePickerContent(
+                    dateForTime: dateForTime,
                     initialTime: Jiffy(DateTime(0)).add(duration: initialTime).dateTime,
                     onChange: ((endDate) {
+                      print('onChange: ' + '$endDate');
                       selectedDate = endDate;
                     })
                     //  onClose,
@@ -191,8 +195,9 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
 
 class TimePickerContent extends StatefulWidget {
   final DateTime initialTime;
+  final DateTime? dateForTime;
   final Function(DateTime endDate) onChange;
-  const TimePickerContent({Key? key, required this.initialTime, required this.onChange}) : super(key: key);
+  const TimePickerContent({Key? key, required this.initialTime, required this.onChange, this.dateForTime}) : super(key: key);
 
   @override
   State<TimePickerContent> createState() => _TimePickerContentState();
@@ -226,7 +231,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
     if (splitedTime.length > 1) {
       var hour = int.tryParse(splitedTime[0]) ?? 0;
       var minutes = int.tryParse(splitedTime[1]) ?? 0;
-      var now = DateTime.now();
+      var now = widget.dateForTime ?? DateTime.now();
       _initialTimeNew = DateTime(now.year, now.month, now.day, hour, minutes);
     }
     if (_initialTimeNew != null) {
