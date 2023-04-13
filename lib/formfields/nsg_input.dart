@@ -700,6 +700,7 @@ class _NsgInputState extends State<NsgInput> {
               if (widget.onEditingComplete != null) {
                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
               }
+              widget.dataItem[widget.fieldName] = value;
               setState(() {});
             })
           : NsgDatePicker(
