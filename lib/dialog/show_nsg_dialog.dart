@@ -6,6 +6,7 @@ import '../nsg_button.dart';
 
 Future<dynamic> showNsgDialog(
     {required BuildContext context,
+    bool showCancelButton = true,
     String title = 'Необходимо подтверждение',
     String text = 'Вы уверены?',
     Widget? child,
@@ -25,9 +26,14 @@ Future<dynamic> showNsgDialog(
                 Container(
                     alignment: Alignment.center,
                     width: double.infinity,
-                    decoration: BoxDecoration(color: ControlOptions.instance.colorGreyLighter.withOpacity(0.5)),
+                    decoration: BoxDecoration(color: ControlOptions.instance.colorMain),
                     padding: const EdgeInsets.all(20),
-                    child: Text(title, textAlign: TextAlign.center)),
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: ControlOptions.instance.colorMainText, fontSize: ControlOptions.instance.sizeL),
+                    )),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
                   child: child ??
@@ -39,30 +45,28 @@ Future<dynamic> showNsgDialog(
                 Container(
                   alignment: Alignment.center,
                   width: double.infinity,
-                  decoration: BoxDecoration(color: ControlOptions.instance.colorGreyLighter.withOpacity(0.2)),
+                  decoration: BoxDecoration(color: ControlOptions.instance.colorGrey.withOpacity(0.2)),
                   padding: const EdgeInsets.all(15),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: buttons ??
                         [
-                          NsgButton(
-                            onPressed: () {
-                              if (onCancel != null) {
-                                onCancel();
-                              } else {
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            width: 150,
-                            height: 40,
-                            text: 'Отмена',
-                            color: ControlOptions.instance.colorText,
-                            backColor: ControlOptions.instance.colorGrey,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          if (showCancelButton)
+                            NsgButton(
+                              onPressed: () {
+                                if (onCancel != null) {
+                                  onCancel();
+                                } else {
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              margin: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
+                              width: 150,
+                              height: 40,
+                              text: 'Отмена',
+                              color: ControlOptions.instance.colorText,
+                              backColor: ControlOptions.instance.colorGrey,
+                            ),
                           NsgButton(
                             onPressed: () {
                               Navigator.of(context).pop();

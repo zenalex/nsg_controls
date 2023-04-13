@@ -18,13 +18,16 @@ enum NsgListPageMode { list, grid, table, tree }
 // ignore: must_be_immutable
 class NsgListPage extends StatelessWidget {
   /// Контроллер пользовательских настроек
-  NsgUserSettingsController<NsgDataItem>? userSettingsController;
+  final NsgUserSettingsController<NsgDataItem>? userSettingsController;
+
+  /// Отступы внутри скролла
+  final EdgeInsets contentPadding;
 
   /// Уникальное поле контроллера пользовательских настроек
-  String userSettingsId;
+  final String userSettingsId;
 
   /// Колонки для вывода в режиме "таблица"
-  List<NsgTableColumn>? columns;
+  final List<NsgTableColumn>? columns;
 
   /// Заголовок для AppBar
   final String title;
@@ -51,28 +54,26 @@ class NsgListPage extends StatelessWidget {
   final void Function(NsgDataItem)? onElementTap;
 
   /// Виджет Appbar
-  Widget? appBar;
+  final Widget? appBar;
 
   /// Цвета Appbar
-  Color? appBarColor, appBarBackColor;
+  final Color? appBarColor, appBarBackColor;
 
   /// Иконки Appbar
-  IconData? appBarIcon, appBarIcon2, appBarIcon3;
+  final IconData? appBarIcon, appBarIcon2, appBarIcon3;
 
   /// Функции иконок
   final VoidCallback? appBarOnPressed, appBarOnPressed2, appBarOnPressed3;
 
   /// Тип отображения элементов на странице
-  NsgListPageMode? type;
+  final NsgListPageMode? type;
 
   /// Минимальная ширина ячейки Grid для расчёта количества элементов по горизонтали
   /// относительно текущего разрешения экрана, с учётом максимальной ширины приложения
-  double gridCellMinWidth;
+  final double gridCellMinWidth;
 
   /// Вертикальные и горизонтальные отступы внутри Grid
-  double gridYSpacing, gridXSpacing;
-
-  //final RefreshController _refreshController = RefreshController();
+  final double gridYSpacing, gridXSpacing;
 
   /// Контроллер, содержащий кол-во нотификаций
   final NsgDataController? notificationController;
@@ -81,16 +82,18 @@ class NsgListPage extends StatelessWidget {
   final int Function()? getNotificationCount;
 
   /// Позиция, где показывать нотификацию в аппбаре
-  NsgAppBarNotificationPosition notificationPosition;
+  final NsgAppBarNotificationPosition notificationPosition;
 
   /// Управление видимостью кнопок в режиме таблицы. Если не задана, то все
-  List<NsgTableMenuButtonType>? availableButtons;
+  final List<NsgTableMenuButtonType>? availableButtons;
 
-  Widget? widgetBottom;
+  /// Виджет снизу под листом
+  final Widget? widgetBottom;
 
   final bool showLastAndFavourites;
   NsgListPage(
       {Key? key,
+      this.contentPadding = EdgeInsets.zero,
       this.userSettingsController,
       this.userSettingsId = '',
       this.widgetBottom,
@@ -275,7 +278,11 @@ class NsgListPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: ListView(
           children: [
-            FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showTreeItems())),
+            Padding(
+              padding: contentPadding,
+              child:
+                  FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showTreeItems())),
+            ),
           ],
         ),
       );
@@ -284,7 +291,10 @@ class NsgListPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: ListView(
           children: [
-            FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
+            Padding(
+              padding: contentPadding,
+              child: FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
+            ),
           ],
         ),
       );
