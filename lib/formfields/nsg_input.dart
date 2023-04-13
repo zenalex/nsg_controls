@@ -695,6 +695,7 @@ class _NsgInputState extends State<NsgInput> {
     } else if (inputType == NsgInputType.dateValue) {
       widget.formatDateTime == 'HH:mm'
           ? NsgTimePicker(
+              dateForTime: widget.dataItem[widget.fieldName],
               initialTime: Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute),
               onClose: (Duration endDate) {},
             ).showPopup(context, widget.dataItem[widget.fieldName].hour, widget.dataItem[widget.fieldName].minute, (value) {
@@ -702,11 +703,8 @@ class _NsgInputState extends State<NsgInput> {
               if (widget.onEditingComplete != null) {
                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
               }
-              // widget.dataItem[widget.fieldName].hour = value.hour;
-              // widget.dataItem[widget.fieldName].minute = value.minute;
               setState(() {});
-              print(value);
-            }, widget.dateForTime ?? DateTime.now())
+            })
           : NsgDatePicker(
                   firstDateTime: widget.firstDateTime,
                   lastDateTime: widget.lastDateTime,
@@ -722,7 +720,6 @@ class _NsgInputState extends State<NsgInput> {
               }
               widget.dataItem[widget.fieldName] = value;
               setState(() {});
-              print(value);
             });
     }
   }
