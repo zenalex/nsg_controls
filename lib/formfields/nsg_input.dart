@@ -702,7 +702,8 @@ class _NsgInputState extends State<NsgInput> {
               if (widget.onEditingComplete != null) {
                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
               }
-              widget.dataItem[widget.fieldName] = value;
+              widget.dataItem[widget.fieldName].hour = value.hour;
+              widget.dataItem[widget.fieldName].minute = value.minute;
               setState(() {});
             }, widget.dateForTime ?? DateTime.now())
           : NsgDatePicker(
