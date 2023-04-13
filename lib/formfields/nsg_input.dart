@@ -702,9 +702,10 @@ class _NsgInputState extends State<NsgInput> {
               if (widget.onEditingComplete != null) {
                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
               }
-              widget.dataItem[widget.fieldName].hour = value.hour;
-              widget.dataItem[widget.fieldName].minute = value.minute;
+              // widget.dataItem[widget.fieldName].hour = value.hour;
+              // widget.dataItem[widget.fieldName].minute = value.minute;
               setState(() {});
+              print(value);
             }, widget.dateForTime ?? DateTime.now())
           : NsgDatePicker(
                   firstDateTime: widget.firstDateTime,
@@ -721,6 +722,7 @@ class _NsgInputState extends State<NsgInput> {
               }
               widget.dataItem[widget.fieldName] = value;
               setState(() {});
+              print(value);
             });
     }
   }
