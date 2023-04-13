@@ -142,6 +142,8 @@ class NsgInput extends StatefulWidget {
   /// Форматировать отображение времени для входящего виджета
   final String? formatDateTime;
 
+  final DateTime? dateForTime;
+
   const NsgInput(
       {Key? key,
       this.initialDateTime,
@@ -194,7 +196,8 @@ class NsgInput extends StatefulWidget {
       this.prefix,
       this.suffixIcon,
       this.closeKeyboardOnTap = false,
-      this.formatDateTime})
+      this.formatDateTime,
+      this.dateForTime})
       : super(key: key);
 
   @override
@@ -701,7 +704,7 @@ class _NsgInputState extends State<NsgInput> {
               }
               widget.dataItem[widget.fieldName] = value;
               setState(() {});
-            })
+            }, widget.dateForTime ?? DateTime.now())
           : NsgDatePicker(
                   firstDateTime: widget.firstDateTime,
                   lastDateTime: widget.lastDateTime,

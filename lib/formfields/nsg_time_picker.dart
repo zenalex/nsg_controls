@@ -51,8 +51,8 @@ class NsgTimePicker extends StatefulWidget {
     // this.textStyle,
   }) : super(key: key);
 
-  void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
-    DateTime _today = DateTime.now();
+  void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose, DateTime currentTime) {
+    DateTime _today = currentTime;
     DateTime selectedDate = DateTime(_today.year, _today.month, _today.day, hours, minutes);
     showDialog(
         context: context,
@@ -122,7 +122,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
                       widget.onClose(duration);
                       _initialTime = duration;
                       setState(() {});
-                    });
+                    }, DateTime.now());
                   }
                 : null,
             child: child);
