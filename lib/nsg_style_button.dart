@@ -91,21 +91,31 @@ class NsgStyleIconButton extends StatelessWidget {
 }
 
 class NsgTextButton extends StatelessWidget {
-  const NsgTextButton({super.key, this.text = '', this.onTap});
+  const NsgTextButton({super.key, this.text = '', this.onTap, this.color, this.fontSize});
 
   final void Function()? onTap;
   final String text;
+  final Color? color;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(10),
+        child: InkWell(
+          onTap: onTap,
+          child: Text(text,
+              style: TextStyle(color: color ?? ControlOptions.instance.colorError, fontSize: fontSize ?? ControlOptions.instance.sizeM, fontFamily: 'Inter')),
+        ));
+    /*return Padding(
+        padding: const EdgeInsets.all(10),
         child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           InkWell(
             onTap: onTap,
-            child: Text(text, style: TextStyle(color: ControlOptions.instance.colorError, fontSize: ControlOptions.instance.sizeL, fontFamily: 'Inter')),
+            child:
+                Text(text, style: TextStyle(color: color ?? ControlOptions.instance.colorError, fontSize: ControlOptions.instance.sizeL, fontFamily: 'Inter')),
           )
-        ]));
+        ]));*/
   }
 }
 
