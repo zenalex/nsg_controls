@@ -10,7 +10,9 @@ class BodyWrap extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-          decoration: const BoxDecoration(color: Colors.white),
+          decoration: BoxDecoration(
+            color: ControlOptions.instance.colorMainBack,
+          ),
           child: Center(
               child: Container(
                   constraints: fullWidth ? null : BoxConstraints(minWidth: ControlOptions.instance.appMinWidth, maxWidth: ControlOptions.instance.appMaxWidth),

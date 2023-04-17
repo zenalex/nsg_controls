@@ -134,10 +134,9 @@ class NsgListPage extends StatelessWidget {
 
     return BodyWrap(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: ControlOptions.instance.colorMainBack,
         body: Container(
           key: GlobalKey(),
-          decoration: const BoxDecoration(color: Colors.white),
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

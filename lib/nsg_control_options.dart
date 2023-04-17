@@ -14,6 +14,9 @@ class ControlOptions {
   // Цвет текста который хорошо видно на фоне главного цвета приложения colorMain
   final Color colorMainText;
 
+  // Главный фоновый цвет приложения
+  final Color colorMainBack;
+
   // Цвет текста на всех светлых фонах (в тёмной теме на тёмных фонах)
   final Color colorText;
 
@@ -113,6 +116,7 @@ class ControlOptions {
       'main': [Color.fromRGBO(233, 200, 45, 1), Color.fromARGB(255, 153, 128, 16)]
     },
     this.colorMain = const Color.fromRGBO(233, 200, 45, 1),
+    this.colorMainBack = const Color.fromRGBO(255, 255, 255, 1),
     this.colorMainText = const Color.fromARGB(255, 70, 59, 11),
     this.colorText = const Color.fromARGB(255, 70, 59, 11),
     this.colorInverted = const Color.fromRGBO(255, 255, 255, 1),
