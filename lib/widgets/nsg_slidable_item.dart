@@ -22,21 +22,24 @@ class NsgSlidableItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
-        dragStartBehavior: DragStartBehavior.start,
-        key: const ValueKey(1),
-        startActionPane: buttonsListStart != null && buttonsListStart!.isNotEmpty
-            ? ActionPane(
-                motion: slideMotion.motion,
-                extentRatio: extentRatio,
-                dragDismissible: false,
-                children: buttonsListStart!,
-              )
-            : null,
-        endActionPane: buttonsListEnd != null && buttonsListEnd!.isNotEmpty
-            ? ActionPane(extentRatio: extentRatio, motion: slideMotion.motion, dragDismissible: false, children: buttonsListEnd!)
-            : null,
-        child: child);
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Slidable(
+          dragStartBehavior: DragStartBehavior.start,
+          key: const ValueKey(1),
+          startActionPane: buttonsListStart != null && buttonsListStart!.isNotEmpty
+              ? ActionPane(
+                  motion: slideMotion.motion,
+                  extentRatio: extentRatio,
+                  dragDismissible: false,
+                  children: buttonsListStart!,
+                )
+              : null,
+          endActionPane: buttonsListEnd != null && buttonsListEnd!.isNotEmpty
+              ? ActionPane(extentRatio: extentRatio, motion: slideMotion.motion, dragDismissible: false, children: buttonsListEnd!)
+              : null,
+          child: child),
+    );
   }
 }
 
