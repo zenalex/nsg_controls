@@ -279,8 +279,7 @@ class NsgListPage extends StatelessWidget {
           children: [
             Padding(
               padding: contentPadding,
-              child:
-                  FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showTreeItems())),
+              child: Column(children: _showTreeItems()),
             ),
           ],
         ),
@@ -292,7 +291,7 @@ class NsgListPage extends StatelessWidget {
           children: [
             Padding(
               padding: contentPadding,
-              child: FadeIn(duration: Duration(milliseconds: ControlOptions.instance.fadeSpeed), curve: Curves.easeIn, child: Column(children: _showItems())),
+              child: Column(children: _showItems()),
             ),
           ],
         ),

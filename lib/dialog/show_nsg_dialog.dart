@@ -31,21 +31,26 @@ Future<dynamic> showNsgDialog(
                     child: Text(
                       title,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: ControlOptions.instance.colorMainText, fontSize: ControlOptions.instance.sizeL),
+                      style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: ControlOptions.instance.sizeL),
                     )),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                  child: child ??
-                      Text(
-                        text,
-                        textAlign: TextAlign.center,
-                      ),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: ControlOptions.instance.colorMainBack,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                    child: child ??
+                        Text(
+                          text,
+                          textAlign: TextAlign.center,
+                        ),
+                  ),
                 ),
                 Container(
                   alignment: Alignment.center,
                   width: double.infinity,
-                  decoration: BoxDecoration(color: ControlOptions.instance.colorGrey.withOpacity(0.2)),
+                  decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withOpacity(0.9)),
                   padding: const EdgeInsets.all(15),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
