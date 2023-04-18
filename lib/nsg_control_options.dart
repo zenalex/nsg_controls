@@ -151,4 +151,37 @@ class ControlOptions {
   }
 
   static ControlOptions instance = ControlOptions();
+
+  static ControlOptions calculated({required Color colorMain, required Color colorSecondary}) {
+    ControlOptions newinstance = ControlOptions(
+      colorMain: colorMain,
+      colorMainLight: lighten(colorMain),
+      colorMainDark: darken(colorMain),
+      colorMainBack: darken(darken(colorMain)),
+      colorText: calculateTextColor(colorMain),
+      colorMainText: calculateTextColor(colorMain),
+      colorSecondary: colorSecondary,
+      colorSecondaryLight: lighten(colorSecondary),
+      colorSecondaryDark: darken(colorSecondary),
+    );
+    return newinstance;
+  }
+}
+
+Color darken(Color color, [double amount = .1]) {
+  assert(amount >= 0 && amount <= 1);
+  final hsl = HSLColor.fromColor(color);
+  final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+  return hslDark.toColor();
+}
+
+Color lighten(Color color, [double amount = .1]) {
+  assert(amount >= 0 && amount <= 1);
+  final hsl = HSLColor.fromColor(color);
+  final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+  return hslLight.toColor();
+}
+
+Color calculateTextColor(Color background) {
+  return background.computeLuminance() >= 0.5 ? Colors.black : Colors.white;
 }
