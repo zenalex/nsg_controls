@@ -79,7 +79,7 @@ class ControlOptions {
   double sizeS;
   double sizeXS;
 
-  final double borderRadius;
+  double borderRadius;
 
   double get screenWidth => Get.width;
 
@@ -156,8 +156,10 @@ class ControlOptions {
     ControlOptions newinstance = ControlOptions(
       colorMain: colorMain,
       colorMainLight: lighten(colorMain),
+      colorMainLighter: lighten(lighten(colorMain)),
       colorMainDark: darken(colorMain),
-      colorMainBack: darken(darken(colorMain)),
+      colorMainDarker: darken(darken(colorMain)),
+      colorMainBack: darken(darken(darken(colorMain))),
       colorText: calculateTextColor(colorMain),
       colorMainText: calculateTextColor(colorMain),
       colorSecondary: colorSecondary,
@@ -168,14 +170,14 @@ class ControlOptions {
   }
 }
 
-Color darken(Color color, [double amount = .1]) {
+Color darken(Color color, [double amount = .07]) {
   assert(amount >= 0 && amount <= 1);
   final hsl = HSLColor.fromColor(color);
   final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
   return hslDark.toColor();
 }
 
-Color lighten(Color color, [double amount = .1]) {
+Color lighten(Color color, [double amount = .07]) {
   assert(amount >= 0 && amount <= 1);
   final hsl = HSLColor.fromColor(color);
   final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
