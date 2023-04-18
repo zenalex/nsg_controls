@@ -46,7 +46,7 @@ class NsgPopUp extends StatefulWidget {
       this.contentTop,
       this.contentBottom,
       this.dataController,
-      this.colorText = Colors.black,
+      this.colorText,
       this.hideBackButton = false,
       this.showCloseButton = false,
       this.editPageController,
@@ -63,7 +63,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
 
   @override
   void initState() {
-    widget.colorText ??= ControlOptions.instance.colorText;
+    widget.colorText ??= ControlOptions.instance.colorMainText;
     if (widget.editPageController != null) {
       widget.editPageController!.statusChanged.subscribe(editControllerUpdate);
     }
@@ -115,7 +115,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(3),
-            color: Colors.white,
+            color: ControlOptions.instance.colorMainBack,
           ),
           child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
             Container(

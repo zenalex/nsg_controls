@@ -105,7 +105,7 @@ class NsgTextButton extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Text(text,
-              style: TextStyle(color: color ?? ControlOptions.instance.colorError, fontSize: fontSize ?? ControlOptions.instance.sizeM, fontFamily: 'Inter')),
+              style: TextStyle(color: color ?? ControlOptions.instance.colorWarning, fontSize: fontSize ?? ControlOptions.instance.sizeM, fontFamily: 'Inter')),
         ));
     /*return Padding(
         padding: const EdgeInsets.all(10),
