@@ -152,20 +152,22 @@ class ControlOptions {
 
   static ControlOptions instance = ControlOptions();
 
-  static ControlOptions calculated({required Color colorMain, required Color colorSecondary}) {
+  static ControlOptions calculated({required Color colorMain, required Color colorSecondary, double borderRadius = 15}) {
     ControlOptions newinstance = ControlOptions(
-      colorMain: colorMain,
-      colorMainLight: lighten(colorMain),
-      colorMainLighter: lighten(lighten(colorMain)),
-      colorMainDark: darken(colorMain),
-      colorMainDarker: darken(darken(colorMain)),
-      colorMainBack: darken(darken(darken(colorMain))),
-      colorText: calculateTextColor(colorMain),
-      colorMainText: calculateTextColor(colorMain),
-      colorSecondary: colorSecondary,
-      colorSecondaryLight: lighten(colorSecondary),
-      colorSecondaryDark: darken(colorSecondary),
-    );
+        colorMain: colorMain,
+        colorMainLight: lighten(colorMain),
+        colorMainLighter: lighten(lighten(colorMain)),
+        colorMainDark: darken(colorMain),
+        colorMainDarker: darken(darken(colorMain)),
+        colorMainBack: darken(darken(darken(colorMain))),
+        colorText: calculateTextColor(colorMain),
+        colorMainText: calculateTextColor(colorMain),
+        colorSecondary: colorSecondary,
+        colorSecondaryLight: lighten(colorSecondary),
+        colorSecondaryDark: darken(colorSecondary),
+
+        ///
+        borderRadius: borderRadius);
     return newinstance;
   }
 }

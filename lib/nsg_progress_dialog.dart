@@ -95,35 +95,33 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
   Widget build(BuildContext context) {
     return !loadingTooLong
         ? const SizedBox()
-        : BackdropFilter(
+        :
+        // : BackdropFilter(
+        //     filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+        BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
             child: Container(
-              decoration: const BoxDecoration(color: Colors.black26),
+              decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withOpacity(0.8)),
               child: Center(
-                child: Container(
-                  width: 250,
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                  decoration: BoxDecoration(color: const Color.fromARGB(255, 255, 255, 255), borderRadius: BorderRadius.circular(15)),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(widget.textDialog, textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText)),
-                        const SizedBox(height: 10),
-                        NsgProgressBar(text: widget.text!),
-                        if (widget.canStopped == true)
-                          NsgButton(
-                            text: 'Отмена',
-                            onPressed: () {
-                              if (widget.requestStop != null) widget.requestStop!();
-                              widget.cancelToken?.calcel();
-                              Get.back();
-                            },
-                          ),
-                      ],
-                    ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(widget.textDialog, textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText)),
+                      const SizedBox(height: 10),
+                      NsgProgressBar(text: widget.text!),
+                      if (widget.canStopped == true)
+                        NsgButton(
+                          text: 'Отмена',
+                          onPressed: () {
+                            if (widget.requestStop != null) widget.requestStop!();
+                            widget.cancelToken?.calcel();
+                            Get.back();
+                          },
+                        ),
+                    ],
                   ),
                 ),
               ),
