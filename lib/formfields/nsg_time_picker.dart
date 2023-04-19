@@ -269,14 +269,14 @@ class _TimePickerContentState extends State<TimePickerContent> {
               )
             ],
             keyboardType: TextInputType.number,
-            cursorColor: ControlOptions.instance.colorText,
+            cursorColor: ControlOptions.instance.colorMainText,
             textAlign: TextAlign.center,
             decoration: InputDecoration(
               labelText: '',
               contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
               isDense: true,
               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainText)),
               labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
             ),
             //   key: GlobalKey(),
@@ -284,7 +284,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
               FocusScope.of(context).unfocus();
             },
             onChanged: (String value) {},
-            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
+            style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 24),
             controller: textController,
           ),
         ),

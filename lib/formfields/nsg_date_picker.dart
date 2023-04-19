@@ -8,8 +8,6 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-import 'nsg_field_type.dart';
-
 class NsgDatePicker extends StatefulWidget {
   final String? label;
   final TextAlign textAlign;
@@ -274,7 +272,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
               )
             ],
             keyboardType: TextInputType.number,
-            cursorColor: ControlOptions.instance.colorText,
+            cursorColor: ControlOptions.instance.colorMainText,
             textAlign: widget.textAlign,
             controller: textController,
             decoration: InputDecoration(
@@ -282,7 +280,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
               contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
               isDense: true,
               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorText)),
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainText)),
               labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
             ),
             // key: GlobalKey(),
@@ -290,7 +288,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
               FocusScope.of(context).unfocus();
             },
             onChanged: (String value) {},
-            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
+            style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 24),
           ),
         ),
         !kIsWeb && (Platform.isAndroid || Platform.isIOS)
