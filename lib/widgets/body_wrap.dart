@@ -4,7 +4,8 @@ import 'package:nsg_controls/nsg_controls.dart';
 class BodyWrap extends StatelessWidget {
   final Widget child;
   final bool fullWidth;
-  const BodyWrap({super.key, required this.child, this.fullWidth = false});
+  final Future<bool> Function()? onWillPop;
+  const BodyWrap({super.key, required this.child, this.fullWidth = false, this.onWillPop});
 
   @override
   Widget build(BuildContext context) {
