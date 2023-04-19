@@ -9,16 +9,21 @@ class BodyWrap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-          decoration: BoxDecoration(
-            color: ControlOptions.instance.colorMainBack,
-          ),
-          child: Center(
-              child: Container(
-                  constraints: fullWidth ? null : BoxConstraints(minWidth: ControlOptions.instance.appMinWidth, maxWidth: ControlOptions.instance.appMaxWidth),
-                  //padding: EdgeInsets.fromLTRB(10, 0, 10, 15),
-                  child: child))),
+    return WillPopScope(
+      onWillPop: onWillPop ??
+          () {
+            return Future.value(false);
+          },
+      child: SafeArea(
+        child: Container(
+            decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack),
+            child: Center(
+                child: Container(
+                    constraints:
+                        fullWidth ? null : BoxConstraints(minWidth: ControlOptions.instance.appMinWidth, maxWidth: ControlOptions.instance.appMaxWidth),
+                    //padding: EdgeInsets.fromLTRB(10, 0, 10, 15),
+                    child: child))),
+      ),
     );
   }
 }
