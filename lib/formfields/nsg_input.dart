@@ -26,8 +26,6 @@ class NsgInput extends StatefulWidget {
   final int maxLines;
   final int minLines;
 
-  final bool closeKeyboardOnTap;
-
   /// Красный текст валидации под текстовым полем
   final String validateText;
 
@@ -193,7 +191,6 @@ class NsgInput extends StatefulWidget {
     this.contentPadding,
     this.prefix,
     this.suffixIcon,
-    this.closeKeyboardOnTap = false,
     this.formatDateTime,
   }) : super(key: key);
 
@@ -470,14 +467,6 @@ class _NsgInputState extends State<NsgInput> {
                           maxLines: widget.maxLines,
                           minLines: widget.minLines,
                           keyboardType: keyboard,
-                          onTap: widget.closeKeyboardOnTap
-                              ? () {
-                                  // Реализация исчезновения клавиатуры по тапу на NsgInput (за счет смены фокуса)
-                                  FocusScopeNode focusScopeNode = FocusScope.of(context);
-                                  !focusScopeNode.hasPrimaryFocus ? focusScopeNode.unfocus() : null;
-                                  //
-                                }
-                              : () {},
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
                             suffixIcon: widget.suffixIcon,
