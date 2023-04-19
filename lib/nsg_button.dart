@@ -7,7 +7,7 @@ import 'nsg_controls.dart';
 class NsgButton extends StatelessWidget {
   final String? style;
   final String? text;
-  final EdgeInsets margin;
+  final EdgeInsets? margin;
   final IconData? icon;
   final VoidCallback? onPressed;
   final VoidCallback? onDisabledPressed;
@@ -27,7 +27,7 @@ class NsgButton extends StatelessWidget {
       {Key? key,
       this.style,
       this.text = '',
-      this.margin = const EdgeInsets.fromLTRB(5, 5, 5, 5),
+      this.margin,
       this.iconMargin = const EdgeInsets.fromLTRB(0, 0, 5, 0),
       this.icon,
       this.iconColor,
@@ -121,7 +121,7 @@ class NsgButton extends StatelessWidget {
     } else // Маленькая кнопка
     if (style == 'small') {
       return Padding(
-          padding: margin,
+          padding: margin ?? ControlOptions.instance.nsgButtonMargin,
           child: Container(
               height: 40,
               decoration: BoxDecoration(
@@ -143,7 +143,7 @@ class NsgButton extends StatelessWidget {
     } else // Кнопка с виджетом внутри
     if (style == 'widget') {
       return Container(
-          margin: margin,
+          margin: margin ?? ControlOptions.instance.nsgButtonMargin,
           height: height ?? ControlOptions.instance.nsgButtonHeight,
           width: width,
           decoration: BoxDecoration(
@@ -167,7 +167,7 @@ class NsgButton extends StatelessWidget {
     } else {
       // Кнопка обычная
       return Container(
-          margin: margin,
+          margin: margin ?? ControlOptions.instance.nsgButtonMargin,
           constraints: const BoxConstraints(minHeight: 38, maxWidth: 800),
           width: width ?? double.infinity,
           height: height ?? ControlOptions.instance.nsgButtonHeight,
