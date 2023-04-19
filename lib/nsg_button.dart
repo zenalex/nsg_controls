@@ -36,7 +36,7 @@ class NsgButton extends StatelessWidget {
       this.disabled,
       this.borderRadius,
       this.width,
-      this.height = 50,
+      this.height,
       this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       this.color,
       this.borderColor,
@@ -62,7 +62,7 @@ class NsgButton extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                  height: height,
+                  height: height ?? ControlOptions.instance.nsgButtonHeight,
                   width: width,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
@@ -105,7 +105,7 @@ class NsgButton extends StatelessWidget {
                   )),
               Container(
                 width: 50,
-                height: height,
+                height: height ?? ControlOptions.instance.nsgButtonHeight,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
@@ -144,7 +144,7 @@ class NsgButton extends StatelessWidget {
     if (style == 'widget') {
       return Container(
           margin: margin,
-          height: height,
+          height: height ?? ControlOptions.instance.nsgButtonHeight,
           width: width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
@@ -170,7 +170,7 @@ class NsgButton extends StatelessWidget {
           margin: margin,
           constraints: const BoxConstraints(minHeight: 38, maxWidth: 800),
           width: width ?? double.infinity,
-          height: height,
+          height: height ?? ControlOptions.instance.nsgButtonHeight,
           decoration: BoxDecoration(
             border: borderColor == null ? null : Border.all(width: 2, color: borderColor!),
             borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),

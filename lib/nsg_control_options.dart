@@ -79,6 +79,9 @@ class ControlOptions {
   double sizeS;
   double sizeXS;
 
+  /// Высота NsgButton
+  double nsgButtonHeight;
+
   double borderRadius;
 
   double get screenWidth => Get.width;
@@ -111,6 +114,7 @@ class ControlOptions {
     this.sizeM = 14,
     this.sizeS = 12,
     this.sizeXS = 10,
+    this.nsgButtonHeight = 40,
     this.borderRadius = 15.0,
     this.gradients = const {
       'main': [Color.fromRGBO(233, 200, 45, 1), Color.fromARGB(255, 153, 128, 16)]
@@ -152,7 +156,7 @@ class ControlOptions {
 
   static ControlOptions instance = ControlOptions();
 
-  static ControlOptions calculated({required Color colorMain, required Color colorSecondary, double borderRadius = 15}) {
+  static ControlOptions calculated({required Color colorMain, required Color colorSecondary, double borderRadius = 15, double nsgButtonHeight = 40}) {
     ControlOptions newinstance = ControlOptions(
         colorMain: colorMain,
         colorMainLight: lighten(colorMain),
@@ -167,7 +171,11 @@ class ControlOptions {
         colorSecondaryDark: darken(colorSecondary),
 
         ///
-        borderRadius: borderRadius);
+        borderRadius: borderRadius,
+        nsgButtonHeight: nsgButtonHeight);
+    NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
+    // Дефолтная функция с диалоговым окном при закрытии страницы на которой были сделаны изменения (например, в текстовой форме)
+    NsgBaseController.saveOrCancelDefaultDialog = NsgDialogSaveOrCancel.saveOrCancel;
     return newinstance;
   }
 }
