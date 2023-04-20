@@ -10,6 +10,7 @@ import 'package:hovering/hovering.dart';
 import 'package:flutter/material.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:nsg_controls/formfields/nsg_field_type.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 
 class NsgInput extends StatefulWidget {
   final String label;
@@ -721,7 +722,29 @@ class _NsgInputState extends State<NsgInput> {
 
     Widget boolBox = widget.boolWidget ??
         StatefulBuilder(
-          builder: ((context, setState) => CupertinoSwitch(
+          builder: ((context, setState) => FlutterSwitch(
+                    width: 125.0,
+                    height: 55.0,
+                    activeColor: ControlOptions.instance.colorMain,
+                    inactiveColor: ControlOptions.instance.colorMain,
+                    valueFontSize: 25.0,
+                    toggleSize: 45.0,
+                    value: fieldValue,
+                    borderRadius: 30.0,
+                    padding: 8.0,
+                    showOnOff: true,
+                    onToggle: (val) {
+                      fieldValue = !fieldValue;
+                      widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                      if (widget.updateController != null) {
+                        widget.updateController!.update();
+                      } else {
+                        setState(() {});
+                      }
+                    },
+                  )
+
+              /*       CupertinoSwitch(
               value: fieldValue,
               activeColor: ControlOptions.instance.colorMain,
               onChanged: (value) {
@@ -732,7 +755,9 @@ class _NsgInputState extends State<NsgInput> {
                 } else {
                   setState(() {});
                 }
-              })),
+              })*/
+
+              ),
         );
 
     return Container(
