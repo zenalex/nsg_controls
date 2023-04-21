@@ -200,7 +200,7 @@ class _NsgTableState extends State<NsgTable> {
 
   //Значения стилей для заголовков и строк по умолчанию
   AlignmentGeometry defaultHeaderAlign = Alignment.center;
-  TextStyle defaultHeaderTextStyle = TextStyle(color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM);
+  TextStyle defaultHeaderTextStyle = TextStyle(color: ControlOptions.instance.colorMainText, fontSize: ControlOptions.instance.sizeM);
   TextAlign defaultHeaderTextAlign = TextAlign.center;
   AlignmentGeometry defaultRowAlign = Alignment.center;
   TextStyle defaultRowTextStyle = TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeS);
@@ -669,7 +669,7 @@ class _NsgTableState extends State<NsgTable> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Icon(sortElement == NsgTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
-                          size: 16, color: ControlOptions.instance.colorInverted),
+                          size: 16, color: ControlOptions.instance.colorMainBack),
                     ),
                   )
                 ]);
@@ -763,7 +763,7 @@ class _NsgTableState extends State<NsgTable> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Icon(sortElement == NsgTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
-                              size: 16, color: ControlOptions.instance.colorInverted),
+                              size: 16, color: ControlOptions.instance.colorMainBack),
                         ),
                       )
                     ]);
@@ -1481,13 +1481,13 @@ class _NsgTableState extends State<NsgTable> {
                                   Text(
                                     'Итого: ',
                                     style: TextStyle(
-                                        color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500),
+                                        color: ControlOptions.instance.colorMainBack, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500),
                                   ),
                                   if (column.totalSum > 0)
                                     Text(
                                       column.totalSum.toString(),
                                       style: TextStyle(
-                                          color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500),
+                                          color: ControlOptions.instance.colorMainBack, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500),
                                     )
                                 ],
                               )
@@ -1496,7 +1496,7 @@ class _NsgTableState extends State<NsgTable> {
                                 child: Text(text,
                                     textAlign: textAlign,
                                     style: TextStyle(
-                                        color: ControlOptions.instance.colorInverted, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500)),
+                                        color: ControlOptions.instance.colorMainBack, fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500)),
                               )),
                     expanded: column.expanded,
                     flex: column.flex));

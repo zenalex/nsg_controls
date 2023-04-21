@@ -182,9 +182,9 @@ class ControlOptions {
         colorSecondaryDark: darken(colorSecondary),
 
         ///
-        tableHeaderColor: tableHeaderColor,
-        tableHeaderLinesColor: tableHeaderLinesColor,
-        tableCellBackColor: tableCellBackColor,
+        tableHeaderColor: darken(colorMain),
+        tableHeaderLinesColor: lighten(colorMain),
+        tableCellBackColor: darken(darken(darken(colorMain))),
         borderRadius: borderRadius,
         nsgButtonHeight: nsgButtonHeight,
         nsgButtonMargin: nsgButtonMargin);
