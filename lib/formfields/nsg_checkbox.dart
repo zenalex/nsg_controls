@@ -12,6 +12,7 @@ class NsgCheckBox extends StatefulWidget {
   final Function(bool currentValue) onPressed;
   final EdgeInsets margin;
   final bool toggleInside;
+  final Color? checkColor;
 
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
@@ -30,7 +31,8 @@ class NsgCheckBox extends StatefulWidget {
       this.width,
       required this.onPressed,
       this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 0),
-      this.simple = false})
+      this.simple = false,
+      this.checkColor})
       : super(key: key);
 
   @override
@@ -78,20 +80,24 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                     widget.onPressed(_boxValue);
                   }
                 },
-                hoverColor: ControlOptions.instance.colorMain.withOpacity(0.1),
-                splashColor: ControlOptions.instance.colorMain.withOpacity(0.2),
+                hoverColor: widget.checkColor != null ? widget.checkColor!.withOpacity(0.1) : ControlOptions.instance.colorMain.withOpacity(0.1),
+                splashColor: widget.checkColor != null ? widget.checkColor!.withOpacity(0.2) : ControlOptions.instance.colorMain.withOpacity(0.2),
                 //focusColor: ControlOptions.instance.colorMain.withOpacity(0.5),
-                highlightColor: ControlOptions.instance.colorMain.withOpacity(0.2),
+                highlightColor: widget.checkColor != null ? widget.checkColor!.withOpacity(0.2) : ControlOptions.instance.colorMain.withOpacity(0.2),
                 child: SizedBox(
                   height: widget.height,
                   child: Row(
                     children: [
                       if (widget.radio == true)
                         Icon(_boxValue == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
-                            color: _boxValue == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark)
+                            color: _boxValue == true
+                                ? widget.checkColor ?? ControlOptions.instance.colorMainDark
+                                : widget.checkColor ?? ControlOptions.instance.colorMainDark)
                       else
                         Icon(_boxValue == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                            color: _boxValue == true ? ControlOptions.instance.colorMainDark : ControlOptions.instance.colorMainDark),
+                            color: _boxValue == true
+                                ? widget.checkColor ?? ControlOptions.instance.colorMainDark
+                                : widget.checkColor ?? ControlOptions.instance.colorMainDark),
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
