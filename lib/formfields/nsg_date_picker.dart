@@ -429,14 +429,24 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 15),
-      child: CalendarDatePicker(
-        key: GlobalKey(),
-        firstDate: widget.firstDateTime ?? DateTime(0),
-        lastDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
-        initialDate: widget.initialDateTime,
-        onDateChanged: (d) {
-          widget.onDateTimeChanged(d);
-        },
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.light(
+              background: ControlOptions.instance.colorMainBack,
+              onBackground: ControlOptions.instance.colorMain,
+              primary: ControlOptions.instance.colorMain,
+              onPrimary: ControlOptions.instance.colorMainText,
+              onSurface: ControlOptions.instance.colorText),
+        ),
+        child: CalendarDatePicker(
+          key: GlobalKey(),
+          firstDate: widget.firstDateTime ?? DateTime(0),
+          lastDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
+          initialDate: widget.initialDateTime,
+          onDateChanged: (d) {
+            widget.onDateTimeChanged(d);
+          },
+        ),
       ),
     );
   }
