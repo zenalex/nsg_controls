@@ -379,24 +379,15 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        colorScheme: ColorScheme.light(
-          primary: ControlOptions.instance.colorError,
-          onPrimary: ControlOptions.instance.colorError,
-          onSurface: ControlOptions.instance.colorError,
-        ),
-      ),
-      child: CupertinoDatePicker(
-        maximumDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
-        minimumDate: widget.firstDateTime ?? DateTime(0),
-        key: GlobalKey(),
-        mode: CupertinoDatePickerMode.date,
-        initialDateTime: widget.initialDateTime,
-        onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
-        use24hFormat: true,
-        minuteInterval: 1,
-      ),
+    return CupertinoDatePicker(
+      maximumDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
+      minimumDate: widget.firstDateTime ?? DateTime(0),
+      key: GlobalKey(),
+      mode: CupertinoDatePickerMode.date,
+      initialDateTime: widget.initialDateTime,
+      onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
+      use24hFormat: true,
+      minuteInterval: 1,
     );
   }
 }
@@ -438,14 +429,23 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 15),
-      child: CalendarDatePicker(
-        key: GlobalKey(),
-        firstDate: widget.firstDateTime ?? DateTime(0),
-        lastDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
-        initialDate: widget.initialDateTime,
-        onDateChanged: (d) {
-          widget.onDateTimeChanged(d);
-        },
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.light(
+            primary: ControlOptions.instance.colorError,
+            onPrimary: ControlOptions.instance.colorError,
+            onSurface: ControlOptions.instance.colorError,
+          ),
+        ),
+        child: CalendarDatePicker(
+          key: GlobalKey(),
+          firstDate: widget.firstDateTime ?? DateTime(0),
+          lastDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
+          initialDate: widget.initialDateTime,
+          onDateChanged: (d) {
+            widget.onDateTimeChanged(d);
+          },
+        ),
       ),
     );
   }
