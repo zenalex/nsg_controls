@@ -7,6 +7,8 @@ import 'package:nsg_data/nsg_data.dart';
 import 'widgets/nsg_dialog_save_or_cancel.dart';
 import 'widgets/nsg_error_widget.dart';
 
+ControlOptions get nsgtheme => ControlOptions.instance;
+
 class ControlOptions {
   // Главный цвет приложения
   final Color colorMain;
