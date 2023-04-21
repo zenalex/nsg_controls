@@ -42,7 +42,7 @@ class NsgDialogBody extends StatefulWidget {
 }
 
 class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+  static late AnimationController _controller;
   late Animation<double> _padding;
 
   @override
