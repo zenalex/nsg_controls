@@ -382,9 +382,9 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
     return Theme(
       data: Theme.of(context).copyWith(
         colorScheme: ColorScheme.light(
-          primary: ControlOptions.instance.colorMain,
-          onPrimary: ControlOptions.instance.colorMainLight,
-          onSurface: ControlOptions.instance.colorMainBack,
+          primary: ControlOptions.instance.colorError,
+          onPrimary: ControlOptions.instance.colorError,
+          onSurface: ControlOptions.instance.colorError,
         ),
       ),
       child: CupertinoDatePicker(
