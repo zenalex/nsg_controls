@@ -432,9 +432,11 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
       child: Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(
-            primary: ControlOptions.instance.colorError,
-            onPrimary: ControlOptions.instance.colorError,
-            onSurface: ControlOptions.instance.colorError,
+            background: ControlOptions.instance.colorMainBack,
+            onBackground: ControlOptions.instance.colorMain,
+            primary: ControlOptions.instance.colorText,
+            onPrimary: ControlOptions.instance.colorMain,
+            // onSurface: ControlOptions.instance.colorError,
           ),
         ),
         child: CalendarDatePicker(
