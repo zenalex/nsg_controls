@@ -1,5 +1,6 @@
 // импорт
 import 'package:flutter/material.dart';
+import 'package:nsg_controls/nsg_style_button.dart';
 import 'nsg_control_options.dart';
 import 'nsg_controls.dart';
 
@@ -46,6 +47,31 @@ class NsgButton extends StatelessWidget {
       this.widget,
       this.shadow})
       : super(key: key);
+
+  NsgButton.styled(
+      {super.key,
+      this.text,
+      this.icon,
+      this.onDisabledPressed,
+      this.disabled,
+      this.fontSize,
+      void Function()? onTap,
+      NsgButtonStyle style = NsgButtonStyle.dark})
+      : color = ButtonsColors().getTextColor(style),
+        borderColor = null,
+        style = null,
+        shadow = null,
+        widget = null,
+        borderRadius = 10,
+        width = null,
+        height = 30,
+        onPressed = onTap,
+        margin = const EdgeInsets.all(10),
+        padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        iconMargin = const EdgeInsets.fromLTRB(0, 0, 5, 0),
+        backHoverColor = null,
+        iconColor = ButtonsColors().getColor(style, invert: true),
+        backColor = ButtonsColors().getColor(style);
 
   @override
   Widget build(BuildContext context) {
@@ -213,3 +239,40 @@ class NsgButton extends StatelessWidget {
     }
   }
 }
+
+class ButtonsColors {
+  Color getTextColor(NsgButtonStyle style) {
+    switch (style) {
+      case NsgButtonStyle.dark:
+        return ControlOptions.instance.colorWhite;
+      case NsgButtonStyle.light:
+        return ControlOptions.instance.colorMain;
+      case NsgButtonStyle.warning:
+        return ControlOptions.instance.colorWhite;
+    }
+  }
+
+  Color getColor(NsgButtonStyle style, {bool invert = false}) {
+    if (invert) {
+      switch (style) {
+        case NsgButtonStyle.dark:
+          return ControlOptions.instance.colorWhite;
+        case NsgButtonStyle.light:
+          return ControlOptions.instance.colorMain;
+        case NsgButtonStyle.warning:
+          return ControlOptions.instance.colorWarning;
+      }
+    } else {
+      switch (style) {
+        case NsgButtonStyle.dark:
+          return ControlOptions.instance.colorMain;
+        case NsgButtonStyle.light:
+          return ControlOptions.instance.colorMainLighter;
+        case NsgButtonStyle.warning:
+          return ControlOptions.instance.colorError;
+      }
+    }
+  }
+}
+
+enum NsgButtonStyle { light, dark, warning }

@@ -49,8 +49,6 @@ class NsgStyleButton extends StatelessWidget {
   }
 }
 
-enum NsgButtonStyle { light, dark, warning }
-
 class NsgStyleIconButton extends StatelessWidget {
   const NsgStyleIconButton({super.key, this.style = NsgButtonStyle.dark, this.onTap, required this.icon, this.nott = 0});
 
