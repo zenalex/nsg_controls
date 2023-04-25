@@ -532,7 +532,7 @@ class _NsgInputState extends State<NsgInput> {
   EdgeInsets getHintPadding() {
     if (widget.contentPadding != null) {
       return widget.contentPadding != null
-          ? widget.contentPadding!.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr)
+          ? widget.contentPadding! //.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr)
           : EdgeInsets.zero;
     } else {
       return nsgtheme.nsgInputContenPadding.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr);
