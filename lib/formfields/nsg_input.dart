@@ -161,7 +161,7 @@ class NsgInput extends StatefulWidget {
     this.disabled = false,
     this.fontSize,
     this.borderRadius = 15,
-    this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+    this.margin,
     this.gesture,
     this.hint,
     this.onChanged,
