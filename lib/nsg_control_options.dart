@@ -14,9 +14,10 @@ class ControlOptions {
   // Настройки NsgInput
   final bool nsgInputisFilled;
   final bool nsgInputHintAlwaysOnTop;
-  final Color nsgInputColorFilled;
   final TextFormFieldType nsgInputOutlineBorderType;
   final EdgeInsets nsgInputContenPadding;
+  final Color nsgInputColorLabel;
+  final Color nsgInputColorFilled;
   // Главный цвет приложения
   final Color colorMain;
 
@@ -120,6 +121,7 @@ class ControlOptions {
     this.nsgInputisFilled = false,
     this.nsgInputHintAlwaysOnTop = false,
     this.nsgInputColorFilled = Colors.transparent,
+    this.nsgInputColorLabel = Colors.black,
     this.nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
     this.nsgInputContenPadding = const EdgeInsets.all(5),
     this.appMaxWidth = 640,

@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/formfields/nsg_position_boolBox.dart';
-import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -157,7 +156,7 @@ class NsgInput extends StatefulWidget {
     this.selectionController,
     this.updateController,
     this.label = '',
-    this.labelColor = null,
+    this.labelColor,
     this.imagesList,
     this.disabled = false,
     this.fontSize,
@@ -419,8 +418,7 @@ class _NsgInputState extends State<NsgInput> {
                             ? widget.label + ' *'
                             : widget.label
                         : ' ',
-                    style: TextStyle(
-                        fontSize: ControlOptions.instance.sizeS, color: widget.labelColor == null ? ControlOptions.instance.colorMainDark : widget.labelColor),
+                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
                   ),
                 _gestureWrap(
                   clearIcon: fieldValue.toString() != '',
