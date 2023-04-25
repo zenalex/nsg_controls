@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/formfields/nsg_position_boolBox.dart';
+import 'package:nsg_controls/nsg_border.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -87,13 +88,13 @@ class NsgInput extends StatefulWidget {
   final TextAlign textAlign;
 
   /// Тип поля ввода
-  final TextFormFieldType textFormFieldType;
+  final TextFormFieldType? textFormFieldType;
 
   /// Цвет границ поля ввода
   final Color? borderColor;
 
   /// Закрашивать ли поле цветом
-  final bool filled;
+  final bool? filled;
 
   /// Цвет окрашивания поля
   final Color? filledColor;
@@ -129,7 +130,7 @@ class NsgInput extends StatefulWidget {
   final BoolBoxPosition? boolBoxPosition;
 
   /// Параметры отступа для значений внутри NsgInput
-  final EdgeInsetsGeometry? contentPadding;
+  final EdgeInsets? contentPadding;
 
   /// Виджет для отображения в начале NsgInput
   final Widget? prefix;
@@ -177,9 +178,9 @@ class NsgInput extends StatefulWidget {
     this.maskType,
     this.itemsToSelect,
     this.required,
-    this.textFormFieldType = TextFormFieldType.underlineInputBorder,
+    this.textFormFieldType,
     this.borderColor,
-    this.filled = false,
+    this.filled,
     this.filledColor,
     this.isDense,
     this.lableWidget,
@@ -246,12 +247,13 @@ class _NsgInputState extends State<NsgInput> {
   bool _disabled = false;
   late TextEditingController textController;
   get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
-
+  TextFormFieldType? textFormFieldType;
   bool _ignoreChange = false;
 
   @override
   void initState() {
     super.initState();
+    textFormFieldType = widget.textFormFieldType ?? nsgtheme.nsgInputOutlineBorderType;
     fontSize = widget.fontSize ?? ControlOptions.instance.sizeM;
     focus.addListener(() {
       if (focus.hasFocus) {
@@ -410,7 +412,7 @@ class _NsgInputState extends State<NsgInput> {
               children: [
                 if (widget.showLabel)
                   Text(
-                    focus.hasFocus || textController.text != ''
+                    focus.hasFocus || textController.text != '' || nsgtheme.nsgInputHintAlwaysOnTop == true
                         ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
                             ? widget.label + ' *'
                             : widget.label
@@ -428,9 +430,12 @@ class _NsgInputState extends State<NsgInput> {
                         if (!focus.hasFocus && textController.text == '')
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(
-                              (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
-                              style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                            child: Padding(
+                              padding: getHintPadding(),
+                              child: Text(
+                                (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
+                                style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                              ),
                             ),
                           ),
                         if (widget.hint != null && focus.hasFocus && textController.text == '')
@@ -486,31 +491,22 @@ class _NsgInputState extends State<NsgInput> {
                                         )
                                     : null,
                             counterText: "",
-                            contentPadding: widget.contentPadding ??
-                                EdgeInsets.fromLTRB(
-                                    0,
-                                    4,
-                                    !widget.showDeleteIcon
-                                        ? 0
-                                        : useSelectionController
-                                            ? 25
-                                            : 25,
-                                    4),
+                            contentPadding: getContentPadding(),
                             isDense: widget.isDense ?? true,
-                            filled: widget.filled,
-                            fillColor: widget.filledColor,
-                            border: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                            filled: widget.filled ?? nsgtheme.nsgInputisFilled,
+                            fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
+                            border: textFormFieldType == TextFormFieldType.outlineInputBorder
                                 ? defaultOutlineBorder(color: widget.borderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor),
-                            focusedBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
-                            enabledBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                            focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                            enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
                                 ? defaultOutlineBorder(color: widget.borderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor),
-                            errorBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
-                            disabledBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                            errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                            disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
                                 ? defaultOutlineBorder(color: widget.borderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor),
-                            focusedErrorBorder: widget.textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                            focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                           ),
                           onFieldSubmitted: (string) {
                             if (widget.onEditingComplete != null) {}
@@ -530,6 +526,34 @@ class _NsgInputState extends State<NsgInput> {
                   ),
               ],
             ));
+  }
+
+  EdgeInsets getHintPadding() {
+    if (widget.contentPadding != null) {
+      return widget.contentPadding != null
+          ? widget.contentPadding!.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr)
+          : EdgeInsets.zero;
+    } else {
+      return nsgtheme.nsgInputContenPadding.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr);
+    }
+  }
+
+  EdgeInsets getContentPadding() {
+    if (widget.contentPadding != null) {
+      return widget.contentPadding!;
+    } else {
+      return nsgtheme.nsgInputContenPadding
+          .subtract(EdgeInsets.fromLTRB(
+              0,
+              4,
+              !widget.showDeleteIcon
+                  ? 0
+                  : useSelectionController
+                      ? 25
+                      : 25,
+              4))
+          .resolve(TextDirection.ltr);
+    }
   }
 
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него

@@ -4,12 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+import 'formfields/nsg_field_type.dart';
 import 'widgets/nsg_dialog_save_or_cancel.dart';
 import 'widgets/nsg_error_widget.dart';
 
 ControlOptions get nsgtheme => ControlOptions.instance;
 
 class ControlOptions {
+  // Настройки NsgInput
+  final bool nsgInputisFilled;
+  final bool nsgInputHintAlwaysOnTop;
+  final Color nsgInputColorFilled;
+  final TextFormFieldType nsgInputOutlineBorderType;
+  final EdgeInsets nsgInputContenPadding;
   // Главный цвет приложения
   final Color colorMain;
 
@@ -110,6 +117,11 @@ class ControlOptions {
   String dateformat = 'dd.MM.yy';
 
   ControlOptions({
+    this.nsgInputisFilled = false,
+    this.nsgInputHintAlwaysOnTop = false,
+    this.nsgInputColorFilled = Colors.transparent,
+    this.nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
+    this.nsgInputContenPadding = const EdgeInsets.all(5),
     this.appMaxWidth = 640,
     this.appMinWidth = 320,
     this.sizeH1 = 36,
