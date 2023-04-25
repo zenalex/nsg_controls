@@ -406,7 +406,7 @@ class _NsgInputState extends State<NsgInput> {
     }
 
     return Container(
-        margin: widget.margin,
+        margin: widget.margin ?? nsgtheme.nsgInputMargin,
         child: widget.widget ??
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -762,7 +762,7 @@ class _NsgInputState extends State<NsgInput> {
         );
 
     return Container(
-        margin: widget.margin,
+        margin: widget.margin ?? nsgtheme.nsgInputMargin,
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         decoration: BoxDecoration(
             color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
