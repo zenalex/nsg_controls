@@ -19,6 +19,9 @@ class ControlOptions {
   // Главный фоновый цвет приложения
   final Color colorMainBack;
 
+  // Цвет фона модального окна
+  final Color colorModalBack;
+
   // Цвет текста на всех светлых фонах (в тёмной теме на тёмных фонах)
   final Color colorText;
 
@@ -125,6 +128,7 @@ class ControlOptions {
     this.gradients = const {
       'main': [Color.fromRGBO(233, 200, 45, 1), Color.fromARGB(255, 153, 128, 16)]
     },
+    this.colorModalBack = const Color.fromARGB(150, 0, 0, 0),
     this.colorMain = const Color.fromRGBO(233, 200, 45, 1),
     this.colorMainBack = const Color.fromRGBO(255, 255, 255, 1),
     this.colorMainText = const Color.fromARGB(255, 70, 59, 11),
