@@ -14,6 +14,7 @@ import 'package:nsg_controls/formfields/nsg_field_type.dart';
 
 class NsgInput extends StatefulWidget {
   final String label;
+  final Color? labelColor;
   final bool disabled;
   final bool? gesture;
   final double? fontSize;
@@ -156,6 +157,7 @@ class NsgInput extends StatefulWidget {
     this.selectionController,
     this.updateController,
     this.label = '',
+    this.labelColor = null,
     this.imagesList,
     this.disabled = false,
     this.fontSize,
@@ -417,7 +419,8 @@ class _NsgInputState extends State<NsgInput> {
                             ? widget.label + ' *'
                             : widget.label
                         : ' ',
-                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
+                    style: TextStyle(
+                        fontSize: ControlOptions.instance.sizeS, color: widget.labelColor == null ? ControlOptions.instance.colorMainDark : widget.labelColor),
                   ),
                 _gestureWrap(
                   clearIcon: fieldValue.toString() != '',
