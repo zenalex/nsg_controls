@@ -12,7 +12,7 @@ ControlOptions get nsgtheme => ControlOptions.instance;
 
 class ControlOptions {
   // Настройки NsgInput
-  final bool nsgInputisFilled;
+  final bool nsgInputFilled;
   final bool nsgInputHintAlwaysOnTop;
   final TextFormFieldType nsgInputOutlineBorderType;
   final EdgeInsets nsgInputContenPadding;
@@ -118,7 +118,7 @@ class ControlOptions {
   String dateformat = 'dd.MM.yy';
 
   ControlOptions({
-    this.nsgInputisFilled = false,
+    this.nsgInputFilled = false,
     this.nsgInputHintAlwaysOnTop = false,
     this.nsgInputColorFilled = Colors.transparent,
     this.nsgInputColorLabel = Colors.black,

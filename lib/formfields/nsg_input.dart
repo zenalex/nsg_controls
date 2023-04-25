@@ -494,7 +494,7 @@ class _NsgInputState extends State<NsgInput> {
                             counterText: "",
                             contentPadding: getContentPadding(),
                             isDense: widget.isDense ?? true,
-                            filled: widget.filled ?? nsgtheme.nsgInputisFilled,
+                            filled: widget.filled ?? nsgtheme.nsgInputFilled,
                             fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
                             border: textFormFieldType == TextFormFieldType.outlineInputBorder
                                 ? defaultOutlineBorder(color: widget.borderColor)
