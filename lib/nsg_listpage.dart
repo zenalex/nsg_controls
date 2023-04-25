@@ -1,6 +1,5 @@
 // импорт
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
@@ -91,7 +90,7 @@ class NsgListPage extends StatelessWidget {
   final Widget? widgetBottom;
 
   final bool showLastAndFavourites;
-  NsgListPage(
+  const NsgListPage(
       {Key? key,
       this.contentPadding = EdgeInsets.zero,
       this.userSettingsController,
@@ -141,8 +140,8 @@ class NsgListPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              controller.obx((state) => _getNsgAppBar(), onLoading: _getNsgAppBar(), onError: (error) {
-                return _getNsgAppBar(error: NsgErrorPage(text: error).title());
+              controller.obx((state) => _getNsgAppBar(context), onLoading: _getNsgAppBar(context), onError: (error) {
+                return _getNsgAppBar(context, error: NsgErrorPage(text: error).title());
               }),
               if (type != NsgListPageMode.table)
                 controller.obx(
@@ -194,7 +193,8 @@ class NsgListPage extends StatelessWidget {
                     }, onLoading: const SizedBox(), onError: (error) => const SizedBox()),*/
                     Expanded(
                       child: controller.obx(
-                          (state) => Container(key: GlobalKey(), padding: const EdgeInsets.fromLTRB(0, 2, 0, 0), child: _wrapTabs(child: _content())),
+                          (state) =>
+                              Container(key: GlobalKey(), padding: const EdgeInsets.fromLTRB(0, 2, 0, 0), child: _wrapTabs(context, child: _content(context))),
                           onLoading: const NsgProgressBar(),
                           onError: (text) => NsgErrorPage(text: text)),
                     ),
@@ -209,7 +209,7 @@ class NsgListPage extends StatelessWidget {
     );
   }
 
-  Widget _wrapTabs({required Widget child}) {
+  Widget _wrapTabs(BuildContext context, {required Widget child}) {
     if (!showLastAndFavourites) {
       return child;
     }
@@ -252,7 +252,7 @@ class NsgListPage extends StatelessWidget {
               child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: TabBarView(children: [
-              Flexible(child: _content()),
+              Flexible(child: _content(context)),
               ListView(
                 children: const [],
               ),
@@ -271,7 +271,7 @@ class NsgListPage extends StatelessWidget {
     return screenWidth ~/ gridCellMinWidth;
   }
 
-  Widget _content() {
+  Widget _content(BuildContext context) {
     if (type == NsgListPageMode.tree) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -279,7 +279,7 @@ class NsgListPage extends StatelessWidget {
           children: [
             Padding(
               padding: contentPadding,
-              child: Column(children: _showTreeItems()),
+              child: Column(children: _showTreeItems(context)),
             ),
           ],
         ),
@@ -291,7 +291,7 @@ class NsgListPage extends StatelessWidget {
           children: [
             Padding(
               padding: contentPadding,
-              child: Column(children: _showItems()),
+              child: Column(children: _showItems(context)),
             ),
           ],
         ),
@@ -304,7 +304,7 @@ class NsgListPage extends StatelessWidget {
           mainAxisSpacing: gridYSpacing,
           crossAxisSpacing: gridXSpacing,
           crossAxisCount: _crossAxisCount(),
-          children: _showItems(),
+          children: _showItems(context),
         ),
       );
     } else if (type == NsgListPageMode.table) {
@@ -321,7 +321,7 @@ class NsgListPage extends StatelessWidget {
           availableButtons: availableButtons ?? NsgTableMenuButtonType.allValues,
           rowOnTap: (item, name) {
             if (item != null) {
-              _elementTap(item);
+              _elementTap(context, item);
             }
           },
           elementEditPageName: elementEditPage,
@@ -339,7 +339,7 @@ class NsgListPage extends StatelessWidget {
     _refreshController.refreshCompleted();
   }*/
 
-  List<Widget> _showItems() {
+  List<Widget> _showItems(BuildContext context) {
     List<Widget> list = [];
     if (controller.items.isEmpty) {
       list.add(Padding(
@@ -352,13 +352,13 @@ class NsgListPage extends StatelessWidget {
       ));
     } else {
       for (var element in controller.items) {
-        list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
+        list.add(InkWell(onTap: () => _elementTap(context, element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
       }
     }
     return list;
   }
 
-  List<Widget> _showTreeItems() {
+  List<Widget> _showTreeItems(BuildContext context) {
     List<Widget> list = [];
     if (controller.items.isEmpty) {
       list.add(Padding(
@@ -371,13 +371,13 @@ class NsgListPage extends StatelessWidget {
       ));
     } else {
       for (var element in controller.items) {
-        list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
+        list.add(InkWell(onTap: () => _elementTap(context, element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
       }
     }
     return list;
   }
 
-  Widget _getNsgAppBar({String? error}) {
+  Widget _getNsgAppBar(BuildContext context, {String? error}) {
     return appBar ??
         NsgAppBar(
           color: appBarColor,
@@ -408,7 +408,7 @@ class NsgListPage extends StatelessWidget {
               ? null
               : appBarOnPressed2 ??
                   () {
-                    controller.newItemPageOpen(pageName: elementEditPage);
+                    controller.newItemPageOpen(context: context, pageName: elementEditPage);
                   },
 
           /// Фильтр
@@ -431,10 +431,10 @@ class NsgListPage extends StatelessWidget {
         );
   }
 
-  void _elementTap(NsgDataItem element) {
+  void _elementTap(BuildContext context, NsgDataItem element) {
     if (onElementTap == null) {
       if (controller.regime == NsgControllerRegime.view) {
-        controller.itemPageOpen(element, elementEditPage, needRefreshSelectedItem: true);
+        controller.itemPageOpen(context, element, elementEditPage, needRefreshSelectedItem: true);
       } else {
         if (controller.onSelected != null) {
           NsgMetrica.reportEvent('select element', map: {'type': element.typeName});

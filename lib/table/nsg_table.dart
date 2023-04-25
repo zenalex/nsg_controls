@@ -553,11 +553,11 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   /// Редатирование строки
-  void rowEdit(NsgDataItem row) {
+  void rowEdit(BuildContext context, NsgDataItem row) {
     var pageName = widget.elementEditPageName;
     pageName ??= widget.controller.currentItem.defaultListPage;
     if (pageName != null) {
-      widget.controller.itemPageOpen(row, pageName);
+      widget.controller.itemPageOpen(context, row, pageName);
     }
     setState(() {
       editMode = NsgTableEditMode.view;
@@ -565,9 +565,9 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   /// Копирование строки
-  void rowCopy(NsgDataItem row) {
+  void rowCopy(BuildContext context, NsgDataItem row) {
     if (widget.elementEditPageName != null) {
-      widget.controller.itemCopyPageOpen(row, widget.elementEditPageName!, needRefreshSelectedItem: true);
+      widget.controller.itemCopyPageOpen(context, row, widget.elementEditPageName!, needRefreshSelectedItem: true);
       setState(() {
         editMode = NsgTableEditMode.view;
       });
@@ -871,7 +871,7 @@ class _NsgTableState extends State<NsgTable> {
               } else if (editMode == NsgTableEditMode.rowEdit) {
                 tableRow.add(InkWell(
                   onTap: () {
-                    rowEdit(row);
+                    rowEdit(context, row);
                   },
                   child: showCell(
                       isFinal: row == items.last,
@@ -886,7 +886,7 @@ class _NsgTableState extends State<NsgTable> {
               } else if (editMode == NsgTableEditMode.rowCopy) {
                 tableRow.add(InkWell(
                   onTap: () {
-                    rowCopy(row);
+                    rowCopy(context, row);
                   },
                   child: showCell(
                       isFinal: row == items.last,
@@ -923,7 +923,7 @@ class _NsgTableState extends State<NsgTable> {
                                     widget.rowOnTap!(row, column.name);
                                   } else {
                                     if (editMode == NsgTableEditMode.view) {
-                                      rowEdit(row);
+                                      rowEdit(context, row);
                                     }
                                   }
                                   // Добаввляем в последнее
@@ -933,9 +933,9 @@ class _NsgTableState extends State<NsgTable> {
                                 } else if (editMode == NsgTableEditMode.rowDelete) {
                                   rowDelete(row);
                                 } else if (editMode == NsgTableEditMode.rowEdit) {
-                                  rowEdit(row);
+                                  rowEdit(context, row);
                                 } else if (editMode == NsgTableEditMode.rowCopy) {
-                                  rowCopy(row);
+                                  rowCopy(context, row);
                                 }
                               },
                               onLongPress: () {
@@ -1048,7 +1048,7 @@ class _NsgTableState extends State<NsgTable> {
                         onPressed: () {
                           NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.createNewElement.toString());
                           if (widget.elementEditPageName != null) {
-                            widget.controller.itemNewPageOpen(widget.elementEditPageName!);
+                            widget.controller.itemNewPageOpen(context, widget.elementEditPageName!);
                           }
                         }),
 

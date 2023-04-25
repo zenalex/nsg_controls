@@ -676,7 +676,7 @@ class _NsgInputState extends State<NsgInput> {
           },
         );
       } else {
-        NsgNavigator.instance.toPage(widget.selectionForm);
+        NsgNavigator.instance.toPage(context, widget.selectionForm);
       }
     } else if (inputType == NsgInputType.dateValue) {
       widget.formatDateTime == 'HH:mm'

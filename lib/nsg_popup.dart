@@ -149,7 +149,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         icon: Icon(Icons.add, color: widget.colorText, size: 24),
                         onPressed: () {
                           if (widget.editPageController != null && widget.elementEditPageName != null) {
-                            (widget.editPageController! as NsgDataController).itemNewPageOpen(widget.elementEditPageName!);
+                            (widget.editPageController! as NsgDataController).itemNewPageOpen(context, widget.elementEditPageName!);
                           }
                         }),
                   IconButton(

@@ -1,11 +1,11 @@
 name: nsg_controls
 description: Set of widgets to use with nsg_data package
-# version: 0.2.0
+#version: 0.3.0
 homepage: https://github.com/zenalex/nsg_controls.git
 # publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.17.2 <3.0.0"
+  sdk: ">=2.18.0 <3.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -15,6 +15,7 @@ dependencies:
     sdk: flutter
   intl: ^0.17.0
   get: ^5.0.0-beta.52
+  go_router: ^6.5.7
   # get:
   #   path: 
   #     ../getx

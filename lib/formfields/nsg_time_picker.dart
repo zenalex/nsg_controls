@@ -9,8 +9,6 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_icon_button.dart';
 import 'package:nsg_data/nsg_data.dart';
 
-import 'nsg_field_type.dart';
-
 class NsgTimePicker extends StatefulWidget {
   final String? label;
   final TextAlign? textAlign;
@@ -73,7 +71,6 @@ class NsgTimePicker extends StatefulWidget {
                     dateForTime: dateForTime,
                     initialTime: Jiffy(DateTime(0)).add(duration: initialTime).dateTime,
                     onChange: ((endDate) {
-                      print('onChange: ' + '$endDate');
                       selectedDate = endDate;
                     })
                     //  onClose,
