@@ -3,9 +3,10 @@ import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_button.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:nsg_controls/nsg_popup.dart';
+import 'package:nsg_data/nsg_data.dart';
 
 class NsgDialogSaveOrCancel {
-  static Future<bool?> saveOrCancel() async {
+  static Future<bool?> saveOrCancel(BuildContext context) async {
     bool? value;
     await Get.dialog(
         NsgPopUp(
@@ -63,7 +64,7 @@ class NsgDialogSaveOrCancel {
               icon: Icons.close,
               onPressed: () {
                 value = false;
-                Get.back();
+                NsgNavigator.instance.back(context);
               },
             ),
           ),
@@ -71,11 +72,11 @@ class NsgDialogSaveOrCancel {
           confirmText: 'Подтвердить',
           onConfirm: () {
             value = true;
-            Get.back();
+            NsgNavigator.instance.back(context);
           },
           onCancel: () {
             value = null;
-            Get.back();
+            NsgNavigator.instance.back(context);
           },
         ),
         barrierDismissible: false);

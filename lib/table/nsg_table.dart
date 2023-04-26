@@ -964,7 +964,7 @@ class _NsgTableState extends State<NsgTable> {
                                           ),
                                         ),
                                         onConfirm: () {
-                                          Get.back();
+                                          NsgNavigator.instance.back(context);
                                         }),
                                     barrierDismissible: false);
                               },
@@ -1121,14 +1121,14 @@ class _NsgTableState extends State<NsgTable> {
                                   onConfirm: () {
                                     if (widget.userSettingsController != null) {
                                       widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
-                                      widget.userSettingsController!.itemPagePost(goBack: false);
+                                      widget.userSettingsController!.itemPagePost(context, goBack: false);
                                     }
                                     setState(() {});
-                                    Get.back();
+                                    NsgNavigator.instance.back(context);
                                   }),
                               barrierDismissible: false);
                         } else {
-                          NsgErrorWidget.showErrorByString('Не заданы настройки пользователя');
+                          NsgErrorWidget.showErrorByString(context, 'Не заданы настройки пользователя');
                         }
                       },
                     ),
@@ -1263,7 +1263,7 @@ class _NsgTableState extends State<NsgTable> {
                     onPressed: () {
                       if (widget.userSettingsController != null) {
                         widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
-                        widget.userSettingsController!.itemPagePost(goBack: false);
+                        widget.userSettingsController!.itemPagePost(context, goBack: false);
                       }
                       editMode = editModeLast;
                       setState(() {});
@@ -1718,10 +1718,11 @@ class _NsgTableState extends State<NsgTable> {
                   ),
                 ],
             onConfirm: () async {
-              await widget.controller.itemsRemove(listRowsToDelete);
+              assert(widget.controller is NsgDataTableController);
+              await (widget.controller as NsgDataTableController).itemsRemove(context, listRowsToDelete);
               editMode = NsgTableEditMode.view;
               setState(() {});
-              Get.back();
+              NsgNavigator.instance.back(context);
             }),
         barrierDismissible: false);
   }

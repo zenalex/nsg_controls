@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 import 'nsg_file_picker_object.dart';
@@ -8,8 +9,8 @@ abstract class NsgFilePickerInterface {
   Future<NsgDataItem> fileObjectToDataItem(NsgFilePickerObject fileObject, File imageFile);
 
   Future<NsgFilePickerObject> dataItemToFileObject(NsgDataItem dataItem);
-  Future<bool> saveImages();
-  void tapFile(NsgFilePickerObject? fileObject);
+  Future<bool> saveImages(BuildContext context);
+  void tapFile(BuildContext context, NsgFilePickerObject? fileObject);
 
   List<NsgFilePickerObject> get files;
   set files(List<NsgFilePickerObject> value);

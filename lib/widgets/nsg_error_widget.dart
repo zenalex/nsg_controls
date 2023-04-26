@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/widgets/nsg_snackbar.dart';
-import 'package:nsg_data/nsgApiException.dart';
+import 'package:nsg_data/nsg_data.dart';
 import 'package:share_plus/share_plus.dart';
 import '../nsg_button.dart';
 import '../nsg_popup.dart';
@@ -16,21 +16,21 @@ Future _copyToClipboard(String text, BuildContext dialogContext) async {
 
 ///Класс для отображение ошибок для пользователю
 class NsgErrorWidget {
-  static void showErrorByString(String errorMessage, {String title = 'Ошибка'}) {
-    _showError(errorMessage, title);
+  static void showErrorByString(BuildContext context, String errorMessage, {String title = 'Ошибка'}) {
+    _showError(context, errorMessage, title);
   }
 
-  static void showError(Exception ex) {
+  static void showError(BuildContext context, Exception ex) {
     String message = ex.toString();
     String title = 'Ошибка';
     if (ex is NsgApiException) {
       message = ex.error.message ?? '';
       title = ex.error.code?.toString() ?? '';
     }
-    _showError(message, title);
+    _showError(context, message, title);
   }
 
-  static void _showError(String errorMessage, String title) {
+  static void _showError(BuildContext context, String errorMessage, String title) {
     Get.dialog(Builder(builder: (dialogContext) {
       return NsgPopUp(
           title: title,
@@ -67,7 +67,7 @@ class NsgErrorWidget {
             //print(widget.imageList.indexOf(_selected));
 
             //setState(() {});
-            Get.back();
+            NsgNavigator.instance.back(context);
           });
     }), barrierDismissible: false);
   }

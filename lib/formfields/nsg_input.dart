@@ -600,6 +600,7 @@ class _NsgInputState extends State<NsgInput> {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
         var form = NsgSelection(inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
         form.selectFromArray(
+          context,
           widget.label,
           (item) {
             widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
@@ -623,7 +624,7 @@ class _NsgInputState extends State<NsgInput> {
         selectionController!.refreshData();
         selectionController!.regime = NsgControllerRegime.selection;
         selectionController!.onSelected = (item) {
-          Get.back();
+          NsgNavigator.instance.back(context);
           selectionController!.regime = NsgControllerRegime.view;
           selectionController!.onSelected = null;
           widget.dataItem.setFieldValue(widget.fieldName, item);
@@ -642,6 +643,7 @@ class _NsgInputState extends State<NsgInput> {
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
       var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
       form.selectFromArray(
+        context,
         widget.label,
         (item) {
           widget.dataItem.setFieldValue(widget.fieldName, item);
@@ -662,6 +664,7 @@ class _NsgInputState extends State<NsgInput> {
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
         form.selectFromArray(
+          context,
           widget.label,
           '',
           (items) {

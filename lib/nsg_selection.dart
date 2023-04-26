@@ -80,7 +80,7 @@ class NsgSelection {
     }
   }
 
-  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected) {
+  void selectFromArray(BuildContext context, String title, Function(NsgDataItem dataItem) onSelected) {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
       controller!.refreshData();
@@ -92,7 +92,7 @@ class NsgSelection {
             dataController: controller,
             confirmText: 'Подтвердить',
             onConfirm: () {
-              Get.back();
+              NsgNavigator.instance.back(context);
               if (selectedElement != null) {
                 controller?.selectedItem = selectedElement;
                 onSelected(selectedElement!);

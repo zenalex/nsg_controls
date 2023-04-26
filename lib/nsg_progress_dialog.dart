@@ -118,7 +118,7 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
                           onPressed: () {
                             if (widget.requestStop != null) widget.requestStop!();
                             widget.cancelToken?.calcel();
-                            Get.back();
+                            NsgNavigator.instance.back(context);
                           },
                         ),
                     ],

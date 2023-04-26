@@ -396,7 +396,7 @@ class NsgListPage extends StatelessWidget {
               ? null
               : appBarOnPressed ??
                   () {
-                    Get.back();
+                    NsgNavigator.instance.back(context);
                   },
           getNotificationCount: getNotificationCount,
           notificationController: notificationController,
@@ -440,7 +440,7 @@ class NsgListPage extends StatelessWidget {
           NsgMetrica.reportEvent('select element', map: {'type': element.typeName});
           controller.onSelected!(element);
         } else {
-          Get.back();
+          NsgNavigator.instance.back(context);
         }
       }
     } else {

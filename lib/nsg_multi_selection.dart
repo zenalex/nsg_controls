@@ -84,7 +84,7 @@ class NsgMultiSelection {
     return list;
   }
 
-  void selectFromArray(String title, String title2, Function(List<NsgDataItem>) onSelected) {
+  void selectFromArray(BuildContext context, String title, String title2, Function(List<NsgDataItem>) onSelected) {
     var controllerItem = NsgDataClient.client.getNewObject(controller.dataType);
     selectedElement = controller.selectedItem;
     controller.refreshData();
@@ -99,7 +99,7 @@ class NsgMultiSelection {
             elementEditPageName: controllerItem.defaultEditPage,
             onConfirm: () {
               onSelected(_selectedItems);
-              Get.back();
+              NsgNavigator.instance.back(context);
             })),
         barrierDismissible: false);
   }

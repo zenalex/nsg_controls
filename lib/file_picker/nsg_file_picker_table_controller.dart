@@ -33,7 +33,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
   }
 
   @override
-  Future<bool> saveImages() async {
+  Future<bool> saveImages(BuildContext context) async {
     var progress = NsgProgressDialog(textDialog: 'Сохранение файлов');
     progress.show();
     var ids = <String>[];
@@ -41,7 +41,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
     try {
       for (var img in files) {
         ids.add(img.id);
-        if (img.isNew && img.id.isNotEmpty && (img.fileContent != null ||  img.filePath.isNotEmpty)) {
+        if (img.isNew && img.id.isNotEmpty && (img.fileContent != null || img.filePath.isNotEmpty)) {
           //TODO: убрать imageFile
           File imageFile = kIsWeb ? File(img.filePath) : File(img.filePath);
 
@@ -61,7 +61,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
       // Get.back();
     } catch (ex) {
       progress.hide();
-      NsgErrorWidget.showError(ex as Exception);
+      NsgErrorWidget.showError(context, ex as Exception);
       rethrow;
     }
     return true;
@@ -79,7 +79,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
 
   ///Функция вызывается при тапе на иконке картинки в тексте. Должно вызывыать открытие окна просмотра или обработки файла/излображения
   @override
-  void tapFile(NsgFilePickerObject? fileObject) {
+  void tapFile(BuildContext context, NsgFilePickerObject? fileObject) {
     if (fileObject == null) return;
     var curIndex = 0;
     for (var e in files) {
@@ -95,10 +95,10 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
     Get.dialog(
         NsgPopUp(
             onCancel: () {
-              Get.back();
+              NsgNavigator.instance.back(context);
             },
             onConfirm: () {
-              Get.back();
+              NsgNavigator.instance.back(context);
             },
             margin: const EdgeInsets.all(15),
             title: "Просмотр файлов",

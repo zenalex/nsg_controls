@@ -30,7 +30,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
   }
 
   @override
-  Future<bool> saveImages() async {
+  Future<bool> saveImages(BuildContext context) async {
     var progress = NsgProgressDialog(textDialog: 'Сохранение фото');
     progress.show();
     var ids = <String>[];
@@ -54,7 +54,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
       // Get.back();
     } on Exception catch (ex) {
       progress.hide();
-      NsgErrorWidget.showError(ex);
+      NsgErrorWidget.showError(context, ex);
       rethrow;
     }
     return true;
@@ -73,7 +73,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
 
   ///Функция вызывается при тапе на иконке картинки в тексте. Должно вызывыать открытие окна просмотра или обработки файла/излображения
   @override
-  void tapFile(NsgFilePickerObject? fileObject) {
+  void tapFile(BuildContext context, NsgFilePickerObject? fileObject) {
     if (fileObject == null) return;
     var curIndex = 0;
     for (var e in files) {
@@ -89,10 +89,10 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
     Get.dialog(
         NsgPopUp(
             onCancel: () {
-              Get.back();
+              NsgNavigator.instance.back(context);
             },
             onConfirm: () {
-              Get.back();
+              NsgNavigator.instance.back(context);
             },
             margin: const EdgeInsets.all(15),
             title: "Просмотр изображений",

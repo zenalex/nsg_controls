@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -126,7 +127,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   late List<NsgFilePickerObject> objectsList;
   late List<NsgFilePickerObject> needToCropObj;
 
-  Widget _appBar() {
+  Widget _appBar(BuildContext context) {
     return NsgAppBar(
       text: objectsList.isEmpty ? 'Добавление фотографий'.toUpperCase() : 'Сохранение фотографий'.toUpperCase(),
       text2: objectsList.isNotEmpty ? 'вы добавили ${objectsList.length} фото' : null,
@@ -135,12 +136,12 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       colorsInverted: true,
       bottomCircular: true,
       onPressed: () {
-        Get.back();
+        NsgNavigator.instance.back(context);
       },
       icon2: Icons.check,
       onPressed2: () {
         widget.callback(objectsList);
-        Get.back();
+        NsgNavigator.instance.back(context);
       },
     );
   }
@@ -433,7 +434,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   }
 
   /// Вывод галереи на экран
-  Widget _getImages() {
+  Widget _getImages(BuildContext context) {
     List<Widget> list = [];
     for (var element in objectsList) {
       list.add(Container(
@@ -488,7 +489,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                           onConfirm: () {
                             objectsList.remove(element);
                             setState(() {});
-                            Get.back();
+                            NsgNavigator.instance.back(context);
                           },
                         ));
                       },
@@ -518,10 +519,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                     Get.dialog(
                         NsgPopUp(
                             onCancel: () {
-                              Get.back();
+                              NsgNavigator.instance.back(context);
                             },
                             onConfirm: () {
-                              Get.back();
+                              NsgNavigator.instance.back(context);
                             },
                             margin: const EdgeInsets.all(15),
                             title: "Просмотр изображений",
@@ -602,7 +603,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             )));
   }
 
-  Widget body() {
+  Widget body(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -615,7 +616,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         Flexible(
             child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
-          child: _getImages(),
+          child: _getImages(context),
         )),
       ],
     );
@@ -649,7 +650,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       return const SizedBox();
     } else {
       return widget.showAsWidget == true
-          ? body()
+          ? body(context)
           : BodyWrap(
               child: Scaffold(
                 key: scaffoldKey,
@@ -657,9 +658,9 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                 body: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    _appBar(),
+                    _appBar(context),
                     Expanded(
-                      child: body(),
+                      child: body(context),
                     ),
 
                     //SizedBox(height: MediaQuery.of(context).padding.bottom),
