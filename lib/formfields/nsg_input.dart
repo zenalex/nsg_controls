@@ -331,9 +331,9 @@ class _NsgInputState extends State<NsgInput> {
         }
         widget.dataItem.setFieldValue(widget.fieldName, textController.value.text);
       }
-      if (widget.onChanged != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
-      }
+      // if (widget.onChanged != null) {
+      //   WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+      // }
     });
 
     if (useSelectionController) {
