@@ -19,14 +19,11 @@ class NsgDialog {
     return showModalBottomSheet<void>(
       transitionAnimationController: animationController,
       context: context,
-      constraints: BoxConstraints(maxHeight: Get.height - 40),
+      constraints: BoxConstraints(maxHeight: Get.height - Get.statusBarHeight * 2 / 3),
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (BuildContext context) {
-        return Dialog(
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-            insetPadding: const EdgeInsets.all(0),
-            child: child);
+        return child;
       },
     );
   }
@@ -44,6 +41,7 @@ class NsgDialogBody extends StatefulWidget {
 class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderStateMixin {
   static late AnimationController _controller;
   late Animation<double> _padding;
+  bool dialogOpen = false;
 
   @override
   void initState() {
@@ -73,17 +71,22 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-        animation: _padding,
-        builder: (ctx, ch) => Padding(
-              padding: EdgeInsets.all(_padding.value),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(_padding.value),
-                child: Scaffold(
-                  body: widget.child,
-                ),
-              ),
-            ));
+    return AnimatedContainer(
+      duration: const Duration(seconds: 1),
+      child: Transform.scale(
+        scale: dialogOpen ? 0.9 : 1,
+        child: ClipRRect(borderRadius: dialogOpen ? BorderRadius.circular(20) : BorderRadius.circular(0), child: widget.child),
+      ),
+    );
+    // return AnimatedBuilder(
+    //     animation: _padding,
+    //     builder: (ctx, ch) => Padding(
+    //           padding: EdgeInsets.all(_padding.value),
+    //           child: ClipRRect(
+    //             borderRadius: BorderRadius.circular(_padding.value),
+    //             child: widget.child,
+    //           ),
+    //         ));
   }
 
   Future openDialog(Widget child) async {
@@ -91,9 +94,16 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
   }
 
   Future _showNsgDialog(BuildContext context, Widget child) async {
-    _controller.forward();
+    // _controller.forward();
+    setState(() {
+      dialogOpen = true;
+    });
     return await NsgDialog().show(context: context, child: child, animationController: _controller).then((value) {
-      _controller.reverse();
+      value;
+      setState(() {
+        dialogOpen = false;
+      });
+      // _controller.reverse();
     });
   }
 }
