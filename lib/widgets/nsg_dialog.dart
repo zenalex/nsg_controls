@@ -72,6 +72,7 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
+      padding: EdgeInsets.only(top: dialogOpen ? 10 : 0),
       duration: const Duration(seconds: 1),
       child: Transform.scale(
         scale: dialogOpen ? 0.9 : 1,
