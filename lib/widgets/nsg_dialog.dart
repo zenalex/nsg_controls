@@ -57,6 +57,7 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
+      reverseDuration: const Duration(milliseconds: 100),
     );
 
     _padding = Tween(begin: 0.0, end: 10.0).animate(
@@ -100,12 +101,17 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
   Future _showNsgDialog(BuildContext context, Widget child) async {
     try {
       _controller.forward();
-      return await NsgDialog().show(context: context, child: child, animationController: _controller).then((value) {
-        _controller.reverse();
-      });
     } catch (ex) {
       log(ex.toString());
       ex.printError();
     }
+    return await NsgDialog().show(context: context, child: child, animationController: _controller).then((value) {
+      try {
+        _controller.reverse();
+      } catch (ex) {
+        log(ex.toString());
+        ex.printError();
+      }
+    });
   }
 }
