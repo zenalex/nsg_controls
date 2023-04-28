@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgDialogBodyController {
   NsgDialogBodyState currentState = NsgDialogBodyState();
@@ -24,9 +25,13 @@ class NsgDialog {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
         return Dialog(
+            backgroundColor: ControlOptions.instance.colorMainBack,
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
             insetPadding: const EdgeInsets.all(0),
-            child: child);
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: child,
+            ));
       },
     );
   }
