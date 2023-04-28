@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
@@ -96,9 +98,14 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
   }
 
   Future _showNsgDialog(BuildContext context, Widget child) async {
-    _controller.forward();
-    return await NsgDialog().show(context: context, child: child, animationController: _controller).then((value) {
-      _controller.reverse();
-    });
+    try {
+      _controller.forward();
+      return await NsgDialog().show(context: context, child: child, animationController: _controller).then((value) {
+        _controller.reverse();
+      });
+    } catch (ex) {
+      log(ex.toString());
+      ex.printError();
+    }
   }
 }
