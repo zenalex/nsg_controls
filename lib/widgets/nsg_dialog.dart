@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgDialogBodyController {
   NsgDialogBodyState currentState = NsgDialogBodyState();
@@ -19,11 +22,18 @@ class NsgDialog {
     return showModalBottomSheet<void>(
       transitionAnimationController: animationController,
       context: context,
-      constraints: BoxConstraints(maxHeight: Get.height - Get.statusBarHeight * 2 / 3),
+      constraints: BoxConstraints(maxHeight: Get.height - 40),
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
-        return child;
+        return Dialog(
+            backgroundColor: ControlOptions.instance.colorMainBack,
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+            insetPadding: const EdgeInsets.all(0),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: child,
+            ));
       },
     );
   }
@@ -39,15 +49,15 @@ class NsgDialogBody extends StatefulWidget {
 }
 
 class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderStateMixin {
-  static late AnimationController _controller;
+  late AnimationController _controller;
   late Animation<double> _padding;
-  bool dialogOpen = false;
 
   @override
   void initState() {
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
+      reverseDuration: const Duration(milliseconds: 100),
     );
 
     _padding = Tween(begin: 0.0, end: 10.0).animate(
@@ -71,23 +81,17 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      padding: EdgeInsets.only(top: dialogOpen ? 10 : 0),
-      duration: const Duration(seconds: 1),
-      child: Transform.scale(
-        scale: dialogOpen ? 0.9 : 1,
-        child: ClipRRect(borderRadius: dialogOpen ? BorderRadius.circular(20) : BorderRadius.circular(0), child: widget.child),
-      ),
-    );
-    // return AnimatedBuilder(
-    //     animation: _padding,
-    //     builder: (ctx, ch) => Padding(
-    //           padding: EdgeInsets.all(_padding.value),
-    //           child: ClipRRect(
-    //             borderRadius: BorderRadius.circular(_padding.value),
-    //             child: widget.child,
-    //           ),
-    //         ));
+    return AnimatedBuilder(
+        animation: _padding,
+        builder: (ctx, ch) => Padding(
+              padding: EdgeInsets.all(_padding.value),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(_padding.value),
+                child: Scaffold(
+                  body: widget.child,
+                ),
+              ),
+            ));
   }
 
   Future openDialog(Widget child) async {
@@ -95,16 +99,19 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
   }
 
   Future _showNsgDialog(BuildContext context, Widget child) async {
-    // _controller.forward();
-    setState(() {
-      dialogOpen = true;
-    });
+    try {
+      _controller.forward();
+    } catch (ex) {
+      log(ex.toString());
+      ex.printError();
+    }
     return await NsgDialog().show(context: context, child: child, animationController: _controller).then((value) {
-      value;
-      setState(() {
-        dialogOpen = false;
-      });
-      // _controller.reverse();
+      try {
+        _controller.reverse();
+      } catch (ex) {
+        log(ex.toString());
+        ex.printError();
+      }
     });
   }
 }
