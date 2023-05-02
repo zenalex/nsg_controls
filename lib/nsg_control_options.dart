@@ -191,7 +191,7 @@ class ControlOptions {
     ControlOptions newinstance = ControlOptions(
         colorMain: colorMain,
         colorMainLight: lighten(colorMain),
-        colorMainLighter: lighten(lighten(colorMain)),
+        colorMainLighter: lighten(lighten(lighten(colorMain))),
         colorMainDark: darken(colorMain),
         colorMainDarker: darken(darken(colorMain)),
         colorMainBack: darken(darken(darken(colorMain))),
