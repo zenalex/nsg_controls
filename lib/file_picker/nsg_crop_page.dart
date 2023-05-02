@@ -11,13 +11,11 @@ import '../widgets/nsg_light_app_bar.dart';
 
 class NsgCrop {
   Future<List<List<int>>?> cropImages(BuildContext context,
-      {required List<List<int>> imageList, double ratio = 1 / 1, bool isCircle = false, bool isFree = true}) async {
+      {required List<List<int>> imageList, double ratio = 1 / 1, bool isCircle = false, bool isFree = true, Color backColor = Colors.white}) async {
     List<Uint8List> imageDataList = [];
     for (var el in imageList) {
       final mainImage = imgEdit.decodeImage(Uint8List.fromList(el));
       final background = imgEdit.Image(width: mainImage!.width + 500, height: mainImage.height + 500);
-
-      var backColor = Colors.white;
 
       for (var pixel in background) {
         pixel.setRgba(backColor.red, backColor.green, backColor.blue, backColor.alpha);
