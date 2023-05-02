@@ -1,1 +1,1 @@
-enum NsgInputMaskType { car, phone, email }
+enum NsgInputMaskType { car, phone, email, passwordNumber }
