@@ -42,20 +42,22 @@ class NsgCrop {
 }
 
 class NsgCropPage extends StatefulWidget {
-  NsgCropPage({
-    Key? key,
-    required this.imageDataList,
-    //required this.img,
-    this.isCircle = false,
-    this.isFree = true,
-    this.aspectRatio = 16 / 9,
-  }) : super(key: key);
+  NsgCropPage(
+      {Key? key,
+      required this.imageDataList,
+      //required this.img,
+      this.isCircle = false,
+      this.isFree = true,
+      this.aspectRatio = 16 / 9,
+      this.interactive = true})
+      : super(key: key);
 
   final bool isCircle;
   //final Uint8List img;
   List<Uint8List> imageDataList;
   final double aspectRatio;
   final bool isFree;
+  final bool interactive;
 
   @override
   NsgCropPageState createState() => NsgCropPageState();
@@ -152,7 +154,7 @@ class NsgCropPageState extends State<NsgCropPage> {
                 }
               },
               cornerDotBuilder: (size, edgeAlignment) => const DotControl(color: Colors.blue),
-              interactive: false,
+              interactive: widget.interactive,
               fixArea: !widget.isFree,
               progressIndicator: const NsgSimpleProgressBar(
                 size: 100,
