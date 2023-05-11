@@ -596,7 +596,7 @@ class _NsgInputState extends State<NsgInput> {
                   padding: const EdgeInsets.all(5.0),
                   child: Icon(
                     Icons.close_outlined,
-                    color: ControlOptions.instance.colorMain,
+                    color: ControlOptions.instance.colorMainText,
                     size: 16,
                   ),
                 ),
@@ -605,7 +605,7 @@ class _NsgInputState extends State<NsgInput> {
                   padding: const EdgeInsets.all(5.0),
                   child: Icon(
                     Icons.close_outlined,
-                    color: ControlOptions.instance.colorGrey,
+                    color: ControlOptions.instance.colorMainText.withOpacity(0.5),
                     size: 16,
                   ),
                 ),
