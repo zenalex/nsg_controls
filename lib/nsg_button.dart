@@ -219,6 +219,7 @@ class NsgButton extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (icon != null) Padding(padding: iconMargin, child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
                     Flexible(
