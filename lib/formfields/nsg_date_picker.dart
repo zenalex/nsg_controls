@@ -288,7 +288,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
               FocusScope.of(context).unfocus();
             },
             onChanged: (String value) {},
-            style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 24),
+            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
           ),
         ),
         !kIsWeb && (Platform.isAndroid || Platform.isIOS)
