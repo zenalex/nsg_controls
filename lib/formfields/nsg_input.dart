@@ -331,9 +331,6 @@ class _NsgInputState extends State<NsgInput> {
         }
         widget.dataItem.setFieldValue(widget.fieldName, textController.value.text);
       }
-      // if (widget.onChanged != null) {
-      //   WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
-      // }
     });
 
     if (useSelectionController) {
@@ -509,6 +506,11 @@ class _NsgInputState extends State<NsgInput> {
                                 : defaultUnderlineBorder(color: widget.borderColor),
                             focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                           ),
+                          onChanged: (value) {
+                            if (widget.onChanged != null) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+                            }
+                          },
                           onFieldSubmitted: (string) {
                             if (widget.onEditingComplete != null) {}
                           },

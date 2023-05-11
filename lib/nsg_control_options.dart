@@ -182,12 +182,20 @@ class ControlOptions {
 
   static ControlOptions instance = ControlOptions();
 
-  static ControlOptions calculated(
-      {required Color colorMain,
-      required Color colorSecondary,
-      double borderRadius = 15,
-      double nsgButtonHeight = 40,
-      EdgeInsets nsgButtonMargin = EdgeInsets.zero}) {
+  static ControlOptions calculated({
+    required Color colorMain,
+    required Color colorSecondary,
+    double borderRadius = 15,
+    double nsgButtonHeight = 40,
+    EdgeInsets nsgButtonMargin = EdgeInsets.zero, // Настройки NsgInput
+    EdgeInsets nsgInputMargin = const EdgeInsets.all(5),
+    bool nsgInputFilled = false,
+    bool nsgInputHintAlwaysOnTop = false,
+    TextFormFieldType nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
+    EdgeInsets nsgInputContenPadding = const EdgeInsets.all(5),
+    Color nsgInputColorLabel = Colors.black,
+    Color nsgInputColorFilled = Colors.transparent,
+  }) {
     ControlOptions newinstance = ControlOptions(
         colorMain: colorMain,
         colorMainLight: lighten(colorMain),
@@ -202,12 +210,22 @@ class ControlOptions {
         colorSecondaryDark: darken(colorSecondary),
 
         ///
+        nsgInputMargin: nsgInputMargin,
+        nsgInputFilled: nsgInputFilled,
+        nsgInputHintAlwaysOnTop: nsgInputHintAlwaysOnTop,
+        nsgInputOutlineBorderType: nsgInputOutlineBorderType,
+        nsgInputContenPadding: nsgInputContenPadding,
+        nsgInputColorLabel: nsgInputColorLabel,
+        nsgInputColorFilled: nsgInputColorFilled,
+
+        ///
         tableHeaderColor: darken(colorMain),
         tableHeaderLinesColor: lighten(colorMain),
         tableCellBackColor: darken(darken(darken(colorMain))),
         borderRadius: borderRadius,
         nsgButtonHeight: nsgButtonHeight,
         nsgButtonMargin: nsgButtonMargin);
+
     NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
     // Дефолтная функция с диалоговым окном при закрытии страницы на которой были сделаны изменения (например, в текстовой форме)
     NsgBaseController.saveOrCancelDefaultDialog = NsgDialogSaveOrCancel.saveOrCancel;
