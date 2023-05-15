@@ -19,6 +19,8 @@ class ControlOptions {
   final EdgeInsets nsgInputContenPadding;
   final Color nsgInputColorLabel;
   final Color nsgInputColorFilled;
+  final Color nsgInputBorderColor;
+  final Color nsgInputBorderActiveColor;
   // Главный цвет приложения
   final Color colorMain;
 
@@ -122,6 +124,8 @@ class ControlOptions {
     this.nsgInputMargin = const EdgeInsets.all(5),
     this.nsgInputFilled = false,
     this.nsgInputHintAlwaysOnTop = false,
+    this.nsgInputBorderColor = const Color.fromARGB(122, 70, 59, 11),
+    this.nsgInputBorderActiveColor = const Color.fromARGB(255, 70, 59, 11),
     this.nsgInputColorFilled = Colors.transparent,
     this.nsgInputColorLabel = Colors.black,
     this.nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,

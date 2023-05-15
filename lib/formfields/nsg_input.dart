@@ -494,16 +494,16 @@ class _NsgInputState extends State<NsgInput> {
                             filled: widget.filled ?? nsgtheme.nsgInputFilled,
                             fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
                             border: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                ? defaultOutlineBorder(color: widget.borderColor)
-                                : defaultUnderlineBorder(color: widget.borderColor),
+                                ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
                             focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
                             enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                ? defaultOutlineBorder(color: widget.borderColor)
-                                : defaultUnderlineBorder(color: widget.borderColor),
+                                ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
                             errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                             disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                ? defaultOutlineBorder(color: widget.borderColor)
-                                : defaultUnderlineBorder(color: widget.borderColor),
+                                ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
                             focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                           ),
                           onChanged: (value) {
@@ -768,7 +768,7 @@ class _NsgInputState extends State<NsgInput> {
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         decoration: BoxDecoration(
             color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
-            border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? ControlOptions.instance.colorMain))),
+            border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? nsgtheme.nsgInputBorderColor))),
         child: Row(
           children: widget.boolBoxPosition == BoolBoxPosition.end ? [lable, boolBox] : [boolBox, lable],
         ));
