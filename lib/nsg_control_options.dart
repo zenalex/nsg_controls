@@ -11,17 +11,17 @@ import 'widgets/nsg_error_widget.dart';
 ControlOptions get nsgtheme => ControlOptions.instance;
 
 extension MaterialColors on Color {
-  get c0 => getColor(0);
-  get c10 => getColor(10);
-  get c20 => getColor(20);
-  get c30 => getColor(30);
-  get c40 => getColor(40);
-  get c50 => getColor(50);
-  get c60 => getColor(60);
-  get c70 => getColor(70);
-  get c80 => getColor(80);
-  get c90 => getColor(90);
-  get c100 => getColor(100);
+  Color get c0 => getColor(0);
+  Color get c10 => getColor(10);
+  Color get c20 => getColor(20);
+  Color get c30 => getColor(30);
+  Color get c40 => getColor(40);
+  Color get c50 => getColor(50);
+  Color get c60 => getColor(60);
+  Color get c70 => getColor(70);
+  Color get c80 => getColor(80);
+  Color get c90 => getColor(90);
+  Color get c100 => getColor(100);
 
   Color getColor(int index) {
     final hsl = HSLColor.fromColor(this);
