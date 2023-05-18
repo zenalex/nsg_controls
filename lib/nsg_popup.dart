@@ -30,6 +30,7 @@ class NsgPopUp extends StatefulWidget {
   final String? elementEditPageName;
   final NsgBaseController? editPageController;
   Color? colorText;
+  Color? colorTitleText;
   NsgPopUp(
       {Key? key,
       this.title = '',
@@ -49,6 +50,7 @@ class NsgPopUp extends StatefulWidget {
       this.contentBottom,
       this.dataController,
       this.colorText,
+      this.colorTitleText,
       this.hideBackButton = false,
       this.showCloseButton = false,
       this.editPageController,
@@ -65,7 +67,8 @@ class _NsgPopUpState extends State<NsgPopUp> {
 
   @override
   void initState() {
-    widget.colorText ??= ControlOptions.instance.colorMainText;
+    widget.colorText ??= ControlOptions.instance.colorText;
+    widget.colorTitleText ??= ControlOptions.instance.colorMainText;
     if (widget.editPageController != null) {
       widget.editPageController!.statusChanged.subscribe(editControllerUpdate);
     }
@@ -137,7 +140,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
               children: [
                 if (widget.hideBackButton == false)
                   IconButton(
-                      icon: Icon(Icons.arrow_back_ios_new, color: widget.colorText, size: 24), // set your color here
+                      icon: Icon(Icons.arrow_back_ios_new, color: widget.colorTitleText, size: 24), // set your color here
                       onPressed: () {
                         if (widget.onCancel != null) {
                           widget.onCancel!();
@@ -146,7 +149,8 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         }
                       }),
                 Expanded(
-                  child: Text(widget.title, textAlign: TextAlign.center, style: TextStyle(color: widget.colorText, fontWeight: FontWeight.bold, fontSize: 18)),
+                  child: Text(widget.title,
+                      textAlign: TextAlign.center, style: TextStyle(color: widget.colorTitleText, fontWeight: FontWeight.bold, fontSize: 18)),
                 ),
                 if (widget.editPageController != null && widget.elementEditPageName != null)
                   IconButton(
@@ -157,7 +161,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         }
                       }),
                 IconButton(
-                    icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: widget.colorText, size: 24), // set your color here
+                    icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: widget.colorTitleText, size: 24), // set your color here
                     onPressed: () {
                       if (widget.onConfirm != null && widget.showCloseButton == false) {
                         widget.onConfirm!();
