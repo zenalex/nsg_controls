@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:material_color_scheme/material_color_scheme.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 import 'formfields/nsg_field_type.dart';
@@ -11,7 +14,6 @@ import 'widgets/nsg_error_widget.dart';
 ControlOptions get nsgtheme => ControlOptions.instance;
 
 extension MaterialColors on Color {
-  Color get c0 => getColor(0);
   Color get c10 => getColor(10);
   Color get c20 => getColor(20);
   Color get c30 => getColor(30);
@@ -21,12 +23,68 @@ extension MaterialColors on Color {
   Color get c70 => getColor(70);
   Color get c80 => getColor(80);
   Color get c90 => getColor(90);
-  Color get c100 => getColor(100);
+
+// C10: 0.0
+// C20: 0.07
+// C30: 0.15
+// C40: 0.3
+// C50: 0.5
+// C60: 0.7
+// C70: 0.85
+// C80: 0.9
+// C90: 0.95
+// C100: 1.0
+
+// C10: 0.04
+// C20: 0.06
+// C30: 0.08
+// C40: 0.12
+// C50: 0.5
+// C60: 0.7
+// C70: 0.85
+// C80: 0.9
+// C90: 0.95
+// C100: 0.98
 
   Color getColor(int index) {
-    final hsl = HSLColor.fromColor(this);
-    final hslDark = hsl.withLightness((index / 100).clamp(0.0, 1.0));
-    return hslDark.toColor();
+    MaterialColor matColor = generateSwatch(this);
+
+    Map<int, Color> generate(Color base) {
+      var darker = ColorsCalc().dark(base);
+      var lighter = ColorsCalc().light(base);
+      return {
+        10: ColorsCalc().tweak(base, 0.8, 0.09, 0.4, 0.98, lighter: lighter, darker: darker),
+        20: ColorsCalc().tweak(base, 0.87, 0.2, 0.0, 1, lighter: lighter, darker: darker),
+        30: ColorsCalc().tweak(base, 0.92, 0.45, 0.7, 0.97, lighter: lighter, darker: darker),
+        40: ColorsCalc().tweak(base, 0.973, 0.7, 0.9, 0.97, lighter: lighter, darker: darker),
+        50: ColorsCalc().tweak(base, 1, 1, 1, 1, lighter: lighter, darker: darker),
+        60: ColorsCalc().tweak(base, 1, 0.97, 0.55, 0.97, lighter: lighter, darker: darker),
+        70: ColorsCalc().tweak(base, 1, 0.91, 0.1, 0.90, // blue 0.9
+            lighter: lighter,
+            darker: darker),
+        80: ColorsCalc().tweak(base, 1, 0.97, 0.0, 0.7, lighter: lighter, darker: darker),
+        90: ColorsCalc().tweak(base, 1, 0.95, 0.0, 0.4, lighter: lighter, darker: darker),
+      };
+    }
+
+    // final hsl = HSLColor.fromColor(this);
+
+    // final hslDark = hsl.withLightness((lightness / 100).clamp(0.0, 1.0));
+    // final ligth = hslDark.withSaturation((saturation / 100).clamp(0.0, 1.0));
+
+    // HSLColor shadeColor = HSLColor.fromAHSL(
+    //   hsl.alpha,
+    //   hsl.hue,
+    //   //hsl.saturation,
+    //   (saturation / 100).clamp(0.0, 1.0),
+    //   (lightness / 100).clamp(0.0, 1.0),
+    // );
+    final nsgColors = generate(this);
+    if (nsgColors.containsKey(index)) {
+      return nsgColors[index]!;
+    } else {
+      return this;
+    }
   }
 }
 
@@ -328,4 +386,16 @@ Color lighten(Color color, [double amount = .07]) {
 
 Color calculateTextColor(Color background) {
   return background.computeLuminance() >= 0.5 ? Colors.black : Colors.white;
+}
+
+class ColorsCalc {
+  Color dark(Color c) => Color.fromARGB(-1, (c.red * c.red) ~/ 255, (c.green * c.green) ~/ 255, (c.blue * c.blue) ~/ 255);
+
+  Color light(Color c) => Color.fromARGB(-1, (sqrt(c.red / 255) * 255).floor(), (sqrt(c.green / 255) * 255).floor(), (sqrt(c.blue / 255) * 255).floor());
+
+  Color tweak(Color base, double bf, double df, double lf, double wf, {Color? darker, Color? lighter}) {
+    darker ??= dark(base);
+    lighter ??= light(base);
+    return Color.lerp(Colors.black, Color.lerp(Colors.white, Color.lerp(darker, Color.lerp(lighter, base, lf), df), wf), bf)!;
+  }
 }
