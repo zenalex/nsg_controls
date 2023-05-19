@@ -27,6 +27,9 @@ class NsgInput extends StatefulWidget {
   final int maxLines;
   final int minLines;
 
+  /// Автовокус на поле при входе на страницу
+  final bool autofocus;
+
   /// Красный текст валидации под текстовым полем
   final String validateText;
 
@@ -143,6 +146,7 @@ class NsgInput extends StatefulWidget {
 
   const NsgInput({
     Key? key,
+    this.autofocus = false,
     this.initialDateTime,
     this.firstDateTime,
     this.lastDateTime,
@@ -465,7 +469,7 @@ class _NsgInputState extends State<NsgInput> {
                                     ]
                                   : null,
                           maxLength: _maxLength,
-                          autofocus: false,
+                          autofocus: widget.autofocus,
                           focusNode: focus,
                           maxLines: widget.maxLines,
                           minLines: widget.minLines,
