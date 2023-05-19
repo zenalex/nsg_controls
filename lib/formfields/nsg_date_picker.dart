@@ -379,15 +379,22 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoDatePicker(
-      maximumDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
-      minimumDate: widget.firstDateTime ?? DateTime(0),
-      key: GlobalKey(),
-      mode: CupertinoDatePickerMode.date,
-      initialDateTime: widget.initialDateTime,
-      onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
-      use24hFormat: true,
-      minuteInterval: 1,
+    return CupertinoTheme(
+      data: CupertinoThemeData(
+        textTheme: CupertinoTextThemeData(
+          dateTimePickerTextStyle: TextStyle(fontSize: 16, color: nsgtheme.colorText),
+        ),
+      ),
+      child: CupertinoDatePicker(
+        maximumDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
+        minimumDate: widget.firstDateTime ?? DateTime(0),
+        key: GlobalKey(),
+        mode: CupertinoDatePickerMode.date,
+        initialDateTime: widget.initialDateTime,
+        onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
+        use24hFormat: true,
+        minuteInterval: 1,
+      ),
     );
   }
 }
