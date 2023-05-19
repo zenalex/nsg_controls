@@ -29,7 +29,7 @@ class NsgMultiSelection {
               _selectedItems.add(element);
               controller.update();
             },
-            child: controller.obxBase(
+            child: controller.obx(
               (state) => Container(
                   //color: element == selectedElement ? colorMain : Colors.transparent,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -55,7 +55,7 @@ class NsgMultiSelection {
               //allItems.add(element);
               controller.update();
             },
-            child: controller.obxBase(
+            child: controller.obx(
               (state) => Column(
                 children: [
                   Container(
@@ -89,7 +89,7 @@ class NsgMultiSelection {
     selectedElement = controller.selectedItem;
     controller.refreshData();
     Get.dialog(
-        controller.obxBase((state) => NsgPopUp(
+        controller.obx((state) => NsgPopUp(
             title: title,
             title2: title2 + (_selectedItems.isEmpty ? '' : ' (' + _selectedItems.length.toString() + ')'),
             getContent: () => _itemList(),

@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
-import 'package:get/get.dart';
 import 'package:nsg_data/controllers/nsgImageController.dart';
+import 'package:nsg_data/controllers/nsg_controller_status.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgImage extends StatelessWidget {
@@ -166,14 +166,14 @@ class NsgImage extends StatelessWidget {
 
   ///Режим одновременной загрузки картинок
   Widget syncRegime() {
-    return controller.obxBase((state) {
+    return controller.obx((state) {
       NsgDataItem? imageItem = item;
       if (masterSlaveMode) {
         var slaveName = slaveFieldName;
         if (slaveName.isEmpty) {
           slaveName = NsgDataClient.client.getNewObject(controller.dataType).primaryKeyField;
         }
-        if (controller.status.isLoading) {
+        if (controller.currentStatus == NsgControillerStatus.loading) {
           return const CircularProgressIndicator();
         }
         imageItem = controller.items.firstWhereOrNull((e) => e[slaveName] == item[masterFieldName]);
@@ -222,7 +222,7 @@ class NsgImage extends StatelessWidget {
   Widget lateRegime() {
     return controller.obx(
       (c) {
-        if (controller.status.isLoading) {
+        if (controller.currentStatus == NsgControillerStatus.loading) {
           return child ?? const CircularProgressIndicator();
         }
         NsgDataItem? imageItem = item;
@@ -231,7 +231,7 @@ class NsgImage extends StatelessWidget {
           if (slaveName.isEmpty) {
             slaveName = NsgDataClient.client.getNewObject(controller.dataType).primaryKeyField;
           }
-          if (controller.status.isLoading) {
+          if (controller.currentStatus == NsgControillerStatus.loading) {
             return const CircularProgressIndicator();
           }
           imageItem = controller.items.firstWhereOrNull((e) => e[slaveName] == item[masterFieldName] || e[slaveName] == (item[masterFieldName] + '.'));
@@ -241,46 +241,40 @@ class NsgImage extends StatelessWidget {
           controller.addImageToQueue(ImageQueueParam(imageItem.id.toString(), fieldName));
         }
         var builderId = imageItem == null ? '' : imageItem.id.toString();
-        return GetBuilder(
-            id: NsgUpdateKey(id: builderId, type: NsgUpdateKeyType.element),
-            init: controller,
-            global: false,
-            //autoRemove: true,
-            //assignId: true,
-            builder: (c) {
-              if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
-                return noImage ??
-                    SizedBox(
-                      width: width,
-                      height: height,
-                    );
-              }
-              var data = imageItem[fieldName] as Uint8List;
-              if (data.isEmpty) {
-                return noImage ??
-                    SizedBox(
-                      width: width,
-                      height: height,
-                    );
-              } else {
-                return FadeIn(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeIn,
-                  child: Image.memory(
-                    data,
-                    width: width,
-                    height: height,
-                    color: color,
-                    fit: fit,
-                    alignment: alignment,
-                    repeat: repeat,
-                    centerSlice: centerSlice,
-                    isAntiAlias: isAntiAlias,
-                    filterQuality: filterQuality,
-                  ),
+        return controller.obx((c) {
+          if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
+            return noImage ??
+                SizedBox(
+                  width: width,
+                  height: height,
                 );
-              }
-            });
+          }
+          var data = imageItem[fieldName] as Uint8List;
+          if (data.isEmpty) {
+            return noImage ??
+                SizedBox(
+                  width: width,
+                  height: height,
+                );
+          } else {
+            return FadeIn(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              child: Image.memory(
+                data,
+                width: width,
+                height: height,
+                color: color,
+                fit: fit,
+                alignment: alignment,
+                repeat: repeat,
+                centerSlice: centerSlice,
+                isAntiAlias: isAntiAlias,
+                filterQuality: filterQuality,
+              ),
+            );
+          }
+        }, keys: [NsgUpdateKey(id: builderId, type: NsgUpdateKeyType.element)]);
       },
     );
   }

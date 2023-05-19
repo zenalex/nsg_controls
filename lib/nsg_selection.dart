@@ -55,7 +55,7 @@ class NsgSelection {
 
   Widget _controllerUpdateWidget(NsgDataItem element) {
     if (inputType == NsgInputType.reference) {
-      return controller!.obxBase((state) => _elementWidget(element));
+      return controller!.obx((state) => _elementWidget(element));
     }
     return selectionController!.obx((state) => _elementWidget(element));
   }
