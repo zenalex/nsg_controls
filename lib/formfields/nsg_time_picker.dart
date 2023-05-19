@@ -284,7 +284,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
               FocusScope.of(context).unfocus();
             },
             onChanged: (String value) {},
-            style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 24),
+            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
             controller: textController,
           ),
         ),
