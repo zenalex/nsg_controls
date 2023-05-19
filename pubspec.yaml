@@ -51,7 +51,9 @@ dependencies:
   event: ^2.0.5
   hovering: ^1.0.4
   image: ^4.0.6
-  
+
+  material_color_scheme: ^0.0.3
+
   syncfusion_flutter_pdfviewer: ^20.4.51
   #syncfusion_flutter_pdfviewer: ^21.1.35
   #adaptive_scrollbar: ^2.1.2
