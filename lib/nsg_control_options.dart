@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:material_color_scheme/material_color_scheme.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 import 'formfields/nsg_field_type.dart';
@@ -47,8 +46,6 @@ extension MaterialColors on Color {
 // C100: 0.98
 
   Color getColor(int index) {
-    MaterialColor matColor = generateSwatch(this);
-
     Map<int, Color> generate(Color base) {
       var darker = ColorsCalc().dark(base);
       var lighter = ColorsCalc().light(base);
