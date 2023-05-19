@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' as vmath;
 
 import '../nsg_control_options.dart';
+import '../nsg_progress_dialog.dart';
 
 class NsgProgressBar extends StatefulWidget {
-  final double? percent;
+  final NsgProgressDialog? dialogWidget;
   final String text;
-  const NsgProgressBar({Key? key, this.percent, this.text = 'Загрузка'}) : super(key: key);
+  const NsgProgressBar({Key? key, this.dialogWidget, this.text = 'Загрузка'}) : super(key: key);
 
   @override
   _NsgProgressBarState createState() => _NsgProgressBarState();
@@ -81,20 +82,20 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
               child: CustomPaint(
                 key: GlobalKey(),
                 painter: OpenPainter(
-                    value: widget.percent == null ? _animation.value : widget.percent!.toDouble(),
+                    value: widget.dialogWidget == null ? _animation.value : widget.dialogWidget!.percent,
                     arc1: arc1,
                     arc2: arc2,
-                    percent: widget.percent == null ? false : true),
+                    percent: widget.dialogWidget == null ? false : true),
               ),
             ),
             Center(
               child: Text(
-                widget.percent == null ? widget.text : '${widget.text} ${widget.percent}%',
+                widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
                 style: TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 1.2,
-                  color: ControlOptions.instance.colorMainText,
+                  color: ControlOptions.instance.colorText,
                 ),
               ),
             ),

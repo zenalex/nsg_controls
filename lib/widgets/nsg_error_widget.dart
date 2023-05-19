@@ -43,22 +43,22 @@ class NsgErrorWidget {
           contentBottom: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  child: NsgButton(
-                    text: 'Копировать',
-                    onPressed: () {
-                      _copyToClipboard(errorMessage, dialogContext);
-                    },
-                  ),
+                NsgButton(
+                  width: 200,
+                  text: 'Копировать',
+                  onPressed: () {
+                    _copyToClipboard(errorMessage, dialogContext);
+                  },
                 ),
-                Expanded(
-                  child: NsgButton(
-                    text: 'Переслать',
-                    onPressed: () {
-                      Share.share(errorMessage, subject: 'Отправить текст ошибки');
-                    },
-                  ),
+                const SizedBox(width: 15),
+                NsgButton(
+                  width: 200,
+                  text: 'Переслать',
+                  onPressed: () {
+                    Share.share(errorMessage, subject: 'Отправить текст ошибки');
+                  },
                 ),
               ],
             ),

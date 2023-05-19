@@ -89,12 +89,13 @@ class NsgStyleIconButton extends StatelessWidget {
 }
 
 class NsgTextButton extends StatelessWidget {
-  const NsgTextButton({super.key, this.text = '', this.onTap, this.color, this.fontSize});
+  const NsgTextButton({super.key, this.text = '', this.onTap, this.color, this.fontSize, this.textAlign = TextAlign.left});
 
   final void Function()? onTap;
   final String text;
   final Color? color;
   final double? fontSize;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +104,7 @@ class NsgTextButton extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Text(text,
+              textAlign: textAlign,
               style: TextStyle(color: color ?? ControlOptions.instance.colorWarning, fontSize: fontSize ?? ControlOptions.instance.sizeM, fontFamily: 'Inter')),
         ));
     /*return Padding(

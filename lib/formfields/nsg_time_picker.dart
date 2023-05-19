@@ -57,7 +57,7 @@ class NsgTimePicker extends StatefulWidget {
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
-              height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 410 : 120,
+              height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 420 : 120,
               title: 'Введите время',
               onConfirm: () {
                 onClose(selectedDate);
@@ -281,7 +281,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
               FocusScope.of(context).unfocus();
             },
             onChanged: (String value) {},
-            style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 24),
+            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
             controller: textController,
           ),
         ),

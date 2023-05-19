@@ -32,7 +32,7 @@ class NsgGrid extends StatelessWidget {
           if (i < row.length - 1) row.insert(i + 1, SizedBox(width: hGap));
           i++;
         }
-        list.add(Row(children: row));
+        list.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: row)));
 
         count = 0;
         rowCount = 0;
@@ -51,7 +51,7 @@ class NsgGrid extends StatelessWidget {
           if (i < row.length - 1) row.insert(i + 1, SizedBox(width: hGap));
           i++;
         }
-        list.add(Row(children: row));
+        list.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: row)));
       } else
 
       /* ------------------------------------------------------------ Выравнивание по центру ------------------------------------------------------------ */
@@ -68,7 +68,7 @@ class NsgGrid extends StatelessWidget {
           if (i < row.length - 1) row.insert(i + 1, SizedBox(width: hGap));
           i++;
         }
-        list.add(Row(children: row));
+        list.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: row)));
       }
     }
 

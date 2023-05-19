@@ -37,7 +37,7 @@ class NsgButton extends StatelessWidget {
       this.borderRadius,
       this.width,
       this.height,
-      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       this.color,
       this.borderColor,
       this.backColor,
@@ -218,6 +218,7 @@ class NsgButton extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (icon != null) Padding(padding: iconMargin, child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
                     Flexible(

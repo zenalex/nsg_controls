@@ -5,8 +5,9 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgProgressDialog {
-  double? percent = 0;
-  bool? canStopped = false;
+  double percent;
+  bool showPercents;
+  bool? canStopped;
   Function? requestStop;
   String textDialog;
   NsgProgressDialogWidget? dialogWidget;
@@ -14,7 +15,8 @@ class NsgProgressDialog {
   ///Если пользователь нажмет отменить, будет передан запрос на отмену сетевого соединения
   NsgCancelToken? cancelToken;
   bool visible = false;
-  NsgProgressDialog({this.percent, this.canStopped, this.requestStop, this.textDialog = 'Загрузка данных...', this.cancelToken});
+  NsgProgressDialog(
+      {this.showPercents = false, this.percent = 0, this.canStopped = false, this.requestStop, this.textDialog = 'Загрузка данных...', this.cancelToken});
 
   void show({String text = 'Загрузка'}) {
     visible = true;
@@ -23,7 +25,13 @@ class NsgProgressDialog {
 
     Get.dialog(
         dialogWidget = NsgProgressDialogWidget(
-            canStopped: canStopped, cancelToken: cancelToken, percent: percent, requestStop: requestStop, text: text, textDialog: textDialog, visible: visible),
+            canStopped: canStopped,
+            cancelToken: cancelToken,
+            dialogWidget: showPercents ? this : null,
+            requestStop: requestStop,
+            text: text,
+            textDialog: textDialog,
+            visible: visible),
         barrierColor: Colors.transparent,
         barrierDismissible: false);
   }
@@ -43,7 +51,7 @@ class NsgProgressDialog {
 // ignore: must_be_immutable
 class NsgProgressDialogWidget extends StatefulWidget {
   final String? text;
-  final double? percent;
+  NsgProgressDialog? dialogWidget;
   final bool? canStopped;
   final Function? requestStop;
   final String textDialog;
@@ -56,7 +64,7 @@ class NsgProgressDialogWidget extends StatefulWidget {
   NsgProgressDialogWidget(
       {super.key,
       required this.text,
-      required this.percent,
+      required this.dialogWidget,
       required this.canStopped,
       required this.requestStop,
       required this.textDialog,
@@ -111,7 +119,10 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
                     children: [
                       Text(widget.textDialog, textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText)),
                       const SizedBox(height: 10),
-                      NsgProgressBar(text: widget.text!),
+                      NsgProgressBar(
+                        text: widget.text!,
+                        dialogWidget: widget.dialogWidget,
+                      ),
                       if (widget.canStopped == true)
                         NsgButton(
                           text: 'Отмена',

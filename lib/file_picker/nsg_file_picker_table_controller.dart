@@ -23,7 +23,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
   NsgFilePickerTableController({required super.masterController, required super.tableFieldName});
 
   @override
-  Future<NsgDataItem> fileObjectToDataItem(NsgFilePickerObject fileObject, File imageFile) async {
+  Future<NsgDataItem> fileObjectToDataItem(NsgFilePickerObject fileObject, File? imageFile) async {
     throw Exception('fileObjectToDataItem is not implemented');
   }
 
@@ -43,7 +43,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
         ids.add(img.id);
         if (img.isNew && img.id.isNotEmpty && (img.fileContent != null || img.filePath.isNotEmpty)) {
           //TODO: убрать imageFile
-          File imageFile = kIsWeb ? File(img.filePath) : File(img.filePath);
+          File? imageFile = kIsWeb || img.filePath.isEmpty ? null : File(img.filePath);
 
           var pic = await fileObjectToDataItem(img, imageFile);
           if (!table.rows.any((e) => e.id == pic.id)) {
@@ -55,7 +55,11 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
       //TODO: УДАЛЕНИЕ ФАЙЛОВ!!!!!
       var itemsToDelete = table.rows.where((se) => !ids.contains(se.id)).toList();
       for (var row in itemsToDelete) {
-        table.rows.remove(row);
+        if (row.newTableLogic) {
+          row.docState = NsgDataItemDocState.deleted;
+        } else {
+          table.rows.remove(row);
+        }
       }
       progress.hide();
       // Get.back();

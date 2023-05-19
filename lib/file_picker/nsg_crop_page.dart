@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as imgEdit;
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_simple_progress_bar.dart';
 
@@ -9,10 +10,20 @@ import '../widgets/nsg_light_app_bar.dart';
 
 class NsgCrop {
   Future<List<List<int>>?> cropImages(BuildContext context,
-      {required List<List<int>> imageList, double ratio = 1 / 1, bool isCircle = false, bool isFree = true}) async {
+      {required List<List<int>> imageList, double? ratio = 1 / 1, bool isCircle = false, bool isFree = true, Color backColor = Colors.white}) async {
     List<Uint8List> imageDataList = [];
     for (var el in imageList) {
-      imageDataList.add(Uint8List.fromList(el));
+      final mainImage = imgEdit.decodeImage(Uint8List.fromList(el));
+      final background = imgEdit.Image(width: mainImage!.width + 500, height: mainImage.height + 500);
+
+      for (var pixel in background) {
+        pixel.setRgba(backColor.red, backColor.green, backColor.blue, backColor.alpha);
+      }
+
+      imgEdit.Image mergeImage = imgEdit.compositeImage(background, mainImage, center: true);
+
+      //imageDataList.add(Uint8List.fromList(el));
+      imageDataList.add(imgEdit.encodePng(mergeImage));
     }
     Future<List<Uint8List>?> imdd = Navigator.push(
         context,
@@ -30,20 +41,22 @@ class NsgCrop {
 }
 
 class NsgCropPage extends StatefulWidget {
-  NsgCropPage({
-    Key? key,
-    required this.imageDataList,
-    //required this.img,
-    this.isCircle = false,
-    this.isFree = true,
-    this.aspectRatio = 16 / 9,
-  }) : super(key: key);
+  NsgCropPage(
+      {Key? key,
+      required this.imageDataList,
+      //required this.img,
+      this.isCircle = false,
+      this.isFree = true,
+      this.aspectRatio = 16 / 9,
+      this.interactive = true})
+      : super(key: key);
 
   final bool isCircle;
   //final Uint8List img;
   List<Uint8List> imageDataList;
-  final double aspectRatio;
+  final double? aspectRatio;
   final bool isFree;
+  final bool interactive;
 
   @override
   NsgCropPageState createState() => NsgCropPageState();
@@ -140,8 +153,12 @@ class NsgCropPageState extends State<NsgCropPage> {
                 }
               },
               cornerDotBuilder: (size, edgeAlignment) => const DotControl(color: Colors.blue),
-              interactive: false,
+              interactive: widget.interactive,
               fixArea: !widget.isFree,
+              progressIndicator: const NsgSimpleProgressBar(
+                size: 100,
+                width: 10,
+              ),
             ),
             Positioned(
                 child: NsgCropToolsMenu(
@@ -154,7 +171,7 @@ class NsgCropPageState extends State<NsgCropPage> {
                 )
               ],
             )),
-            getSpash(showSplash),
+            //getSpash(showSplash),
           ])),
           if (widget.imageDataList.length > 1)
             NsgCropGallery(
