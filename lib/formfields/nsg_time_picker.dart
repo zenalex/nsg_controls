@@ -59,7 +59,7 @@ class NsgTimePicker extends StatefulWidget {
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
-              height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 410 : 120,
+              height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 420 : 120,
               title: 'Введите время',
               onConfirm: () {
                 onClose(selectedDate);
