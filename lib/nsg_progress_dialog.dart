@@ -1,8 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
+
+import 'widgets/nsg_dialog.dart';
 
 class NsgProgressDialog {
   double percent;
@@ -11,6 +12,7 @@ class NsgProgressDialog {
   Function? requestStop;
   String textDialog;
   NsgProgressDialogWidget? dialogWidget;
+  BuildContext? context;
 
   ///Если пользователь нажмет отменить, будет передан запрос на отмену сетевого соединения
   NsgCancelToken? cancelToken;
@@ -18,22 +20,22 @@ class NsgProgressDialog {
   NsgProgressDialog(
       {this.showPercents = false, this.percent = 0, this.canStopped = false, this.requestStop, this.textDialog = 'Загрузка данных...', this.cancelToken});
 
-  void show({String text = 'Загрузка'}) {
+  void show(BuildContext context, {String text = 'Загрузка'}) {
+    context = context;
     visible = true;
     // открываем popup с прогрессбаром NsgProgressBar
     //print("SHOW");
 
-    Get.dialog(
-        dialogWidget = NsgProgressDialogWidget(
+    NsgDialog().show(
+        context: context,
+        child: dialogWidget = NsgProgressDialogWidget(
             canStopped: canStopped,
             cancelToken: cancelToken,
             dialogWidget: showPercents ? this : null,
             requestStop: requestStop,
             text: text,
             textDialog: textDialog,
-            visible: visible),
-        barrierColor: Colors.transparent,
-        barrierDismissible: false);
+            visible: visible));
   }
 
   void hide() {
@@ -42,7 +44,9 @@ class NsgProgressDialog {
       if (dialogWidget != null) {
         dialogWidget!.isClosed = true;
       }
-      Navigator.pop(Get.context!);
+      if (context != null && context!.mounted) {
+        Navigator.pop(context!);
+      }
     }
   }
   // При нажатии на кнопку отмены вызываем requestStop - убираем кнопку отмены, пишем "обработка отмены"

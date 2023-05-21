@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/file_picker/nsg_video_player.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -47,7 +46,7 @@ class NsgGalleryState extends State<NsgGallery> {
           alignment: Alignment.center,
           children: [
             SizedBox(
-              height: Get.height - 150,
+              height: MediaQuery.of(context).size.height - 150,
               child: PhotoViewGallery.builder(
                 key: GlobalKey(),
                 onPageChanged: (value) {

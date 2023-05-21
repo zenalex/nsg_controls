@@ -11,16 +11,11 @@ class NsgTextType {
   static NsgTextType h1 = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.w500));
   static NsgTextType h2 = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.w500));
   static NsgTextType h3 = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.w500));
-  static NsgTextType textXL =
-      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.normal));
-  static NsgTextType textL =
-      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.normal));
-  static NsgTextType text =
-      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.normal));
-  static NsgTextType textS =
-      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeS, fontWeight: FontWeight.normal));
-  static NsgTextType textXS =
-      NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXS, fontWeight: FontWeight.normal));
+  static NsgTextType textXL = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXL, fontWeight: FontWeight.normal));
+  static NsgTextType textL = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.normal));
+  static NsgTextType text = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeM, fontWeight: FontWeight.normal));
+  static NsgTextType textS = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeS, fontWeight: FontWeight.normal));
+  static NsgTextType textXS = NsgTextType(TextStyle(fontSize: ControlOptions.instance.sizeXS, fontWeight: FontWeight.normal));
 }
 
 class NsgTextStyle {
@@ -71,7 +66,7 @@ class NsgText extends StatelessWidget {
     return GestureDetector(
         onLongPress: () {
           Clipboard.setData(ClipboardData(text: text));
-          nsgSnackbar(text: 'Данные ячейки скопированы в буфер');
+          nsgSnackbar(context, text: 'Данные ячейки скопированы в буфер');
           /*Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
               icon: Icon(Icons.info, size: 32, color: ControlOptions.instance.colorMainText),
               titleText: null,

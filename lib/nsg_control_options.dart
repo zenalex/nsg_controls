@@ -3,7 +3,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 import 'formfields/nsg_field_type.dart';
@@ -219,10 +218,10 @@ class ControlOptions {
 
   double borderRadius;
 
-  double get screenWidth => Get.width;
+  double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
 
   /// Размер одного блока с иконкой у сдвигающегося влево блока
-  double get slideBlockWidth => screenWidth > 640 ? 1 / 640 * 60 : 1 / Get.width * 60;
+  double slideBlockWidth(BuildContext context) => screenWidth(context) > 640 ? 1 / 640 * 60 : 1 / screenWidth(context) * 60;
 
   /// Минимальная ширина экрана приложения
   double appMinWidth;

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_button.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:nsg_controls/nsg_popup.dart';
+import 'package:nsg_controls/widgets/nsg_dialog.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgDialogSaveOrCancel {
   static Future<bool?> saveOrCancel(BuildContext context) async {
     bool? value;
-    await Get.dialog(
-        NsgPopUp(
+    await NsgDialog().show(
+        context: context,
+        child: NsgPopUp(
           title: 'Вы внесли изменения. Сохранить?',
           getContent: () {
             return [
@@ -78,8 +79,7 @@ class NsgDialogSaveOrCancel {
             value = null;
             NsgNavigator.instance.back(context);
           },
-        ),
-        barrierDismissible: false);
+        ));
     return value;
   }
 }

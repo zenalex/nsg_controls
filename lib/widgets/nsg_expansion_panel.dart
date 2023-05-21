@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 // ignore: must_be_immutable
@@ -272,11 +271,11 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
 
               if (!_expanded && widget.scrollController != null) {
                 double absY = getAbsoluteY();
-                if (absY > Get.height - 200) {
+                if (absY > MediaQuery.of(context).size.height - 200) {
                   Future.delayed(const Duration(milliseconds: 500), () async {
                     double h = containerKey.currentContext!.size!.height - 38;
-                    if (h > Get.height - 100) h = Get.height - 100;
-                    double diff = Get.height - absY;
+                    if (h > MediaQuery.of(context).size.height - 100) h = MediaQuery.of(context).size.height - 100;
+                    double diff = MediaQuery.of(context).size.height - absY;
                     widget.scrollController!
                         .animateTo(widget.scrollController!.offset + h - diff + 43, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
                   });

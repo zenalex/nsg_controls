@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:event/event.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'nsg_control_options.dart';
 
@@ -145,7 +144,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         if (widget.onCancel != null) {
                           widget.onCancel!();
                         } else {
-                          Navigator.pop(Get.context!, false);
+                          Navigator.pop(context, false);
                         }
                       }),
                 Expanded(
@@ -170,7 +169,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         if (widget.onCancel != null) {
                           widget.onCancel!();
                         } else {
-                          Navigator.pop(Get.context!, false);
+                          Navigator.pop(context, false);
                         }
                       }
                     }),

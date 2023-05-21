@@ -1,6 +1,5 @@
 // импорт
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -266,8 +265,9 @@ class NsgListPage extends StatelessWidget {
     );
   }
 
-  int _crossAxisCount() {
-    double screenWidth = Get.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : Get.width;
+  int _crossAxisCount(BuildContext context) {
+    double screenWidth =
+        MediaQuery.of(context).size.width > ControlOptions.instance.appMaxWidth ? ControlOptions.instance.appMaxWidth : MediaQuery.of(context).size.width;
     return screenWidth ~/ gridCellMinWidth;
   }
 
@@ -303,7 +303,7 @@ class NsgListPage extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 10, top: 10),
           mainAxisSpacing: gridYSpacing,
           crossAxisSpacing: gridXSpacing,
-          crossAxisCount: _crossAxisCount(),
+          crossAxisCount: _crossAxisCount(context),
           children: _showItems(context),
         ),
       );

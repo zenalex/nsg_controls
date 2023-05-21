@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fadein/flutter_fadein.dart';
-import 'package:get/get.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_text.dart';
@@ -14,6 +13,7 @@ import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../formfields/nsg_period_filter.dart';
 import '../formfields/nsg_text_filter.dart';
+import '../widgets/nsg_dialog.dart';
 import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
@@ -514,7 +514,7 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   Widget _rowcolumn({required List<Widget> children}) {
-    if (Get.width > 400) {
+    if (MediaQuery.of(context).size.width > 400) {
       return Row(crossAxisAlignment: CrossAxisAlignment.end, children: children);
     } else {
       return Column(children: children);
@@ -522,7 +522,7 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   Widget _expanded({required Widget child}) {
-    if (Get.width > 400) {
+    if (MediaQuery.of(context).size.width > 400) {
       return Expanded(child: child);
     } else {
       return child;
@@ -619,8 +619,8 @@ class _NsgTableState extends State<NsgTable> {
           }
         });
         double screenWidth = 0;
-        if (Get.width < ControlOptions.instance.appMaxWidth) {
-          screenWidth = Get.width;
+        if (MediaQuery.of(context).size.width < ControlOptions.instance.appMaxWidth) {
+          screenWidth = MediaQuery.of(context).size.width;
         } else {
           screenWidth = ControlOptions.instance.appMaxWidth;
         }
@@ -936,8 +936,9 @@ class _NsgTableState extends State<NsgTable> {
                             onLongPress: () {
                               var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(row) ?? '';
 
-                              Get.dialog(
-                                  NsgPopUp(
+                              NsgDialog().show(
+                                  context: context,
+                                  child: NsgPopUp(
                                       hideBackButton: true,
                                       title: 'Данные ячейки',
                                       contentTop: Padding(
@@ -954,14 +955,13 @@ class _NsgTableState extends State<NsgTable> {
                                           text: 'Скопировать в буфер',
                                           onPressed: () {
                                             Clipboard.setData(ClipboardData(text: textValue));
-                                            nsgSnackbar(text: 'Данные ячейки скопированы в буфер');
+                                            nsgSnackbar(context, text: 'Данные ячейки скопированы в буфер');
                                           },
                                         ),
                                       ),
                                       onConfirm: () {
                                         NsgNavigator.instance.back(context);
-                                      }),
-                                  barrierDismissible: false);
+                                      }));
                             },
                             onHover: (b) {
                               /// Раскрашиваем строку в цет при наведении на неё - OnHover
@@ -1102,8 +1102,9 @@ class _NsgTableState extends State<NsgTable> {
                     onPressed: () {
                       NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.columnsSelect.toString());
                       if (widget.userSettingsController != null) {
-                        Get.dialog(
-                            NsgPopUp(
+                        NsgDialog().show(
+                            context: context,
+                            child: NsgPopUp(
                                 title: 'Порядок и отключение колонок',
                                 width: 300,
                                 getContent: () => [
@@ -1120,8 +1121,7 @@ class _NsgTableState extends State<NsgTable> {
                                   }
                                   setState(() {});
                                   NsgNavigator.instance.back(context);
-                                }),
-                            barrierDismissible: false);
+                                }));
                       } else {
                         NsgErrorWidget.showErrorByString(context, 'Не заданы настройки пользователя');
                       }
@@ -1684,8 +1684,9 @@ class _NsgTableState extends State<NsgTable> {
       ));
     }
 
-    Get.dialog(
-        NsgPopUp(
+    NsgDialog().show(
+        context: context,
+        child: NsgPopUp(
             title: 'Удаление строк (${listRowsToDelete.length})',
             getContent: () => [
                   Padding(
@@ -1719,8 +1720,7 @@ class _NsgTableState extends State<NsgTable> {
               editMode = NsgTableEditMode.view;
               setState(() {});
               NsgNavigator.instance.back(context);
-            }),
-        barrierDismissible: false);
+            }));
   }
 
   Widget _headerWidget(NsgTableColumn column) {

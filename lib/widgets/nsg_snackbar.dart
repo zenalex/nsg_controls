@@ -1,6 +1,5 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../nsg_control_options.dart';
 
 enum NsgSnarkBarType {
@@ -14,7 +13,7 @@ enum NsgSnarkBarType {
   const NsgSnarkBarType(this.title, this.icon);
 }
 
-void nsgSnackbar(
+void nsgSnackbar(BuildContext context,
     {void Function(Flushbar<dynamic>)? onTap,
     String? title,
     required String text,
@@ -41,7 +40,7 @@ void nsgSnackbar(
     duration: duration ?? const Duration(seconds: 3),
     maxWidth: 640,
     icon: type == null ? null : Icon(type.icon, color: ControlOptions.instance.colorMainText),
-  ).show(Get.context!);
+  ).show(context);
 
 /* Get.snackbar(title ?? (type == null ? '' : type.title), text,
       icon: type == null ? null : Icon(type.icon, color: ControlOptions.instance.colorMainText),

@@ -80,7 +80,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
         widget.controller.refreshData(keys: widget.updateKey);
         if (widget.onSetFilter != null) widget.onSetFilter!();
       } else {
-        nsgSnackbar(text: 'Фильтр по тексту не изменился', type: NsgSnarkBarType.warning);
+        nsgSnackbar(context, text: 'Фильтр по тексту не изменился', type: NsgSnarkBarType.warning);
       }
     }
 

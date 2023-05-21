@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class ContextMenuItem {
@@ -128,8 +127,8 @@ class ContextMenuListenerState extends State<ContextMenuListener> {
         if (event.kind == PointerDeviceKind.mouse && event.buttons == kSecondaryMouseButton) {
           double x = event.position.dx;
           double y = event.position.dy;
-          if (widget.contextMenu.width > Get.width - x) {
-            x = Get.width - widget.contextMenu.width;
+          if (widget.contextMenu.width > MediaQuery.of(context).size.width - x) {
+            x = MediaQuery.of(context).size.width - widget.contextMenu.width;
           }
 
           offset = Offset(x, y);

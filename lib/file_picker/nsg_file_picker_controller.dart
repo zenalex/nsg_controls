@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/file_picker/nsg_file_picker_interface.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 import 'package:nsg_data/nsg_data.dart';
+
+import '../widgets/nsg_dialog.dart';
 
 class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T> with NsgFilePickerInterface {
   var _files = <NsgFilePickerObject>[];
@@ -32,7 +33,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
   @override
   Future<bool> saveImages(BuildContext context) async {
     var progress = NsgProgressDialog(textDialog: 'Сохранение фото');
-    progress.show();
+    progress.show(context);
     var ids = <String>[];
 
     try {
@@ -86,8 +87,9 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
       curIndex = 0;
     }
 
-    Get.dialog(
-        NsgPopUp(
+    NsgDialog().show(
+        context: context,
+        child: NsgPopUp(
             onCancel: () {
               NsgNavigator.instance.back(context);
             },
@@ -96,14 +98,13 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
             },
             margin: const EdgeInsets.all(15),
             title: "Просмотр изображений",
-            width: Get.width,
-            height: Get.height,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
             getContent: () => [
                   NsgGallery(
                     imagesList: files,
                     currentPage: curIndex,
                   )
-                ]),
-        barrierDismissible: true);
+                ]));
   }
 }

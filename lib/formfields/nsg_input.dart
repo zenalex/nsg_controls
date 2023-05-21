@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/formfields/nsg_position_boolBox.dart';
 import 'package:nsg_controls/nsg_controls.dart';
@@ -667,7 +666,7 @@ class _NsgInputState extends State<NsgInput> {
           }
           setState(() {});
         };
-        Get.toNamed(widget.selectionForm);
+        NsgNavigator.instance.toPage(context, widget.selectionForm);
       }
     } else if (inputType == NsgInputType.enumReference) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;

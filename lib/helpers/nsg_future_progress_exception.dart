@@ -7,7 +7,7 @@ import '../widgets/nsg_error_widget.dart';
 Future nsgFutureProgressAndException(BuildContext context, {required Function() func, String? text}) async {
   var progress = NsgProgressDialog(textDialog: text ?? 'Сохранение данных на сервер');
   try {
-    progress.show();
+    progress.show(context);
     await func();
     progress.hide();
   } catch (ex) {

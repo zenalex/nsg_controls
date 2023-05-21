@@ -1,6 +1,8 @@
+import 'package:nsg_controls/widgets/nsg_dialog.dart';
+import 'package:nsg_data/controllers/nsg_controller_status.dart';
+
 import 'nsg_controls.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgSelection {
@@ -22,7 +24,7 @@ class NsgSelection {
     if (inputType == NsgInputType.enumReference) {
       assert(allValues != null);
       selectionController = _SelectionController();
-      selectionController!.status = GetStatus.success(0);
+      selectionController!.currentStatus = NsgControillerStatus.success;
     }
     textColor ??= ControlOptions.instance.colorText;
     colorInverted ??= ControlOptions.instance.colorInverted;
@@ -85,8 +87,9 @@ class NsgSelection {
       selectedElement = controller!.selectedItem;
       controller!.refreshData();
     }
-    Get.dialog(
-        NsgPopUp(
+    NsgDialog().show(
+        context: context,
+        child: NsgPopUp(
             title: title,
             getContent: _listArray,
             dataController: controller,
@@ -97,17 +100,16 @@ class NsgSelection {
                 controller?.selectedItem = selectedElement;
                 onSelected(selectedElement!);
               }
-            }),
-        barrierDismissible: false);
+            }));
   }
 }
 
-class _SelectionController extends GetxController with StateMixin<int> {
+class _SelectionController extends NsgBaseController {
   _SelectionController() : super() {
     updateStatus();
   }
 
   void updateStatus() {
-    refresh();
+    sendNotify();
   }
 }

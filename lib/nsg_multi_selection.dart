@@ -1,6 +1,6 @@
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:nsg_controls/widgets/nsg_dialog.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgMultiSelection {
@@ -88,8 +88,9 @@ class NsgMultiSelection {
     var controllerItem = NsgDataClient.client.getNewObject(controller.dataType);
     selectedElement = controller.selectedItem;
     controller.refreshData();
-    Get.dialog(
-        controller.obx((state) => NsgPopUp(
+    NsgDialog().show(
+        context: context,
+        child: controller.obx((state) => NsgPopUp(
             title: title,
             title2: title2 + (_selectedItems.isEmpty ? '' : ' (' + _selectedItems.length.toString() + ')'),
             getContent: () => _itemList(),
@@ -100,7 +101,6 @@ class NsgMultiSelection {
             onConfirm: () {
               onSelected(_selectedItems);
               NsgNavigator.instance.back(context);
-            })),
-        barrierDismissible: false);
+            })));
   }
 }

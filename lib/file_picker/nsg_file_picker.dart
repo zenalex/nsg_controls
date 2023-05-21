@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -14,6 +13,9 @@ import '../nsg_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:file_selector/file_selector.dart' as file;
 import 'package:dio/dio.dart' as dio;
+
+import '../widgets/nsg_dialog.dart';
+import '../widgets/nsg_snackbar.dart';
 
 /// Пикер и загрузчик изображений и файлов заданных форматов
 class NsgFilePicker extends StatefulWidget {
@@ -173,7 +175,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       } else {
         setState(() {});
       }
-    } else if (GetPlatform.isWindows) {
+    } else if (!kIsWeb && Platform.isWindows) {
       var result = await ImagePicker().pickMultiImage(
         imageQuality: widget.imageQuality,
         maxWidth: widget.imageMaxWidth,
@@ -221,7 +223,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       } else {
         setState(() {});
       }
-    } else if (GetPlatform.isMacOS) {
+    } else if (!kIsWeb && Platform.isMacOS) {
       var jpgsTypeGroup = const file.XTypeGroup(
         label: 'JPEGs',
         extensions: <String>['jpg', 'jpeg'],
@@ -483,15 +485,17 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                     child: InkWell(
                       hoverColor: ControlOptions.instance.colorMainDark,
                       onTap: () {
-                        Get.dialog(NsgPopUp(
-                          title: 'Удаление фотографии',
-                          text: 'После удаления, фотографию нельзя будет восстановить. Удалить?',
-                          onConfirm: () {
-                            objectsList.remove(element);
-                            setState(() {});
-                            NsgNavigator.instance.back(context);
-                          },
-                        ));
+                        NsgDialog().show(
+                            context: context,
+                            child: NsgPopUp(
+                              title: 'Удаление фотографии',
+                              text: 'После удаления, фотографию нельзя будет восстановить. Удалить?',
+                              onConfirm: () {
+                                objectsList.remove(element);
+                                setState(() {});
+                                NsgNavigator.instance.back(context);
+                              },
+                            ));
                       },
                       child: Container(
                         height: 38,
@@ -516,8 +520,9 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                       }
                     }
                     int currentPage = imagesList.indexOf(element);
-                    Get.dialog(
-                        NsgPopUp(
+                    NsgDialog().show(
+                        context: context,
+                        child: NsgPopUp(
                             onCancel: () {
                               NsgNavigator.instance.back(context);
                             },
@@ -526,24 +531,25 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                             },
                             margin: const EdgeInsets.all(15),
                             title: "Просмотр изображений",
-                            width: Get.width,
-                            height: Get.height,
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
                             getContent: () => [
                                   NsgGallery(
                                     imagesList: imagesList,
                                     currentPage: currentPage,
                                   )
-                                ]),
-                        barrierDismissible: true);
+                                ]));
                   } else {
-                    Get.snackbar('Ошибка', 'Этот файл не является изображением',
-                        duration: const Duration(seconds: 3),
-                        maxWidth: 300,
-                        snackPosition: SnackPosition.bottom,
-                        barBlur: 0,
-                        overlayBlur: 0,
-                        colorText: ControlOptions.instance.colorMainText,
-                        backgroundColor: ControlOptions.instance.colorMainDark);
+                    nsgSnackbar(context, text: 'Этот файл не является изображением');
+                    //   Get.snackbar('Ошибка', 'Этот файл не является изображением',
+                    //       duration: const Duration(seconds: 3),
+                    //       maxWidth: 300,
+                    //       snackPosition: SnackPosition.bottom,
+                    //       barBlur: 0,
+                    //       overlayBlur: 0,
+                    //       colorText: ControlOptions.instance.colorMainText,
+                    //       backgroundColor: ControlOptions.instance.colorMainDark);
+                    // }
                   }
                 },
                 child: Stack(
@@ -574,7 +580,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         onPressed: () {
           if (kIsWeb) {
             galleryImage();
-          } else if (GetPlatform.isWindows) {
+          } else if (!kIsWeb && Platform.isWindows) {
             pickFile();
           } else {
             galleryImage();
@@ -638,7 +644,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         } else {
           galleryImage();
         }
-      } else if (GetPlatform.isWindows) {
+      } else if (!kIsWeb && Platform.isWindows) {
         if (widget.useFilePicker) {
           pickFile();
         } else {
@@ -680,7 +686,7 @@ class NsgImagePickerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (!kIsWeb && GetPlatform.isWindows)
+    return (!kIsWeb && Platform.isWindows)
         ? InkWell(
             hoverColor: ControlOptions.instance.colorMain,
             onTap: onPressed,

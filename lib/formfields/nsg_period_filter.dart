@@ -1,9 +1,10 @@
 // импорт
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
+
+import '../widgets/nsg_dialog.dart';
 
 /// Виджет фильтра периода по датам (времени) + метод открытия диалогового окна с виджетом контента фильтра
 class NsgPeriodFilter extends StatefulWidget {
@@ -58,8 +59,9 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   }
 
   void showPopup(BuildContext context, Function(NsgPeriod date) onClose) {
-    Get.dialog(
-        NsgPopUp(
+    NsgDialog().show(
+        context: context,
+        child: NsgPopUp(
             height: 400,
             title: 'Выберите период',
             getContent: () => [
@@ -79,8 +81,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
               widget.controller.refreshData();
               //setState(() {});
               NsgNavigator.instance.back(context);
-            }),
-        barrierDismissible: false);
+            }));
   }
 
   @override

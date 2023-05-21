@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart';
 
 class NsgDialogBodyController {
   NsgDialogBodyState currentState = NsgDialogBodyState();
@@ -27,7 +27,7 @@ class NsgDialog {
     return showModalBottomSheet<void>(
       transitionAnimationController: animationController,
       context: context,
-      constraints: BoxConstraints(maxHeight: Get.height - 40),
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 40),
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
