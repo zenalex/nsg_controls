@@ -13,6 +13,7 @@ import 'widgets/nsg_error_widget.dart';
 ControlOptions get nsgtheme => ControlOptions.instance;
 
 extension MaterialColors on Color {
+  Color get c0 => getColor(10);
   Color get c10 => getColor(10);
   Color get c20 => getColor(20);
   Color get c30 => getColor(30);
@@ -22,6 +23,7 @@ extension MaterialColors on Color {
   Color get c70 => getColor(70);
   Color get c80 => getColor(80);
   Color get c90 => getColor(90);
+  Color get c100 => getColor(100);
 
 // C10: 0.0
 // C20: 0.07
@@ -50,6 +52,7 @@ extension MaterialColors on Color {
       var darker = ColorsCalc().dark(base);
       var lighter = ColorsCalc().light(base);
       return {
+        0: Colors.black,
         10: ColorsCalc().tweak(base, 0.8, 0.09, 0.4, 0.98, lighter: lighter, darker: darker),
         20: ColorsCalc().tweak(base, 0.87, 0.2, 0.0, 1, lighter: lighter, darker: darker),
         30: ColorsCalc().tweak(base, 0.92, 0.45, 0.7, 0.97, lighter: lighter, darker: darker),
@@ -61,6 +64,7 @@ extension MaterialColors on Color {
             darker: darker),
         80: ColorsCalc().tweak(base, 1, 0.97, 0.0, 0.7, lighter: lighter, darker: darker),
         90: ColorsCalc().tweak(base, 1, 0.95, 0.0, 0.4, lighter: lighter, darker: darker),
+        100: Colors.white,
       };
     }
 
