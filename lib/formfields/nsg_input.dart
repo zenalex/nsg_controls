@@ -622,6 +622,10 @@ class _NsgInputState extends State<NsgInput> {
     if (_disabled) {
       return;
     }
+    if (widget.onPressed != null) {
+      widget.onPressed!();
+      return;
+    }
     if (inputType == NsgInputType.reference) {
       selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       //Зенков 27.12.2022 Вызывается в form.selectFromArray
