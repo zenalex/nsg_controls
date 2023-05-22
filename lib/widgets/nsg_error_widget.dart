@@ -20,18 +20,18 @@ class NsgErrorWidget {
     _showError(errorMessage, title);
   }
 
-  static void showError(Exception ex) {
+  static Future showError(Exception ex) async {
     String message = ex.toString();
     String title = 'Ошибка';
     if (ex is NsgApiException) {
       message = ex.error.message ?? '';
       title = ex.error.code?.toString() ?? '';
     }
-    _showError(message, title);
+    await _showError(message, title);
   }
 
-  static void _showError(String errorMessage, String title) {
-    Get.dialog(Builder(builder: (dialogContext) {
+  static Future _showError(String errorMessage, String title) async {
+    await Get.dialog(Builder(builder: (dialogContext) {
       return NsgPopUp(
           title: title,
           getContent: () => [
