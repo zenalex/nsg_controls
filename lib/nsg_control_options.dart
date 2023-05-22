@@ -270,7 +270,7 @@ class ControlOptions {
     @Deprecated('Old variable. Use colorPrimary[int]') this.colorMainDarker = const Color.fromARGB(255, 153, 128, 16),
     @Deprecated('Old variable. Use colorPrimary[int]') this.colorMainLight = const Color.fromARGB(255, 255, 245, 201),
     @Deprecated('Old variable. Use colorPrimary[int]') this.colorMainLighter = const Color.fromARGB(255, 255, 245, 201),
-    @Deprecated('Old variable. Use colorSecondary') this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
+    this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
     @Deprecated('Old variable. Use colorSecondary[int]') this.colorSecondaryDark = const Color.fromRGBO(255, 255, 255, 1),
     @Deprecated('Old variable. Use colorSecondary[int]') this.colorSecondaryLight = const Color.fromRGBO(255, 255, 255, 1),
     this.colorWhite = const Color.fromRGBO(255, 255, 255, 1),
