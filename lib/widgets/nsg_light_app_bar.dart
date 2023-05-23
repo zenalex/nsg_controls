@@ -51,11 +51,12 @@ class NsgLightAppBar extends StatelessWidget {
 }
 
 class NsgLigthAppBarIcon extends StatelessWidget {
-  const NsgLigthAppBarIcon({super.key, required this.icon, this.onTap, this.nott});
+  const NsgLigthAppBarIcon({super.key, required this.icon, this.onTap, this.nott, this.color});
 
   final IconData icon;
   final void Function()? onTap;
   final int? nott;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +67,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
               onTap: onTap,
               child: Icon(
                 icon,
-                color: ControlOptions.instance.colorMainLight,
+                color: color ?? ControlOptions.instance.colorMainLight,
               )),
           if (nott != null && nott! > 0)
             ClipOval(
