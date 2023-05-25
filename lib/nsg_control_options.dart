@@ -90,7 +90,7 @@ extension MaterialColors on Color {
 }
 
 class ControlOptions {
-  final double appVersion;
+  final double fileExchangeVersion;
   // Настройки NsgInput
   final EdgeInsets nsgInputMargin;
   final bool nsgInputFilled;
@@ -230,7 +230,7 @@ class ControlOptions {
   String dateformat = 'dd.MM.yy';
 
   ControlOptions({
-    this.appVersion = 1.0,
+    this.fileExchangeVersion = 1.0,
     this.nsgInputMargin = const EdgeInsets.all(5),
     this.nsgInputFilled = false,
     this.nsgInputHintAlwaysOnTop = false,
