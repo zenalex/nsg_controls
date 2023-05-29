@@ -374,6 +374,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         objectsList.add(
             NsgFilePickerObject(isNew: true, image: Image.file(File(image.path)), description: basenameWithoutExtension(image.path), filePath: image.path));
         galleryPage = false;
+        widget.callback(objectsList);
       });
     } else {
       setState(() {
