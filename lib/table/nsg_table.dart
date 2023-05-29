@@ -20,6 +20,8 @@ import 'nsg_table_menu_button.dart';
 
 /// Виджет отображения таблицы
 class NsgTable extends StatefulWidget {
+  bool Function(NsgDataItem item)? forbidDeleting;
+
   NsgTable(
       {Key? key,
       this.rowsMaxCount = 20,
@@ -51,7 +53,8 @@ class NsgTable extends StatefulWidget {
       this.removeVerticalScrollIfNotNeeded = false,
       this.userSettingsController,
       this.userSettingsId = '',
-      this.externaltableKey})
+      this.externaltableKey,
+      this.forbidDeleting})
       : super(key: key);
 
   /// Фиксированная высота строки
@@ -853,7 +856,7 @@ class _NsgTableState extends State<NsgTable> {
               if (listRowsToDelete.contains(row)) {
                 isSelected = true;
               }
-              if (editMode == NsgTableEditMode.rowDelete) {
+              if (editMode == NsgTableEditMode.rowDelete && (widget.forbidDeleting == null || !widget.forbidDeleting!(row))) {
                 tableRow.add(InkWell(
                     onTap: () {
                       rowDelete(row);
