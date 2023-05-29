@@ -50,6 +50,7 @@ class NsgFilePicker extends StatefulWidget {
   final bool skipInterface;
 
   final bool needCrop;
+  final bool fromGallery;
 
   NsgFilePicker(
       {Key? key,
@@ -68,6 +69,7 @@ class NsgFilePicker extends StatefulWidget {
       required this.objectsList,
       this.textChooseFile = 'Добавить фото',
       this.oneFile = false,
+      this.fromGallery = true,
       this.skipInterface = false})
       : super(key: key) {
     _resisterComponents();
@@ -576,7 +578,11 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           } else if (GetPlatform.isWindows) {
             pickFile();
           } else {
-            galleryImage();
+            if (widget.fromGallery) {
+              galleryImage();
+            } else {
+              cameraImage();
+            }
           }
         },
         onPressed2: () {
@@ -644,7 +650,11 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           galleryImage();
         }
       } else {
-        galleryImage();
+        if (widget.fromGallery) {
+          galleryImage();
+        } else {
+          cameraImage();
+        }
       }
       return const SizedBox();
     } else {
