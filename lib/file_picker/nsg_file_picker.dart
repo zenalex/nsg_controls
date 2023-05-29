@@ -369,17 +369,52 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     //progress.show(Get.context);
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
 
+    // var result = await ImagePicker().pickMultiImage(
+    //   imageQuality: widget.imageQuality,
+    //   maxWidth: widget.imageMaxWidth,
+    //   maxHeight: widget.imageMaxHeight,
+    // );
+
+    var result = [];
     if (image != null) {
-      setState(() {
-        objectsList.add(
-            NsgFilePickerObject(isNew: true, image: Image.file(File(image.path)), description: basenameWithoutExtension(image.path), filePath: image.path));
-        galleryPage = false;
-        widget.callback(objectsList);
-      });
+      result = [image];
+    }
+
+    galleryPage = true;
+
+    /// Если стоит ограничение на 1 файл
+    if (widget.oneFile) {
+      if (result.isNotEmpty) result = [result[0]];
+      objectsList.clear();
+    }
+    for (var element in result) {
+      var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', ''));
+
+      if (fileType == NsgFilePickerObjectType.image) {
+        objectsList.add(NsgFilePickerObject(
+            isNew: true,
+            image: Image.file(File(element.path)),
+            description: basenameWithoutExtension(element.path),
+            fileType: fileType,
+            filePath: element.path));
+      } else if (fileType != NsgFilePickerObjectType.unknown) {
+        objectsList.add(NsgFilePickerObject(
+            isNew: true,
+            file: File(element.path),
+            image: null,
+            description: basenameWithoutExtension(element.path),
+            fileType: fileType,
+            filePath: element.path));
+      } else {
+        error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+        setState(() {});
+      }
+    }
+
+    if (widget.skipInterface) {
+      widget.callback(objectsList);
     } else {
-      setState(() {
-        error = 'Ошибка камеры';
-      });
+      setState(() {});
     }
   }
 
