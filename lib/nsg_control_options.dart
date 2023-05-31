@@ -240,7 +240,7 @@ class ControlOptions {
     this.nsgInputBorderColor = const Color.fromARGB(122, 70, 59, 11),
     this.nsgInputBorderActiveColor = const Color.fromARGB(255, 70, 59, 11),
     this.nsginputCloseIconColor = const Color.fromARGB(255, 70, 59, 11),
-    this.nsginputCloseIconColorHover = const Color.fromARGB(255, 70, 59, 11).withOpacity(0.5),
+    this.nsginputCloseIconColorHover = const Color.fromARGB(122, 70, 59, 11),
     this.nsgInputColorFilled = Colors.transparent,
     this.nsgInputColorLabel = Colors.black,
     this.nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
