@@ -101,6 +101,9 @@ class ControlOptions {
   final Color nsgInputColorFilled;
   final Color nsgInputBorderColor;
   final Color nsgInputBorderActiveColor;
+  final Color nsginputCloseIconColor;
+  final Color nsginputCloseIconColorHover;
+
   // Главный цвет приложения
   @Deprecated('Old variable. Use colorPrimary')
   final Color colorMain;
@@ -236,6 +239,8 @@ class ControlOptions {
     this.nsgInputHintAlwaysOnTop = false,
     this.nsgInputBorderColor = const Color.fromARGB(122, 70, 59, 11),
     this.nsgInputBorderActiveColor = const Color.fromARGB(255, 70, 59, 11),
+    this.nsginputCloseIconColor = const Color.fromARGB(255, 70, 59, 11),
+    this.nsginputCloseIconColorHover = const Color.fromARGB(255, 70, 59, 11).withOpacity(0.5),
     this.nsgInputColorFilled = Colors.transparent,
     this.nsgInputColorLabel = Colors.black,
     this.nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
