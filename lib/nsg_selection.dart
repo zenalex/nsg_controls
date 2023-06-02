@@ -1,3 +1,5 @@
+import 'package:nsg_controls/selection_nsg_popup.dart';
+
 import 'nsg_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,6 +16,7 @@ class NsgSelection {
   Widget Function(NsgDataItem)? rowWidget;
   Color? textColor;
   Color? colorInverted;
+  var textEditingController = TextEditingController();
 
   NsgSelection({required this.inputType, this.controller, this.rowWidget, this.allValues, this.selectedElement, this.textColor, this.colorInverted}) {
     if (inputType == NsgInputType.reference) {
@@ -37,7 +40,7 @@ class NsgSelection {
       itemsList = allValues!;
     }
     for (var element in itemsList) {
-      if (element.toString() != '') {
+      if (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase())) {
         list.add(GestureDetector(
           onTap: () {
             selectedElement = element;
@@ -85,20 +88,23 @@ class NsgSelection {
       selectedElement = controller!.selectedItem;
       controller!.refreshData();
     }
+
     Get.dialog(
-        NsgPopUp(
-            title: title,
-            getContent: _listArray,
-            dataController: controller,
-            confirmText: 'Подтвердить',
-            onConfirm: () {
-              Get.back();
-              if (selectedElement != null) {
-                controller?.selectedItem = selectedElement;
-                onSelected(selectedElement!);
-              }
-            }),
-        barrierDismissible: false);
+      SelectionNsgPopUp(
+          title: title,
+          getContent: _listArray,
+          dataController: controller,
+          textEditController: textEditingController,
+          confirmText: 'Подтвердить',
+          onConfirm: () {
+            Get.back();
+            if (selectedElement != null) {
+              controller?.selectedItem = selectedElement;
+              onSelected(selectedElement!);
+            }
+          }),
+      barrierDismissible: false,
+    );
   }
 }
 
