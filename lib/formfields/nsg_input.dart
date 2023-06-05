@@ -178,7 +178,7 @@ class NsgInput extends StatefulWidget {
     this.rowWidget,
     this.inputType = NsgInputType.autoselect,
     this.selectionForm = '',
-    this.keyboard = TextInputType.multiline,
+    this.keyboard = TextInputType.text,
     this.mask,
     this.maskType,
     this.itemsToSelect,
@@ -473,6 +473,7 @@ class _NsgInputState extends State<NsgInput> {
                           focusNode: focus,
                           maxLines: widget.maxLines,
                           minLines: widget.minLines,
+                          textInputAction: TextInputAction.done,
                           keyboardType: keyboard,
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
@@ -510,19 +511,26 @@ class _NsgInputState extends State<NsgInput> {
                                 : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
                             focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                           ),
-                          onChanged: (value) {
-                            if (widget.onChanged != null) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
-                            }
-                          },
-                          onFieldSubmitted: (string) {
-                            if (widget.onEditingComplete != null) {
-                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                            }
-                          },
+
+                          // onFieldSubmitted: (value) {
+                          //   print("AAA");
+                          // },
+                          // onFieldSubmitted: (string) {
+                          //   if (widget.onEditingComplete != null) {
+                          //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                          //   }
+                          // },
                           onEditingComplete: () {
                             if (widget.onEditingComplete != null) {
                               widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                            }
+                            Future.delayed(const Duration(milliseconds: 10), () {
+                              FocusScope.of(context).unfocus();
+                            });
+                          },
+                          onChanged: (value) {
+                            if (widget.onChanged != null) {
+                              //   WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
                             }
                           },
                           textAlign: widget.textAlign,
@@ -556,17 +564,18 @@ class _NsgInputState extends State<NsgInput> {
     if (widget.contentPadding != null) {
       return widget.contentPadding!;
     } else {
-      return nsgtheme.nsgInputContenPadding
+      EdgeInsets padding = nsgtheme.nsgInputContenPadding
           .subtract(EdgeInsets.fromLTRB(
               0,
               4,
               !widget.showDeleteIcon
                   ? 0
                   : useSelectionController
-                      ? 25
-                      : 25,
+                      ? -15
+                      : -15,
               4))
           .resolve(TextDirection.ltr);
+      return padding;
     }
   }
 
