@@ -43,7 +43,8 @@ class NsgErrorWidget {
               ],
           contentBottom: Padding(
             padding: const EdgeInsets.all(5.0),
-            child: NsgRowToColumn(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 NsgButton(
                   width: 200,
