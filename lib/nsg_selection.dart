@@ -44,9 +44,9 @@ class NsgSelection {
           onTap: () {
             selectedElement = element;
             // ignore: invalid_use_of_protected_member
-            selectionController?.refresh();
+            selectionController?.sendNotify();
             // ignore: invalid_use_of_protected_member
-            controller?.refresh();
+            controller?.sendNotify();
           },
           child: _controllerUpdateWidget(element),
         ));
