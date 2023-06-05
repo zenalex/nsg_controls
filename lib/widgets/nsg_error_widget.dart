@@ -34,32 +34,44 @@ class NsgErrorWidget {
   static Future _showError(String errorMessage, String title) async {
     await Get.dialog(Builder(builder: (dialogContext) {
       return NsgPopUp(
+          showCloseButton: true,
+          hideBackButton: true,
           title: title,
           getContent: () => [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                   child: Text(errorMessage),
                 )
               ],
-          contentBottom: Padding(
+          contentBottom: Container(
             padding: const EdgeInsets.all(5.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                NsgButton(
-                  width: 200,
-                  text: 'Копировать',
-                  onPressed: () {
-                    _copyToClipboard(errorMessage, dialogContext);
-                  },
+                Center(
+                  child: NsgButton(
+                    margin: EdgeInsets.zero,
+                    width: 150,
+                    height: 40,
+                    icon: Icons.copy,
+                    text: 'Копировать',
+                    onPressed: () {
+                      _copyToClipboard(errorMessage, dialogContext);
+                    },
+                  ),
                 ),
                 const SizedBox(width: 15),
-                NsgButton(
-                  width: 200,
-                  text: 'Переслать',
-                  onPressed: () {
-                    Share.share(errorMessage, subject: 'Отправить текст ошибки');
-                  },
+                Center(
+                  child: NsgButton(
+                    margin: EdgeInsets.zero,
+                    width: 150,
+                    height: 40,
+                    icon: Icons.share,
+                    text: 'Переслать',
+                    onPressed: () {
+                      Share.share(errorMessage, subject: 'Отправить текст ошибки');
+                    },
+                  ),
                 ),
               ],
             ),
