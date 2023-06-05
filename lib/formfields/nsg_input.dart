@@ -516,7 +516,14 @@ class _NsgInputState extends State<NsgInput> {
                             }
                           },
                           onFieldSubmitted: (string) {
-                            if (widget.onEditingComplete != null) {}
+                            if (widget.onEditingComplete != null) {
+                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                            }
+                          },
+                          onEditingComplete: () {
+                            if (widget.onEditingComplete != null) {
+                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                            }
                           },
                           textAlign: widget.textAlign,
                           style: widget.textStyle ?? TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
