@@ -13,9 +13,12 @@ class NsgGrid extends StatelessWidget {
   final double vGap;
   final double hGap;
 
+  final bool needExpanded;
+
   /// Количество виджетов по горизонтали
   final int crossAxisCount;
-  const NsgGrid({Key? key, required this.children, this.crossAxisCount = 3, this.centered = true, this.vGap = 0, this.hGap = 0}) : super(key: key);
+  const NsgGrid({Key? key, required this.children, this.crossAxisCount = 3, this.centered = true, this.vGap = 0, this.hGap = 0, this.needExpanded = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,11 @@ class NsgGrid extends StatelessWidget {
     List<Widget> list = [];
     List<Widget> row = [];
     for (var element in children) {
-      row.add(Expanded(flex: 2, child: element));
+      if (needExpanded) {
+        row.add(Expanded(flex: 2, child: element));
+      } else {
+        row.add(element);
+      }
 
       count++;
       rowCount++;
