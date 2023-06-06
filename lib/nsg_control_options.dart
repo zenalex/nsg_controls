@@ -12,6 +12,22 @@ import 'widgets/nsg_error_widget.dart';
 
 ControlOptions get nsgtheme => ControlOptions.instance;
 
+extension TextFontWeight on TextStyle {
+  TextStyle get w900 => merge(const TextStyle(fontWeight: FontWeight.w900));
+  TextStyle get w800 => merge(const TextStyle(fontWeight: FontWeight.w800));
+  TextStyle get w700 => merge(const TextStyle(fontWeight: FontWeight.w700));
+  TextStyle get w600 => merge(const TextStyle(fontWeight: FontWeight.w600));
+  TextStyle get w500 => merge(const TextStyle(fontWeight: FontWeight.w500));
+  TextStyle get w400 => merge(const TextStyle(fontWeight: FontWeight.w400));
+  TextStyle get w300 => merge(const TextStyle(fontWeight: FontWeight.w300));
+  TextStyle get w200 => merge(const TextStyle(fontWeight: FontWeight.w200));
+  TextStyle get w100 => merge(const TextStyle(fontWeight: FontWeight.w100));
+
+  TextStyle withColor(Color color) {
+    return merge(TextStyle(color: color));
+  }
+}
+
 extension MaterialColors on Color {
   Color get c0 => getColor(10);
   Color get c10 => getColor(10);
