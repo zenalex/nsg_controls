@@ -64,7 +64,7 @@ class NsgButton extends StatelessWidget {
         widget = null,
         borderRadius = 10,
         width = null,
-        height = 30,
+        height = 44,
         onPressed = onTap,
         margin = const EdgeInsets.all(10),
         padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
