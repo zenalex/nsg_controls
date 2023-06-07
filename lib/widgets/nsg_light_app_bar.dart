@@ -67,35 +67,47 @@ class NsgLightAppBar extends StatelessWidget {
 }
 
 class NsgLigthAppBarIcon extends StatelessWidget {
-  const NsgLigthAppBarIcon({super.key, required this.icon, this.onTap, this.nott, this.color, this.padding = const EdgeInsets.only(right: 8, left: 8)});
+  const NsgLigthAppBarIcon(
+      {super.key, required this.icon, this.onTap, this.onTapCallback, this.nott, this.color, this.padding = const EdgeInsets.only(right: 8, left: 8)});
 
   final IconData icon;
   final void Function()? onTap;
+  final void Function(TapDownDetails details)? onTapCallback;
+  //final ValueChanged<TapDownDetails>? onTapCallback;
   final int? nott;
   final Color? color;
   final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: padding,
-        child: Stack(alignment: Alignment.topRight, children: [
-          InkWell(
-              onTap: onTap,
+    return Stack(alignment: Alignment.topRight, children: [
+      GestureDetector(
+          onTapDown: (TapDownDetails details) {
+            if (onTapCallback != null) {
+              onTapCallback!(details);
+            }
+          },
+          onTap: onTap,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Padding(
+              padding: padding,
               child: Icon(
                 icon,
                 size: 20,
                 color: color ?? ControlOptions.instance.colorMainLight,
-              )),
-          if (nott != null && nott! > 0)
-            ClipOval(
-                child: Container(
-              width: 10,
-              height: 10,
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(color: ControlOptions.instance.colorError),
-            ))
-        ]));
+              ),
+            ),
+          )),
+      if (nott != null && nott! > 0)
+        ClipOval(
+            child: Container(
+          width: 10,
+          height: 10,
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(color: ControlOptions.instance.colorError),
+        ))
+    ]);
   }
 }
 
