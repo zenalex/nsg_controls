@@ -56,11 +56,11 @@ class NsgLightAppBar extends StatelessWidget {
       return const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10);
     } else {
       if (leftIcons.isEmpty) {
-        return const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 5);
+        return const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 12);
       } else if (rightIcons.isEmpty) {
-        return const EdgeInsets.only(top: 10, bottom: 10, left: 5);
+        return const EdgeInsets.only(top: 10, bottom: 10, left: 12);
       } else {
-        return const EdgeInsets.only(top: 10, bottom: 10, left: 5, right: 5);
+        return const EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 12);
       }
     }
   }
@@ -84,6 +84,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
               onTap: onTap,
               child: Icon(
                 icon,
+                size: 20,
                 color: color ?? ControlOptions.instance.colorMainLight,
               )),
           if (nott != null && nott! > 0)
