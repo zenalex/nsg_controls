@@ -434,6 +434,9 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
 
   @override
   Widget build(BuildContext context) {
+    var lastDate = widget.initialDateTime.isBefore(DateTime.now().add(const Duration(days: 365 * 2)))
+        ? DateTime.now().add(const Duration(days: 365 * 2))
+        : widget.initialDateTime;
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 15),
       child: Theme(
@@ -448,7 +451,7 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
         child: CalendarDatePicker(
           key: GlobalKey(),
           firstDate: widget.firstDateTime ?? DateTime(0),
-          lastDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
+          lastDate: widget.lastDateTime ?? lastDate,
           initialDate: widget.initialDateTime,
           onDateChanged: (d) {
             widget.onDateTimeChanged(d);

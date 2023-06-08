@@ -53,10 +53,10 @@ class NsgLightAppBar extends StatelessWidget {
 
   EdgeInsets getPaddings() {
     if (leftIcons.isEmpty && rightIcons.isEmpty) {
-      return const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10);
+      return const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 10);
     } else {
       if (leftIcons.isEmpty) {
-        return const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 12);
+        return const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 12);
       } else if (rightIcons.isEmpty) {
         return const EdgeInsets.only(top: 10, bottom: 10, left: 12);
       } else {
@@ -95,7 +95,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
               child: Icon(
                 icon,
                 size: 20,
-                color: color ?? ControlOptions.instance.colorMainLight,
+                color: color ?? ControlOptions.instance.colorTertiary.c70,
               ),
             ),
           )),
