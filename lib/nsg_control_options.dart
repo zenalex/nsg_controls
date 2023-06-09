@@ -29,17 +29,39 @@ extension TextFontWeight on TextStyle {
 }
 
 extension MaterialColors on Color {
-  Color get c0 => getColor(10);
-  Color get c10 => getColor(10);
-  Color get c20 => getColor(20);
-  Color get c30 => getColor(30);
-  Color get c40 => getColor(40);
-  Color get c50 => getColor(50);
-  Color get c60 => getColor(60);
-  Color get c70 => getColor(70);
-  Color get c80 => getColor(80);
-  Color get c90 => getColor(90);
-  Color get c100 => getColor(100);
+  Color get c0 => getMaterialColor(0);
+  Color get c10 => getMaterialColor(10);
+  Color get c20 => getMaterialColor(20);
+  Color get c30 => getMaterialColor(30);
+  Color get c40 => getMaterialColor(40);
+  Color get c50 => getMaterialColor(50);
+  Color get c60 => getMaterialColor(60);
+  Color get c70 => getMaterialColor(70);
+  Color get c80 => getMaterialColor(80);
+  Color get c90 => getMaterialColor(90);
+  Color get c100 => getMaterialColor(100);
+
+  Color get b0 => Colors.black;
+  Color get b5 => darken(this, .45);
+  Color get b10 => darken(this, .40);
+  Color get b15 => darken(this, .35);
+  Color get b20 => darken(this, .30);
+  Color get b25 => darken(this, .25);
+  Color get b30 => darken(this, .20);
+  Color get b35 => darken(this, .15);
+  Color get b40 => darken(this, .10);
+  Color get b45 => darken(this, .05);
+  Color get b50 => this;
+  Color get b55 => lighten(this, .05);
+  Color get b60 => lighten(this, .10);
+  Color get b65 => lighten(this, .15);
+  Color get b70 => lighten(this, .20);
+  Color get b75 => lighten(this, .25);
+  Color get b80 => lighten(this, .30);
+  Color get b85 => lighten(this, .35);
+  Color get b90 => lighten(this, .40);
+  Color get b95 => lighten(this, .45);
+  Color get b100 => Colors.white;
 
 // C10: 0.0
 // C20: 0.07
@@ -63,7 +85,7 @@ extension MaterialColors on Color {
 // C90: 0.95
 // C100: 0.98
 
-  Color getColor(int index) {
+  Color getMaterialColor(int index) {
     Map<int, Color> generate(Color base) {
       var darker = ColorsCalc().dark(base);
       var lighter = ColorsCalc().light(base);
@@ -84,18 +106,6 @@ extension MaterialColors on Color {
       };
     }
 
-    // final hsl = HSLColor.fromColor(this);
-
-    // final hslDark = hsl.withLightness((lightness / 100).clamp(0.0, 1.0));
-    // final ligth = hslDark.withSaturation((saturation / 100).clamp(0.0, 1.0));
-
-    // HSLColor shadeColor = HSLColor.fromAHSL(
-    //   hsl.alpha,
-    //   hsl.hue,
-    //   //hsl.saturation,
-    //   (saturation / 100).clamp(0.0, 1.0),
-    //   (lightness / 100).clamp(0.0, 1.0),
-    // );
     final nsgColors = generate(this);
     if (nsgColors.containsKey(index)) {
       return nsgColors[index]!;
@@ -375,14 +385,14 @@ class ControlOptions {
 }
 
 Color darken(Color color, [double amount = .07]) {
-  assert(amount >= 0 && amount <= 1);
+  //assert(amount >= 0 && amount <= 1);
   final hsl = HSLColor.fromColor(color);
   final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
   return hslDark.toColor();
 }
 
 Color lighten(Color color, [double amount = .07]) {
-  assert(amount >= 0 && amount <= 1);
+  // assert(amount >= 0 && amount <= 1);
   final hsl = HSLColor.fromColor(color);
   final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
   return hslLight.toColor();

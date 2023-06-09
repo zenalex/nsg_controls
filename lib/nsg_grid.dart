@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nsg_controls/nsg_border.dart';
 
 /// Виджет Grid без Aspect Ratio
 class NsgGrid extends StatelessWidget {
