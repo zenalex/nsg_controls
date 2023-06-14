@@ -25,6 +25,8 @@ class NsgLightAppBar extends StatelessWidget {
                   title,
                   textAlign: TextAlign.center,
                   style: buildStyle.titleStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
