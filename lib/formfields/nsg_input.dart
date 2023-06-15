@@ -267,7 +267,7 @@ class _NsgInputState extends State<NsgInput> {
         setState(() {});
       }
 
-      if (!focus.hasFocus && widget.onEditingComplete != null) {
+      if (!focus.hasFocus && widget.onEditingComplete != null && keyboard == TextInputType.multiline) {
         widget.onEditingComplete!(widget.dataItem, widget.fieldName);
       }
     });
@@ -520,13 +520,16 @@ class _NsgInputState extends State<NsgInput> {
                           //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                           //   }
                           // },
+
                           onEditingComplete: () {
-                            if (widget.onEditingComplete != null) {
-                              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                            if (keyboard != TextInputType.multiline) {
+                              if (widget.onEditingComplete != null) {
+                                widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                              }
+                              Future.delayed(const Duration(milliseconds: 10), () {
+                                FocusScope.of(context).unfocus();
+                              });
                             }
-                            Future.delayed(const Duration(milliseconds: 10), () {
-                              FocusScope.of(context).unfocus();
-                            });
                           },
                           onChanged: (value) {
                             if (widget.onChanged != null) {
