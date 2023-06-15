@@ -267,7 +267,7 @@ class _NsgInputState extends State<NsgInput> {
         setState(() {});
       }
 
-      if (!focus.hasFocus && widget.onEditingComplete != null && keyboard == TextInputType.multiline) {
+      if (!focus.hasFocus && widget.onEditingComplete != null) {
         widget.onEditingComplete!(widget.dataItem, widget.fieldName);
       }
     });
