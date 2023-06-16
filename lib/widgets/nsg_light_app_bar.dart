@@ -70,10 +70,8 @@ class NsgLightAppBar extends StatelessWidget {
 }
 
 class NsgLigthAppBarIcon extends StatelessWidget {
-  NsgLigthAppBarIcon(
-      {super.key, required this.icon, this.onTap, this.onTapCallback, this.nott, this.color, this.padding = const EdgeInsets.only(right: 8, left: 8)}) {
-    print(onTapCallback == null);
-  }
+  const NsgLigthAppBarIcon(
+      {super.key, required this.icon, this.onTap, this.onTapCallback, this.nott, this.color, this.padding = const EdgeInsets.only(right: 8, left: 8)});
 
   final IconData icon;
   final void Function()? onTap;
