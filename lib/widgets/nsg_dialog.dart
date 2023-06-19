@@ -27,7 +27,7 @@ class NsgDialog {
     return showModalBottomSheet<void>(
       transitionAnimationController: animationController,
       context: context,
-      constraints: BoxConstraints(maxHeight: Get.height - 40),
+      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height - 40),
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
