@@ -106,7 +106,7 @@ class NsgInput extends StatefulWidget {
   final bool? isDense;
 
   /// Виджет для отображения в поле ввода как подсказка
-  final Widget? lableWidget;
+  final Widget? labelWidget;
 
   /// Самая ранняя дата, доступная для выбора
   final DateTime? firstDateTime;
@@ -120,7 +120,7 @@ class NsgInput extends StatefulWidget {
   /// Показывать значек замка при параметре disabled
   final bool showLock;
 
-  /// Поведение lable при вводе контента
+  /// Поведение label при вводе контента
   final FloatingLabelBehavior? floatingLabelBehavior;
 
   /// Стиль текста в поле ввода
@@ -129,7 +129,7 @@ class NsgInput extends StatefulWidget {
   /// Заменяет  дефолтный виджет для bool значений на кастомный
   final Widget? boolWidget;
 
-  /// Положение bool элемента относително lable или lableWidget
+  /// Положение bool элемента относително label или labelWidget
   final BoolBoxPosition? boolBoxPosition;
 
   /// Параметры отступа для значений внутри NsgInput
@@ -188,7 +188,7 @@ class NsgInput extends StatefulWidget {
     this.filled,
     this.filledColor,
     this.isDense,
-    this.lableWidget,
+    this.labelWidget,
     this.showLock = true,
     this.floatingLabelBehavior = FloatingLabelBehavior.never,
     this.textStyle,
@@ -479,7 +479,7 @@ class _NsgInputState extends State<NsgInput> {
                           decoration: InputDecoration(
                             suffixIcon: widget.suffixIcon,
                             floatingLabelBehavior: widget.floatingLabelBehavior,
-                            label: widget.lableWidget,
+                            label: widget.labelWidget,
                             prefix: !_disabled
                                 ? null
                                 : widget.showLock
@@ -747,6 +747,7 @@ class _NsgInputState extends State<NsgInput> {
               setState(() {});
             })
           : NsgDatePicker(
+                  labelWidget: widget.labelWidget,
                   firstDateTime: widget.firstDateTime,
                   lastDateTime: widget.lastDateTime,
                   initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
@@ -766,7 +767,7 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   Widget _buildBoolWidget(bool fieldValue) {
-    Widget lable = widget.lableWidget ??
+    Widget label = widget.labelWidget ??
         Expanded(
             child: Text(
           widget.label,
@@ -797,7 +798,7 @@ class _NsgInputState extends State<NsgInput> {
             color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
             border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? nsgtheme.nsgInputBorderColor))),
         child: Row(
-          children: widget.boolBoxPosition == BoolBoxPosition.end ? [lable, boolBox] : [boolBox, lable],
+          children: widget.boolBoxPosition == BoolBoxPosition.end ? [label, boolBox] : [boolBox, label],
         ));
   }
 }
