@@ -383,7 +383,9 @@ class _NsgInputState extends State<NsgInput> {
     }
     if (inputType == NsgInputType.dateValue) {
       if (DateTime(01, 01, 01).isAtSameMomentAs(fieldValue) || DateTime(1754, 01, 01).isAtSameMomentAs(fieldValue)) {
-        textController.text = widget.label;
+        //TODO Убрал это, зачем вообще присваивать в текст значение лейбла?
+        //textController.text = widget.label;
+        textController.text = '';
       } else {
         textController.text = NsgDateFormat.dateFormat(fieldValue, format: widget.formatDateTime);
       }
@@ -429,33 +431,6 @@ class _NsgInputState extends State<NsgInput> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        if (!focus.hasFocus && textController.text == '')
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: getHintPadding(),
-                              child: Text(
-                                (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
-                                style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
-                              ),
-                            ),
-                          ),
-                        if (widget.hint != null && focus.hasFocus && textController.text == '')
-                          ValueListenableBuilder(
-                              valueListenable: _notifier,
-                              builder: (BuildContext context, bool val, Widget? child) {
-                                if (_notifier.value == true) {
-                                  return Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      widget.hint!,
-                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
-                                    ),
-                                  );
-                                } else {
-                                  return const SizedBox();
-                                }
-                              }),
                         TextFormField(
                           controller: textController,
                           inputFormatters: widget.maskType == NsgInputMaskType.phone
@@ -479,7 +454,7 @@ class _NsgInputState extends State<NsgInput> {
                           decoration: InputDecoration(
                             suffixIcon: widget.suffixIcon,
                             floatingLabelBehavior: widget.floatingLabelBehavior,
-                            label: widget.labelWidget,
+                            //label: widget.labelWidget,
                             prefix: !_disabled
                                 ? null
                                 : widget.showLock
@@ -540,6 +515,34 @@ class _NsgInputState extends State<NsgInput> {
                           style: widget.textStyle ?? TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
                           readOnly: _disabled,
                         ),
+                        if (!focus.hasFocus && textController.text == '')
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: getHintPadding(),
+                              child: widget.labelWidget ??
+                                  Text(
+                                    (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
+                                    style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                  ),
+                            ),
+                          ),
+                        if (widget.hint != null && focus.hasFocus && textController.text == '')
+                          ValueListenableBuilder(
+                              valueListenable: _notifier,
+                              builder: (BuildContext context, bool val, Widget? child) {
+                                if (_notifier.value == true) {
+                                  return Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      widget.hint!,
+                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                    ),
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
+                              }),
                       ],
                     ),
                   ),
@@ -747,7 +750,6 @@ class _NsgInputState extends State<NsgInput> {
               setState(() {});
             })
           : NsgDatePicker(
-                  labelWidget: widget.labelWidget,
                   firstDateTime: widget.firstDateTime,
                   lastDateTime: widget.lastDateTime,
                   initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
