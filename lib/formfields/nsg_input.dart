@@ -758,11 +758,12 @@ class _NsgInputState extends State<NsgInput> {
                       : widget.dataItem[widget.fieldName],
                   onClose: (value) {})
               .showPopup(context, widget.dataItem[widget.fieldName], (value) {
+              widget.dataItem[widget.fieldName] = value;
               if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
               if (widget.onEditingComplete != null) {
                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
               }
-              widget.dataItem[widget.fieldName] = value;
+              // widget.dataItem[widget.fieldName] = value;
               setState(() {});
             });
     }
