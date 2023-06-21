@@ -125,8 +125,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   String error = '';
   bool galleryPage = true;
   ScrollController scrollController = ScrollController();
-  late List<NsgFilePickerObject> objectsList;
-  late List<NsgFilePickerObject> needToCropObj;
+  List<NsgFilePickerObject> objectsList = [];
+  List<NsgFilePickerObject> needToCropObj = [];
 
   Widget _appBar() {
     return NsgAppBar(
