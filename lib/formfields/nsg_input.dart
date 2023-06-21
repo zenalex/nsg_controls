@@ -335,6 +335,7 @@ class _NsgInputState extends State<NsgInput> {
         }
         widget.dataItem.setFieldValue(widget.fieldName, textController.value.text);
       }
+      if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
     });
 
     if (useSelectionController) {
