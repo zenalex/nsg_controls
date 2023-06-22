@@ -121,6 +121,7 @@ class ControlOptions {
   final EdgeInsets nsgInputMargin;
   final bool nsgInputFilled;
   final bool nsgInputHintAlwaysOnTop;
+  final bool nsgInputHintHidden;
   final TextFormFieldType nsgInputOutlineBorderType;
   final EdgeInsets nsgInputContenPadding;
   final Color nsgInputColorLabel;
@@ -263,6 +264,7 @@ class ControlOptions {
     this.nsgInputMargin = const EdgeInsets.all(5),
     this.nsgInputFilled = false,
     this.nsgInputHintAlwaysOnTop = false,
+    this.nsgInputHintHidden = false,
     this.nsgInputBorderColor = const Color.fromARGB(122, 70, 59, 11),
     this.nsgInputBorderActiveColor = const Color.fromARGB(255, 70, 59, 11),
     this.nsginputCloseIconColor = const Color.fromARGB(255, 70, 59, 11),

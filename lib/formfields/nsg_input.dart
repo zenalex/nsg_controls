@@ -516,7 +516,7 @@ class _NsgInputState extends State<NsgInput> {
                           style: widget.textStyle ?? TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
                           readOnly: _disabled,
                         ),
-                        if (!focus.hasFocus && textController.text == '')
+                        if (!nsgtheme.nsgInputHintHidden || (!focus.hasFocus && textController.text == ''))
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
@@ -563,7 +563,9 @@ class _NsgInputState extends State<NsgInput> {
           ? widget.contentPadding! //.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr)
           : EdgeInsets.zero;
     } else {
-      return nsgtheme.nsgInputContenPadding.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr);
+      return nsgtheme.nsgInputContenPadding
+          .subtract(EdgeInsets.only(top: nsgtheme.nsgInputContenPadding.top, bottom: nsgtheme.nsgInputContenPadding.bottom))
+          .resolve(TextDirection.ltr);
     }
   }
 
