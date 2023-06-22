@@ -516,7 +516,7 @@ class _NsgInputState extends State<NsgInput> {
                           style: widget.textStyle ?? TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
                           readOnly: _disabled,
                         ),
-                        if (!nsgtheme.nsgInputHintHidden || (!focus.hasFocus && textController.text == ''))
+                        if (!nsgtheme.nsgInputHintHidden && (!focus.hasFocus && textController.text == ''))
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
