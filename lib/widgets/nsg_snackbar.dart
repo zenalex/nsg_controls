@@ -24,6 +24,14 @@ void nsgSnackbar(
     TextAlign? textAlign}) {
   Flushbar(
     onTap: onTap,
+    boxShadows: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.5),
+        spreadRadius: 5,
+        blurRadius: 15,
+        offset: Offset(0, -5),
+      )
+    ],
     backgroundColor: ControlOptions.instance.colorMain,
     messageColor: ControlOptions.instance.colorMainText,
     titleText: title == null
