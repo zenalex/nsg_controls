@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 import 'formfields/nsg_field_type.dart';
+import 'formfields/nsg_switch_horizontal.dart';
 import 'widgets/nsg_dialog_save_or_cancel.dart';
 import 'widgets/nsg_error_widget.dart';
 
@@ -130,6 +131,8 @@ class ControlOptions {
   final Color nsgInputBorderActiveColor;
   final Color nsginputCloseIconColor;
   final Color nsginputCloseIconColorHover;
+
+  final NsgSwitchHorizontalStyle nsgSwitchHorizontalStyle;
 
   // Главный цвет приложения
   @Deprecated('Old variable. Use colorPrimary')
@@ -260,6 +263,7 @@ class ControlOptions {
   String dateformat = 'dd.MM.yy';
 
   ControlOptions({
+    this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
     this.fileExchangeVersion = 1.0,
     this.nsgInputMargin = const EdgeInsets.all(5),
     this.nsgInputFilled = false,

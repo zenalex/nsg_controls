@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/formfields/nsg_position_boolBox.dart';
+import 'package:nsg_controls/formfields/nsg_switch_horizontal.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -146,8 +147,11 @@ class NsgInput extends StatefulWidget {
 
   final Color? trackColor, activeColor, thumbColor;
 
+  final NsgSwitchHorizontalStyle nsgSwitchHorizontalStyle;
+
   const NsgInput({
     Key? key,
+    this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
     this.trackColor,
     this.activeColor,
     this.thumbColor,
@@ -787,31 +791,50 @@ class _NsgInputState extends State<NsgInput> {
 
     Widget boolBox = widget.boolWidget ??
         StatefulBuilder(
-          builder: ((context, setState) => CupertinoSwitch(
-              trackColor: widget.trackColor ?? ControlOptions.instance.colorMainDarker,
-              activeColor: widget.activeColor ?? ControlOptions.instance.colorMain,
-              thumbColor: widget.thumbColor ?? ControlOptions.instance.colorGrey,
-              value: fieldValue,
-              onChanged: (value) {
-                fieldValue = !fieldValue;
-                widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
-                if (widget.updateController != null) {
-                  widget.updateController!.update();
-                } else {
-                  setState(() {});
-                }
-              })),
+          builder: ((context, setState) => NsgSwitchHorizontal(
+                      //key: GlobalKey(),
+                      style: widget.nsgSwitchHorizontalStyle,
+                      widget.label,
+                      isOn: fieldValue, onTap: () {
+                    fieldValue = !fieldValue;
+                    widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                    if (widget.updateController != null) {
+                      widget.updateController!.update();
+                    } else {
+                      setState(() {});
+                    }
+                  })
+
+              //  CupertinoSwitch(
+              //     trackColor: widget.trackColor ?? ControlOptions.instance.colorMainDarker,
+              //     activeColor: widget.activeColor ?? ControlOptions.instance.colorMain,
+              //     thumbColor: widget.thumbColor ?? ControlOptions.instance.colorGrey,
+              //     value: fieldValue,
+              //     onChanged: (value) {
+              //       fieldValue = !fieldValue;
+              //       widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+              //       if (widget.updateController != null) {
+              //         widget.updateController!.update();
+              //       } else {
+              //         setState(() {});
+              //       }
+              //     })
+
+              ),
         );
 
     return Container(
         margin: widget.margin ?? nsgtheme.nsgInputMargin,
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         decoration: BoxDecoration(
-            color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
-            border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? nsgtheme.nsgInputBorderColor))),
-        child: Row(
-          children: widget.boolBoxPosition == BoolBoxPosition.end ? [label, boolBox] : [boolBox, label],
-        ));
+          color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
+          //border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? nsgtheme.nsgInputBorderColor))
+        ),
+        child: boolBox
+        //  Row(
+        //   children: widget.boolBoxPosition == BoolBoxPosition.end ? [label, boolBox] : [boolBox, label],
+        // )
+        );
   }
 }
 
