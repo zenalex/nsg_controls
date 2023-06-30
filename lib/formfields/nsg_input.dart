@@ -144,8 +144,13 @@ class NsgInput extends StatefulWidget {
   /// Форматировать отображение времени для входящего виджета
   final String? formatDateTime;
 
+  final Color? trackColor, activeColor, thumbColor;
+
   const NsgInput({
     Key? key,
+    this.trackColor,
+    this.activeColor,
+    this.thumbColor,
     this.autofocus = false,
     this.initialDateTime,
     this.firstDateTime,
@@ -783,9 +788,10 @@ class _NsgInputState extends State<NsgInput> {
     Widget boolBox = widget.boolWidget ??
         StatefulBuilder(
           builder: ((context, setState) => CupertinoSwitch(
-              trackColor: ControlOptions.instance.colorMainDarker,
+              trackColor: widget.trackColor ?? ControlOptions.instance.colorMainDarker,
+              activeColor: widget.activeColor ?? ControlOptions.instance.colorMain,
+              thumbColor: widget.thumbColor ?? ControlOptions.instance.colorGrey,
               value: fieldValue,
-              activeColor: ControlOptions.instance.colorMain,
               onChanged: (value) {
                 fieldValue = !fieldValue;
                 widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
