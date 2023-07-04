@@ -109,4 +109,5 @@ class NsgIcons {
   static const IconData bold = IconData(0xe855, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData box = IconData(0xe856, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData absent = IconData(0xe857, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData select_list = IconData(0xe858, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
