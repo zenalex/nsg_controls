@@ -1724,7 +1724,6 @@ class _NsgTableState extends State<NsgTable> {
               await widget.controller.itemsRemove(listRowsToDelete);
               editMode = NsgTableEditMode.view;
               setState(() {});
-              Get.back();
             }),
         barrierDismissible: false);
   }

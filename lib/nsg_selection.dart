@@ -40,7 +40,8 @@ class NsgSelection {
       itemsList = allValues!;
     }
     for (var element in itemsList) {
-      if (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase())) {
+      if (textEditingController.text.isEmpty ||
+          (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase()))) {
         list.add(GestureDetector(
           onTap: () {
             selectedElement = element;
