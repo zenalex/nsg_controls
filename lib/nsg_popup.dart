@@ -96,6 +96,9 @@ class _NsgPopUpState extends State<NsgPopUp> {
       child: Container(
         decoration: BoxDecoration(color: nsgtheme.colorModalBack),
         child: SimpleDialog(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(nsgtheme.borderRadius))),
           contentPadding: EdgeInsets.zero,
           insetPadding: widget.margin,
@@ -165,12 +168,14 @@ class _NsgPopUpState extends State<NsgPopUp> {
                     onPressed: () {
                       if (widget.onConfirm != null && widget.showCloseButton == false) {
                         widget.onConfirm!();
+                        Navigator.of(context).pop();
                       }
                       if (widget.showCloseButton == true) {
                         if (widget.onCancel != null) {
                           widget.onCancel!();
+                          Navigator.of(context).pop();
                         } else {
-                          Navigator.pop(Get.context!, false);
+                          Navigator.of(context).pop();
                         }
                       }
                     }),
