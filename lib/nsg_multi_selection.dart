@@ -84,10 +84,10 @@ class NsgMultiSelection {
     return list;
   }
 
-  void selectFromArray(String title, String title2, Function(List<NsgDataItem>) onSelected) {
+  void selectFromArray(String title, String title2, Function(List<NsgDataItem>) onSelected, {NsgDataRequestParams? filter}) {
     var controllerItem = NsgDataClient.client.getNewObject(controller.dataType);
     selectedElement = controller.selectedItem;
-    controller.refreshData();
+    controller.refreshData(filter: filter);
     Get.dialog(
         controller.obxBase((state) => NsgPopUp(
             title: title,

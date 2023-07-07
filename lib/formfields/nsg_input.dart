@@ -673,25 +673,21 @@ class _NsgInputState extends State<NsgInput> {
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
         var form = NsgSelection(inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
-        form.selectFromArray(
-          widget.label,
-          filter,
-          (item) {
-            widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
-            if (widget.onChanged != null) {
-              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
-            }
-            if (widget.onEditingComplete != null) {
-              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-            }
-            if (widget.controller != null) {
-              widget.controller!.sendNotify();
-            } else {
-              setState(() {});
-            }
-            return;
-          },
-        );
+        form.selectFromArray(widget.label, (item) {
+          widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
+          if (widget.onChanged != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+          }
+          if (widget.onEditingComplete != null) {
+            widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+          }
+          if (widget.controller != null) {
+            widget.controller!.sendNotify();
+          } else {
+            setState(() {});
+          }
+          return;
+        }, filter: filter);
       } else {
         //Иначе - вызываем переданную форму для подбора
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
@@ -717,11 +713,25 @@ class _NsgInputState extends State<NsgInput> {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
       var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
-      form.selectFromArray(
-        widget.label,
-        filter,
-        (item) {
-          widget.dataItem.setFieldValue(widget.fieldName, item);
+      form.selectFromArray(widget.label, (item) {
+        widget.dataItem.setFieldValue(widget.fieldName, item);
+        if (widget.onChanged != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+        }
+        if (widget.onEditingComplete != null) {
+          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+        }
+        setState(() {});
+        return null;
+      }, filter: filter);
+    } else if (inputType == NsgInputType.referenceList) {
+      var form = NsgMultiSelection(controller: selectionController!);
+      form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
+      selectionController!.refreshData(filter: filter);
+      if (widget.selectionForm == '') {
+        //Если формы для выбора не задана: вызываем форму подбора по умолчанию
+        form.selectFromArray(widget.label, '', (items) {
+          widget.dataItem.setFieldValue(widget.fieldName, items);
           if (widget.onChanged != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
           }
@@ -729,29 +739,7 @@ class _NsgInputState extends State<NsgInput> {
             widget.onEditingComplete!(widget.dataItem, widget.fieldName);
           }
           setState(() {});
-          return null;
-        },
-      );
-    } else if (inputType == NsgInputType.referenceList) {
-      var form = NsgMultiSelection(controller: selectionController!);
-      form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
-      selectionController!.refreshData(filter: filter);
-      if (widget.selectionForm == '') {
-        //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        form.selectFromArray(
-          widget.label,
-          '',
-          (items) {
-            widget.dataItem.setFieldValue(widget.fieldName, items);
-            if (widget.onChanged != null) {
-              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
-            }
-            if (widget.onEditingComplete != null) {
-              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-            }
-            setState(() {});
-          },
-        );
+        }, filter: filter);
       } else {
         NsgNavigator.instance.toPage(widget.selectionForm);
       }
