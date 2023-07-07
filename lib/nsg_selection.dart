@@ -84,10 +84,10 @@ class NsgSelection {
     }
   }
 
-  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected) {
+  void selectFromArray(String title, NsgDataRequestParams? filter, Function(NsgDataItem dataItem) onSelected) {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
-      controller!.refreshData();
+      controller!.refreshData(filter: filter);
     }
 
     Get.dialog(

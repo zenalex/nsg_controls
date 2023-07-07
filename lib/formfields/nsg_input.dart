@@ -663,6 +663,8 @@ class _NsgInputState extends State<NsgInput> {
       widget.onPressed!();
       return;
     }
+    var filter = widget.getRequestFilter == null ? null : widget.getRequestFilter!();
+
     if (inputType == NsgInputType.reference) {
       selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       //Зенков 27.12.2022 Вызывается в form.selectFromArray
@@ -673,6 +675,7 @@ class _NsgInputState extends State<NsgInput> {
         var form = NsgSelection(inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
         form.selectFromArray(
           widget.label,
+          filter,
           (item) {
             widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
             if (widget.onChanged != null) {
@@ -692,7 +695,8 @@ class _NsgInputState extends State<NsgInput> {
       } else {
         //Иначе - вызываем переданную форму для подбора
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        selectionController!.refreshData();
+
+        selectionController!.refreshData(filter: filter);
         selectionController!.regime = NsgControllerRegime.selection;
         selectionController!.onSelected = (item) {
           Get.back();
@@ -715,6 +719,7 @@ class _NsgInputState extends State<NsgInput> {
       var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
       form.selectFromArray(
         widget.label,
+        filter,
         (item) {
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) {
@@ -730,7 +735,7 @@ class _NsgInputState extends State<NsgInput> {
     } else if (inputType == NsgInputType.referenceList) {
       var form = NsgMultiSelection(controller: selectionController!);
       form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
-      selectionController!.refreshData();
+      selectionController!.refreshData(filter: filter);
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
         form.selectFromArray(
