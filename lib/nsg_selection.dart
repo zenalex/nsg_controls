@@ -84,7 +84,7 @@ class NsgSelection {
     }
   }
 
-  void selectFromArray(String title, NsgDataRequestParams? filter, Function(NsgDataItem dataItem) onSelected) {
+  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected, {NsgDataRequestParams? filter}) {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
       controller!.refreshData(filter: filter);
