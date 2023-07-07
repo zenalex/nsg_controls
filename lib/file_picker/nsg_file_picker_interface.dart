@@ -4,7 +4,7 @@ import 'package:nsg_data/nsg_data.dart';
 
 import 'nsg_file_picker_object.dart';
 
-abstract class NsgFilePickerInterface {
+mixin NsgFilePickerInterface {
   Future<NsgDataItem> fileObjectToDataItem(NsgFilePickerObject fileObject, File imageFile);
 
   Future<NsgFilePickerObject> dataItemToFileObject(NsgDataItem dataItem);
