@@ -5,7 +5,7 @@ class NsgRowToColumn extends StatefulWidget {
   final bool addExpanded;
   final int switchWidth;
   final double gap;
-  
+
   const NsgRowToColumn({Key? key, required this.children, this.addExpanded = false, this.switchWidth = 400, this.gap = 0}) : super(key: key);
 
   @override
@@ -25,7 +25,7 @@ class _NsgRowToColumnState extends State<NsgRowToColumn> {
           }
         }
         if (widget.gap > 0) {
-          var length = children.length;
+          var length = children.length - 1;
           for (var i = 0; i < length; i++) {
             children.insert(i * 2 + 1, SizedBox(width: widget.gap));
           }
@@ -36,7 +36,7 @@ class _NsgRowToColumnState extends State<NsgRowToColumn> {
         children.addAll(widget.children);
         if (widget.gap > 0) {
           var length = children.length;
-          for (var i = 0; i < length; i++) {
+          for (var i = 0; i < length - 1; i++) {
             children.insert(i * 2 + 1, SizedBox(height: widget.gap));
           }
         }
