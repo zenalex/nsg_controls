@@ -684,10 +684,11 @@ class _NsgInputState extends State<NsgInput> {
           if (widget.controller != null) {
             widget.controller!.sendNotify();
           } else {
+            //Navigator.pop(context);
             setState(() {});
           }
           return;
-        }, filter: filter);
+        }, context: context, filter: filter);
       } else {
         //Иначе - вызываем переданную форму для подбора
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
@@ -723,7 +724,7 @@ class _NsgInputState extends State<NsgInput> {
         }
         setState(() {});
         return null;
-      }, filter: filter);
+      }, context: context, filter: filter);
     } else if (inputType == NsgInputType.referenceList) {
       var form = NsgMultiSelection(controller: selectionController!);
       form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();

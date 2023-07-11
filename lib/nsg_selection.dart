@@ -1,4 +1,5 @@
 import 'package:nsg_controls/selection_nsg_popup.dart';
+import 'package:path/path.dart';
 
 import 'nsg_controls.dart';
 import 'package:flutter/material.dart';
@@ -84,26 +85,29 @@ class NsgSelection {
     }
   }
 
-  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected, {NsgDataRequestParams? filter}) {
+  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected, {NsgDataRequestParams? filter, required BuildContext context}) {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
       controller!.refreshData(filter: filter);
     }
 
-    Get.dialog(
-      SelectionNsgPopUp(
-          title: title,
-          getContent: _listArray,
-          dataController: controller,
-          textEditController: textEditingController,
-          confirmText: 'Подтвердить',
-          onConfirm: () {
-            Get.back();
-            if (selectedElement != null) {
-              controller?.selectedItem = selectedElement;
-              onSelected(selectedElement!);
-            }
-          }),
+    showDialog(
+      context: context,
+      builder: (cont) {
+        return SelectionNsgPopUp(
+            title: title,
+            getContent: _listArray,
+            dataController: controller,
+            textEditController: textEditingController,
+            confirmText: 'Подтвердить',
+            onConfirm: () {
+              if (selectedElement != null) {
+                controller?.selectedItem = selectedElement;
+                onSelected(selectedElement!);
+              }
+              Navigator.pop(cont);
+            });
+      },
       barrierDismissible: false,
     );
   }
