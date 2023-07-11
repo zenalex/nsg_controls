@@ -63,7 +63,6 @@ class NsgTimePicker extends StatefulWidget {
               title: 'Введите время',
               onConfirm: () {
                 onClose(selectedDate);
-                Navigator.pop(context);
               },
               onCancel: () {
                 Navigator.pop(context);

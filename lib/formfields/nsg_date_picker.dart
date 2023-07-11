@@ -64,7 +64,6 @@ class NsgDatePicker extends StatefulWidget {
               //height: 410,
               onConfirm: () {
                 onClose(selectedDate);
-                Navigator.of(context).pop();
               },
               onCancel: () {
                 Navigator.of(context).pop();

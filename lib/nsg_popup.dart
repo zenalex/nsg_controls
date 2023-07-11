@@ -18,6 +18,7 @@ class NsgPopUp extends StatefulWidget {
   final String? confirmText;
   final VoidCallback? onCancel;
   final VoidCallback? onConfirm;
+  final bool popOnConfirm;
   final List<Widget> Function()? getContent;
   final List<Widget>? contentSecondary;
   final Widget? contentTop;
@@ -41,6 +42,7 @@ class NsgPopUp extends StatefulWidget {
       this.margin = const EdgeInsets.all(10),
       this.confirmText,
       this.onCancel,
+      this.popOnConfirm = true,
       this.onConfirm,
       this.getContent,
       this.height,
@@ -168,7 +170,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                     onPressed: () {
                       if (widget.onConfirm != null && widget.showCloseButton == false) {
                         widget.onConfirm!();
-                        Navigator.of(context).pop();
+                        if (widget.popOnConfirm) Navigator.of(context).pop();
                       }
                       if (widget.showCloseButton == true) {
                         if (widget.onCancel != null) {
