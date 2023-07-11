@@ -747,7 +747,8 @@ class _NsgInputState extends State<NsgInput> {
       widget.formatDateTime == 'HH:mm'
           ? NsgTimePicker(
               dateForTime: widget.dataItem[widget.fieldName],
-              initialTime: Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute),
+              initialTime: Duration(
+                  hours: (widget.dataItem[widget.fieldName] ?? DateTime.now()).hour, minutes: (widget.dataItem[widget.fieldName] ?? DateTime.now()).minute),
               onClose: (Duration endDate) {},
             ).showPopup(context, widget.dataItem[widget.fieldName].hour, widget.dataItem[widget.fieldName].minute, (value) {
               if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
