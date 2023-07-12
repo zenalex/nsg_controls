@@ -529,15 +529,17 @@ class _NsgInputState extends State<NsgInput> {
                           readOnly: _disabled,
                         ),
                         if (!nsgtheme.nsgInputHintHidden && (!focus.hasFocus && textController.text == ''))
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: getHintPadding(),
-                              child: widget.labelWidget ??
-                                  Text(
-                                    (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
-                                    style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
-                                  ),
+                          IgnorePointer(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: getHintPadding(),
+                                child: widget.labelWidget ??
+                                    Text(
+                                      (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
+                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                    ),
+                              ),
                             ),
                           ),
                         if (widget.hint != null && focus.hasFocus && textController.text == '')
