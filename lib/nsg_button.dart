@@ -212,7 +212,7 @@ class NsgButton extends StatelessWidget {
         child: Material(
           borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
           color: disabled == true ? _backColor.withOpacity(0.5) : _backColor,
-          child: GestureDetector(
+          child: InkWell(
             onTap: disabled == true ? onDisabledPressed : onPressed,
             child: Padding(
                 padding: padding,
