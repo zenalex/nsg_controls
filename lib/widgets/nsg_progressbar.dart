@@ -78,7 +78,7 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
       child: SizedBox(
         width: 210,
         height: 210,
-        child: (Platform.isIOS)
+        child: (1 == 1)
             ? Column(
                 children: [
                   Center(
