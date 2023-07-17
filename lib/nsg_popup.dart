@@ -150,7 +150,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         if (widget.onCancel != null) {
                           widget.onCancel!();
                         } else {
-                          Navigator.pop(Get.context!, false);
+                          Navigator.pop(context, false);
                         }
                       }),
                 Expanded(

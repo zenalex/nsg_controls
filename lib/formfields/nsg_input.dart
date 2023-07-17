@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -151,8 +155,11 @@ class NsgInput extends StatefulWidget {
 
   final NsgDataRequestParams Function()? getRequestFilter;
 
+  final List<dynamic> dynamicList;
+
   const NsgInput(
       {Key? key,
+      this.dynamicList = const [],
       this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
       this.trackColor,
       this.activeColor,
@@ -216,6 +223,10 @@ class NsgInput extends StatefulWidget {
   State<NsgInput> createState() => _NsgInputState();
 
   NsgInputType selectInputType() {
+    // if (dynamicList.isNotEmpty && !kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+    if (dynamicList.isNotEmpty) {
+      return NsgInputType.dynamicList;
+    }
     if (inputType == NsgInputType.autoselect) {
       //Если не выбран, задаем его автоматически, исходя из типа данных fieldName
       if (dataItem.getField(fieldName) is NsgDataReferenceField) {
@@ -627,11 +638,12 @@ class _NsgInputState extends State<NsgInput> {
 
                 Future.delayed(const Duration(milliseconds: 10), () {
                   FocusScope.of(context).requestFocus(focus);
+                  if (widget.onEditingComplete != null) {
+                    widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                  }
                 });
                 textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
-                if (widget.onEditingComplete != null) {
-                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                }
+
                 setState(() {});
               },
               child: HoverWidget(
@@ -667,7 +679,54 @@ class _NsgInputState extends State<NsgInput> {
     }
     var filter = widget.getRequestFilter == null ? null : widget.getRequestFilter!();
 
-    if (inputType == NsgInputType.reference) {
+    if (inputType == NsgInputType.dynamicList) {
+      List<Widget> list = [];
+      var value = widget.dataItem.getFieldValue(widget.fieldName);
+      print(value);
+      int initItem = widget.dynamicList.indexOf(value);
+      int countItem = initItem;
+      for (var item in widget.dynamicList) {
+        list.add(
+          Text(
+            item.toString(),
+            style: TextStyle(color: nsgtheme.colorSecondary.c100),
+          ),
+        );
+      }
+      showDialog(
+          context: context,
+          builder: (_) => BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: NsgPopUp(
+                  width: 300,
+                  onConfirm: () {
+                    textController.text = widget.dynamicList[countItem].toString();
+                    widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
+                    if (widget.onEditingComplete != null) {
+                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                    }
+                    setState(() {});
+                  },
+                  title: widget.label,
+                  contentTop: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    height: 300,
+                    child: CupertinoPicker(
+                      selectionOverlay: Container(
+                        decoration: BoxDecoration(color: nsgtheme.colorPrimary.b30.withOpacity(0.5)),
+                      ),
+                      backgroundColor: nsgtheme.colorSecondary.c40,
+                      itemExtent: 30,
+                      onSelectedItemChanged: (value) {
+                        countItem = value;
+                      },
+                      scrollController: FixedExtentScrollController(initialItem: initItem),
+                      children: list,
+                    ),
+                  ),
+                ),
+              ));
+    } else if (inputType == NsgInputType.reference) {
       selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       //Зенков 27.12.2022 Вызывается в form.selectFromArray
       //Перенес вызов ниже в случае передачи пользовательской формы
