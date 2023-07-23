@@ -21,7 +21,7 @@ import 'nsg_table_menu_button.dart';
 
 /// Виджет отображения таблицы
 class NsgTable extends StatefulWidget {
-  bool Function(NsgDataItem item)? forbidDeleting;
+  final bool Function(NsgDataItem item)? forbidDeleting;
 
   NsgTable(
       {Key? key,
@@ -843,6 +843,8 @@ class _NsgTableState extends State<NsgTable> {
         });
 
         /* -------------------------  Цикл построения ячеек таблицы (строки) --------------------------------------------------------------------------- */
+
+        /* -------------------------  Цикл построения ячеек таблицы (строки) --------------------------------------------------------------------------- */
         if (widget.controller.currentStatus != NsgControillerStatus.loading && items.isNotEmpty) {
           for (var row in items) {
             List<Widget> tableRow = [];
@@ -851,34 +853,23 @@ class _NsgTableState extends State<NsgTable> {
             if (listRowsToDelete.contains(row)) {
               isSelected = true;
             }
-            if (editMode == NsgTableEditMode.rowDelete) {
+            if (editMode == NsgTableEditMode.rowDelete && (widget.forbidDeleting == null || !widget.forbidDeleting!(row))) {
               tableRow.add(InkWell(
-          /* -------------------------  Цикл построения ячеек таблицы (строки) --------------------------------------------------------------------------- */
-          if (!widget.controller.currentStatus.isLoading && items.isNotEmpty) {
-            for (var row in items) {
-              List<Widget> tableRow = [];
-              bool isSelected = false;
-              //bool isFavorite = widget.controller.favorites.contains(row);
-              if (listRowsToDelete.contains(row)) {
-                isSelected = true;
-              }
-              if (editMode == NsgTableEditMode.rowDelete && (widget.forbidDeleting == null || !widget.forbidDeleting!(row))) {
-                tableRow.add(InkWell(
-                    onTap: () {
-                      rowDelete(row);
-                    },
-                    child: showCell(
-                      isFinal: row == items.last,
-                      height: widget.rowFixedHeight,
-                      padding: const EdgeInsets.all(0),
-                      backColor: isSelected ? ControlOptions.instance.colorMainLighter : ControlOptions.instance.tableCellBackColor,
-                      color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-                      width: 40,
-                      child: Icon(Icons.delete_forever_outlined,
-                          color: isSelected ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain, size: 24),
-                    )));
-              } else if (editMode == NsgTableEditMode.rowEdit) {
-                tableRow.add(InkWell(
+                  onTap: () {
+                    rowDelete(row);
+                  },
+                  child: showCell(
+                    isFinal: row == items.last,
+                    height: widget.rowFixedHeight,
+                    padding: const EdgeInsets.all(0),
+                    backColor: isSelected ? ControlOptions.instance.colorMainLighter : ControlOptions.instance.tableCellBackColor,
+                    color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                    width: 40,
+                    child: Icon(Icons.delete_forever_outlined,
+                        color: isSelected ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain, size: 24),
+                  )));
+            } else if (editMode == NsgTableEditMode.rowEdit) {
+              tableRow.add(InkWell(
                   onTap: () {
                     rowDelete(row);
                   },
@@ -1714,42 +1705,42 @@ class _NsgTableState extends State<NsgTable> {
     }
 
     NsgDialog().show(
-        context: context,
-        child: NsgPopUp(
-            title: 'Удаление строк (${listRowsToDelete.length})',
-            getContent: () => [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: Icon(
-                                  Icons.error_outline,
-                                  size: 38,
-                                  color: ControlOptions.instance.colorMain,
-                                ),
+      context: context,
+      child: NsgPopUp(
+          title: 'Удаление строк (${listRowsToDelete.length})',
+          getContent: () => [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: Icon(
+                                Icons.error_outline,
+                                size: 38,
+                                color: ControlOptions.instance.colorMain,
                               ),
-                              const Flexible(child: Text('Подтвердите, что хотите удалить следующие строки:')),
-                            ],
-                          ),
-                          Flexible(child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: list)))
-                        ],
-                      ),
+                            ),
+                            const Flexible(child: Text('Подтвердите, что хотите удалить следующие строки:')),
+                          ],
+                        ),
+                        Flexible(child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: list)))
+                      ],
                     ),
                   ),
-                ],
-            onConfirm: () async {
-              assert(widget.controller is NsgDataTableController);
-              await (widget.controller as NsgDataTableController).itemsRemove(context, listRowsToDelete);
-              editMode = NsgTableEditMode.view;
-              setState(() {});
-            }),
-        barrierDismissible: false);
+                ),
+              ],
+          onConfirm: () async {
+            assert(widget.controller is NsgDataTableController);
+            await (widget.controller as NsgDataTableController).itemsRemove(context, listRowsToDelete);
+            editMode = NsgTableEditMode.view;
+            setState(() {});
+          }),
+    );
   }
 
   Widget _headerWidget(NsgTableColumn column) {

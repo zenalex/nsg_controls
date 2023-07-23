@@ -19,7 +19,8 @@ class NsgGrid extends StatelessWidget {
 
   /// Количество виджетов по горизонтали
   final int crossAxisCount;
-  NsgGrid({Key? key, required this.children, this.crossAxisCount = 3, this.centered = true, this.vGap = 0, this.hGap = 0, this.needExpanded = true, this.width})
+  const NsgGrid(
+      {Key? key, required this.children, this.crossAxisCount = 3, this.centered = true, this.vGap = 0, this.hGap = 0, this.needExpanded = true, this.width})
       : super(key: key);
 
   @override

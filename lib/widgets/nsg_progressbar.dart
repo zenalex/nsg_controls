@@ -4,7 +4,6 @@ import 'package:vector_math/vector_math.dart' as vmath;
 
 import '../nsg_control_options.dart';
 import '../nsg_progress_dialog.dart';
-import 'dart:io' show Platform;
 
 class NsgProgressBar extends StatefulWidget {
   final NsgProgressDialog? dialogWidget;
@@ -92,8 +91,8 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
                       ),
                     ),
                   ),
-                  SizedBox(height: 15),
-                  NsgSimpleProgressBar(
+                  const SizedBox(height: 15),
+                  const NsgSimpleProgressBar(
                     size: 100,
                     width: 3,
                   ),

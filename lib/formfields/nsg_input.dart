@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/formfields/nsg_position_boolBox.dart';
@@ -681,7 +679,6 @@ class _NsgInputState extends State<NsgInput> {
     if (inputType == NsgInputType.dynamicList) {
       List<Widget> list = [];
       var value = widget.dataItem.getFieldValue(widget.fieldName);
-      print(value);
       int initItem = widget.dynamicList.indexOf(value);
       int countItem = initItem;
       for (var item in widget.dynamicList) {
@@ -708,7 +705,7 @@ class _NsgInputState extends State<NsgInput> {
                   },
                   title: widget.label,
                   contentTop: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     height: 300,
                     child: CupertinoPicker(
                       selectionOverlay: Container(
@@ -734,7 +731,7 @@ class _NsgInputState extends State<NsgInput> {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
         var form = NsgSelection(inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
         form.selectFromArray(
-          context,
+          context: context,
           widget.label,
           (item) {
             widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
@@ -777,11 +774,6 @@ class _NsgInputState extends State<NsgInput> {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
       var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
-      form.selectFromArray(
-        context,
-        widget.label,
-        (item) {
-          widget.dataItem.setFieldValue(widget.fieldName, item);
       form.selectFromArray(widget.label, (item) {
         widget.dataItem.setFieldValue(widget.fieldName, item);
         if (widget.onChanged != null) {
@@ -799,7 +791,7 @@ class _NsgInputState extends State<NsgInput> {
       selectionController!.refreshData(filter: filter);
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        form.selectFromArray(widget.label, '', (items) {
+        form.selectFromArray(context, widget.label, '', (items) {
           widget.dataItem.setFieldValue(widget.fieldName, items);
           if (widget.onChanged != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
@@ -848,12 +840,12 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   Widget _buildBoolWidget(bool fieldValue) {
-    Widget label = widget.labelWidget ??
-        Expanded(
-            child: Text(
-          widget.label,
-          style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
-        ));
+    // Widget label = widget.labelWidget ??
+    //     Expanded(
+    //         child: Text(
+    //       widget.label,
+    //       style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
+    //     ));
 
     Widget boolBox = widget.boolWidget ??
         StatefulBuilder(

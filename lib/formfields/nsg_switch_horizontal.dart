@@ -87,8 +87,8 @@ class NsgSwitchHorizontalStyle {
 
   NsgSwitchHorizontalStyleMain style() {
     return NsgSwitchHorizontalStyleMain(
-      textStyle: textStyle ?? nsgtheme.nsgSwitchHorizontalStyle.textStyle ?? TextStyle(),
-      textActiveStyle: textActiveStyle ?? nsgtheme.nsgSwitchHorizontalStyle.textActiveStyle ?? TextStyle(),
+      textStyle: textStyle ?? nsgtheme.nsgSwitchHorizontalStyle.textStyle ?? const TextStyle(),
+      textActiveStyle: textActiveStyle ?? nsgtheme.nsgSwitchHorizontalStyle.textActiveStyle ?? const TextStyle(),
       trackColor: trackColor ?? nsgtheme.nsgSwitchHorizontalStyle.trackColor ?? Colors.black,
       trackActiveColor: trackActiveColor ?? nsgtheme.nsgSwitchHorizontalStyle.trackActiveColor ?? Colors.black,
       thumbColor: thumbColor ?? nsgtheme.nsgSwitchHorizontalStyle.thumbColor ?? Colors.red,

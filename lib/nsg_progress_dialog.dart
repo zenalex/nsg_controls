@@ -50,7 +50,7 @@ class NsgProgressDialog {
       if (dialogWidget != null) {
         dialogWidget!.isClosed = true;
       }
-      Navigator.pop(context ?? Get.context!);
+      Navigator.pop(context);
     }
   }
   // При нажатии на кнопку отмены вызываем requestStop - убираем кнопку отмены, пишем "обработка отмены"

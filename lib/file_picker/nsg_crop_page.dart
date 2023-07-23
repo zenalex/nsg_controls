@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as imgEdit;
+import 'package:image/image.dart' as img_edit;
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_simple_progress_bar.dart';
 
@@ -13,17 +13,17 @@ class NsgCrop {
       {required List<List<int>> imageList, double? ratio = 1 / 1, bool isCircle = false, bool isFree = true, Color backColor = Colors.white}) async {
     List<Uint8List> imageDataList = [];
     for (var el in imageList) {
-      final mainImage = imgEdit.decodeImage(Uint8List.fromList(el));
-      final background = imgEdit.Image(width: mainImage!.width + 500, height: mainImage.height + 500);
+      final mainImage = img_edit.decodeImage(Uint8List.fromList(el));
+      final background = img_edit.Image(width: mainImage!.width + 500, height: mainImage.height + 500);
 
       for (var pixel in background) {
         pixel.setRgba(backColor.red, backColor.green, backColor.blue, backColor.alpha);
       }
 
-      imgEdit.Image mergeImage = imgEdit.compositeImage(background, mainImage, center: true);
+      img_edit.Image mergeImage = img_edit.compositeImage(background, mainImage, center: true);
 
       //imageDataList.add(Uint8List.fromList(el));
-      imageDataList.add(imgEdit.encodePng(mergeImage));
+      imageDataList.add(img_edit.encodePng(mergeImage));
     }
     Future<List<Uint8List>?> imdd = Navigator.push(
         context,

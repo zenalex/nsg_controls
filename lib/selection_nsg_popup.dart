@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:event/event.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'nsg_control_options.dart';
 
@@ -29,7 +28,7 @@ class SelectionNsgPopUp extends StatefulWidget {
   final bool showCloseButton;
   final String? elementEditPageName;
   final NsgBaseController? editPageController;
-  var textEditController=TextEditingController();
+  var textEditController = TextEditingController();
   Color? colorText;
   Color? colorTitleText;
   SelectionNsgPopUp(
@@ -66,8 +65,6 @@ class SelectionNsgPopUp extends StatefulWidget {
 class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
   final ScrollController controller1 = ScrollController();
   final ScrollController controller2 = ScrollController();
-  
- 
 
   @override
   void initState() {
@@ -107,13 +104,13 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
           //backgroundColor: Colors.black,
           //backgroundColor: Colors.black.withOpacity(0.8),
           // filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          children: [widget.dataController == null ? _widgetData() : widget.dataController!.obx((state) => _widgetData())],
+          children: [widget.dataController == null ? _widgetData(context) : widget.dataController!.obx((state) => _widgetData(context))],
         ),
       ),
     );
   }
 
-  Widget _widgetData() {
+  Widget _widgetData(BuildContext context) {
     //var mediaQuery = MediaQuery.of(context);
     return Container(
         padding: EdgeInsets.zero,
@@ -130,7 +127,6 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
           color: ControlOptions.instance.colorMainBack,
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-          
           Container(
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
@@ -150,7 +146,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
                         if (widget.onCancel != null) {
                           widget.onCancel!();
                         } else {
-                          Navigator.pop(Get.context!, false);
+                          Navigator.pop(context, false);
                         }
                       }),
                 Expanded(
@@ -162,7 +158,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
                       icon: Icon(Icons.add, color: widget.colorText, size: 24),
                       onPressed: () {
                         if (widget.editPageController != null && widget.elementEditPageName != null) {
-                          (widget.editPageController! as NsgDataController).itemNewPageOpen(widget.elementEditPageName!);
+                          (widget.editPageController! as NsgDataController).itemNewPageOpen(context, widget.elementEditPageName!);
                         }
                       }),
                 IconButton(
@@ -175,44 +171,39 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
                         if (widget.onCancel != null) {
                           widget.onCancel!();
                         } else {
-                          Navigator.pop(Get.context!, false);
+                          Navigator.pop(context, false);
                         }
                       }
                     }),
               ],
             ),
           ),
-          if(widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length >5 )
-          TextField(
-              controller: widget.textEditController,
-              decoration: InputDecoration(
-                  filled: false,
-                  fillColor: ControlOptions.instance.colorMainLight,
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      gapPadding: 1,
-                      borderSide: BorderSide(color: ControlOptions.instance.colorMainDark),
-                      borderRadius: const BorderRadius.all(Radius.circular(20))),
-                  suffixIcon: IconButton(
-                      hoverColor: Colors.transparent,
-                      padding: const EdgeInsets.only(bottom: 0),
-                      onPressed: (() {
-                       setState(() {
-                         
-                       });
-                        widget.textEditController.clear();
-                      }),
-                      icon: const Icon(Icons.cancel)),
-                  hintText: 'Search ...'),
-              textAlignVertical: TextAlignVertical.bottom,
-              style: TextStyle(color: ControlOptions.instance.colorMainLight, fontFamily: 'Inter', fontSize: 16),
-              onChanged: (val) {
-                
-              setState(() {
-                
-              });
-              }),
-          if (widget.getContent != null || widget.contentTop != null) 
+          if (widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length > 5)
+            TextField(
+                controller: widget.textEditController,
+                decoration: InputDecoration(
+                    filled: false,
+                    fillColor: ControlOptions.instance.colorMainLight,
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        gapPadding: 1,
+                        borderSide: BorderSide(color: ControlOptions.instance.colorMainDark),
+                        borderRadius: const BorderRadius.all(Radius.circular(20))),
+                    suffixIcon: IconButton(
+                        hoverColor: Colors.transparent,
+                        padding: const EdgeInsets.only(bottom: 0),
+                        onPressed: (() {
+                          setState(() {});
+                          widget.textEditController.clear();
+                        }),
+                        icon: const Icon(Icons.cancel)),
+                    hintText: 'Search ...'),
+                textAlignVertical: TextAlignVertical.bottom,
+                style: TextStyle(color: ControlOptions.instance.colorMainLight, fontFamily: 'Inter', fontSize: 16),
+                onChanged: (val) {
+                  setState(() {});
+                }),
+          if (widget.getContent != null || widget.contentTop != null)
             Flexible(
               flex: 4,
               child: Padding(
@@ -249,15 +240,14 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
                         controller: controller2,
                         thickness: 5,
                         thumbVisibility: true,
-                        child: SingleChildScrollView(controller: controller2,
-                         child: Wrap(children:  widget.contentSecondary!)),
+                        child: SingleChildScrollView(controller: controller2, child: Wrap(children: widget.contentSecondary!)),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-          if (widget.text != null )
+          if (widget.text != null)
             Flexible(
               child: SingleChildScrollView(
                 child: Container(

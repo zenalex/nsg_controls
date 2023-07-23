@@ -32,7 +32,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
 
   @override
   Future<bool> saveImages(BuildContext context) async {
-    var progress = NsgProgressDialog(textDialog: 'Сохранение фото');
+    var progress = NsgProgressDialog(context: context, textDialog: 'Сохранение фото');
     progress.show(context);
     var ids = <String>[];
 

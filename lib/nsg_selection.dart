@@ -1,7 +1,6 @@
 import 'package:nsg_controls/widgets/nsg_dialog.dart';
 import 'package:nsg_data/controllers/nsg_controller_status.dart';
 import 'package:nsg_controls/selection_nsg_popup.dart';
-import 'package:path/path.dart';
 
 import 'nsg_controls.dart';
 import 'package:flutter/material.dart';
@@ -93,12 +92,7 @@ class NsgSelection {
     }
     NsgDialog().show(
         context: context,
-        child: NsgPopUp(
-
-    showDialog(
-      context: context,
-      builder: (cont) {
-        return SelectionNsgPopUp(
+        child: SelectionNsgPopUp(
             title: title,
             getContent: _listArray,
             dataController: controller,
@@ -109,11 +103,8 @@ class NsgSelection {
                 controller?.selectedItem = selectedElement;
                 onSelected(selectedElement!);
               }
-              Navigator.pop(cont);
-            });
-      },
-      barrierDismissible: false,
-    );
+              Navigator.pop(context);
+            }));
   }
 }
 

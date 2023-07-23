@@ -26,7 +26,7 @@ Future<dynamic> showNsgDialog(
               elevation: 0,
               backgroundColor: Colors.transparent,
               contentPadding: EdgeInsets.zero,
-              insetPadding: EdgeInsets.all(10),
+              insetPadding: const EdgeInsets.all(10),
               children: [
                 Column(
                   mainAxisSize: MainAxisSize.min,

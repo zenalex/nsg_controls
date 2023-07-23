@@ -34,7 +34,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
 
   @override
   Future<bool> saveImages(BuildContext context) async {
-    var progress = NsgProgressDialog(textDialog: 'Сохранение файлов');
+    var progress = NsgProgressDialog(textDialog: 'Сохранение файлов', context: context);
     progress.show(context);
     var ids = <String>[];
     var table = NsgDataTable(owner: masterController!.selectedItem!, fieldName: tableFieldName);
