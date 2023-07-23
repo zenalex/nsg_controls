@@ -3,11 +3,12 @@ import 'dart:ui';
 
 import 'package:event/event.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'nsg_control_options.dart';
 
 // ignore: must_be_immutable
-class NsgPopUp extends StatefulWidget {
+class SelectionNsgPopUp extends StatefulWidget {
   final String title;
   final String title2;
   final String? text;
@@ -17,7 +18,6 @@ class NsgPopUp extends StatefulWidget {
   final String? confirmText;
   final VoidCallback? onCancel;
   final VoidCallback? onConfirm;
-  final bool popOnConfirm;
   final List<Widget> Function()? getContent;
   final List<Widget>? contentSecondary;
   final Widget? contentTop;
@@ -29,9 +29,10 @@ class NsgPopUp extends StatefulWidget {
   final bool showCloseButton;
   final String? elementEditPageName;
   final NsgBaseController? editPageController;
+  var textEditController=TextEditingController();
   Color? colorText;
   Color? colorTitleText;
-  NsgPopUp(
+  SelectionNsgPopUp(
       {Key? key,
       this.title = '',
       this.title2 = '',
@@ -41,7 +42,6 @@ class NsgPopUp extends StatefulWidget {
       this.margin = const EdgeInsets.all(10),
       this.confirmText,
       this.onCancel,
-      this.popOnConfirm = true,
       this.onConfirm,
       this.getContent,
       this.height,
@@ -55,16 +55,19 @@ class NsgPopUp extends StatefulWidget {
       this.hideBackButton = false,
       this.showCloseButton = false,
       this.editPageController,
-      this.elementEditPageName})
+      this.elementEditPageName,
+      required this.textEditController})
       : super(key: key);
 
   @override
-  State<NsgPopUp> createState() => _NsgPopUpState();
+  State<SelectionNsgPopUp> createState() => _SelectionNsgPopUpState();
 }
 
-class _NsgPopUpState extends State<NsgPopUp> {
+class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
   final ScrollController controller1 = ScrollController();
   final ScrollController controller2 = ScrollController();
+  
+ 
 
   @override
   void initState() {
@@ -97,9 +100,6 @@ class _NsgPopUpState extends State<NsgPopUp> {
       child: Container(
         decoration: BoxDecoration(color: nsgtheme.colorModalBack),
         child: SimpleDialog(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(nsgtheme.borderRadius))),
           contentPadding: EdgeInsets.zero,
           insetPadding: widget.margin,
@@ -130,6 +130,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
           color: ControlOptions.instance.colorMainBack,
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+          
           Container(
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
@@ -149,7 +150,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         if (widget.onCancel != null) {
                           widget.onCancel!();
                         } else {
-                          Navigator.pop(context, false);
+                          Navigator.pop(Get.context!, false);
                         }
                       }),
                 Expanded(
@@ -161,7 +162,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                       icon: Icon(Icons.add, color: widget.colorText, size: 24),
                       onPressed: () {
                         if (widget.editPageController != null && widget.elementEditPageName != null) {
-                          (widget.editPageController! as NsgDataController).itemNewPageOpen(context, widget.elementEditPageName!);
+                          (widget.editPageController! as NsgDataController).itemNewPageOpen(widget.elementEditPageName!);
                         }
                       }),
                 IconButton(
@@ -169,21 +170,49 @@ class _NsgPopUpState extends State<NsgPopUp> {
                     onPressed: () {
                       if (widget.onConfirm != null && widget.showCloseButton == false) {
                         widget.onConfirm!();
-                        if (widget.popOnConfirm) Navigator.of(context).pop();
                       }
                       if (widget.showCloseButton == true) {
                         if (widget.onCancel != null) {
                           widget.onCancel!();
-                          Navigator.of(context).pop();
                         } else {
-                          Navigator.of(context).pop();
+                          Navigator.pop(Get.context!, false);
                         }
                       }
                     }),
               ],
             ),
           ),
-          if (widget.getContent != null || widget.contentTop != null)
+          if(widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length >5 )
+          TextField(
+              controller: widget.textEditController,
+              decoration: InputDecoration(
+                  filled: false,
+                  fillColor: ControlOptions.instance.colorMainLight,
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                      gapPadding: 1,
+                      borderSide: BorderSide(color: ControlOptions.instance.colorMainDark),
+                      borderRadius: const BorderRadius.all(Radius.circular(20))),
+                  suffixIcon: IconButton(
+                      hoverColor: Colors.transparent,
+                      padding: const EdgeInsets.only(bottom: 0),
+                      onPressed: (() {
+                       setState(() {
+                         
+                       });
+                        widget.textEditController.clear();
+                      }),
+                      icon: const Icon(Icons.cancel)),
+                  hintText: 'Search ...'),
+              textAlignVertical: TextAlignVertical.bottom,
+              style: TextStyle(color: ControlOptions.instance.colorMainLight, fontFamily: 'Inter', fontSize: 16),
+              onChanged: (val) {
+                
+              setState(() {
+                
+              });
+              }),
+          if (widget.getContent != null || widget.contentTop != null) 
             Flexible(
               flex: 4,
               child: Padding(
@@ -220,14 +249,15 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         controller: controller2,
                         thickness: 5,
                         thumbVisibility: true,
-                        child: SingleChildScrollView(controller: controller2, child: Wrap(children: widget.contentSecondary!)),
+                        child: SingleChildScrollView(controller: controller2,
+                         child: Wrap(children:  widget.contentSecondary!)),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-          if (widget.text != null)
+          if (widget.text != null )
             Flexible(
               child: SingleChildScrollView(
                 child: Container(

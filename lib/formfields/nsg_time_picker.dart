@@ -61,7 +61,6 @@ class NsgTimePicker extends StatefulWidget {
               title: 'Введите время',
               onConfirm: () {
                 onClose(selectedDate);
-                Navigator.pop(context);
               },
               onCancel: () {
                 Navigator.pop(context);
@@ -207,7 +206,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
 
   @override
   void initState() {
-    _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'HH:mm');
+    _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'HH:mm', ignoreYear: true);
     _initialTime2 = widget.initialTime;
     textController.text = _initialTime;
     textController.addListener(textChanged);

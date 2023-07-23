@@ -1,7 +1,12 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/formfields/nsg_position_boolBox.dart';
+import 'package:nsg_controls/formfields/nsg_switch_horizontal.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/controllers/nsg_controller_regime.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -105,7 +110,7 @@ class NsgInput extends StatefulWidget {
   final bool? isDense;
 
   /// Виджет для отображения в поле ввода как подсказка
-  final Widget? lableWidget;
+  final Widget? labelWidget;
 
   /// Самая ранняя дата, доступная для выбора
   final DateTime? firstDateTime;
@@ -119,7 +124,7 @@ class NsgInput extends StatefulWidget {
   /// Показывать значек замка при параметре disabled
   final bool showLock;
 
-  /// Поведение lable при вводе контента
+  /// Поведение label при вводе контента
   final FloatingLabelBehavior? floatingLabelBehavior;
 
   /// Стиль текста в поле ввода
@@ -128,7 +133,7 @@ class NsgInput extends StatefulWidget {
   /// Заменяет  дефолтный виджет для bool значений на кастомный
   final Widget? boolWidget;
 
-  /// Положение bool элемента относително lable или lableWidget
+  /// Положение bool элемента относително label или labelWidget
   final BoolBoxPosition? boolBoxPosition;
 
   /// Параметры отступа для значений внутри NsgInput
@@ -143,66 +148,84 @@ class NsgInput extends StatefulWidget {
   /// Форматировать отображение времени для входящего виджета
   final String? formatDateTime;
 
-  const NsgInput({
-    Key? key,
-    this.autofocus = false,
-    this.initialDateTime,
-    this.firstDateTime,
-    this.lastDateTime,
-    this.validateText = '',
-    this.textAlign = TextAlign.left,
-    required this.dataItem,
-    required this.fieldName,
-    this.showDeleteIcon = true,
-    this.showLabel = true,
-    this.controller,
-    this.selectionController,
-    this.updateController,
-    this.label = '',
-    this.labelColor,
-    this.imagesList,
-    this.disabled = false,
-    this.fontSize,
-    this.borderRadius = 15,
-    this.margin,
-    this.gesture,
-    this.hint,
-    this.onChanged,
-    this.onPressed,
-    this.onEditingComplete,
-    this.maxLines = 1,
-    this.minLines = 1,
-    this.height = 50,
-    this.widget,
-    this.rowWidget,
-    this.inputType = NsgInputType.autoselect,
-    this.selectionForm = '',
-    this.keyboard = TextInputType.multiline,
-    this.mask,
-    this.maskType,
-    this.itemsToSelect,
-    this.required,
-    this.textFormFieldType,
-    this.borderColor,
-    this.filled,
-    this.filledColor,
-    this.isDense,
-    this.lableWidget,
-    this.showLock = true,
-    this.floatingLabelBehavior = FloatingLabelBehavior.never,
-    this.textStyle,
-    this.boolWidget,
-    this.boolBoxPosition = BoolBoxPosition.end,
-    this.contentPadding,
-    this.prefix,
-    this.suffixIcon,
-    this.formatDateTime,
-  }) : super(key: key);
+  final Color? trackColor, activeColor, thumbColor;
+
+  final NsgSwitchHorizontalStyle nsgSwitchHorizontalStyle;
+
+  final NsgDataRequestParams Function()? getRequestFilter;
+
+  final List<dynamic> dynamicList;
+
+  const NsgInput(
+      {Key? key,
+      this.dynamicList = const [],
+      this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
+      this.trackColor,
+      this.activeColor,
+      this.thumbColor,
+      this.autofocus = false,
+      this.initialDateTime,
+      this.firstDateTime,
+      this.lastDateTime,
+      this.validateText = '',
+      this.textAlign = TextAlign.left,
+      required this.dataItem,
+      required this.fieldName,
+      this.showDeleteIcon = true,
+      this.showLabel = true,
+      this.controller,
+      this.selectionController,
+      this.updateController,
+      this.label = '',
+      this.labelColor,
+      this.imagesList,
+      this.disabled = false,
+      this.fontSize,
+      this.borderRadius = 15,
+      this.margin,
+      this.gesture,
+      this.hint,
+      this.onChanged,
+      this.onPressed,
+      this.onEditingComplete,
+      this.maxLines = 1,
+      this.minLines = 1,
+      this.height = 50,
+      this.widget,
+      this.rowWidget,
+      this.inputType = NsgInputType.autoselect,
+      this.selectionForm = '',
+      this.keyboard = TextInputType.text,
+      this.mask,
+      this.maskType,
+      this.itemsToSelect,
+      this.required,
+      this.textFormFieldType,
+      this.borderColor,
+      this.filled,
+      this.filledColor,
+      this.isDense,
+      this.labelWidget,
+      this.showLock = true,
+      this.floatingLabelBehavior = FloatingLabelBehavior.never,
+      this.textStyle,
+      this.boolWidget,
+      this.boolBoxPosition = BoolBoxPosition.end,
+      this.contentPadding,
+      this.prefix,
+      this.suffixIcon,
+      this.formatDateTime,
+      this.getRequestFilter})
+      : super(key: key);
 
   @override
   State<NsgInput> createState() => _NsgInputState();
 
   NsgInputType selectInputType() {
+    // if (dynamicList.isNotEmpty && !kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+    if (dynamicList.isNotEmpty) {
+      return NsgInputType.dynamicList;
+    }
     if (inputType == NsgInputType.autoselect) {
       //Если не выбран, задаем его автоматически, исходя из типа данных fieldName
       if (dataItem.getField(fieldName) is NsgDataReferenceField) {
@@ -382,7 +405,9 @@ class _NsgInputState extends State<NsgInput> {
     }
     if (inputType == NsgInputType.dateValue) {
       if (DateTime(01, 01, 01).isAtSameMomentAs(fieldValue) || DateTime(1754, 01, 01).isAtSameMomentAs(fieldValue)) {
-        textController.text = widget.label;
+        //TODO Убрал это, зачем вообще присваивать в текст значение лейбла?
+        //textController.text = widget.label;
+        textController.text = '';
       } else {
         textController.text = NsgDateFormat.dateFormat(fieldValue, format: widget.formatDateTime);
       }
@@ -428,33 +453,6 @@ class _NsgInputState extends State<NsgInput> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        if (!focus.hasFocus && textController.text == '')
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: getHintPadding(),
-                              child: Text(
-                                (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
-                                style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
-                              ),
-                            ),
-                          ),
-                        if (widget.hint != null && focus.hasFocus && textController.text == '')
-                          ValueListenableBuilder(
-                              valueListenable: _notifier,
-                              builder: (BuildContext context, bool val, Widget? child) {
-                                if (_notifier.value == true) {
-                                  return Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      widget.hint!,
-                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
-                                    ),
-                                  );
-                                } else {
-                                  return const SizedBox();
-                                }
-                              }),
                         TextFormField(
                           controller: textController,
                           inputFormatters: widget.maskType == NsgInputMaskType.phone
@@ -472,12 +470,13 @@ class _NsgInputState extends State<NsgInput> {
                           focusNode: focus,
                           maxLines: widget.maxLines,
                           minLines: widget.minLines,
+                          textInputAction: TextInputAction.done,
                           keyboardType: keyboard,
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
                             suffixIcon: widget.suffixIcon,
                             floatingLabelBehavior: widget.floatingLabelBehavior,
-                            label: widget.lableWidget,
+                            //label: widget.labelWidget,
                             prefix: !_disabled
                                 ? null
                                 : widget.showLock
@@ -509,18 +508,66 @@ class _NsgInputState extends State<NsgInput> {
                                 : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
                             focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                           ),
-                          onChanged: (value) {
-                            if (widget.onChanged != null) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+
+                          // onFieldSubmitted: (value) {
+                          //   print("AAA");
+                          // },
+                          // onFieldSubmitted: (string) {
+                          //   if (widget.onEditingComplete != null) {
+                          //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                          //   }
+                          // },
+
+                          onEditingComplete: () {
+                            if (keyboard != TextInputType.multiline) {
+                              if (widget.onEditingComplete != null) {
+                                widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                              }
+                              Future.delayed(const Duration(milliseconds: 10), () {
+                                FocusScope.of(context).unfocus();
+                              });
                             }
                           },
-                          onFieldSubmitted: (string) {
-                            if (widget.onEditingComplete != null) {}
+                          onChanged: (value) {
+                            if (widget.onChanged != null) {
+                              //WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+                              widget.onChanged!(widget.dataItem);
+                            }
                           },
                           textAlign: widget.textAlign,
                           style: widget.textStyle ?? TextStyle(color: ControlOptions.instance.colorText, fontSize: fontSize),
                           readOnly: _disabled,
                         ),
+                        if (!nsgtheme.nsgInputHintHidden && (!focus.hasFocus && textController.text == ''))
+                          IgnorePointer(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: getHintPadding(),
+                                child: widget.labelWidget ??
+                                    Text(
+                                      (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
+                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                    ),
+                              ),
+                            ),
+                          ),
+                        if (widget.hint != null && focus.hasFocus && textController.text == '')
+                          ValueListenableBuilder(
+                              valueListenable: _notifier,
+                              builder: (BuildContext context, bool val, Widget? child) {
+                                if (_notifier.value == true) {
+                                  return Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      widget.hint!,
+                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                    ),
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
+                              }),
                       ],
                     ),
                   ),
@@ -540,7 +587,9 @@ class _NsgInputState extends State<NsgInput> {
           ? widget.contentPadding! //.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr)
           : EdgeInsets.zero;
     } else {
-      return nsgtheme.nsgInputContenPadding.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr);
+      return nsgtheme.nsgInputContenPadding
+          .subtract(EdgeInsets.only(top: nsgtheme.nsgInputContenPadding.top, bottom: nsgtheme.nsgInputContenPadding.bottom))
+          .resolve(TextDirection.ltr);
     }
   }
 
@@ -548,17 +597,18 @@ class _NsgInputState extends State<NsgInput> {
     if (widget.contentPadding != null) {
       return widget.contentPadding!;
     } else {
-      return nsgtheme.nsgInputContenPadding
+      EdgeInsets padding = nsgtheme.nsgInputContenPadding
           .subtract(EdgeInsets.fromLTRB(
               0,
               4,
               !widget.showDeleteIcon
                   ? 0
                   : useSelectionController
-                      ? 25
-                      : 25,
+                      ? -15
+                      : -15,
               4))
           .resolve(TextDirection.ltr);
+      return padding;
     }
   }
 
@@ -587,11 +637,12 @@ class _NsgInputState extends State<NsgInput> {
 
                 Future.delayed(const Duration(milliseconds: 10), () {
                   FocusScope.of(context).requestFocus(focus);
+                  if (widget.onEditingComplete != null) {
+                    widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                  }
                 });
                 textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
-                if (widget.onEditingComplete != null) {
-                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                }
+
                 setState(() {});
               },
               child: HoverWidget(
@@ -599,7 +650,7 @@ class _NsgInputState extends State<NsgInput> {
                   padding: const EdgeInsets.all(5.0),
                   child: Icon(
                     Icons.close_outlined,
-                    color: ControlOptions.instance.colorMainText,
+                    color: nsgtheme.nsginputCloseIconColor,
                     size: 16,
                   ),
                 ),
@@ -608,7 +659,7 @@ class _NsgInputState extends State<NsgInput> {
                   padding: const EdgeInsets.all(5.0),
                   child: Icon(
                     Icons.close_outlined,
-                    color: ControlOptions.instance.colorMainText.withOpacity(0.5),
+                    color: nsgtheme.nsginputCloseIconColorHover,
                     size: 16,
                   ),
                 ),
@@ -621,7 +672,60 @@ class _NsgInputState extends State<NsgInput> {
     if (_disabled) {
       return;
     }
-    if (inputType == NsgInputType.reference) {
+    if (widget.onPressed != null) {
+      widget.onPressed!();
+      return;
+    }
+    var filter = widget.getRequestFilter == null ? null : widget.getRequestFilter!();
+
+    if (inputType == NsgInputType.dynamicList) {
+      List<Widget> list = [];
+      var value = widget.dataItem.getFieldValue(widget.fieldName);
+      print(value);
+      int initItem = widget.dynamicList.indexOf(value);
+      int countItem = initItem;
+      for (var item in widget.dynamicList) {
+        list.add(
+          Text(
+            item.toString(),
+            style: TextStyle(color: nsgtheme.colorSecondary.c100),
+          ),
+        );
+      }
+      showDialog(
+          context: context,
+          builder: (_) => BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: NsgPopUp(
+                  width: 300,
+                  onConfirm: () {
+                    textController.text = widget.dynamicList[countItem].toString();
+                    widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
+                    if (widget.onEditingComplete != null) {
+                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                    }
+                    setState(() {});
+                  },
+                  title: widget.label,
+                  contentTop: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    height: 300,
+                    child: CupertinoPicker(
+                      selectionOverlay: Container(
+                        decoration: BoxDecoration(color: nsgtheme.colorPrimary.b30.withOpacity(0.5)),
+                      ),
+                      backgroundColor: nsgtheme.colorSecondary.c40,
+                      itemExtent: 30,
+                      onSelectedItemChanged: (value) {
+                        countItem = value;
+                      },
+                      scrollController: FixedExtentScrollController(initialItem: initItem),
+                      children: list,
+                    ),
+                  ),
+                ),
+              ));
+    } else if (inputType == NsgInputType.reference) {
       selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       //Зенков 27.12.2022 Вызывается в form.selectFromArray
       //Перенес вызов ниже в случае передачи пользовательской формы
@@ -651,7 +755,8 @@ class _NsgInputState extends State<NsgInput> {
       } else {
         //Иначе - вызываем переданную форму для подбора
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        selectionController!.refreshData();
+
+        selectionController!.refreshData(filter: filter);
         selectionController!.regime = NsgControllerRegime.selection;
         selectionController!.onSelected = (item) {
           NsgNavigator.instance.back(context);
@@ -677,6 +782,25 @@ class _NsgInputState extends State<NsgInput> {
         widget.label,
         (item) {
           widget.dataItem.setFieldValue(widget.fieldName, item);
+      form.selectFromArray(widget.label, (item) {
+        widget.dataItem.setFieldValue(widget.fieldName, item);
+        if (widget.onChanged != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+        }
+        if (widget.onEditingComplete != null) {
+          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+        }
+        setState(() {});
+        return null;
+      }, context: context, filter: filter);
+    } else if (inputType == NsgInputType.referenceList) {
+      var form = NsgMultiSelection(controller: selectionController!);
+      form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
+      selectionController!.refreshData(filter: filter);
+      if (widget.selectionForm == '') {
+        //Если формы для выбора не задана: вызываем форму подбора по умолчанию
+        form.selectFromArray(widget.label, '', (items) {
+          widget.dataItem.setFieldValue(widget.fieldName, items);
           if (widget.onChanged != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
           }
@@ -684,30 +808,7 @@ class _NsgInputState extends State<NsgInput> {
             widget.onEditingComplete!(widget.dataItem, widget.fieldName);
           }
           setState(() {});
-          return null;
-        },
-      );
-    } else if (inputType == NsgInputType.referenceList) {
-      var form = NsgMultiSelection(controller: selectionController!);
-      form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
-      selectionController!.refreshData();
-      if (widget.selectionForm == '') {
-        //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        form.selectFromArray(
-          context,
-          widget.label,
-          '',
-          (items) {
-            widget.dataItem.setFieldValue(widget.fieldName, items);
-            if (widget.onChanged != null) {
-              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
-            }
-            if (widget.onEditingComplete != null) {
-              widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-            }
-            setState(() {});
-          },
-        );
+        }, filter: filter);
       } else {
         NsgNavigator.instance.toPage(context, widget.selectionForm);
       }
@@ -715,7 +816,8 @@ class _NsgInputState extends State<NsgInput> {
       widget.formatDateTime == 'HH:mm'
           ? NsgTimePicker(
               dateForTime: widget.dataItem[widget.fieldName],
-              initialTime: Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute),
+              initialTime: Duration(
+                  hours: (widget.dataItem[widget.fieldName] ?? DateTime.now()).hour, minutes: (widget.dataItem[widget.fieldName] ?? DateTime.now()).minute),
               onClose: (Duration endDate) {},
             ).showPopup(context, widget.dataItem[widget.fieldName].hour, widget.dataItem[widget.fieldName].minute, (value) {
               if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
@@ -734,18 +836,19 @@ class _NsgInputState extends State<NsgInput> {
                       : widget.dataItem[widget.fieldName],
                   onClose: (value) {})
               .showPopup(context, widget.dataItem[widget.fieldName], (value) {
+              widget.dataItem[widget.fieldName] = value;
               if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
               if (widget.onEditingComplete != null) {
                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
               }
-              widget.dataItem[widget.fieldName] = value;
+              // widget.dataItem[widget.fieldName] = value;
               setState(() {});
             });
     }
   }
 
   Widget _buildBoolWidget(bool fieldValue) {
-    Widget lable = widget.lableWidget ??
+    Widget label = widget.labelWidget ??
         Expanded(
             child: Text(
           widget.label,
@@ -754,30 +857,50 @@ class _NsgInputState extends State<NsgInput> {
 
     Widget boolBox = widget.boolWidget ??
         StatefulBuilder(
-          builder: ((context, setState) => CupertinoSwitch(
-              trackColor: ControlOptions.instance.colorMainDarker,
-              value: fieldValue,
-              activeColor: ControlOptions.instance.colorMain,
-              onChanged: (value) {
-                fieldValue = !fieldValue;
-                widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
-                if (widget.updateController != null) {
-                  widget.updateController!.update();
-                } else {
-                  setState(() {});
-                }
-              })),
+          builder: ((context, setState) => NsgSwitchHorizontal(
+                      //key: GlobalKey(),
+                      style: widget.nsgSwitchHorizontalStyle,
+                      widget.label,
+                      isOn: fieldValue, onTap: () {
+                    fieldValue = !fieldValue;
+                    widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                    if (widget.updateController != null) {
+                      widget.updateController!.update();
+                    } else {
+                      setState(() {});
+                    }
+                  })
+
+              //  CupertinoSwitch(
+              //     trackColor: widget.trackColor ?? ControlOptions.instance.colorMainDarker,
+              //     activeColor: widget.activeColor ?? ControlOptions.instance.colorMain,
+              //     thumbColor: widget.thumbColor ?? ControlOptions.instance.colorGrey,
+              //     value: fieldValue,
+              //     onChanged: (value) {
+              //       fieldValue = !fieldValue;
+              //       widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+              //       if (widget.updateController != null) {
+              //         widget.updateController!.update();
+              //       } else {
+              //         setState(() {});
+              //       }
+              //     })
+
+              ),
         );
 
     return Container(
         margin: widget.margin ?? nsgtheme.nsgInputMargin,
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         decoration: BoxDecoration(
-            color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
-            border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? nsgtheme.nsgInputBorderColor))),
-        child: Row(
-          children: widget.boolBoxPosition == BoolBoxPosition.end ? [lable, boolBox] : [boolBox, lable],
-        ));
+          color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
+          //border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? nsgtheme.nsgInputBorderColor))
+        ),
+        child: boolBox
+        //  Row(
+        //   children: widget.boolBoxPosition == BoolBoxPosition.end ? [label, boolBox] : [boolBox, label],
+        // )
+        );
   }
 }
 

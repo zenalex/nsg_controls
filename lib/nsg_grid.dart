@@ -12,22 +12,37 @@ class NsgGrid extends StatelessWidget {
   final double vGap;
   final double hGap;
 
+  final bool needExpanded;
+
+  /// Минимальная ширина блока для расчёта crossAxisCount
+  final double? width;
+
   /// Количество виджетов по горизонтали
   final int crossAxisCount;
-  const NsgGrid({Key? key, required this.children, this.crossAxisCount = 3, this.centered = true, this.vGap = 0, this.hGap = 0}) : super(key: key);
+  NsgGrid({Key? key, required this.children, this.crossAxisCount = 3, this.centered = true, this.vGap = 0, this.hGap = 0, this.needExpanded = true, this.width})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var axisCount = crossAxisCount;
+    if (width != null) {
+      axisCount = (MediaQuery.of(context).size.width / width!).floor();
+    }
+
     int count = 0;
     int rowCount = 0;
     List<Widget> list = [];
     List<Widget> row = [];
     for (var element in children) {
-      row.add(Expanded(flex: 2, child: element));
+      if (needExpanded) {
+        row.add(Expanded(flex: 2, child: element));
+      } else {
+        row.add(element);
+      }
 
       count++;
       rowCount++;
-      if (count > crossAxisCount - 1) {
+      if (count > axisCount - 1) {
         for (var i = 0; i <= row.length; i++) {
           if (i < row.length - 1) row.insert(i + 1, SizedBox(width: hGap));
           i++;
@@ -40,7 +55,7 @@ class NsgGrid extends StatelessWidget {
       }
     }
     if (row.isNotEmpty) {
-      var dif = crossAxisCount - rowCount;
+      var dif = axisCount - rowCount;
       var difAdd = (dif / 2).floor();
       /* ---------------------------------------------------------- Выравнивание по левому краю --------------------------------------------------------- */
       if (!centered) {

@@ -16,6 +16,7 @@ class NsgDatePicker extends StatefulWidget {
   final bool? disabled;
   final DateTime? firstDateTime;
   final DateTime? lastDateTime;
+  final Widget? labelWidget;
 
   // final Color? outlineBorderColor;
 
@@ -41,6 +42,7 @@ class NsgDatePicker extends StatefulWidget {
     this.firstDateTime,
     this.lastDateTime,
     this.label = '',
+    this.labelWidget,
     this.textAlign = TextAlign.center,
     this.disabled = false,
     this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -62,7 +64,6 @@ class NsgDatePicker extends StatefulWidget {
               //height: 410,
               onConfirm: () {
                 onClose(selectedDate);
-                Navigator.of(context).pop();
               },
               onCancel: () {
                 Navigator.of(context).pop();
@@ -157,15 +158,14 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                         ),
                       ),
                     Expanded(
-                      child:
-                          // widget.lableWidget ??
+                      child: widget.labelWidget ??
                           Text(
-                        NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
-                        textAlign: widget.textAlign,
-                        style:
-                            // widget.textStyle ??
-                            TextStyle(fontSize: ControlOptions.instance.sizeM),
-                      ),
+                            NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
+                            textAlign: widget.textAlign,
+                            style:
+                                // widget.textStyle ??
+                                TextStyle(fontSize: ControlOptions.instance.sizeM),
+                          ),
                     ),
                   ],
                 )),
@@ -434,6 +434,9 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
 
   @override
   Widget build(BuildContext context) {
+    var lastDate = widget.initialDateTime.isBefore(DateTime.now().add(const Duration(days: 365 * 2)))
+        ? DateTime.now().add(const Duration(days: 365 * 2))
+        : widget.initialDateTime;
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 15),
       child: Theme(
@@ -448,7 +451,7 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
         child: CalendarDatePicker(
           key: GlobalKey(),
           firstDate: widget.firstDateTime ?? DateTime(0),
-          lastDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
+          lastDate: widget.lastDateTime ?? lastDate,
           initialDate: widget.initialDateTime,
           onDateChanged: (d) {
             widget.onDateTimeChanged(d);

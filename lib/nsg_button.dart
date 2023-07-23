@@ -63,7 +63,7 @@ class NsgButton extends StatelessWidget {
         widget = null,
         borderRadius = 10,
         width = null,
-        height = 30,
+        height = 44,
         onPressed = onTap,
         margin = const EdgeInsets.all(10),
         padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -192,14 +192,14 @@ class NsgButton extends StatelessWidget {
     } else {
       // Кнопка обычная
       return Container(
-          margin: margin ?? ControlOptions.instance.nsgButtonMargin,
-          constraints: const BoxConstraints(minHeight: 38, maxWidth: 800),
-          width: width ?? double.infinity,
-          height: height ?? ControlOptions.instance.nsgButtonHeight,
-          decoration: BoxDecoration(
-            border: borderColor == null ? null : Border.all(width: 2, color: borderColor!),
-            borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-            /* boxShadow: <BoxShadow>[
+        margin: margin ?? ControlOptions.instance.nsgButtonMargin,
+        constraints: const BoxConstraints(minHeight: 20, maxWidth: 800),
+        width: width ?? double.infinity,
+        height: height ?? ControlOptions.instance.nsgButtonHeight,
+        decoration: BoxDecoration(
+          border: borderColor == null ? null : Border.all(width: 2, color: borderColor!),
+          borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
+          /* boxShadow: <BoxShadow>[
                 shadow ??
                     BoxShadow(
                       color: ControlOptions.instance.colorMain.withOpacity(0.2),
@@ -207,13 +207,13 @@ class NsgButton extends StatelessWidget {
                       offset: const Offset(0, 2),
                     )
               ]*/
-          ),
-          child: Material(
-            borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-            color: disabled == true ? _backColor.withOpacity(0.5) : _backColor,
-            child: InkWell(
-              onTap: disabled == true ? onDisabledPressed : onPressed,
-              child: Padding(
+        ),
+        child: Material(
+          borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
+          color: disabled == true ? _backColor.withOpacity(0.5) : _backColor,
+          child: InkWell(
+            onTap: disabled == true ? onDisabledPressed : onPressed,
+            child: Padding(
                 padding: padding,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -221,21 +221,22 @@ class NsgButton extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (icon != null) Padding(padding: iconMargin, child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
-                    Flexible(
-                      //fit: FlexFit.loose,
+                    if (text != '')
+                      Flexible(
+                        //fit: FlexFit.loose,
 
-                      child: Text('$text',
-                          maxLines: 2,
-                          overflow: TextOverflow.clip,
-                          softWrap: true,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: fontSize, color: color ?? ControlOptions.instance.colorMainText)),
-                    ),
+                        child: Text('$text',
+                            maxLines: 2,
+                            overflow: TextOverflow.clip,
+                            softWrap: true,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: fontSize, color: color ?? ControlOptions.instance.colorMainText)),
+                      ),
                   ],
-                ),
-              ),
-            ),
-          ));
+                )),
+          ),
+        ),
+      );
     }
   }
 }

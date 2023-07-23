@@ -12,13 +12,19 @@ class NsgProgressDialog {
   Function? requestStop;
   String textDialog;
   NsgProgressDialogWidget? dialogWidget;
-  BuildContext? context;
+  BuildContext context;
 
   ///Если пользователь нажмет отменить, будет передан запрос на отмену сетевого соединения
   NsgCancelToken? cancelToken;
   bool visible = false;
   NsgProgressDialog(
-      {this.showPercents = false, this.percent = 0, this.canStopped = false, this.requestStop, this.textDialog = 'Загрузка данных...', this.cancelToken});
+      {this.showPercents = false,
+      this.percent = 0,
+      this.canStopped = false,
+      this.requestStop,
+      this.textDialog = 'Загрузка данных...',
+      this.cancelToken,
+      required this.context});
 
   void show(BuildContext context, {String text = 'Загрузка'}) {
     context = context;
@@ -44,9 +50,7 @@ class NsgProgressDialog {
       if (dialogWidget != null) {
         dialogWidget!.isClosed = true;
       }
-      if (context != null && context!.mounted) {
-        Navigator.pop(context!);
-      }
+      Navigator.pop(context ?? Get.context!);
     }
   }
   // При нажатии на кнопку отмены вызываем requestStop - убираем кнопку отмены, пишем "обработка отмены"

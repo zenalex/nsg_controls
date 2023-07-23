@@ -21,6 +21,8 @@ import 'nsg_table_menu_button.dart';
 
 /// Виджет отображения таблицы
 class NsgTable extends StatefulWidget {
+  bool Function(NsgDataItem item)? forbidDeleting;
+
   NsgTable(
       {Key? key,
       this.rowsMaxCount = 20,
@@ -52,7 +54,8 @@ class NsgTable extends StatefulWidget {
       this.removeVerticalScrollIfNotNeeded = false,
       this.userSettingsController,
       this.userSettingsId = '',
-      this.externaltableKey})
+      this.externaltableKey,
+      this.forbidDeleting})
       : super(key: key);
 
   /// Фиксированная высота строки
@@ -850,6 +853,32 @@ class _NsgTableState extends State<NsgTable> {
             }
             if (editMode == NsgTableEditMode.rowDelete) {
               tableRow.add(InkWell(
+          /* -------------------------  Цикл построения ячеек таблицы (строки) --------------------------------------------------------------------------- */
+          if (!widget.controller.currentStatus.isLoading && items.isNotEmpty) {
+            for (var row in items) {
+              List<Widget> tableRow = [];
+              bool isSelected = false;
+              //bool isFavorite = widget.controller.favorites.contains(row);
+              if (listRowsToDelete.contains(row)) {
+                isSelected = true;
+              }
+              if (editMode == NsgTableEditMode.rowDelete && (widget.forbidDeleting == null || !widget.forbidDeleting!(row))) {
+                tableRow.add(InkWell(
+                    onTap: () {
+                      rowDelete(row);
+                    },
+                    child: showCell(
+                      isFinal: row == items.last,
+                      height: widget.rowFixedHeight,
+                      padding: const EdgeInsets.all(0),
+                      backColor: isSelected ? ControlOptions.instance.colorMainLighter : ControlOptions.instance.tableCellBackColor,
+                      color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                      width: 40,
+                      child: Icon(Icons.delete_forever_outlined,
+                          color: isSelected ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain, size: 24),
+                    )));
+              } else if (editMode == NsgTableEditMode.rowEdit) {
+                tableRow.add(InkWell(
                   onTap: () {
                     rowDelete(row);
                   },
@@ -1719,8 +1748,8 @@ class _NsgTableState extends State<NsgTable> {
               await (widget.controller as NsgDataTableController).itemsRemove(context, listRowsToDelete);
               editMode = NsgTableEditMode.view;
               setState(() {});
-              NsgNavigator.instance.back(context);
-            }));
+            }),
+        barrierDismissible: false);
   }
 
   Widget _headerWidget(NsgTableColumn column) {

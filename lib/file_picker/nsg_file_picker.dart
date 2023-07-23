@@ -53,6 +53,7 @@ class NsgFilePicker extends StatefulWidget {
   final bool skipInterface;
 
   final bool needCrop;
+  final bool fromGallery;
 
   NsgFilePicker(
       {Key? key,
@@ -71,6 +72,7 @@ class NsgFilePicker extends StatefulWidget {
       required this.objectsList,
       this.textChooseFile = 'Добавить фото',
       this.oneFile = false,
+      this.fromGallery = true,
       this.skipInterface = false})
       : super(key: key) {
     _resisterComponents();
@@ -126,8 +128,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   String error = '';
   bool galleryPage = true;
   ScrollController scrollController = ScrollController();
-  late List<NsgFilePickerObject> objectsList;
-  late List<NsgFilePickerObject> needToCropObj;
+  List<NsgFilePickerObject> objectsList = [];
+  List<NsgFilePickerObject> needToCropObj = [];
 
   Widget _appBar(BuildContext context) {
     return NsgAppBar(
@@ -370,16 +372,52 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     //progress.show(Get.context);
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
 
+    // var result = await ImagePicker().pickMultiImage(
+    //   imageQuality: widget.imageQuality,
+    //   maxWidth: widget.imageMaxWidth,
+    //   maxHeight: widget.imageMaxHeight,
+    // );
+
+    var result = [];
     if (image != null) {
-      setState(() {
-        objectsList.add(
-            NsgFilePickerObject(isNew: true, image: Image.file(File(image.path)), description: basenameWithoutExtension(image.path), filePath: image.path));
-        galleryPage = false;
-      });
+      result = [image];
+    }
+
+    galleryPage = true;
+
+    /// Если стоит ограничение на 1 файл
+    if (widget.oneFile) {
+      if (result.isNotEmpty) result = [result[0]];
+      objectsList.clear();
+    }
+    for (var element in result) {
+      var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', ''));
+
+      if (fileType == NsgFilePickerObjectType.image) {
+        objectsList.add(NsgFilePickerObject(
+            isNew: true,
+            image: Image.file(File(element.path)),
+            description: basenameWithoutExtension(element.path),
+            fileType: fileType,
+            filePath: element.path));
+      } else if (fileType != NsgFilePickerObjectType.unknown) {
+        objectsList.add(NsgFilePickerObject(
+            isNew: true,
+            file: File(element.path),
+            image: null,
+            description: basenameWithoutExtension(element.path),
+            fileType: fileType,
+            filePath: element.path));
+      } else {
+        error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+        setState(() {});
+      }
+    }
+
+    if (widget.skipInterface) {
+      widget.callback(objectsList);
     } else {
-      setState(() {
-        error = 'Ошибка камеры';
-      });
+      setState(() {});
     }
   }
 
@@ -583,7 +621,11 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           } else if (!kIsWeb && Platform.isWindows) {
             pickFile();
           } else {
-            galleryImage();
+            if (widget.fromGallery) {
+              galleryImage();
+            } else {
+              cameraImage();
+            }
           }
         },
         onPressed2: () {
@@ -651,7 +693,11 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           galleryImage();
         }
       } else {
-        galleryImage();
+        if (widget.fromGallery) {
+          galleryImage();
+        } else {
+          cameraImage();
+        }
       }
       return const SizedBox();
     } else {

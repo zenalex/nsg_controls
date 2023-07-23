@@ -72,8 +72,8 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
   }
 
   @override
-  Future refreshData({List<NsgUpdateKey>? keys}) async {
-    await super.refreshData(keys: keys);
+  Future refreshData({List<NsgUpdateKey>? keys, NsgDataRequestParams? filter}) async {
+    await super.refreshData(keys: keys, filter: filter);
     files.clear();
 
     for (var element in items) {

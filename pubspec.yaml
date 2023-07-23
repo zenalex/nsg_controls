@@ -5,7 +5,7 @@ homepage: https://github.com/zenalex/nsg_controls.git
 # publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.0.3 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -36,7 +36,7 @@ dependencies:
   another_flushbar: ^1.10.29
   linked_scroll_controller: ^0.2.0
   mask_text_input_formatter: ^2.3.0
-  image_picker: ^0.8.5+3
+  image_picker: ^0.8.6+1
   image_picker_windows: ^0.1.0
   file_selector: ^0.8.2+1
   file_selector_windows: ^0.8.2

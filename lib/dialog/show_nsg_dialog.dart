@@ -24,6 +24,7 @@ Future<dynamic> showNsgDialog(
             decoration: BoxDecoration(color: nsgtheme.colorModalBack),
             child: SimpleDialog(
               elevation: 0,
+              backgroundColor: Colors.transparent,
               contentPadding: EdgeInsets.zero,
               insetPadding: EdgeInsets.all(10),
               children: [
@@ -76,7 +77,7 @@ Future<dynamic> showNsgDialog(
                                   width: 150,
                                   height: 40,
                                   text: 'Отмена',
-                                  color: ControlOptions.instance.colorText,
+                                  color: Colors.black,
                                   backColor: ControlOptions.instance.colorGrey,
                                 ),
                               NsgButton(

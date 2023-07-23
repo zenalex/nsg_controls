@@ -1,5 +1,7 @@
 import 'package:nsg_controls/widgets/nsg_dialog.dart';
 import 'package:nsg_data/controllers/nsg_controller_status.dart';
+import 'package:nsg_controls/selection_nsg_popup.dart';
+import 'package:path/path.dart';
 
 import 'nsg_controls.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ class NsgSelection {
   Widget Function(NsgDataItem)? rowWidget;
   Color? textColor;
   Color? colorInverted;
+  var textEditingController = TextEditingController();
 
   NsgSelection({required this.inputType, this.controller, this.rowWidget, this.allValues, this.selectedElement, this.textColor, this.colorInverted}) {
     if (inputType == NsgInputType.reference) {
@@ -39,7 +42,8 @@ class NsgSelection {
       itemsList = allValues!;
     }
     for (var element in itemsList) {
-      if (element.toString() != '') {
+      if (textEditingController.text.isEmpty ||
+          (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase()))) {
         list.add(GestureDetector(
           onTap: () {
             selectedElement = element;
@@ -82,25 +86,34 @@ class NsgSelection {
     }
   }
 
-  void selectFromArray(BuildContext context, String title, Function(NsgDataItem dataItem) onSelected) {
+  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected, {NsgDataRequestParams? filter, required BuildContext context}) {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
-      controller!.refreshData();
+      controller!.refreshData(filter: filter);
     }
     NsgDialog().show(
         context: context,
         child: NsgPopUp(
+
+    showDialog(
+      context: context,
+      builder: (cont) {
+        return SelectionNsgPopUp(
             title: title,
             getContent: _listArray,
             dataController: controller,
+            textEditController: textEditingController,
             confirmText: 'Подтвердить',
             onConfirm: () {
-              NsgNavigator.instance.back(context);
               if (selectedElement != null) {
                 controller?.selectedItem = selectedElement;
                 onSelected(selectedElement!);
               }
-            }));
+              Navigator.pop(cont);
+            });
+      },
+      barrierDismissible: false,
+    );
   }
 }
 
