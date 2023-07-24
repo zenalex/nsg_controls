@@ -9,6 +9,7 @@ import 'nsg_control_options.dart';
 
 // ignore: must_be_immutable
 class NsgPopUp extends StatefulWidget {
+  BuildContext? context;
   final String title;
   final String title2;
   final String? text;
@@ -34,6 +35,7 @@ class NsgPopUp extends StatefulWidget {
   Color? colorTitleText;
   NsgPopUp(
       {Key? key,
+      this.context,
       this.title = '',
       this.title2 = '',
       this.text,
@@ -167,10 +169,10 @@ class _NsgPopUpState extends State<NsgPopUp> {
                       }),
                 IconButton(
                     icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: widget.colorTitleText, size: 24), // set your color here
-                    onPressed: () {
+                    onPressed: () async {
                       if (widget.onConfirm != null && widget.showCloseButton == false) {
                         widget.onConfirm!();
-                        if (widget.popOnConfirm) Navigator.of(context).pop();
+                        if (widget.popOnConfirm) Navigator.of(widget.context!).pop();
                       }
                       if (widget.showCloseButton == true) {
                         if (widget.onCancel != null) {
