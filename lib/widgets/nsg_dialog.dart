@@ -8,19 +8,19 @@ import 'package:nsg_controls/nsg_controls.dart';
 class NsgDialogBodyController {
   NsgDialogBodyState? currentState;
 
-  //AnimationController transitionAnimationController = AnimationController(vsync: vsync);
-  Future openDialog(Widget child, {EdgeInsets? padding}) async {
+  BuildContext get currentContext {
     if (currentState != null) {
-      return await currentState!.openDialog(child, padding: padding);
+      BuildContext context = currentState!.context;
+      return context;
     } else {
       throw ErrorDescription('currentState == null!');
     }
   }
 
-  BuildContext getContext() {
+  //AnimationController transitionAnimationController = AnimationController(vsync: vsync);
+  Future openDialog(Widget child, {EdgeInsets? padding}) async {
     if (currentState != null) {
-      BuildContext context = currentState!.context;
-      return context;
+      return await currentState!.openDialog(child, padding: padding);
     } else {
       throw ErrorDescription('currentState == null!');
     }
