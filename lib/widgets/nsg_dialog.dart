@@ -2,18 +2,28 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image/image.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgDialogBodyController {
-  NsgDialogBodyState currentState = NsgDialogBodyState();
+  NsgDialogBodyState? currentState;
+
   //AnimationController transitionAnimationController = AnimationController(vsync: vsync);
   Future openDialog(Widget child, {EdgeInsets? padding}) async {
-    return await currentState.openDialog(child, padding: padding);
+    if (currentState != null) {
+      return await currentState!.openDialog(child, padding: padding);
+    } else {
+      throw ErrorDescription('currentState == null!');
+    }
   }
 
   BuildContext getContext() {
-    BuildContext context = currentState.context;
-    return context;
+    if (currentState != null) {
+      BuildContext context = currentState!.context;
+      return context;
+    } else {
+      throw ErrorDescription('currentState == null!');
+    }
   }
 }
 
@@ -78,6 +88,7 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
     if (widget.controller != null) {
       widget.controller!.currentState = this;
     }
+
     super.initState();
   }
 
@@ -89,6 +100,9 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
+    if (widget.controller != null) {
+      widget.controller!.currentState = this;
+    }
     return AnimatedBuilder(
         animation: _padding,
         builder: (ctx, ch) => Padding(
