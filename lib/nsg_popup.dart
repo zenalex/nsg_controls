@@ -167,7 +167,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                       }),
                 IconButton(
                     icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: widget.colorTitleText, size: 24), // set your color here
-                    onPressed: () {
+                    onPressed: () async {
                       if (widget.onConfirm != null && widget.showCloseButton == false) {
                         if (widget.popOnConfirm) Navigator.of(context).pop();
                         widget.onConfirm!();
