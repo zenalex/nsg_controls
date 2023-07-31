@@ -678,11 +678,9 @@ class _NsgInputState extends State<NsgInput> {
       return;
     }
     var filter = widget.getRequestFilter == null ? null : widget.getRequestFilter!();
-
     if (inputType == NsgInputType.dynamicList) {
       List<Widget> list = [];
       var value = widget.dataItem.getFieldValue(widget.fieldName);
-      print(value);
       int initItem = widget.dynamicList.indexOf(value);
       int countItem = initItem;
       for (var item in widget.dynamicList) {
