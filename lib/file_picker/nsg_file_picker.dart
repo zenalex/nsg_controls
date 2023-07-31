@@ -665,7 +665,15 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   @override
   void initState() {
-    objectsList = widget.objectsList;
+    //assert(widget.objectsList == const[], 'List<NsgFilePickerObject>.empty()');
+    try {
+      objectsList = widget.objectsList;
+      objectsList.add(NsgFilePickerObject(isNew: true));
+      objectsList.removeLast();
+    } catch (ex) {
+      print(ex);
+      throw Exception('Вместо const[] в objectsList нужно добавлять List<NsgFilePickerObject>.empty(growable: true)');
+    }
     super.initState();
   }
 
