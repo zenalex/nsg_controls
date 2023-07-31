@@ -327,9 +327,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       galleryPage = true;
       for (var element in result.files) {
         var fileType = NsgFilePicker.getFileType(extension(element.name).replaceAll('.', '').toLowerCase());
-
-        var file = File(element.name);
-        if ((await file.length()) > widget.fileMaxSize) {
+        assert(element.path != null, 'Нет пути картинки');
+        var file = File(element.path!);
+        var l = await file.length();
+        if (l > widget.fileMaxSize) {
           error = 'Превышен максимальный размер файла ${(widget.fileMaxSize / 1024).toString()} кБайт';
           setState(() {});
           return;
@@ -337,7 +338,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         if (fileType == NsgFilePickerObjectType.image) {
           objectsList.add(NsgFilePickerObject(
               isNew: true,
-              image: Image.file(File(element.name)),
+              image: Image.file(File(element.path!)),
               description: basenameWithoutExtension(element.name),
               fileType: fileType,
               filePath: element.path ?? ''));
@@ -346,7 +347,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
               isNew: true,
               file: File(element.name),
               image: null,
-              description: basenameWithoutExtension(element.name),
+              description: basenameWithoutExtension(element.path!),
               fileType: fileType,
               filePath: element.path ?? ''));
         } else {
