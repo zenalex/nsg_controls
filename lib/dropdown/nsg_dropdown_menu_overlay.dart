@@ -1,13 +1,15 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:glass/glass.dart';
+import 'package:nsg_controls/dropdown/nsg_dropdown_menu_item.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgDropdownMenuOverlay extends StatefulWidget {
-  final List<Widget> widgetList;
+  final List<NsgDropdownMenuItem> widgetList;
   final OverlayEntry? entry;
   final Offset offset;
-  final Function(int index) onSelect;
+  final Function(int index, NsgDropdownMenuItem element) onSelect;
 
   const NsgDropdownMenuOverlay({super.key, this.entry, required this.widgetList, required this.offset, required this.onSelect});
 
@@ -96,7 +98,8 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
   }
 }
 
-Widget widgetOverlay({required Function(int index) onSelect, required List<Widget> widgetList, required GlobalKey key}) {
+Widget widgetOverlay(
+    {required Function(int index, NsgDropdownMenuItem element) onSelect, required List<NsgDropdownMenuItem> widgetList, required GlobalKey key}) {
   List<Widget> list = [];
   for (var element in widgetList) {
     bool hovered = false;
@@ -107,7 +110,7 @@ Widget widgetOverlay({required Function(int index) onSelect, required List<Widge
           setstate(() {});
         },
         onTap: () {
-          onSelect(widgetList.indexOf(element));
+          onSelect(widgetList.indexOf(element), element);
         },
         child: Container(decoration: BoxDecoration(color: hovered ? nsgtheme.colorPrimary.withOpacity(0.2) : Colors.transparent), child: element),
       );
@@ -115,14 +118,14 @@ Widget widgetOverlay({required Function(int index) onSelect, required List<Widge
   }
 
   return Container(
-          key: key,
-          decoration: BoxDecoration(
-            color: nsgtheme.colorSecondary.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
-          ),
-          padding: const EdgeInsets.all(5),
-          child: IntrinsicWidth(child: Column(mainAxisSize: MainAxisSize.min, children: list)))
-      .asGlass(tintColor: Colors.black, frosted: false);
+      key: key,
+      decoration: BoxDecoration(
+        color: nsgtheme.colorSecondary.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
+      ),
+      padding: const EdgeInsets.all(5),
+      child: IntrinsicWidth(child: Column(mainAxisSize: MainAxisSize.min, children: list)));
+  //.asGlass(tintColor: Colors.black, frosted: false)
 }
 
 void hideOverlay({required OverlayEntry? entry}) {
