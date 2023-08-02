@@ -1,7 +1,4 @@
-<<<<<<< Updated upstream
 import 'dart:typed_data';
-=======
->>>>>>> Stashed changes
 import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
