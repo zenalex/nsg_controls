@@ -678,11 +678,9 @@ class _NsgInputState extends State<NsgInput> {
       return;
     }
     var filter = widget.getRequestFilter == null ? null : widget.getRequestFilter!();
-
     if (inputType == NsgInputType.dynamicList) {
       List<Widget> list = [];
       var value = widget.dataItem.getFieldValue(widget.fieldName);
-      print(value);
       int initItem = widget.dynamicList.indexOf(value);
       int countItem = initItem;
       for (var item in widget.dynamicList) {
@@ -693,39 +691,104 @@ class _NsgInputState extends State<NsgInput> {
           ),
         );
       }
+      var selectedElement = value;
+      ScrollController scrollController = ScrollController();
       showDialog(
           context: context,
-          builder: (_) => BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                child: NsgPopUp(
-                  width: 300,
-                  onConfirm: () {
-                    textController.text = widget.dynamicList[countItem].toString();
-                    widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
-                    if (widget.onEditingComplete != null) {
-                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                    }
-                    setState(() {});
-                  },
-                  title: widget.label,
-                  contentTop: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    height: 300,
-                    child: CupertinoPicker(
-                      selectionOverlay: Container(
-                        decoration: BoxDecoration(color: nsgtheme.colorPrimary.b30.withOpacity(0.5)),
-                      ),
-                      backgroundColor: nsgtheme.colorSecondary.c40,
-                      itemExtent: 30,
-                      onSelectedItemChanged: (value) {
-                        countItem = value;
-                      },
-                      scrollController: FixedExtentScrollController(initialItem: initItem),
-                      children: list,
-                    ),
+          builder: (_) {
+            Widget getDynamicList() {
+              return StatefulBuilder(builder: (context, setstate) {
+                List<Widget> list = [];
+                for (var element in widget.dynamicList) {
+                  list.add(InkWell(
+                    onTap: () {
+                      selectedElement = element;
+                      setstate(() {});
+                    },
+                    child: Container(
+                        //key: GlobalKey(),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        color: element == selectedElement ? nsgtheme.colorPrimary : Colors.transparent,
+                        height: 50,
+                        child: Center(
+                            child: Text(
+                          element.toString(),
+                          style: TextStyle(
+                              fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
+                              color: element == selectedElement ? nsgtheme.colorSecondary.b0 : nsgtheme.colorSecondary.b100),
+                        ))),
+                  ));
+                }
+                return Padding(
+                  padding: EdgeInsets.only(right: 20),
+                  child: Column(
+                    children: list,
                   ),
-                ),
-              ));
+                );
+              });
+            }
+
+            return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+              child: kIsWeb || !(Platform.isAndroid || Platform.isIOS)
+                  // Если Веб или не (андроид или иос)
+                  ? NsgPopUp(
+                      width: 300,
+                      onConfirm: () {
+                        countItem = widget.dynamicList.indexOf(selectedElement);
+                        textController.text = widget.dynamicList[countItem].toString();
+                        widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
+                        if (widget.onEditingComplete != null) {
+                          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                        }
+                        setState(() {});
+                      },
+                      title: widget.label,
+                      contentTop: Container(
+                          height: 300,
+                          child: RawScrollbar(
+                              minOverscrollLength: 100,
+                              minThumbLength: 100,
+                              thickness: 16,
+                              trackBorderColor: nsgtheme.colorSecondary,
+                              trackColor: nsgtheme.colorSecondary,
+                              thumbColor: nsgtheme.colorPrimary,
+                              radius: const Radius.circular(0),
+                              thumbVisibility: true,
+                              trackVisibility: true,
+                              controller: scrollController,
+                              child: SingleChildScrollView(controller: scrollController, child: getDynamicList()))),
+                    )
+                  : NsgPopUp(
+                      width: 300,
+                      onConfirm: () {
+                        textController.text = widget.dynamicList[countItem].toString();
+                        widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
+                        if (widget.onEditingComplete != null) {
+                          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                        }
+                        setState(() {});
+                      },
+                      title: widget.label,
+                      contentTop: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        height: 300,
+                        child: CupertinoPicker(
+                          selectionOverlay: Container(
+                            decoration: BoxDecoration(color: nsgtheme.colorPrimary.b30.withOpacity(0.5)),
+                          ),
+                          backgroundColor: nsgtheme.colorSecondary.c40,
+                          itemExtent: 30,
+                          onSelectedItemChanged: (value) {
+                            countItem = value;
+                          },
+                          scrollController: FixedExtentScrollController(initialItem: initItem),
+                          children: list,
+                        ),
+                      ),
+                    ),
+            );
+          });
     } else if (inputType == NsgInputType.reference) {
       selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       //Зенков 27.12.2022 Вызывается в form.selectFromArray
