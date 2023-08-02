@@ -920,6 +920,9 @@ class _NsgInputState extends State<NsgInput> {
                       isOn: fieldValue, onTap: () {
                     fieldValue = !fieldValue;
                     widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                    if (widget.onEditingComplete != null) {
+                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                    }
                     if (widget.updateController != null) {
                       widget.updateController!.update();
                     } else {
