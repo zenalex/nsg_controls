@@ -1,4 +1,7 @@
+<<<<<<< Updated upstream
 import 'dart:typed_data';
+=======
+>>>>>>> Stashed changes
 import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -426,4 +429,22 @@ class _SelectPhotoItemState extends State<SelectPhotoItem> {
       ],
     ));
   }
+}
+
+class NsgCropPageStyle {
+  const NsgCropPageStyle({this.mainButtonsColor, this.titleStyle});
+  final TextStyle? titleStyle;
+  final Color? mainButtonsColor;
+
+  NsgCropPageStyleMain style() {
+    return NsgCropPageStyleMain(
+        mainButtonsColor: mainButtonsColor ?? ControlOptions.instance.colorMainLight,
+        titleStyle: titleStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.w500, fontFamily: 'Inter'));
+  }
+}
+
+class NsgCropPageStyleMain {
+  const NsgCropPageStyleMain({required this.mainButtonsColor, required this.titleStyle});
+  final TextStyle titleStyle;
+  final Color mainButtonsColor;
 }
