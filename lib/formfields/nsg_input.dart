@@ -274,7 +274,7 @@ class _NsgInputState extends State<NsgInput> {
   PhoneInputFormatter phoneFormatter = PhoneInputFormatter();
   bool _disabled = false;
   late TextEditingController textController;
-  get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
+  bool get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
   TextFormFieldType? textFormFieldType;
   bool _ignoreChange = false;
 

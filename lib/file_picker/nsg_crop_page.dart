@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image/image.dart' as imgEdit;
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_simple_progress_bar.dart';
