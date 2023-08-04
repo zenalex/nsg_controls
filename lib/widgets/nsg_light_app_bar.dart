@@ -75,7 +75,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
 
   final IconData icon;
   final void Function()? onTap;
-  final void Function(Offset position, TapDownDetails details)? onTapCallback;
+  final void Function(Offset position, TapDownDetails details, Size? objectSize)? onTapCallback;
   //final ValueChanged<TapDownDetails>? onTapCallback;
   final int? nott;
   final Color? color;
@@ -109,7 +109,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
 
 class NsgLightAppBarOnTap extends StatelessWidget {
   const NsgLightAppBarOnTap({super.key, this.child, this.onTapDown, this.onTap});
-  final void Function(Offset position, TapDownDetails details)? onTapDown;
+  final void Function(Offset position, TapDownDetails details, Size? objectSize)? onTapDown;
   final void Function()? onTap;
   final Widget? child;
 
@@ -119,7 +119,7 @@ class NsgLightAppBarOnTap extends StatelessWidget {
         onTapDown: (details) {
           Offset position = (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
           if (onTapDown != null) {
-            onTapDown!(position, details);
+            onTapDown!(position, details, context.size);
           }
         },
         onTap: onTap,
