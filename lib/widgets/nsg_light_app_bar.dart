@@ -75,7 +75,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
 
   final IconData icon;
   final void Function()? onTap;
-  final void Function(TapDownDetails details)? onTapCallback;
+  final void Function(Offset position, TapDownDetails details)? onTapCallback;
   //final ValueChanged<TapDownDetails>? onTapCallback;
   final int? nott;
   final Color? color;
@@ -84,22 +84,15 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.topRight, children: [
-      GestureDetector(
-          onTapDown: (TapDownDetails details) {
-            if (onTapCallback != null) {
-              onTapCallback!(details);
-            }
-          },
+      NsgLightAppBarOnTap(
+          onTapDown: onTapCallback,
           onTap: onTap,
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: Padding(
-              padding: padding,
-              child: Icon(
-                icon,
-                size: 20,
-                color: color ?? ControlOptions.instance.colorTertiary.c70,
-              ),
+          child: Padding(
+            padding: padding,
+            child: Icon(
+              icon,
+              size: 20,
+              color: color ?? ControlOptions.instance.colorTertiary.c70,
             ),
           )),
       if (nott != null && nott! > 0)
@@ -111,6 +104,29 @@ class NsgLigthAppBarIcon extends StatelessWidget {
           decoration: BoxDecoration(color: ControlOptions.instance.colorError),
         ))
     ]);
+  }
+}
+
+class NsgLightAppBarOnTap extends StatelessWidget {
+  const NsgLightAppBarOnTap({super.key, this.child, this.onTapDown, this.onTap});
+  final void Function(Offset position, TapDownDetails details)? onTapDown;
+  final void Function()? onTap;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTapDown: (details) {
+          Offset position = (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+          if (onTapDown != null) {
+            onTapDown!(position, details);
+          }
+        },
+        onTap: onTap,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: child ?? const SizedBox(),
+        ));
   }
 }
 
