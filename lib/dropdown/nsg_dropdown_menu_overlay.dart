@@ -62,7 +62,6 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
             offsetX = widget.offset.dx;
           } else {
             double difX = constraints.maxWidth - width - widget.offset.dx - 32;
-            print(difX);
             double cutWidth = width;
             if (difX < width) {
               cutWidth = difX;
