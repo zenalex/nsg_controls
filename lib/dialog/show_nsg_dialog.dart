@@ -35,7 +35,7 @@ Future<dynamic> showNsgDialog(
                     children: [
                       Container(
                           alignment: Alignment.center,
-                          // width: double.infinity,
+                          width: double.infinity,
                           decoration: BoxDecoration(color: ControlOptions.instance.colorMain),
                           padding: const EdgeInsets.all(20),
                           child: Text(
@@ -44,7 +44,7 @@ Future<dynamic> showNsgDialog(
                             style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: ControlOptions.instance.sizeL),
                           )),
                       Container(
-                        //  width: double.infinity,
+                        width: double.infinity,
                         decoration: BoxDecoration(
                           color: ControlOptions.instance.colorMainBack,
                         ),
@@ -76,7 +76,6 @@ Future<dynamic> showNsgDialog(
                                         Navigator.of(context).pop();
                                       }
                                     },
-                                    margin: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
                                     width: 150,
                                     height: 40,
                                     text: 'Отмена',
@@ -88,7 +87,6 @@ Future<dynamic> showNsgDialog(
                                     Navigator.of(context).pop();
                                     if (onConfirm != null) onConfirm();
                                   },
-                                  margin: const EdgeInsets.symmetric(horizontal: 10),
                                   width: 150,
                                   height: 40,
                                   text: 'Да',

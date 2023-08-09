@@ -29,7 +29,7 @@ class SelectionNsgPopUp extends StatefulWidget {
   final bool showCloseButton;
   final String? elementEditPageName;
   final NsgBaseController? editPageController;
-  var textEditController=TextEditingController();
+  var textEditController = TextEditingController();
   Color? colorText;
   Color? colorTitleText;
   SelectionNsgPopUp(
@@ -66,13 +66,9 @@ class SelectionNsgPopUp extends StatefulWidget {
 class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
   final ScrollController controller1 = ScrollController();
   final ScrollController controller2 = ScrollController();
-  
- 
 
   @override
   void initState() {
-    widget.colorText ??= ControlOptions.instance.colorText;
-    widget.colorTitleText ??= ControlOptions.instance.colorMainText;
     if (widget.editPageController != null) {
       widget.editPageController!.statusChanged.subscribe(editControllerUpdate);
     }
@@ -95,11 +91,14 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
 
   @override
   Widget build(BuildContext context) {
+    widget.colorText ??= ControlOptions.instance.colorText;
+    widget.colorTitleText ??= ControlOptions.instance.colorMainText;
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
       child: Container(
         decoration: BoxDecoration(color: nsgtheme.colorModalBack),
         child: SimpleDialog(
+          backgroundColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(nsgtheme.borderRadius))),
           contentPadding: EdgeInsets.zero,
           insetPadding: widget.margin,
@@ -130,7 +129,6 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
           color: ControlOptions.instance.colorMainBack,
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-          
           Container(
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
@@ -182,37 +180,32 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
               ],
             ),
           ),
-          if(widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length >5 )
-          TextField(
-              controller: widget.textEditController,
-              decoration: InputDecoration(
-                  filled: false,
-                  fillColor: ControlOptions.instance.colorMainLight,
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      gapPadding: 1,
-                      borderSide: BorderSide(color: ControlOptions.instance.colorMainDark),
-                      borderRadius: const BorderRadius.all(Radius.circular(20))),
-                  suffixIcon: IconButton(
-                      hoverColor: Colors.transparent,
-                      padding: const EdgeInsets.only(bottom: 0),
-                      onPressed: (() {
-                       setState(() {
-                         
-                       });
-                        widget.textEditController.clear();
-                      }),
-                      icon: const Icon(Icons.cancel)),
-                  hintText: 'Search ...'),
-              textAlignVertical: TextAlignVertical.bottom,
-              style: TextStyle(color: ControlOptions.instance.colorMainLight, fontFamily: 'Inter', fontSize: 16),
-              onChanged: (val) {
-                
-              setState(() {
-                
-              });
-              }),
-          if (widget.getContent != null || widget.contentTop != null) 
+          if (widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length > 5)
+            TextField(
+                controller: widget.textEditController,
+                decoration: InputDecoration(
+                    filled: false,
+                    fillColor: ControlOptions.instance.colorMainLight,
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        gapPadding: 1,
+                        borderSide: BorderSide(color: ControlOptions.instance.colorMainDark),
+                        borderRadius: const BorderRadius.all(Radius.circular(20))),
+                    suffixIcon: IconButton(
+                        hoverColor: Colors.transparent,
+                        padding: const EdgeInsets.only(bottom: 0),
+                        onPressed: (() {
+                          setState(() {});
+                          widget.textEditController.clear();
+                        }),
+                        icon: const Icon(Icons.cancel)),
+                    hintText: 'Search ...'),
+                textAlignVertical: TextAlignVertical.bottom,
+                style: TextStyle(color: ControlOptions.instance.colorMainLight, fontFamily: 'Inter', fontSize: 16),
+                onChanged: (val) {
+                  setState(() {});
+                }),
+          if (widget.getContent != null || widget.contentTop != null)
             Flexible(
               flex: 4,
               child: Padding(
@@ -249,15 +242,14 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
                         controller: controller2,
                         thickness: 5,
                         thumbVisibility: true,
-                        child: SingleChildScrollView(controller: controller2,
-                         child: Wrap(children:  widget.contentSecondary!)),
+                        child: SingleChildScrollView(controller: controller2, child: Wrap(children: widget.contentSecondary!)),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-          if (widget.text != null )
+          if (widget.text != null)
             Flexible(
               child: SingleChildScrollView(
                 child: Container(
