@@ -531,7 +531,6 @@ class _NsgInputState extends State<NsgInput> {
                           },
                           onChanged: (value) {
                             if (widget.onChanged != null) {
-                              //WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
                               widget.onChanged!(widget.dataItem);
                             }
                           },
@@ -635,14 +634,16 @@ class _NsgInputState extends State<NsgInput> {
               onTap: () {
                 widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
                 textController.text = widget.dataItem[widget.fieldName].toString();
-
+                textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
                 Future.delayed(const Duration(milliseconds: 10), () {
                   FocusScope.of(context).requestFocus(focus);
                   if (widget.onEditingComplete != null) {
                     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                   }
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(widget.dataItem);
+                  }
                 });
-                textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
 
                 setState(() {});
               },
