@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image/image.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgDialogBodyController {
@@ -35,6 +34,7 @@ class NsgDialog {
     EdgeInsets? padding,
   }) {
     return showModalBottomSheet<void>(
+      useSafeArea: true,
       transitionAnimationController: animationController,
       context: context,
       constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height - 40),
@@ -42,7 +42,7 @@ class NsgDialog {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
         return Dialog(
-            backgroundColor: ControlOptions.instance.colorMainBack,
+            backgroundColor: nsgtheme.colorMainBack,
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
             insetPadding: const EdgeInsets.all(0),
             child: ClipRRect(
