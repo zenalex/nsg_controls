@@ -69,8 +69,6 @@ class _NsgPopUpState extends State<NsgPopUp> {
 
   @override
   void initState() {
-    widget.colorText ??= ControlOptions.instance.colorText;
-    widget.colorTitleText ??= ControlOptions.instance.colorMainText;
     if (widget.editPageController != null) {
       widget.editPageController!.statusChanged.subscribe(editControllerUpdate);
     }
@@ -93,6 +91,8 @@ class _NsgPopUpState extends State<NsgPopUp> {
 
   @override
   Widget build(BuildContext context) {
+    widget.colorText ??= ControlOptions.instance.colorText;
+    widget.colorTitleText ??= ControlOptions.instance.colorMainText;
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
       child: Container(
