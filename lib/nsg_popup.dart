@@ -28,6 +28,7 @@ class NsgPopUp extends StatefulWidget {
   final NsgBaseController? dataController;
   final bool hideBackButton;
   final bool showCloseButton;
+  final bool disableScroll;
   final String? elementEditPageName;
   final NsgBaseController? editPageController;
   Color? colorText;
@@ -53,6 +54,7 @@ class NsgPopUp extends StatefulWidget {
       this.dataController,
       this.colorText,
       this.colorTitleText,
+      this.disableScroll = false,
       this.hideBackButton = false,
       this.showCloseButton = false,
       this.editPageController,
@@ -189,16 +191,22 @@ class _NsgPopUpState extends State<NsgPopUp> {
               flex: 4,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                child: Scrollbar(
-                  controller: controller1,
-                  thickness: 5,
-                  thumbVisibility: true,
-                  child: SingleChildScrollView(
-                      controller: controller1,
-                      child: widget.dataController == null
-                          ? widget.contentTop ?? _getContent()
-                          : widget.dataController!.obx((state) => widget.contentTop ?? _getContent())),
-                ),
+                child: widget.disableScroll
+                    ? widget.dataController == null
+                        ? widget.contentTop ?? _getContent()
+                        : widget.dataController!.obx(
+                            (state) => widget.contentTop ?? _getContent(),
+                          )
+                    : Scrollbar(
+                        controller: controller1,
+                        thickness: 5,
+                        thumbVisibility: true,
+                        child: SingleChildScrollView(
+                            controller: controller1,
+                            child: widget.dataController == null
+                                ? widget.contentTop ?? _getContent()
+                                : widget.dataController!.obx((state) => widget.contentTop ?? _getContent())),
+                      ),
               ),
             ),
           if (widget.contentSecondary != null)
