@@ -96,13 +96,16 @@ class NsgLigthAppBarIcon extends StatelessWidget {
             ),
           )),
       if (nott != null && nott! > 0)
-        ClipOval(
-            child: Container(
-          width: 10,
-          height: 10,
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(color: ControlOptions.instance.colorError),
-        ))
+        Positioned(
+          right: padding.right,
+          child: ClipOval(
+              child: Container(
+            width: 10,
+            height: 10,
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(color: ControlOptions.instance.colorError),
+          )),
+        )
     ]);
   }
 }
