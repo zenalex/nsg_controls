@@ -471,7 +471,7 @@ class _NsgInputState extends State<NsgInput> {
                           focusNode: focus,
                           maxLines: widget.maxLines,
                           minLines: widget.minLines,
-                          textInputAction: TextInputAction.done,
+                          textInputAction: keyboard == TextInputType.multiline ? TextInputAction.newline : TextInputAction.done,
                           keyboardType: keyboard,
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
