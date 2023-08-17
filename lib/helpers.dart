@@ -7,6 +7,10 @@ extension NsgDate on DateTime {
     return isBefore(DateTime(1955));
   }
 
+  bool get isNotEmpty {
+    return isAfter(DateTime(1955));
+  }
+
   String format(String? format) {
     return NsgDateFormat.dateFormat(this, format: format ?? ControlOptions.instance.dateformat);
   }
