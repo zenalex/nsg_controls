@@ -30,7 +30,7 @@ dependencies:
   flutter_calendar_carousel: ^2.1.0
   share_plus: ^4.0.4
   flutter_slidable: ^2.0.0
-  another_flushbar: ^1.10.29
+  another_flushbar: ^1.12.30
   linked_scroll_controller: ^0.2.0
   mask_text_input_formatter: ^2.3.0
   image_picker: ^0.8.6+1
