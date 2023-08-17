@@ -51,7 +51,6 @@ dependencies:
   event: ^2.0.5
   hovering: ^1.0.4
   image: ^4.0.6
-  glass: ^1.0.1+1
   
 
   syncfusion_flutter_pdfviewer: ^20.4.51
