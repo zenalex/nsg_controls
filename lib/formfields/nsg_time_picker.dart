@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/nsg_controls.dart';
@@ -362,7 +363,9 @@ class _TimePickerContentState extends State<TimePickerContent> {
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         //widget.onChange(value);
-        _initialTime = NsgDateFormat.dateFormat(value, format: 'HH:mm');
+        _initialTime = DateFormat('HH:mm', 'ru_RU').format(value);
+
+        //NsgDateFormat.dateFormat(value, format: 'HH:mm');
         //_ignoreChange = true;
         textController.text = _initialTime;
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
