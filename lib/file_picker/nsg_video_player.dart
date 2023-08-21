@@ -22,7 +22,8 @@ class NsgVideoPlayerState extends State<NsgVideoPlayer> {
     if (widget.fileObject.isNew) {
       controller = VideoPlayerController.file(File(widget.fileObject.filePath));
     } else {
-      controller = VideoPlayerController.network(widget.fileObject.filePath);
+      var url = Uri.parse(widget.fileObject.filePath);
+      controller = VideoPlayerController.networkUrl(url);
     }
     controller.initialize().then((value) {
       if (controller.value.isInitialized) {
