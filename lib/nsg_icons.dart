@@ -1,10 +1,12 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/widgets.dart';
 
 class NsgIcons {
   NsgIcons._();
 
   static const _kFontFam = 'NsgIcons';
-  static const String? _kFontPkg = null;
+  static const String? _kFontPkg = 'nsg_controls';
 
   static const IconData building = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData bus_schedule = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
