@@ -13,15 +13,22 @@ class NsgDropdownMenu {
     entry = null;
   }
 
-  void showOverlay({required Function(int index, NsgDropdownMenuItem element) onSelect, required Offset offset}) async {
+  void showOverlay({required Function(int index, NsgDropdownMenuItem element) onSelect, BuildContext? parentContext, Offset? offset}) async {
     final overlay = Overlay.of(context);
     entry = OverlayEntry(builder: (context) {
+      Offset curOffset = Offset(0, 0);
+      if (parentContext != null) {
+        curOffset = (parentContext.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+      }
+      if (offset != null) {
+        curOffset = offset;
+      }
       return NsgDropdownMenuOverlay(
         onSelect: (index, element) {
           onSelect(index, element);
           hideOverlay();
         },
-        offset: offset,
+        offset: curOffset,
         widgetList: widgetList,
         entry: entry,
       );
