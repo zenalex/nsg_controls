@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgDropdownMenuItem extends StatefulWidget {
-  const NsgDropdownMenuItem({super.key, required this.text, required this.icon});
+  const NsgDropdownMenuItem({super.key, required this.text, this.iconLeft, this.iconRight});
   final String text;
-  final IconData icon;
+  final IconData? iconLeft;
+  final IconData? iconRight;
   @override
   State<NsgDropdownMenuItem> createState() => _NsgDropdownMenuItemState();
 }
@@ -16,20 +17,30 @@ class _NsgDropdownMenuItemState extends State<NsgDropdownMenuItem> {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          if (widget.iconLeft != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Icon(
+                widget.iconLeft,
+                size: 20,
+                color: nsgtheme.colorPrimary,
+              ),
+            ),
           Text(
             widget.text,
+            textAlign: TextAlign.left,
             style: textStyle,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: Icon(
-              widget.icon,
-              size: 20,
-              color: nsgtheme.colorPrimary,
-            ),
-          )
+          if (widget.iconRight != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Icon(
+                widget.iconRight,
+                size: 20,
+                color: nsgtheme.colorPrimary,
+              ),
+            )
         ],
       ),
     );
