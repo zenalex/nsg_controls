@@ -5,8 +5,9 @@ class NsgSwitchHorizontal extends StatefulWidget {
   final bool isOn;
   final String text;
   final VoidCallback onTap;
+  final Widget? child;
   final NsgSwitchHorizontalStyle style;
-  const NsgSwitchHorizontal(this.text, {super.key, required this.isOn, required this.onTap, this.style = const NsgSwitchHorizontalStyle()});
+  const NsgSwitchHorizontal({super.key, this.text = '', required this.isOn, required this.onTap, this.style = const NsgSwitchHorizontalStyle(), this.child});
 
   @override
   State<NsgSwitchHorizontal> createState() => _NsgSwitchHorizontalState();
@@ -36,13 +37,15 @@ class _NsgSwitchHorizontalState extends State<NsgSwitchHorizontal> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
-              child: AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
-                style: isOn ? buildStyle.textActiveStyle : buildStyle.textStyle,
-                child: Text(
-                  widget.text,
-                ),
-              ),
+              child: widget.child == null
+                  ? AnimatedDefaultTextStyle(
+                      duration: const Duration(milliseconds: 200),
+                      style: isOn ? buildStyle.textActiveStyle : buildStyle.textStyle,
+                      child: Text(
+                        widget.text,
+                      ),
+                    )
+                  : widget.child!,
             ),
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),

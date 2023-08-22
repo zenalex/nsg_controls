@@ -32,6 +32,9 @@ class NsgInput extends StatefulWidget {
   final int maxLines;
   final int minLines;
 
+  /// Виджет для Bool переключателя, если нужно что-то сложнее простой текстовой строки
+  final Widget? child;
+
   /// Автовокус на поле при входе на страницу
   final bool autofocus;
 
@@ -159,6 +162,7 @@ class NsgInput extends StatefulWidget {
 
   const NsgInput(
       {Key? key,
+      this.child,
       this.dynamicList = const [],
       this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
       this.trackColor,
@@ -915,10 +919,12 @@ class _NsgInputState extends State<NsgInput> {
     Widget boolBox = widget.boolWidget ??
         StatefulBuilder(
           builder: ((context, setState) => NsgSwitchHorizontal(
-                      //key: GlobalKey(),
-                      style: widget.nsgSwitchHorizontalStyle,
-                      widget.label,
-                      isOn: fieldValue, onTap: () {
+                  //key: GlobalKey(),
+                  style: widget.nsgSwitchHorizontalStyle,
+                  text: widget.label,
+                  child: widget.child,
+                  isOn: fieldValue,
+                  onTap: () {
                     fieldValue = !fieldValue;
                     widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
                     if (widget.onEditingComplete != null) {
