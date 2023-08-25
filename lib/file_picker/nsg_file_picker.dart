@@ -231,10 +231,11 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         label: 'PNGs',
         extensions: <String>['png'],
       );
-      List<XFile> result = await file.openFiles(acceptedTypeGroups: <file.XTypeGroup>[
-        jpgsTypeGroup,
-        pngTypeGroup,
-      ]);
+      var pdfTypeGroup = const file.XTypeGroup(
+        label: 'PDFs',
+        extensions: <String>['pdf'],
+      );
+      List<XFile> result = await file.openFiles(acceptedTypeGroups: <file.XTypeGroup>[jpgsTypeGroup, pngTypeGroup, pdfTypeGroup]);
 
       if (result.isNotEmpty) {
         galleryPage = true;
