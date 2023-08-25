@@ -13,6 +13,7 @@ import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../formfields/nsg_period_filter.dart';
 import '../formfields/nsg_text_filter.dart';
+import '../nsg_simple_progress_bar.dart';
 import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
@@ -1602,13 +1603,20 @@ class _NsgTableState extends State<NsgTable> {
 
 /* ----------------------------------------------- Прогрессбар в процессе загрузки контента таблицы ----------------------------------------------- */
           if (widget.controller.currentStatus.isLoading) {
-            table.add(Container(
-                decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-                child: const Center(
-                    child: Padding(
-                  padding: EdgeInsets.only(top: 30, bottom: 30),
-                  child: NsgProgressBar(),
-                ))));
+            table.add(Flexible(
+                child: SingleChildScrollView(
+                    child: Column(
+              children: [
+                Container(
+                    height: 100,
+                    decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+                    child: const Center(
+                        child: Padding(
+                      padding: EdgeInsets.only(top: 30, bottom: 30),
+                      child: NsgSimpleProgressBar(),
+                    ))),
+              ],
+            ))));
           } else {
             if (!tableAlreadyBuilt) {
               WidgetsBinding.instance.addPostFrameCallback((_) => checkScrollbarIsVisible());
