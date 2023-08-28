@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nsg_controls/file_picker/nsg_ligth_file_picker.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:path/path.dart';
@@ -17,22 +18,9 @@ import 'package:dio/dio.dart' as dio;
 /// Пикер и загрузчик изображений и файлов заданных форматов
 class NsgFilePicker extends StatefulWidget {
   final bool showAsWidget;
-  final List<String> allowedImageFormats;
-  final List<String> allowedVideoFormats;
-  final List<String> allowedFileFormats;
   final bool useFilePicker;
 
-  ///Максимальная ширина картинки. При превышении, картинка будет пережата.
-  final double imageMaxWidth;
-
-  ///Максимальная высота картинки. При превышении, картинка будет пережата
-  final double imageMaxHeight;
-
-  ///Качество сжатия картинки в jpeg (100 - макс)
-  final int imageQuality;
-
-  ///Максимально разрешенный размер файла для выбора. При превышении размера файла, его выбор будет запрещен
-  final double fileMaxSize;
+  final NsgLigthFilePicker filePicker;
 
   ///Фунция, вызываемая при подтверждении сохранения картинок пользователем
   final Function(List<NsgFilePickerObject>) callback;
@@ -54,16 +42,10 @@ class NsgFilePicker extends StatefulWidget {
 
   NsgFilePicker(
       {Key? key,
+      this.filePicker = const NsgLigthFilePicker(),
       this.needCrop = false,
-      this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
-      this.allowedVideoFormats = const ['mp4'],
-      this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
       this.showAsWidget = false,
       this.useFilePicker = false,
-      this.imageMaxWidth = 1440.0,
-      this.imageMaxHeight = 1440.0,
-      this.imageQuality = 70,
-      this.fileMaxSize = 1000000.0,
       this.maxFilesCount = 0,
       required this.callback,
       required this.objectsList,
@@ -96,28 +78,6 @@ class NsgFilePicker extends StatefulWidget {
 
   @override
   State<NsgFilePicker> createState() => _NsgFilePickerState();
-
-  static List<String> globalAllowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'];
-  static List<String> globalAllowedVideoFormats = const ['mp4'];
-  static List<String> globalAllowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv'];
-
-  static NsgFilePickerObjectType getFileType(String ext) {
-    if (globalAllowedImageFormats.contains(ext)) {
-      return NsgFilePickerObjectType.image;
-    }
-    if (globalAllowedVideoFormats.contains(ext)) {
-      return NsgFilePickerObjectType.video;
-    }
-    if (globalAllowedFileFormats.contains(ext)) {
-      if (ext == 'pdf') {
-        return NsgFilePickerObjectType.pdf;
-      } else {
-        return NsgFilePickerObjectType.other;
-      }
-    }
-
-    return NsgFilePickerObjectType.unknown;
-  }
 }
 
 class _NsgFilePickerState extends State<NsgFilePicker> {
@@ -147,279 +107,6 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     );
   }
 
-  /// Pick an image
-  Future galleryImage() async {
-    if (kIsWeb) {
-      var result = await ImagePicker().pickMultiImage(
-        imageQuality: widget.imageQuality,
-        maxWidth: widget.imageMaxWidth,
-        maxHeight: widget.imageMaxHeight,
-      );
-
-      galleryPage = true;
-
-      /// Если стоит ограничение на 1 файл
-      if (widget.oneFile) {
-        result = [result[0]];
-        objectsList.clear();
-      }
-      for (var element in result) {
-        var obj =
-            NsgFilePickerObject(isNew: true, image: Image.network(element.path), description: basenameWithoutExtension(element.path), filePath: element.path);
-        obj.fileContent = await element.readAsBytes();
-        objectsList.add(obj);
-      }
-      if (widget.skipInterface) {
-        widget.callback(objectsList);
-      } else {
-        setState(() {});
-      }
-    } else if (GetPlatform.isWindows) {
-      var result = await ImagePicker().pickMultiImage(
-        imageQuality: widget.imageQuality,
-        maxWidth: widget.imageMaxWidth,
-        maxHeight: widget.imageMaxHeight,
-      );
-
-      galleryPage = true;
-
-      /// Если стоит ограничение на 1 файл
-      if (widget.oneFile) {
-        if (result.isNotEmpty) {
-          result = [result[0]];
-          if (objectsList.isNotEmpty) {
-            objectsList.clear();
-          }
-        }
-      }
-
-      for (var element in result) {
-        var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', '').toLowerCase());
-        //   var fileType = NsgFilePicker.getFileType(extension(element.name).toLowerCase());
-
-        if (fileType == NsgFilePickerObjectType.image) {
-          objectsList.add(NsgFilePickerObject(
-              isNew: true,
-              image: Image.file(File(element.path)),
-              description: basenameWithoutExtension(element.path),
-              fileType: fileType,
-              filePath: element.path));
-        } else if (fileType != NsgFilePickerObjectType.unknown) {
-          objectsList.add(NsgFilePickerObject(
-              isNew: true,
-              file: File(element.path),
-              image: null,
-              description: basenameWithoutExtension(element.path),
-              fileType: fileType,
-              filePath: element.path));
-        } else {
-          error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
-          setState(() {});
-        }
-      }
-      if (widget.skipInterface) {
-        widget.callback(objectsList);
-      } else {
-        setState(() {});
-      }
-    } else if (GetPlatform.isMacOS) {
-      var jpgsTypeGroup = const file.XTypeGroup(
-        label: 'JPEGs',
-        extensions: <String>['jpg', 'jpeg'],
-      );
-      var pngTypeGroup = const file.XTypeGroup(
-        label: 'PNGs',
-        extensions: <String>['png'],
-      );
-      var pdfTypeGroup = const file.XTypeGroup(
-        label: 'PDFs',
-        extensions: <String>['pdf'],
-      );
-      List<XFile> result = await file.openFiles(acceptedTypeGroups: <file.XTypeGroup>[jpgsTypeGroup, pngTypeGroup, pdfTypeGroup]);
-
-      if (result.isNotEmpty) {
-        galleryPage = true;
-
-        /// Если стоит ограничение на 1 файл
-        if (widget.oneFile) {
-          result = [result[0]];
-          objectsList.clear();
-        }
-        for (var element in result) {
-          var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', ''));
-
-          if (fileType == NsgFilePickerObjectType.image) {
-            objectsList.add(NsgFilePickerObject(
-                isNew: true,
-                image: Image.file(File(element.path)),
-                description: basenameWithoutExtension(element.path),
-                fileType: fileType,
-                filePath: element.path));
-          } else if (fileType != NsgFilePickerObjectType.unknown) {
-            objectsList.add(NsgFilePickerObject(
-                isNew: true,
-                file: File(element.path),
-                image: null,
-                description: basenameWithoutExtension(element.path),
-                fileType: fileType,
-                filePath: element.path));
-          } else {
-            error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
-            setState(() {});
-          }
-        }
-      }
-      if (widget.skipInterface) {
-        widget.callback(objectsList);
-      } else {
-        setState(() {});
-      }
-    } else {
-      var result = await ImagePicker().pickMultiImage(
-        imageQuality: widget.imageQuality,
-        maxWidth: widget.imageMaxWidth,
-        maxHeight: widget.imageMaxHeight,
-      );
-
-      galleryPage = true;
-
-      /// Если стоит ограничение на 1 файл
-      if (widget.oneFile) {
-        if (result.isNotEmpty) result = [result[0]];
-        objectsList.clear();
-      }
-      for (var element in result) {
-        var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', ''));
-
-        if (fileType == NsgFilePickerObjectType.image) {
-          objectsList.add(NsgFilePickerObject(
-              isNew: true,
-              image: Image.file(File(element.path)),
-              description: basenameWithoutExtension(element.path),
-              fileType: fileType,
-              filePath: element.path));
-        } else if (fileType != NsgFilePickerObjectType.unknown) {
-          objectsList.add(NsgFilePickerObject(
-              isNew: true,
-              file: File(element.path),
-              image: null,
-              description: basenameWithoutExtension(element.path),
-              fileType: fileType,
-              filePath: element.path));
-        } else {
-          error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
-          setState(() {});
-        }
-      }
-
-      if (widget.skipInterface) {
-        widget.callback(objectsList);
-      } else {
-        setState(() {});
-      }
-    }
-  }
-
-  /// Pick an image
-  Future pickFile() async {
-    FilePickerResult? result = await FilePicker.platform
-        .pickFiles(type: FileType.custom, allowedExtensions: [...widget.allowedFileFormats, ...widget.allowedImageFormats, ...widget.allowedVideoFormats]);
-    if (result != null) {
-      galleryPage = true;
-      for (var element in result.files) {
-        var fileType = NsgFilePicker.getFileType(extension(element.name).replaceAll('.', '').toLowerCase());
-        assert(element.path != null, 'Нет пути картинки');
-        var file = File(element.path!);
-        var l = await file.length();
-        if (l > widget.fileMaxSize) {
-          error = 'Превышен максимальный размер файла ${(widget.fileMaxSize / 1024).toString()} кБайт';
-          setState(() {});
-          return;
-        }
-        if (fileType == NsgFilePickerObjectType.image) {
-          objectsList.add(NsgFilePickerObject(
-              isNew: true,
-              image: Image.file(File(element.path!)),
-              description: basenameWithoutExtension(element.name),
-              fileType: fileType,
-              filePath: element.path ?? ''));
-        } else if (fileType != NsgFilePickerObjectType.unknown) {
-          objectsList.add(NsgFilePickerObject(
-              isNew: true,
-              file: File(element.name),
-              image: null,
-              description: basenameWithoutExtension(element.path!),
-              fileType: fileType,
-              filePath: element.path ?? ''));
-        } else {
-          error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
-          setState(() {});
-        }
-      }
-      if (widget.skipInterface) {
-        widget.callback(objectsList);
-      } else {
-        setState(() {});
-      }
-    }
-  }
-
-  /// Capture a photo
-  Future cameraImage() async {
-    final ImagePicker picker = ImagePicker();
-    //NsgProgressDialog progress = NsgProgressDialog(textDialog: 'Добавляем фото из камеры', canStopped: false);
-    //progress.show(Get.context);
-    final XFile? image = await picker.pickImage(source: ImageSource.camera);
-
-    // var result = await ImagePicker().pickMultiImage(
-    //   imageQuality: widget.imageQuality,
-    //   maxWidth: widget.imageMaxWidth,
-    //   maxHeight: widget.imageMaxHeight,
-    // );
-
-    var result = [];
-    if (image != null) {
-      result = [image];
-    }
-
-    galleryPage = true;
-
-    /// Если стоит ограничение на 1 файл
-    if (widget.oneFile) {
-      if (result.isNotEmpty) result = [result[0]];
-      objectsList.clear();
-    }
-    for (var element in result) {
-      var fileType = NsgFilePicker.getFileType(extension(element.path).replaceAll('.', ''));
-
-      if (fileType == NsgFilePickerObjectType.image) {
-        objectsList.add(NsgFilePickerObject(
-            isNew: true,
-            image: Image.file(File(element.path)),
-            description: basenameWithoutExtension(element.path),
-            fileType: fileType,
-            filePath: element.path));
-      } else if (fileType != NsgFilePickerObjectType.unknown) {
-        objectsList.add(NsgFilePickerObject(
-            isNew: true,
-            file: File(element.path),
-            image: null,
-            description: basenameWithoutExtension(element.path),
-            fileType: fileType,
-            filePath: element.path));
-      } else {
-        error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
-        setState(() {});
-      }
-    }
-
-    if (widget.skipInterface) {
-      widget.callback(objectsList);
-    } else {
-      setState(() {});
-    }
-  }
-
   Widget _showFileType(NsgFilePickerObject element) {
     return Container(
         height: 100,
@@ -436,40 +123,6 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             type: NsgTextType(const TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
           ),
         )));
-  }
-
-  Future saveFile(NsgFilePickerObject fileObject) async {
-    FileType fileType = FileType.any;
-    switch (fileObject.fileType) {
-      case NsgFilePickerObjectType.image:
-        fileType = FileType.image;
-        break;
-      case NsgFilePickerObjectType.video:
-        fileType = FileType.video;
-        break;
-      case NsgFilePickerObjectType.pdf:
-        fileType = FileType.any;
-        break;
-      default:
-        fileType = FileType.any;
-    }
-    var fileName = await FilePicker.platform
-        .saveFile(dialogTitle: 'Сохранить файл', type: fileType, allowedExtensions: [extension(fileObject.filePath).replaceAll('.', '')]);
-    if (fileName == null) return;
-    var ext = extension(fileName);
-    if (ext.isEmpty) {
-      fileName += extension(fileObject.filePath);
-    }
-
-    //TODO: add progress
-    dio.Dio io = dio.Dio();
-    await io.download(fileObject.filePath, fileName, onReceiveProgress: (receivedBytes, totalBytes) {
-      //setState(() {
-      // downloading = true;
-      // progress =
-      //     ((receivedBytes / totalBytes) * 100).toStringAsFixed(0) + "%";
-    });
-    await launchUrlString('file:$fileName');
   }
 
   /// Вывод галереи на экран
@@ -505,7 +158,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                     child: InkWell(
                       hoverColor: ControlOptions.instance.colorMainDark,
                       onTap: () {
-                        saveFile(element);
+                        widget.filePicker.saveFile(element);
                       },
                       child: Container(
                         height: 38,
@@ -612,19 +265,19 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
         textChooseFile: widget.textChooseFile,
         onPressed: () {
           if (kIsWeb) {
-            galleryImage();
+            widget.filePicker.galleryImage();
           } else if (GetPlatform.isWindows) {
-            pickFile();
+            widget.filePicker.pickFile();
           } else {
             if (widget.fromGallery) {
-              galleryImage();
+              widget.filePicker.galleryImage();
             } else {
-              cameraImage();
+              widget.filePicker.cameraImage();
             }
           }
         },
         onPressed2: () {
-          galleryImage();
+          widget.filePicker.galleryImage();
         }));
 
     return RawScrollbar(
@@ -685,21 +338,21 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     if (widget.skipInterface) {
       if (kIsWeb) {
         if (widget.useFilePicker) {
-          pickFile();
+          widget.filePicker.pickFile();
         } else {
-          galleryImage();
+          widget.filePicker.galleryImage();
         }
       } else if (GetPlatform.isWindows) {
         if (widget.useFilePicker) {
-          pickFile();
+          widget.filePicker.pickFile();
         } else {
-          galleryImage();
+          widget.filePicker.galleryImage();
         }
       } else {
         if (widget.fromGallery) {
-          galleryImage();
+          widget.filePicker.galleryImage();
         } else {
-          cameraImage();
+          widget.filePicker.cameraImage();
         }
       }
       return const SizedBox();
