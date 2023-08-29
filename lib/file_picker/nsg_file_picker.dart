@@ -35,7 +35,6 @@ class NsgFilePicker extends StatefulWidget {
   final List<NsgFilePickerObject> objectsList;
 
   final bool oneFile;
-  final bool skipInterface;
 
   final bool needCrop;
   final bool fromGallery;
@@ -51,8 +50,7 @@ class NsgFilePicker extends StatefulWidget {
       required this.objectsList,
       this.textChooseFile = 'Добавить фото',
       this.oneFile = false,
-      this.fromGallery = true,
-      this.skipInterface = false})
+      this.fromGallery = true})
       : super(key: key) {
     _resisterComponents();
   }
@@ -263,21 +261,16 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     List<Widget> listWithPlus = list;
     listWithPlus.add(NsgImagePickerButton(
         textChooseFile: widget.textChooseFile,
-        onPressed: () {
-          if (kIsWeb) {
-            widget.filePicker.galleryImage();
-          } else if (GetPlatform.isWindows) {
-            widget.filePicker.pickFile();
-          } else {
-            if (widget.fromGallery) {
-              widget.filePicker.galleryImage();
-            } else {
-              widget.filePicker.cameraImage();
-            }
-          }
+        onPressed: () async {
+          var ans = await widget.filePicker.autoSelectPicker();
+          //widget.objectsList.clear();
+          widget.objectsList.addAll(ans);
+          setState(() {});
         },
-        onPressed2: () {
-          widget.filePicker.galleryImage();
+        onPressed2: () async {
+          var ans = await widget.filePicker.galleryImage();
+          widget.objectsList.addAll(ans);
+          setState(() {});
         }));
 
     return RawScrollbar(
@@ -335,48 +328,25 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 /* --------------------------------------------------------------------- Build -------------------------------------------------------------------- */
   @override
   Widget build(BuildContext context) {
-    if (widget.skipInterface) {
-      if (kIsWeb) {
-        if (widget.useFilePicker) {
-          widget.filePicker.pickFile();
-        } else {
-          widget.filePicker.galleryImage();
-        }
-      } else if (GetPlatform.isWindows) {
-        if (widget.useFilePicker) {
-          widget.filePicker.pickFile();
-        } else {
-          widget.filePicker.galleryImage();
-        }
-      } else {
-        if (widget.fromGallery) {
-          widget.filePicker.galleryImage();
-        } else {
-          widget.filePicker.cameraImage();
-        }
-      }
-      return const SizedBox();
-    } else {
-      return widget.showAsWidget == true
-          ? body()
-          : BodyWrap(
-              child: Scaffold(
-                key: scaffoldKey,
-                backgroundColor: Colors.white,
-                body: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    _appBar(),
-                    Expanded(
-                      child: body(),
-                    ),
+    return widget.showAsWidget == true
+        ? body()
+        : BodyWrap(
+            child: Scaffold(
+              key: scaffoldKey,
+              backgroundColor: Colors.white,
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  _appBar(),
+                  Expanded(
+                    child: body(),
+                  ),
 
-                    //SizedBox(height: MediaQuery.of(context).padding.bottom),
-                  ],
-                ),
+                  //SizedBox(height: MediaQuery.of(context).padding.bottom),
+                ],
               ),
-            );
-    }
+            ),
+          );
   }
 }
 
