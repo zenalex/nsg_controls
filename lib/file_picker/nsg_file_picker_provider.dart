@@ -64,6 +64,8 @@ class NsgFilePickerProvider {
 
   final String savePrefix;
 
+  final bool ignoreMaxSize;
+
   const NsgFilePickerProvider(
       {this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
       this.allowedVideoFormats = const ['mp4'],
@@ -72,6 +74,7 @@ class NsgFilePickerProvider {
       this.imageMaxHeight = 1440.0,
       this.imageQuality = 70,
       this.fileMaxSize = 1000000.0,
+      this.ignoreMaxSize = false,
       this.savePrefix = 'NsgFile',
       this.maxFilesCount = 0,
       this.mobileSelectionType = NsgFilePickerObjectType.image});
@@ -327,7 +330,7 @@ class NsgFilePickerProvider {
         if (kIsWeb) {
           var file = File(element.bytes.toString());
 
-          if ((await file.length()) > fileMaxSize) {
+          if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
             error = 'Превышен максимальный размер файла ${(fileMaxSize / 1024).toString()} кБайт';
           }
           if (fileType == NsgFilePickerObjectType.image) {
@@ -352,7 +355,7 @@ class NsgFilePickerProvider {
           if (element.path != null) {
             var file = File(element.path!);
 
-            if ((await file.length()) > fileMaxSize) {
+            if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
               error = 'Превышен максимальный размер файла ${(fileMaxSize / 1024).toString()} кБайт';
             }
             if (fileType == NsgFilePickerObjectType.image) {

@@ -4,7 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:nsg_controls/file_picker/nsg_ligth_file_picker.dart';
+import 'package:nsg_controls/file_picker/nsg_file_picker_provider.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:path/path.dart';
