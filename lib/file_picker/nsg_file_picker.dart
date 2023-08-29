@@ -20,7 +20,7 @@ class NsgFilePicker extends StatefulWidget {
   final bool showAsWidget;
   final bool useFilePicker;
 
-  final NsgLigthFilePicker filePicker;
+  final NsgFilePickerProvider filePicker;
 
   ///Фунция, вызываемая при подтверждении сохранения картинок пользователем
   final Function(List<NsgFilePickerObject>) callback;
@@ -42,7 +42,7 @@ class NsgFilePicker extends StatefulWidget {
 
   NsgFilePicker(
       {Key? key,
-      this.filePicker = const NsgLigthFilePicker(),
+      this.filePicker = const NsgFilePickerProvider(),
       this.needCrop = false,
       this.showAsWidget = false,
       this.useFilePicker = false,

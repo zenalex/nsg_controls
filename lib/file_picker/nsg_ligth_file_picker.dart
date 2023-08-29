@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:nsg_controls/file_picker/nsg_file_picker.dart';
 import 'package:nsg_controls/file_picker/nsg_file_picker_object.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:path/path.dart';
@@ -16,7 +15,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:url_launcher/url_launcher_string.dart';
 
-class NsgLigthFilePicker {
+class NsgFilePickerProvider {
   static List<String> globalAllowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'];
   static List<String> globalAllowedVideoFormats = const ['mp4'];
   static List<String> globalAllowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv'];
@@ -65,7 +64,7 @@ class NsgLigthFilePicker {
 
   final String savePrefix;
 
-  const NsgLigthFilePicker(
+  const NsgFilePickerProvider(
       {this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
       this.allowedVideoFormats = const ['mp4'],
       this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
