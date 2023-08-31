@@ -4,11 +4,11 @@ import 'nsg_control_options.dart';
 
 extension NsgDate on DateTime {
   bool get isEmpty {
-    return isBefore(DateTime(1955));
+    return isBefore(DateTime(1955)) || isAfter(DateTime(8000));
   }
 
   bool get isNotEmpty {
-    return isAfter(DateTime(1955));
+    return !isEmpty;
   }
 
   String format(String? format) {
