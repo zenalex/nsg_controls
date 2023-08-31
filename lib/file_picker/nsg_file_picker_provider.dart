@@ -81,9 +81,9 @@ class NsgFilePickerProvider {
 
   Future<List<NsgFilePickerObject>> autoSelectPicker({bool oneFile = false, ESourceType eSourceType = ESourceType.auto, BuildContext? mainContext}) async {
     if (kIsWeb) {
-      return galleryImage();
+      return galleryImage(oneFile: oneFile);
     } else if (GetPlatform.isWindows || GetPlatform.isMacOS) {
-      return pickFile();
+      return pickFile(oneFile: oneFile);
     } else {
       if (eSourceType == ESourceType.auto && mainContext != null) {
         var type = await showSourceTypeDialog(mainContext);
@@ -97,13 +97,13 @@ class NsgFilePickerProvider {
       }
       switch (eSourceType) {
         case ESourceType.camera:
-          return cameraImage();
+          return cameraImage(oneFile: oneFile);
         case ESourceType.gallery:
-          return galleryImage();
+          return galleryImage(oneFile: oneFile);
         case ESourceType.files:
-          return pickFile();
+          return pickFile(oneFile: oneFile);
         default:
-          return pickFile();
+          return pickFile(oneFile: oneFile);
       }
     }
   }
@@ -144,8 +144,8 @@ class NsgFilePickerProvider {
       }
     } else if (GetPlatform.isWindows || GetPlatform.isLinux) {
       /* --------------------------------------------- Галерея Windows и Linux -------------------------------------------- */
-      FilePickerResult? result = await FilePicker.platform
-          .pickFiles(type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats]);
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
 
       if (result != null) {
         for (var element in result.files) {
@@ -318,11 +318,11 @@ class NsgFilePickerProvider {
   }
 
   /// Pick an image
-  Future<List<NsgFilePickerObject>> pickFile() async {
+  Future<List<NsgFilePickerObject>> pickFile({bool oneFile = false}) async {
     String? error;
     List<NsgFilePickerObject> objectsList = [];
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats]);
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
     if (result != null) {
       for (var element in result.files) {
         var fileType = getFileTypeByPath(element.name);
