@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 class NsgListenable extends Listenable {
-  final List<VoidCallback> _listeners = [];
   Map<String, VoidCallback> listeners = {};
 
   @override
   String addListener(VoidCallback listener) {
-    _listeners.add(listener);
     String key = Guid.newGuid();
     listeners.addAll({key: listener});
     return key;
