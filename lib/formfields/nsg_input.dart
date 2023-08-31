@@ -528,8 +528,11 @@ class _NsgInputState extends State<NsgInput> {
                               if (widget.onEditingComplete != null) {
                                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                               }
+
                               Future.delayed(const Duration(milliseconds: 10), () {
-                                FocusScope.of(context).unfocus();
+                                if (context.mounted) {
+                                  FocusScope.of(context).unfocus();
+                                }
                               });
                             }
                           },
