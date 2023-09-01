@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
-class NsgDropdownMenuItem extends StatefulWidget {
-  const NsgDropdownMenuItem({super.key, required this.text, this.iconLeft, this.iconRight});
+class NsgDropdownMenuItem extends StatelessWidget {
+  const NsgDropdownMenuItem({super.key, required this.text, this.iconLeft, this.iconRight, this.color, this.rotateAngle, this.value});
   final String text;
   final IconData? iconLeft;
   final IconData? iconRight;
-  @override
-  State<NsgDropdownMenuItem> createState() => _NsgDropdownMenuItemState();
-}
+  final double? rotateAngle;
+  final Color? color;
+  final int? value;
 
-class _NsgDropdownMenuItemState extends State<NsgDropdownMenuItem> {
   @override
   Widget build(BuildContext context) {
     const TextStyle textStyle = TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Inter');
@@ -18,29 +17,34 @@ class _NsgDropdownMenuItemState extends State<NsgDropdownMenuItem> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          if (widget.iconLeft != null)
+          if (iconLeft != null)
             Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: Icon(
-                widget.iconLeft,
-                size: 20,
-                color: nsgtheme.colorPrimary,
+              child: Transform.rotate(
+                angle: rotateAngle ?? 0,
+                child: Icon(
+                  iconLeft,
+                  size: 20,
+                  color: color ?? nsgtheme.colorPrimary,
+                ),
               ),
             ),
           Text(
-            widget.text,
+            text,
             textAlign: TextAlign.left,
             style: textStyle,
           ),
-          if (widget.iconRight != null)
+          if (iconRight != null)
             Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Icon(
-                widget.iconRight,
-                size: 20,
-                color: nsgtheme.colorPrimary,
-              ),
-            )
+                padding: const EdgeInsets.only(left: 10),
+                child: Transform.rotate(
+                  angle: rotateAngle ?? 0,
+                  child: Icon(
+                    iconRight,
+                    size: 20,
+                    color: color ?? nsgtheme.colorPrimary,
+                  ),
+                ))
         ],
       ),
     );

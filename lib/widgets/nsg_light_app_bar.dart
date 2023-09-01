@@ -48,6 +48,7 @@ class NsgLightAppBar extends StatelessWidget {
         nott: element.nott,
         onTapCallback: element.onTapCallback,
         color: element.color,
+        rotateAngle: element.rotateAngle,
         padding: const EdgeInsets.symmetric(horizontal: 12),
       ));
     }
@@ -71,7 +72,14 @@ class NsgLightAppBar extends StatelessWidget {
 
 class NsgLigthAppBarIcon extends StatelessWidget {
   const NsgLigthAppBarIcon(
-      {super.key, required this.icon, this.onTap, this.onTapCallback, this.nott, this.color, this.padding = const EdgeInsets.only(right: 8, left: 8)});
+      {super.key,
+      required this.icon,
+      this.onTap,
+      this.onTapCallback,
+      this.nott,
+      this.color,
+      this.rotateAngle,
+      this.padding = const EdgeInsets.only(right: 8, left: 8)});
 
   final IconData icon;
   final void Function()? onTap;
@@ -79,6 +87,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   //final ValueChanged<TapDownDetails>? onTapCallback;
   final int? nott;
   final Color? color;
+  final double? rotateAngle;
   final EdgeInsets padding;
 
   @override
@@ -89,10 +98,13 @@ class NsgLigthAppBarIcon extends StatelessWidget {
           onTap: onTap,
           child: Padding(
             padding: padding,
-            child: Icon(
-              icon,
-              size: 20,
-              color: color ?? ControlOptions.instance.colorTertiary.c70,
+            child: Transform.rotate(
+              angle: rotateAngle ?? 0,
+              child: Icon(
+                icon,
+                size: 20,
+                color: color ?? ControlOptions.instance.colorTertiary.c70,
+              ),
             ),
           )),
       if (nott != null && nott! > 0)
