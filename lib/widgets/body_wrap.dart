@@ -4,8 +4,9 @@ import 'package:nsg_controls/nsg_controls.dart';
 class BodyWrap extends StatelessWidget {
   final Widget child;
   final bool fullWidth;
+  final bool transparentBody;
   final Future<bool> Function()? onWillPop;
-  const BodyWrap({super.key, required this.child, this.fullWidth = false, this.onWillPop});
+  const BodyWrap({super.key, required this.child, this.fullWidth = false, this.onWillPop, this.transparentBody = false});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,9 @@ class BodyWrap extends StatelessWidget {
           },
       child: SafeArea(
         child: Container(
-            decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack),
+            decoration: BoxDecoration(
+              color: transparentBody ? Colors.transparent : ControlOptions.instance.colorMainBack,
+            ),
             child: Center(
                 child: Container(
                     constraints:
