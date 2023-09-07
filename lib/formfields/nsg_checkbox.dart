@@ -30,7 +30,7 @@ class NsgCheckBox extends StatefulWidget {
       this.height = 44,
       this.width,
       required this.onPressed,
-      this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 10),
       this.simple = false,
       this.checkColor})
       : super(key: key);

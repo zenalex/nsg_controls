@@ -594,8 +594,8 @@ class _NsgInputState extends State<NsgInput> {
           ? widget.contentPadding! //.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr)
           : EdgeInsets.zero;
     } else {
-      return nsgtheme.nsgInputContenPadding
-          .subtract(EdgeInsets.only(top: nsgtheme.nsgInputContenPadding.top, bottom: nsgtheme.nsgInputContenPadding.bottom))
+      return nsgtheme.nsgInputContentPadding
+          .subtract(EdgeInsets.only(top: nsgtheme.nsgInputContentPadding.top, bottom: nsgtheme.nsgInputContentPadding.bottom))
           .resolve(TextDirection.ltr);
     }
   }
@@ -604,7 +604,7 @@ class _NsgInputState extends State<NsgInput> {
     if (widget.contentPadding != null) {
       return widget.contentPadding!;
     } else {
-      EdgeInsets padding = nsgtheme.nsgInputContenPadding
+      EdgeInsets padding = nsgtheme.nsgInputContentPadding
           .subtract(EdgeInsets.fromLTRB(
               0,
               4,

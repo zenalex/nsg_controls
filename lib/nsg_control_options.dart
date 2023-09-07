@@ -124,7 +124,7 @@ class ControlOptions {
   final bool nsgInputHintAlwaysOnTop;
   final bool nsgInputHintHidden;
   final TextFormFieldType nsgInputOutlineBorderType;
-  final EdgeInsets nsgInputContenPadding;
+  final EdgeInsets nsgInputContentPadding;
   final Color nsgInputColorLabel;
   final Color nsgInputColorFilled;
   final Color nsgInputBorderColor;
@@ -276,7 +276,7 @@ class ControlOptions {
     this.nsgInputColorFilled = Colors.transparent,
     this.nsgInputColorLabel = Colors.black,
     this.nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
-    this.nsgInputContenPadding = const EdgeInsets.all(5),
+    this.nsgInputContentPadding = const EdgeInsets.all(5),
     this.appMaxWidth = 640,
     this.appMinWidth = 320,
     this.sizeH1 = 36,
@@ -349,7 +349,7 @@ class ControlOptions {
     bool nsgInputFilled = false,
     bool nsgInputHintAlwaysOnTop = false,
     TextFormFieldType nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
-    EdgeInsets nsgInputContenPadding = const EdgeInsets.all(5),
+    EdgeInsets nsgInputContentPadding = const EdgeInsets.all(5),
     Color nsgInputColorLabel = Colors.black,
     Color nsgInputColorFilled = Colors.transparent,
   }) {
@@ -371,7 +371,7 @@ class ControlOptions {
         nsgInputFilled: nsgInputFilled,
         nsgInputHintAlwaysOnTop: nsgInputHintAlwaysOnTop,
         nsgInputOutlineBorderType: nsgInputOutlineBorderType,
-        nsgInputContenPadding: nsgInputContenPadding,
+        nsgInputContentPadding: nsgInputContentPadding,
         nsgInputColorLabel: nsgInputColorLabel,
         nsgInputColorFilled: nsgInputColorFilled,
 

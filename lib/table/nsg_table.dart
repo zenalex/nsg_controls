@@ -184,6 +184,10 @@ class NsgTable extends StatefulWidget {
 
 /* ------------------------------------- Переменные таблицы ------------------------------------- */
 class _NsgTableState extends State<NsgTable> {
+  List<Widget> table = [];
+  List<Widget> tableHeader = [];
+  List<Widget> tableBody = [];
+  List<NsgTableRow> tableRowList = [];
   List<NsgDataItem> items = [];
   final containerKey = GlobalKey();
   final wrapperKey = GlobalKey();
@@ -292,10 +296,10 @@ class _NsgTableState extends State<NsgTable> {
       double height2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.height;
       double width = (containerKey.currentContext!.findRenderObject() as RenderBox).size.width;
       double width2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.width;
-      if (width <= width2) {
+      if (width <= width2 && width > 0) {
         horizontalScrollEnabled = false;
       }
-      if (height <= height2) {
+      if (height <= height2 && height > 0) {
         setState(() {
           hasScrollbar = false;
         });
@@ -510,7 +514,22 @@ class _NsgTableState extends State<NsgTable> {
 
   Widget horScrollHeaderWrap(Widget child) {
     if (horizontalScrollEnabled) {
-      return SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child);
+      return tableBody.isEmpty
+          ? RawScrollbar(
+              minOverscrollLength: 100,
+              minThumbLength: 100,
+              thickness: 16,
+              trackBorderColor: ControlOptions.instance.colorMainDark,
+              trackColor: ControlOptions.instance.colorMainDark,
+              thumbColor: ControlOptions.instance.colorMain,
+              radius: const Radius.circular(0),
+              controller: scrollHorHeader,
+              thumbVisibility: true,
+              trackVisibility: true,
+              child: Padding(
+                  padding: EdgeInsets.only(bottom: 16),
+                  child: SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child)))
+          : SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child);
     } else {
       return child;
     }
@@ -600,10 +619,10 @@ class _NsgTableState extends State<NsgTable> {
           }
 
           tableColumns = List.from(widget.columns);
-          List<Widget> table = [];
-          List<Widget> tableHeader = [];
-          List<Widget> tableBody = [];
-          List<NsgTableRow> tableRowList = [];
+          table = [];
+          tableHeader = [];
+          tableBody = [];
+          tableRowList = [];
 
           /// Есть sub колонки
           bool hasSubcolumns = false;
