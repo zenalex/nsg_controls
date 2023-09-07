@@ -29,4 +29,5 @@ export 'file_picker/nsg_file_picker.dart';
 export 'file_picker/nsg_file_picker_object.dart';
 export 'file_picker/nsg_file_picker_controller.dart';
 export 'file_picker/nsg_file_picker_gallery.dart';
+export 'file_picker/nsg_file_picker_provider.dart';
 export 'nsg_icons.dart';
