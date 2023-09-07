@@ -565,12 +565,14 @@ class _NsgInputState extends State<NsgInput> {
                               builder: (BuildContext context, bool val, Widget? child) {
                                 if (_notifier.value == true) {
                                   return Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      widget.hint!,
-                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
-                                    ),
-                                  );
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: getHintPadding(),
+                                        child: Text(
+                                          widget.hint!,
+                                          style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                        ),
+                                      ));
                                 } else {
                                   return const SizedBox();
                                 }
