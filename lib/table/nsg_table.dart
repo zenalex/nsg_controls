@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:nsg_controls/nsg_controls.dart';
@@ -1539,33 +1538,29 @@ class _NsgTableState extends State<NsgTable> {
             // Если высота строк нефиксированная
             table.add(Flexible(
               key: wrapperKey,
-              child: FadeIn(
-                key: GlobalKey(),
-                duration: const Duration(milliseconds: 500),
-                child: crossWrap(Container(
-                    key: containerKey,
-                    decoration:
-                        hasScrollbar ? null : BoxDecoration(border: Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
-                    padding: editMode == NsgTableEditMode.columnsWidth
-                        ? const EdgeInsets.only(right: 500, bottom: 0)
-                        : EdgeInsets.only(
-                            bottom: widget.controller.currentStatus.isLoading
-                                ? 0
-                                /* ---------------------------------------------------------- Отступ снизу под скроллбар ---------------------------------------------------------- */
-                                : horizontalScrollEnabled
-                                    ? 16
-                                    : 0,
-                            right: horizontalScrollEnabled
-                                ? 0
-                                : hasScrollbar
-                                    ? !isMobile
-                                        ? 16
-                                        : 0
-                                    : 0),
-                    //margin: EdgeInsets.only(bottom: 10, right: 10),
-                    //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-                    child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
-              ),
+              child: crossWrap(Container(
+                  key: containerKey,
+                  decoration:
+                      hasScrollbar ? null : BoxDecoration(border: Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
+                  padding: editMode == NsgTableEditMode.columnsWidth
+                      ? const EdgeInsets.only(right: 500, bottom: 0)
+                      : EdgeInsets.only(
+                          bottom: widget.controller.currentStatus.isLoading
+                              ? 0
+                              /* ---------------------------------------------------------- Отступ снизу под скроллбар ---------------------------------------------------------- */
+                              : horizontalScrollEnabled
+                                  ? 16
+                                  : 0,
+                          right: horizontalScrollEnabled
+                              ? 0
+                              : hasScrollbar
+                                  ? !isMobile
+                                      ? 16
+                                      : 0
+                                  : 0),
+                  //margin: EdgeInsets.only(bottom: 10, right: 10),
+                  //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
             ));
           } /* else {
           // Если высота строк фиксированная
