@@ -82,7 +82,7 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
             child: Align(
               alignment: Alignment.topLeft,
               child: Transform.translate(
-                offset: Offset(offsetX, widget.offset.dy + 16),
+                offset: Offset(offsetX, widget.offset.dy),
                 child: widgetOverlay(
                   key: objectKey,
                   onSelect: widget.onSelect,
