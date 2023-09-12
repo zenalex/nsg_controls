@@ -1,0 +1,31 @@
+{
+    "typeName": "IrrigationRow",
+    "databaseType": "ИрригацияСтрока",
+    "databaseTypeNamespace": "Judge.Метаданные.Скалолазание",
+    "fields": [
+        {
+            "name": "Id",
+            "databaseName": "Идентификатор",
+            "type": "String",
+            "isPrimary": "true"
+        },
+        {
+            "name": "Day",
+            "description": "День",
+            "databaseName": "День",
+            "type": "int"
+        },
+        {
+            "name": "Hour",
+            "description": "Час",
+            "databaseName": "Час",
+            "type": "int"
+        },
+        {
+            "name": "Irrigation",
+            "description": "Ирригация",
+            "databaseName": "Ирригация",
+            "type": "int"
+        }
+    ]
+}

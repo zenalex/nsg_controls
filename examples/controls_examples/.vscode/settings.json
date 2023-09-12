@@ -1,0 +1,36 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true,
+        "source.organizeImports": true
+      },
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 160,
+    "dart.lineLength": 160,
+    "[dart]": {
+        "editor.rulers": [
+            160
+        ],
+    },
+    "window.title": "CONTROLS EXAMPLES",
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#86c93e",
+        "activityBar.background": "#65982F",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#c260ff",
+        "activityBarBadge.foreground": "#15202b",
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#65982F",
+        "statusBar.background": "#65982F",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#65982F",
+        "statusBarItem.remoteBackground": "#65982F",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#a2f549",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#0065982F",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#00FA9A",
+}

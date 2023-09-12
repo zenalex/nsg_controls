@@ -1,0 +1,35 @@
+{
+    "targetFramework": "net472",
+    "cSharpPath": "D:/NSG_C/judge_server",
+    "cSharpNamespace": "JudgeServer",
+    "dartPath": "C:/work/zenkov/bon_plant_local_app/lib/model",
+    "applicationName": "BonPlantLocalApp",
+    "controller": [
+        {
+            "apiPrefix": "Api",
+            "className": "DataController",
+            "useAuthorization": "true",
+            "dataType": "NsgDataItem",
+            "serverUri": "http://misha.nsgsoft.ru:5084",  "method": [
+                {
+                    "name": "Student",
+                    "description": "Ученик",
+                    "authorize": "user",
+                    "getterType": "post",
+                    "dataTypeFile": "student.json",
+                    "allowPost": "true",
+                    "allowDelete": "true"
+                },  
+                {
+                    "name": "IrrigationRow",
+                    "description": "ИрригацияСтрока",
+                    "authorize": "user",
+                    "getterType": "post",
+                    "dataTypeFile": "irrigation_row.json",
+                    "allowPost": "true",
+                    "allowDelete": "true"
+                }
+            ]
+        }
+    ]
+}

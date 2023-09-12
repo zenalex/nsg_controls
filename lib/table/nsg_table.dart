@@ -20,8 +20,6 @@ import 'nsg_table_menu_button.dart';
 
 /// Виджет отображения таблицы
 class NsgTable extends StatefulWidget {
-  bool Function(NsgDataItem item)? forbidDeleting;
-
   NsgTable(
       {Key? key,
       this.rowsMaxCount = 20,
@@ -56,6 +54,8 @@ class NsgTable extends StatefulWidget {
       this.externaltableKey,
       this.forbidDeleting})
       : super(key: key);
+
+  final bool Function(NsgDataItem item)? forbidDeleting;
 
   /// Фиксированная высота строки
   final double? rowFixedHeight;

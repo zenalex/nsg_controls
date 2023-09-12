@@ -1,0 +1,31 @@
+{
+    "typeName": "Student",
+    "databaseType": "Ученик",
+    "databaseTypeNamespace": "Judge.Метаданные.Скалолазание",
+    "fields": [
+        {
+            "name": "Id",
+            "databaseName": "Идентификатор",
+            "type": "String",
+            "isPrimary": "true"
+        },
+        {
+            "name": "Name",
+            "description": "Название",
+            "databaseName": "Название",
+            "type": "String"
+        },
+        {
+            "name": "StudentClass",
+            "description": "Класс",
+            "databaseName": "Класс",
+            "type": "String"
+        },
+        {
+            "name": "ExperimentDays",
+            "description": "Класс",
+            "databaseName": "Класс",
+            "type": "int"
+        }            
+    ]
+}
