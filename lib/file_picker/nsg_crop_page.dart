@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as imgEdit;
 import 'package:nsg_controls/nsg_controls.dart';
-import 'package:nsg_controls/nsg_simple_progress_bar.dart';
 
 import '../widgets/nsg_light_app_bar.dart';
+import '../widgets/nsg_simple_progress_bar.dart';
 
 class NsgCrop {
   Future<List<List<int>>?> cropImages(BuildContext context,

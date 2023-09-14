@@ -12,7 +12,7 @@ import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../formfields/nsg_period_filter.dart';
 import '../formfields/nsg_text_filter.dart';
-import '../nsg_simple_progress_bar.dart';
+import '../widgets/nsg_simple_progress_bar.dart';
 import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';

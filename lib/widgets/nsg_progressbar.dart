@@ -1,15 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:nsg_controls/nsg_simple_progress_bar.dart';
+import 'package:get/get_animations/animations.dart';
 import 'package:vector_math/vector_math.dart' as vmath;
 
 import '../nsg_control_options.dart';
 import '../nsg_progress_dialog.dart';
-import 'dart:io' show Platform;
+//import 'dart:io' show Platform;
+
+import 'nsg_simple_progress_bar.dart';
 
 class NsgProgressBar extends StatefulWidget {
   final NsgProgressDialog? dialogWidget;
   final String text;
-  const NsgProgressBar({Key? key, this.dialogWidget, this.text = 'Загрузка'}) : super(key: key);
+  final Duration delay;
+  const NsgProgressBar({Key? key, this.dialogWidget, this.text = 'Загрузка', this.delay = const Duration(seconds: 1)}) : super(key: key);
 
   @override
   _NsgProgressBarState createState() => _NsgProgressBarState();
@@ -74,55 +78,63 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: 210,
-        height: 210,
-        child: (1 == 1)
-            ? Column(
-                children: [
-                  Center(
-                    child: Text(
-                      widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.2,
-                        color: ControlOptions.instance.colorText,
+    return OpacityAnimation(
+      begin: 0,
+      end: 1,
+      duration: const Duration(milliseconds: 500),
+      delay: widget.delay,
+      onComplete: (AnimationController value) {},
+      idleValue: 0,
+      child: Center(
+        child: SizedBox(
+          width: 210,
+          height: 210,
+          child: kIsWeb
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (widget.text.isNotEmpty)
+                      Text(
+                        widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.2,
+                          color: ControlOptions.instance.colorText,
+                        ),
+                      ),
+                    const SizedBox(height: 15),
+                    const NsgSimpleProgressBar(
+                      size: 100,
+                      width: 3,
+                    ),
+                  ],
+                )
+              : Stack(
+                  children: <Widget>[
+                    Center(
+                      child: CustomPaint(
+                        painter: OpenPainter(
+                            value: widget.dialogWidget == null ? _animation.value : widget.dialogWidget!.percent,
+                            arc1: arc1,
+                            arc2: arc2,
+                            percent: widget.dialogWidget == null ? false : true),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 15),
-                  NsgSimpleProgressBar(
-                    size: 100,
-                    width: 3,
-                  ),
-                ],
-              )
-            : Stack(
-                children: <Widget>[
-                  Center(
-                    child: CustomPaint(
-                      painter: OpenPainter(
-                          value: widget.dialogWidget == null ? _animation.value : widget.dialogWidget!.percent,
-                          arc1: arc1,
-                          arc2: arc2,
-                          percent: widget.dialogWidget == null ? false : true),
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.2,
-                        color: ControlOptions.instance.colorText,
+                    Center(
+                      child: Text(
+                        widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.2,
+                          color: ControlOptions.instance.colorText,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }
