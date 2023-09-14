@@ -47,6 +47,7 @@ class _StartPageState extends State<StartPage> {
                 style: TextStyle(fontSize: nsgtheme.sizeH1),
               ),
             ),
+            const NsgProgressBar(),
             Expanded(child: controller.obx((state) => showTable())),
             Expanded(
                 child: TwoDimensionalScrollable(

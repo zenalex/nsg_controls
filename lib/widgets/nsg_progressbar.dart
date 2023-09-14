@@ -13,7 +13,7 @@ class NsgProgressBar extends StatefulWidget {
   final NsgProgressDialog? dialogWidget;
   final String text;
   final Duration delay;
-  const NsgProgressBar({Key? key, this.dialogWidget, this.text = 'Загрузка', this.delay = const Duration(seconds: 1)}) : super(key: key);
+  const NsgProgressBar({Key? key, this.dialogWidget, this.text = '', this.delay = const Duration(seconds: 1)}) : super(key: key);
 
   @override
   _NsgProgressBarState createState() => _NsgProgressBarState();
