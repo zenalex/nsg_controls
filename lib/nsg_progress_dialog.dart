@@ -17,15 +17,9 @@ class NsgProgressDialog {
   NsgCancelToken? cancelToken;
   bool visible = false;
   NsgProgressDialog(
-      {this.showPercents = false,
-      this.percent = 0,
-      this.canStopped = false,
-      this.requestStop,
-      this.textDialog = 'Загрузка данных...',
-      this.cancelToken,
-      this.context});
+      {this.showPercents = false, this.percent = 0, this.canStopped = false, this.requestStop, this.textDialog = '', this.cancelToken, this.context});
 
-  void show({String text = 'Загрузка'}) {
+  void show({String text = ''}) {
     visible = true;
     // открываем popup с прогрессбаром NsgProgressBar
     //print("SHOW");
@@ -124,8 +118,10 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(widget.textDialog, textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText)),
-                      const SizedBox(height: 10),
+                      if (widget.textDialog.isNotEmpty)
+                        Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: Text(widget.textDialog, textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText))),
                       NsgProgressBar(
                         text: widget.text!,
                         dialogWidget: widget.dialogWidget,

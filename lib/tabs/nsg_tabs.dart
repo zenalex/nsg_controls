@@ -6,7 +6,25 @@ import 'nsg_tabs_tab.dart';
 class NsgTabs extends StatefulWidget {
   final int currentTab;
   final List<NsgTabsTab> tabs;
-  const NsgTabs({super.key, required this.tabs, this.currentTab = 0});
+  final bool containerWrap;
+  final bool containerTabsWrap;
+  final EdgeInsets containerWrapPadding, containerTabsWrapPadding;
+  final bool expanded;
+  final EdgeInsets tabsPadding;
+  final Color? containerWrapColor, containerTabsWrapColor, containerTabsWrapSelectedColor;
+  const NsgTabs(
+      {super.key,
+      required this.tabs,
+      this.currentTab = 0,
+      this.containerWrap = false,
+      this.containerTabsWrap = false,
+      this.expanded = false,
+      this.tabsPadding = const EdgeInsets.only(bottom: 10),
+      this.containerWrapPadding = const EdgeInsets.all(5),
+      this.containerTabsWrapPadding = const EdgeInsets.all(5),
+      this.containerWrapColor,
+      this.containerTabsWrapColor,
+      this.containerTabsWrapSelectedColor});
 
   @override
   State<NsgTabs> createState() => _NsgTabsState();
@@ -46,16 +64,23 @@ class _NsgTabsState extends State<NsgTabs> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: SingleChildScrollView(
-              //  physics: const PageScrollPhysics(),
-              physics: const ClampingScrollPhysics(),
-              controller: tabNamesC,
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: tabNames(),
-              ),
-            ),
+            padding: widget.tabsPadding,
+            child: widget.expanded
+                ? _wrapContainer(
+                    color: widget.containerWrapColor ?? nsgtheme.colorSecondary,
+                    child: Row(
+                      children: tabNames(),
+                    ),
+                  )
+                : SingleChildScrollView(
+                    //  physics: const PageScrollPhysics(),
+                    physics: const ClampingScrollPhysics(),
+                    controller: tabNamesC,
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: tabNames(),
+                    ),
+                  ),
           ),
           Expanded(
 /* ------------------------------------------ Listener для отслеживания горизонтального скролла и свайпа ------------------------------------------ */
@@ -93,19 +118,49 @@ class _NsgTabsState extends State<NsgTabs> {
     });
   }
 
+  Widget _wrapContainer({required Widget child, required Color color}) {
+    if (widget.containerTabsWrap) {
+      return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color), padding: const EdgeInsets.all(4), child: Center(child: child));
+    } else {
+      return child;
+    }
+  }
+
 /* -------------------------------------------------------------- Верхняя часть табов ------------------------------------------------------------- */
   List<Widget> tabNames() {
     List<Widget> list = [];
+    Widget _wrapExpanded({required Widget child}) {
+      if (widget.expanded) {
+        return Expanded(child: Center(child: child));
+      } else {
+        return child;
+      }
+    }
+
+    Widget _wrapContainerTabs({required Widget child, required Color color}) {
+      if (widget.containerTabsWrap) {
+        return Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color), padding: const EdgeInsets.all(4), child: Center(child: child));
+      } else {
+        return child;
+      }
+    }
+
     widget.tabs.asMap().forEach((key, tab) {
       gKeys.add(GlobalKey());
-      list.add(InkWell(
-          key: gKeys[key],
-          hoverColor: Colors.transparent,
-          onTap: () {
-            currentTab = key;
-            setNamePos(key: key);
-          },
-          child: currentTab == key ? tab.tabSelected : tab.tab));
+      list.add(_wrapExpanded(
+        child: InkWell(
+            key: gKeys[key],
+            hoverColor: Colors.transparent,
+            onTap: () {
+              currentTab = key;
+              setNamePos(key: key);
+            },
+            child: currentTab == key
+                ? _wrapContainerTabs(child: tab.tabSelected, color: widget.containerTabsWrapSelectedColor ?? nsgtheme.colorBase)
+                : _wrapContainerTabs(child: tab.tab, color: widget.containerTabsWrapColor ?? nsgtheme.colorSecondary)),
+      ));
     });
     return list;
   }
@@ -114,11 +169,14 @@ class _NsgTabsState extends State<NsgTabs> {
     isScrolling = true;
     //currentTab = key;
     //setState(() {});
+    double x = 0;
     RenderBox box = gKeys[key].currentContext!.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset.zero); //this is global position
-    double x = position.dx + tabNamesC.offset - width / 3;
+    if (!widget.expanded) {
+      x = position.dx + tabNamesC.offset - width / 3;
+    }
     Future.wait([
-      tabNamesC.animateTo(x, duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
+      if (!widget.expanded) tabNamesC.animateTo(x, duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
       if (!topOnly) tabWidgetsC.animateTo(width * currentTab, curve: Curves.easeOut, duration: const Duration(milliseconds: 300))
     ]);
     isScrolling = false;
@@ -135,7 +193,7 @@ class _NsgTabsState extends State<NsgTabs> {
             children: [
               Expanded(
                 child: Container(
-                  decoration: BoxDecoration(color: ControlOptions.instance.colorMain.withOpacity(0.1)),
+                  //decoration: BoxDecoration(color: ControlOptions.instance.colorMain.withOpacity(0.1)),
                   padding: const EdgeInsets.only(top: 5, bottom: 5),
                   child: RawScrollbar(
                       thumbVisibility: true,

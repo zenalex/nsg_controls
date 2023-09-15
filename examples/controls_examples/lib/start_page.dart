@@ -25,6 +25,7 @@ class _StartPageState extends State<StartPage> {
   ScrollController vController = ScrollController();
   late ScrollableDetails horizontalDetails;
   late ScrollableDetails verticalDetails;
+  IrrigationRow inputItem = IrrigationRow();
 
   @override
   void initState() {
@@ -46,6 +47,20 @@ class _StartPageState extends State<StartPage> {
                 'CONTROLS EXAMPLES',
                 style: TextStyle(fontSize: nsgtheme.sizeH1),
               ),
+            ),
+            NsgInput(
+              margin: EdgeInsets.zero,
+              dataItem: inputItem,
+              fieldName: IrrigationRowGenerated.nameDay,
+              label: 'Номер сим',
+              showLabel: false,
+            ),
+            NsgInput(
+              margin: EdgeInsets.zero,
+              dataItem: inputItem,
+              fieldName: IrrigationRowGenerated.nameHour,
+              label: 'Номер сим',
+              showLabel: false,
             ),
             const NsgProgressBar(),
             Expanded(child: controller.obx((state) => showTable())),
