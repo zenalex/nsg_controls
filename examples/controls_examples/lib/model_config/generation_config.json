@@ -3,7 +3,7 @@
     "cSharpPath": "D:/NSG_C/judge_server",
     "cSharpNamespace": "JudgeServer",
     "dartPath": "C:/work/zenkov/bon_plant_local_app/lib/model",
-    "applicationName": "BonPlantLocalApp",
+    "applicationName": "controls_examples_app",
     "controller": [
         {
             "apiPrefix": "Api",

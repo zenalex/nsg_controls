@@ -48,48 +48,22 @@ class _StartPageState extends State<StartPage> {
                 style: TextStyle(fontSize: nsgtheme.sizeH1),
               ),
             ),
-            NsgInput(
-              margin: EdgeInsets.zero,
-              dataItem: inputItem,
-              fieldName: IrrigationRowGenerated.nameDay,
-              label: 'Номер сим',
-              showLabel: false,
-            ),
-            NsgInput(
-              margin: EdgeInsets.zero,
-              dataItem: inputItem,
-              fieldName: IrrigationRowGenerated.nameHour,
-              label: 'Номер сим',
-              showLabel: false,
-            ),
+            //  NsgInput(
+            //   margin: EdgeInsets.zero,
+            //   dataItem: inputItem,
+            //   fieldName: IrrigationRowGenerated.nameDay,
+            //   label: 'Номер сим',
+            //   showLabel: false,
+            // ),
+            // NsgInput(
+            //   margin: EdgeInsets.zero,
+            //   dataItem: inputItem,
+            //   fieldName: IrrigationRowGenerated.nameHour,
+            //   label: 'Номер сим',
+            //   showLabel: false,
+            // ),
             const NsgProgressBar(),
             Expanded(child: controller.obx((state) => showTable())),
-            Expanded(
-                child: TwoDimensionalScrollable(
-              horizontalDetails: horizontalDetails,
-              verticalDetails: verticalDetails,
-              viewportBuilder: (context, verticalPosition, horizontalPosition) {
-                return Container(decoration: const BoxDecoration(color: Colors.red), width: 800, height: 1800, child: const Text('data'));
-              },
-            )),
-            // Expanded(
-            //   child: TwoDimensionalGridView(
-            //     diagonalDragBehavior: DiagonalDragBehavior.free,
-            //     delegate: TwoDimensionalChildBuilderDelegate(
-            //         maxXIndex: 999,
-            //         maxYIndex: 999,
-            //         builder: (BuildContext context, ChildVicinity vicinity) {
-            //           return Container(
-            //             color: vicinity.xIndex.isEven && vicinity.yIndex.isEven
-            //                 ? Colors.amber[50]
-            //                 : (vicinity.xIndex.isOdd && vicinity.yIndex.isOdd ? Colors.purple[50] : null),
-            //             height: 200,
-            //             width: 200,
-            //             child: Center(child: Text('Row ${vicinity.xIndex}: Column ${vicinity.yIndex}')),
-            //           );
-            //         }),
-            //   ),
-            // ),
             button()
           ],
         ),
