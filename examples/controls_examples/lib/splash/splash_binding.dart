@@ -5,7 +5,7 @@ import '../controllers/student_controller.dart';
 import '../model/data_controller.dart';
 
 // ignore: deprecated_member_use
-class MainBinding extends Bindings {
+class SplashBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(DataController(), permanent: true);

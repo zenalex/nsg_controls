@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_progress_dialog.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+import '../app_pages.dart';
 import '../controllers/irrigation_row_controller.dart';
 import '../controllers/student_controller.dart';
 import 'generated/data_controller.g.dart';
@@ -26,7 +27,7 @@ class DataController extends DataControllerGenerated {
   Future loadProviderData() async {
     await super.loadProviderData();
     await requestAllControllers();
-    //_gotoMainPage();
+    _gotoMainPage();
   }
 
   Future requestAllControllers() async {
@@ -38,25 +39,20 @@ class DataController extends DataControllerGenerated {
     await studC.requestItems();
     await irrC.requestItems();
 
-    await studC.deleteItems(studC.items);
-    await irrC.deleteItems(irrC.items);
-    await studC.requestItems();
-    await irrC.requestItems();
-
     controllersInitialized = true;
     progress.hide();
   }
 
-  final bool _animationFinished = false;
+  bool _animationFinished = false;
 
-  // void splashAnimationFinished() async {
-  //   _animationFinished = true;
-  //   _gotoMainPage();
-  // }
+  void splashAnimationFinished() async {
+    _animationFinished = true;
+    _gotoMainPage();
+  }
 
-  // void _gotoMainPage() {
-  //   if (_animationFinished && controllersInitialized) {
-  //     NsgNavigator.instance.offAndToPage(Routes.startPage);
-  //   }
-  // }
+  void _gotoMainPage() {
+    if (_animationFinished && controllersInitialized) {
+      NsgNavigator.instance.offAndToPage(Routes.startPage);
+    }
+  }
 }

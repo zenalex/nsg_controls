@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_controls/widgets/nsg_simple_progress_bar.dart';
 
 import 'controllers/irrigation_row_controller.dart';
 
@@ -25,7 +26,6 @@ class _StartPageState extends State<StartPage> {
   ScrollController vController = ScrollController();
   late ScrollableDetails horizontalDetails;
   late ScrollableDetails verticalDetails;
-  IrrigationRow inputItem = IrrigationRow();
 
   @override
   void initState() {
@@ -36,6 +36,7 @@ class _StartPageState extends State<StartPage> {
 
   @override
   Widget build(BuildContext context) {
+    IrrigationRow inputItem = IrrigationRow();
     return BodyWrap(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -48,21 +49,37 @@ class _StartPageState extends State<StartPage> {
                 style: TextStyle(fontSize: nsgtheme.sizeH1),
               ),
             ),
-            //  NsgInput(
-            //   margin: EdgeInsets.zero,
-            //   dataItem: inputItem,
-            //   fieldName: IrrigationRowGenerated.nameDay,
-            //   label: 'Номер сим',
-            //   showLabel: false,
-            // ),
-            // NsgInput(
-            //   margin: EdgeInsets.zero,
-            //   dataItem: inputItem,
-            //   fieldName: IrrigationRowGenerated.nameHour,
-            //   label: 'Номер сим',
-            //   showLabel: false,
-            // ),
-            const NsgProgressBar(),
+            NsgInput(
+              margin: EdgeInsets.zero,
+              dataItem: inputItem,
+              fieldName: IrrigationRowGenerated.nameDay,
+              label: 'Номер сим',
+              showLabel: false,
+            ),
+            NsgInput(
+              margin: EdgeInsets.zero,
+              dataItem: inputItem,
+              fieldName: IrrigationRowGenerated.nameHour,
+              label: 'Номер сим',
+              showLabel: false,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  NsgProgressBar(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: NsgSimpleProgressBar(),
+                  ),
+                  NsgSimpleProgressBar(
+                    size: 48,
+                    width: 3,
+                  ),
+                ],
+              ),
+            ),
             Expanded(child: controller.obx((state) => showTable())),
             button()
           ],

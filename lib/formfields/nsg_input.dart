@@ -45,7 +45,7 @@ class NsgInput extends StatefulWidget {
   final bool? required;
 
   /// Высота
-  final double? height;
+  //final double? height;
 
   /// Картинки для выводя рядом с текстом
   final List<String>? imagesList;
@@ -195,7 +195,7 @@ class NsgInput extends StatefulWidget {
       this.onEditingComplete,
       this.maxLines = 1,
       this.minLines = 1,
-      this.height = 50,
+      //this.height = 50,
       this.widget,
       this.rowWidget,
       this.inputType = NsgInputType.autoselect,
@@ -442,18 +442,21 @@ class _NsgInputState extends State<NsgInput> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (widget.showLabel)
-                  Text(
-                    focus.hasFocus || textController.text != '' || nsgtheme.nsgInputHintAlwaysOnTop == true
-                        ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
-                            ? widget.label + ' *'
-                            : widget.label
-                        : ' ',
-                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Text(
+                      focus.hasFocus || textController.text != '' || nsgtheme.nsgInputHintAlwaysOnTop == true
+                          ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
+                              ? widget.label + ' *'
+                              : widget.label
+                          : ' ',
+                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
+                    ),
                   ),
                 _gestureWrap(
                   clearIcon: fieldValue.toString() != '',
                   interactiveWidget: Container(
-                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
+                    //padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                     alignment: Alignment.center,
                     child: Stack(
                       alignment: Alignment.center,
@@ -582,9 +585,12 @@ class _NsgInputState extends State<NsgInput> {
                   ),
                 ),
                 if (widget.validateText != '')
-                  Text(
-                    widget.validateText,
-                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      widget.validateText,
+                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                    ),
                   ),
               ],
             ));
