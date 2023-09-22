@@ -422,6 +422,13 @@ Color calculateTextColor(Color background) {
   return background.computeLuminance() >= 0.5 ? Colors.black : Colors.white;
 }
 
+stringToColor(String color) {
+  String valueString = color.split('(0x')[1].split(')')[0]; // kind of hacky..
+  int value = int.parse(valueString, radix: 16);
+  Color otherColor = Color(value);
+  return otherColor;
+}
+
 class ColorsCalc {
   Color dark(Color c) => Color.fromARGB(-1, (c.red * c.red) ~/ 255, (c.green * c.green) ~/ 255, (c.blue * c.blue) ~/ 255);
 
