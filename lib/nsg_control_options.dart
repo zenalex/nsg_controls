@@ -135,48 +135,48 @@ class ControlOptions {
   final NsgSwitchHorizontalStyle nsgSwitchHorizontalStyle;
 
   // Главный цвет приложения
-  @Deprecated('Old variable. Use colorPrimary')
+  //@Deprecated('Old variable. Use colorPrimary')
   final Color colorMain;
 
   // Цвет текста который хорошо видно на фоне главного цвета приложения colorMain
-  @Deprecated('Old variable. Use colorBase')
+  //@Deprecated('Old variable. Use colorBase')
   final Color colorMainText;
 
   // Главный фоновый цвет приложения
-  @Deprecated('Old variable. Use colorBase')
+  //@Deprecated('Old variable. Use colorBase')
   final Color colorMainBack;
 
   // Цвет фона модального окна
-  @Deprecated('Old variable. Use colorOverlay')
+  // @Deprecated('Old variable. Use colorOverlay')
   final Color colorModalBack;
 
   // Цвет текста на всех светлых фонах (в тёмной теме на тёмных фонах)
-  @Deprecated('Old variable. Use colorBase[int]')
+  //@Deprecated('Old variable. Use colorBase[int]')
   final Color colorText;
 
   // Цвет текста на всех тёмных фонах (в тёмной теме на светлых фонах)
-  @Deprecated('Old variable. colorBase[int]')
+  //@Deprecated('Old variable. colorBase[int]')
   final Color colorInverted;
 
   final Color colorMainOpacity;
-  @Deprecated('Old variable. Use colorPrimary[int]')
+  // @Deprecated('Old variable. Use colorPrimary[int]')
   final Color colorMainDark;
-  @Deprecated('Old variable. Use colorPrimary[int]')
+  //@Deprecated('Old variable. Use colorPrimary[int]')
   final Color colorMainDarker;
 
-  @Deprecated('Old variable. Use colorPrimary[int]')
+  // @Deprecated('Old variable. Use colorPrimary[int]')
   final Color colorMainLight;
-  @Deprecated('Old variable. Use colorPrimary[int]')
+  // @Deprecated('Old variable. Use colorPrimary[int]')
   final Color colorMainLighter;
 
   // Второй главный цвет приложения
   final Color colorSecondary;
-  @Deprecated('Old variable. Use colorSecondary[int]')
+  // @Deprecated('Old variable. Use colorSecondary[int]')
   final Color colorSecondaryDark;
-  @Deprecated('Old variable. Use colorSecondary[int]')
+  // @Deprecated('Old variable. Use colorSecondary[int]')
   final Color colorSecondaryLight;
   // Цвет текста который хорошо видно на фоне второго главного цвета приложения colorSecondary
-  @Deprecated('Old variable. Use colorBase[int]')
+  // @Deprecated('Old variable. Use colorBase[int]')
   final Color colorSecondaryText;
 
   // Цвет нормального состояния (хорошо)
@@ -189,7 +189,7 @@ class ControlOptions {
   final Color colorWarning;
 
   // Цвет подтверждённого состояния
-  @Deprecated('Old variable. Use colorSuccessBg')
+  //@Deprecated('Old variable. Use colorSuccessBg')
   final Color colorConfirmed;
 
   // Синий цвет для статусов
@@ -295,29 +295,43 @@ class ControlOptions {
     this.gradients = const {
       'main': [Color.fromRGBO(233, 200, 45, 1), Color.fromARGB(255, 153, 128, 16)]
     },
-    @Deprecated('Old variable. Use colorOverlay') this.colorModalBack = const Color.fromARGB(150, 0, 0, 0),
-    @Deprecated('Old variable. Use colorPrimary') this.colorMain = const Color.fromRGBO(233, 200, 45, 1),
-    @Deprecated('Old variable. Use colorBase') this.colorMainBack = const Color.fromRGBO(255, 255, 255, 1),
-    @Deprecated('Old variable. Use colorBase[int]') this.colorMainText = const Color.fromARGB(255, 70, 59, 11),
-    @Deprecated('Old variable. Use colorBase[int]f') this.colorText = const Color.fromARGB(255, 70, 59, 11),
-    @Deprecated('Old variable. Use colorBase[int]') this.colorInverted = const Color.fromRGBO(255, 255, 255, 1),
+    //@Deprecated('Old variable. Use colorOverlay')
+    this.colorModalBack = const Color.fromARGB(150, 0, 0, 0),
+    //@Deprecated('Old variable. Use colorPrimary')
+    this.colorMain = const Color.fromRGBO(233, 200, 45, 1),
+    //@Deprecated('Old variable. Use colorBase')
+    this.colorMainBack = const Color.fromRGBO(255, 255, 255, 1),
+    //@Deprecated('Old variable. Use colorBase[int]')
+    this.colorMainText = const Color.fromARGB(255, 70, 59, 11),
+    //@Deprecated('Old variable. Use colorBase[int]f')
+    this.colorText = const Color.fromARGB(255, 70, 59, 11),
+    //@Deprecated('Old variable. Use colorBase[int]')
+    this.colorInverted = const Color.fromRGBO(255, 255, 255, 1),
     this.colorMainOpacity = const Color.fromRGBO(242, 239, 253, 1),
-    @Deprecated('Old variable. Use colorPrimary[int]') this.colorMainDark = const Color.fromARGB(255, 192, 163, 34),
+//    @Deprecated('Old variable. Use colorPrimary[int]')
+    this.colorMainDark = const Color.fromARGB(255, 192, 163, 34),
     this.tableHeaderColor = const Color.fromARGB(255, 192, 163, 34),
     this.tableCellBackColor = const Color.fromRGBO(255, 255, 255, 1),
     this.tableHeaderLinesColor = const Color.fromRGBO(233, 200, 45, 1),
-    @Deprecated('Old variable. Use colorPrimary[int]') this.colorMainDarker = const Color.fromARGB(255, 153, 128, 16),
-    @Deprecated('Old variable. Use colorPrimary[int]') this.colorMainLight = const Color.fromARGB(255, 255, 245, 201),
-    @Deprecated('Old variable. Use colorPrimary[int]') this.colorMainLighter = const Color.fromARGB(255, 255, 245, 201),
+    //@Deprecated('Old variable. Use colorPrimary[int]')
+    this.colorMainDarker = const Color.fromARGB(255, 153, 128, 16),
+    //@Deprecated('Old variable. Use colorPrimary[int]')
+    this.colorMainLight = const Color.fromARGB(255, 255, 245, 201),
+    //@Deprecated('Old variable. Use colorPrimary[int]')
+    this.colorMainLighter = const Color.fromARGB(255, 255, 245, 201),
     this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
-    @Deprecated('Old variable. Use colorSecondary[int]') this.colorSecondaryDark = const Color.fromRGBO(255, 255, 255, 1),
-    @Deprecated('Old variable. Use colorSecondary[int]') this.colorSecondaryLight = const Color.fromRGBO(255, 255, 255, 1),
+    //@Deprecated('Old variable. Use colorSecondary[int]')
+    this.colorSecondaryDark = const Color.fromRGBO(255, 255, 255, 1),
+    //@Deprecated('Old variable. Use colorSecondary[int]')
+    this.colorSecondaryLight = const Color.fromRGBO(255, 255, 255, 1),
     this.colorWhite = const Color.fromRGBO(255, 255, 255, 1),
-    @Deprecated('Old variable. Use colorSecondary') this.colorSecondaryText = const Color.fromARGB(255, 70, 59, 11),
+    //@Deprecated('Old variable. Use colorSecondary')
+    this.colorSecondaryText = const Color.fromARGB(255, 70, 59, 11),
     this.colorNormal = const Color.fromARGB(255, 29, 180, 95),
     this.colorError = const Color.fromRGBO(208, 8, 8, 1),
     this.colorWarning = const Color.fromARGB(255, 199, 101, 10),
-    @Deprecated('Old variable. Use colorSuccess') this.colorConfirmed = const Color.fromARGB(255, 31, 138, 75),
+    //@Deprecated('Old variable. Use colorSuccess')
+    this.colorConfirmed = const Color.fromARGB(255, 31, 138, 75),
     this.colorBlue = const Color.fromRGBO(0, 88, 163, 1),
     this.colorGrey = const Color.fromARGB(255, 77, 77, 77),
     this.colorGreyLight = const Color.fromARGB(255, 150, 150, 150),
