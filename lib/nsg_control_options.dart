@@ -422,7 +422,7 @@ Color calculateTextColor(Color background) {
   return background.computeLuminance() >= 0.5 ? Colors.black : Colors.white;
 }
 
-stringToColor(String color) {
+Color stringToColor(String color) {
   String valueString = color.split('(0x')[1].split(')')[0]; // kind of hacky..
   int value = int.parse(valueString, radix: 16);
   Color otherColor = Color(value);
