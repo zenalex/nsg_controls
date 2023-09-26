@@ -588,12 +588,20 @@ class _NsgInputState extends State<NsgInput> {
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
-                      widget.validateText,
+                      getValidateText(),
                       style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
                     ),
                   ),
               ],
             ));
+  }
+
+  String getValidateText() {
+    if (widget.controller!.fieldsWithError.isNotEmpty) {
+      return widget.controller!.fieldsWithError[widget.fieldName]!;
+    } else {
+      return widget.validateText;
+    }
   }
 
   EdgeInsets getHintPadding() {
