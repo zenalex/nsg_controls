@@ -30,7 +30,7 @@ extension NsgDate on DateTime {
 }
 
 extension NsgDuration on Duration {
-  String formatDuration(String? format) {
+  String format(String? format) {
     return NsgDateFormat.dateFormat(toDateTime(), format: format ?? ControlOptions.instance.dateformat, ignoreYear: true);
   }
 
