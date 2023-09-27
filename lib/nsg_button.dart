@@ -12,7 +12,7 @@ class NsgButton extends StatelessWidget {
   final IconData? icon;
   final VoidCallback? onPressed;
   final VoidCallback? onTap;
-  final Future? onTapAsync;
+  final Future Function()? onTapAsync;
   final VoidCallback? onDisabledPressed;
   final bool? disabled;
   final double? borderRadius;
@@ -269,7 +269,7 @@ class NsgButton extends StatelessWidget {
     }
     if (onTapAsync != null) {
       await nsgFutureProgressAndException(func: () async {
-        await onTapAsync!;
+        await onTapAsync!();
       });
     }
   }
