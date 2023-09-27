@@ -71,7 +71,7 @@ class NsgTimePicker extends StatefulWidget {
                     dateForTime: dateForTime,
                     initialTime: Jiffy(DateTime(0)).add(duration: initialTime).dateTime,
                     onChange: ((endDate) {
-                      print('onChange: ' + '$endDate');
+                      print('onChange: $endDate');
                       selectedDate = endDate;
                     })
                     //  onClose,
@@ -99,12 +99,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
     textScaleFactor = MediaQuery.of(context).textScaleFactor;
     int hours = _initialTime.inHours;
     int minutes = _initialTime.inMinutes - hours * 60;
-    String minutesString;
-    if (minutes < 10) {
-      minutesString = '0' + minutes.toString();
-    } else {
-      minutesString = minutes.toString();
-    }
+    String minutesString = minutes.toString().padLeft(2, '0');
 
     _inkWellWrapper({required Widget child}) {
       if (widget.disabled == true) {
