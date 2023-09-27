@@ -584,7 +584,7 @@ class _NsgInputState extends State<NsgInput> {
                     ),
                   ),
                 ),
-                if (widget.validateText != '')
+                if (getValidateText() != '')
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
@@ -597,7 +597,7 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   String getValidateText() {
-    if (widget.controller!.fieldsWithError.isNotEmpty) {
+    if (widget.controller != null && widget.controller!.fieldsWithError.isNotEmpty) {
       return widget.controller!.fieldsWithError[widget.fieldName]!;
     } else {
       return widget.validateText;
