@@ -597,7 +597,7 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   String getValidateText() {
-    if (widget.controller != null && widget.controller!.fieldsWithError.isNotEmpty) {
+    if (widget.controller != null && widget.controller!.fieldsWithError.isNotEmpty && widget.controller!.fieldsWithError[widget.fieldName] != null) {
       return widget.controller!.fieldsWithError[widget.fieldName]!;
     } else {
       return widget.validateText;
