@@ -1,5 +1,6 @@
 // импорт
 import 'package:flutter/material.dart';
+import 'package:nsg_data/helpers/nsg_future_progress_exception.dart';
 import 'nsg_control_options.dart';
 import 'nsg_controls.dart';
 
@@ -10,6 +11,8 @@ class NsgButton extends StatelessWidget {
   final EdgeInsets? margin;
   final IconData? icon;
   final VoidCallback? onPressed;
+  final VoidCallback? onTap;
+  final Future? onTapAsync;
   final VoidCallback? onDisabledPressed;
   final bool? disabled;
   final double? borderRadius;
@@ -32,6 +35,8 @@ class NsgButton extends StatelessWidget {
       this.icon,
       this.iconColor,
       this.onPressed,
+      this.onTap,
+      this.onTapAsync,
       this.onDisabledPressed,
       this.disabled,
       this.borderRadius,
@@ -47,30 +52,31 @@ class NsgButton extends StatelessWidget {
       this.shadow})
       : super(key: key);
 
-  NsgButton.styled(
-      {super.key,
-      this.text,
-      this.icon,
-      this.onDisabledPressed,
-      this.disabled,
-      this.fontSize,
-      void Function()? onTap,
-      NsgButtonStyle style = NsgButtonStyle.dark})
-      : color = ButtonsColors().getTextColor(style),
-        borderColor = null,
-        style = null,
-        shadow = null,
-        widget = null,
-        borderRadius = 10,
-        width = null,
-        height = 44,
-        onPressed = onTap,
-        margin = const EdgeInsets.all(10),
-        padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        iconMargin = const EdgeInsets.fromLTRB(0, 0, 5, 0),
-        backHoverColor = null,
-        iconColor = ButtonsColors().getColor(style, invert: true),
-        backColor = ButtonsColors().getColor(style);
+  // NsgButton.styled(
+  //     {super.key,
+  //     this.text,
+  //     this.icon,
+  //     this.onDisabledPressed,
+  //     this.disabled,
+  //     this.fontSize,
+  //     void Function()? onTap,
+  //     NsgButtonStyle style = NsgButtonStyle.dark,
+  //     this.onTapAsync})
+  //     : color = ButtonsColors().getTextColor(style),
+  //       borderColor = null,
+  //       style = null,
+  //       shadow = null,
+  //       widget = null,
+  //       borderRadius = 10,
+  //       width = null,
+  //       height = 44,
+  //       onPressed = onTap,
+  //       margin = const EdgeInsets.all(10),
+  //       padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+  //       iconMargin = const EdgeInsets.fromLTRB(0, 0, 5, 0),
+  //       backHoverColor = null,
+  //       iconColor = ButtonsColors().getColor(style, invert: true),
+  //       backColor = ButtonsColors().getColor(style);
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +116,9 @@ class NsgButton extends StatelessWidget {
                         backgroundColor: _backColor,
                         padding: padding,
                         textStyle: TextStyle(fontSize: _fontSize)),
-                    onPressed: onPressed,
+                    onPressed: () async {
+                      await onTapFunction();
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -162,7 +170,9 @@ class NsgButton extends StatelessWidget {
                     backgroundColor: ControlOptions.instance.colorMain,
                     padding: padding,
                     textStyle: TextStyle(fontSize: _fontSize)),
-                onPressed: onPressed,
+                onPressed: () async {
+                  await onTapFunction();
+                },
                 child: Text('$text', style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 14)),
               )));
     } else // Кнопка с виджетом внутри
@@ -183,7 +193,9 @@ class NsgButton extends StatelessWidget {
                 ),
                 //focusColor: _backHoverColor,
                 //hoverColor: _backHoverColor,
-                onTap: onPressed,
+                onTap: () async {
+                  await onTapFunction();
+                },
                 child: Padding(
                   padding: padding,
                   child: widget,
@@ -212,7 +224,15 @@ class NsgButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
           color: disabled == true ? _backColor.withOpacity(0.5) : _backColor,
           child: InkWell(
-            onTap: disabled == true ? onDisabledPressed : onPressed,
+            onTap: () async {
+              if (disabled == true) {
+                if (onDisabledPressed != null) {
+                  onDisabledPressed!();
+                }
+              } else {
+                await onTapFunction();
+              }
+            },
             child: Padding(
                 padding: padding,
                 child: Row(
@@ -239,41 +259,18 @@ class NsgButton extends StatelessWidget {
       );
     }
   }
-}
 
-class ButtonsColors {
-  Color getTextColor(NsgButtonStyle style) {
-    switch (style) {
-      case NsgButtonStyle.dark:
-        return ControlOptions.instance.colorWhite;
-      case NsgButtonStyle.light:
-        return ControlOptions.instance.colorMain;
-      case NsgButtonStyle.warning:
-        return ControlOptions.instance.colorWhite;
+  Future onTapFunction() async {
+    if (onPressed != null) {
+      onPressed!();
     }
-  }
-
-  Color getColor(NsgButtonStyle style, {bool invert = false}) {
-    if (invert) {
-      switch (style) {
-        case NsgButtonStyle.dark:
-          return ControlOptions.instance.colorWhite;
-        case NsgButtonStyle.light:
-          return ControlOptions.instance.colorMain;
-        case NsgButtonStyle.warning:
-          return ControlOptions.instance.colorWarning;
-      }
-    } else {
-      switch (style) {
-        case NsgButtonStyle.dark:
-          return ControlOptions.instance.colorMain;
-        case NsgButtonStyle.light:
-          return ControlOptions.instance.colorMainLighter;
-        case NsgButtonStyle.warning:
-          return ControlOptions.instance.colorError;
-      }
+    if (onTap != null) {
+      onTap!();
+    }
+    if (onTapAsync != null) {
+      await nsgFutureProgressAndException(func: () async {
+        await onTapAsync!;
+      });
     }
   }
 }
-
-enum NsgButtonStyle { light, dark, warning }

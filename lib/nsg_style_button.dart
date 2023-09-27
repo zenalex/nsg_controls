@@ -153,3 +153,40 @@ Color getTextColor(NsgButtonStyle style) {
       return ControlOptions.instance.colorWhite;
   }
 }
+
+class ButtonsColors {
+  Color getTextColor(NsgButtonStyle style) {
+    switch (style) {
+      case NsgButtonStyle.dark:
+        return ControlOptions.instance.colorWhite;
+      case NsgButtonStyle.light:
+        return ControlOptions.instance.colorMain;
+      case NsgButtonStyle.warning:
+        return ControlOptions.instance.colorWhite;
+    }
+  }
+
+  Color getColor(NsgButtonStyle style, {bool invert = false}) {
+    if (invert) {
+      switch (style) {
+        case NsgButtonStyle.dark:
+          return ControlOptions.instance.colorWhite;
+        case NsgButtonStyle.light:
+          return ControlOptions.instance.colorMain;
+        case NsgButtonStyle.warning:
+          return ControlOptions.instance.colorWarning;
+      }
+    } else {
+      switch (style) {
+        case NsgButtonStyle.dark:
+          return ControlOptions.instance.colorMain;
+        case NsgButtonStyle.light:
+          return ControlOptions.instance.colorMainLighter;
+        case NsgButtonStyle.warning:
+          return ControlOptions.instance.colorError;
+      }
+    }
+  }
+}
+
+enum NsgButtonStyle { light, dark, warning }
