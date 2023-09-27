@@ -94,6 +94,7 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
 
   @override
   void dispose() {
+    _controller.stop();
     _controller.dispose();
     super.dispose();
   }

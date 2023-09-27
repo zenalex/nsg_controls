@@ -1,19 +1,12 @@
 import 'dart:io';
-import 'dart:async';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:nsg_controls/file_picker/nsg_file_picker_provider.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:path/path.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:video_player_win/video_player_win.dart';
 import '../nsg_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:file_selector/file_selector.dart' as file;
-import 'package:dio/dio.dart' as dio;
 
 /// Пикер и загрузчик изображений и файлов заданных форматов
 class NsgFilePicker extends StatefulWidget {

@@ -6,7 +6,6 @@ import 'package:nsg_data/nsgApiException.dart';
 import 'package:share_plus/share_plus.dart';
 import '../nsg_button.dart';
 import '../nsg_popup.dart';
-import '../nsg_row_to_column.dart';
 
 // This function is triggered when the copy icon is pressed
 Future _copyToClipboard(String text, BuildContext dialogContext) async {
