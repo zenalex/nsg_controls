@@ -8,10 +8,10 @@ class NsgTabs extends StatefulWidget {
   final List<NsgTabsTab> tabs;
   final bool containerWrap;
   final bool containerTabsWrap;
-  final EdgeInsets containerWrapPadding, containerTabsWrapPadding;
+  final EdgeInsets containerWrapPadding, containerTabsWrapPadding, containerTabsWrapPaddingOutside;
   final bool expanded;
-  final EdgeInsets tabsPadding;
-  final Color? containerWrapColor, containerTabsWrapColor, containerTabsWrapSelectedColor;
+  final EdgeInsets tabsPadding, tabsPaddingInside;
+  final Color? containerWrapColor, containerTabsWrapColor, containerTabsWrapSelectedColor, containerWrapColorInside;
   const NsgTabs(
       {super.key,
       required this.tabs,
@@ -20,8 +20,11 @@ class NsgTabs extends StatefulWidget {
       this.containerTabsWrap = false,
       this.expanded = false,
       this.tabsPadding = const EdgeInsets.only(bottom: 10),
+      this.tabsPaddingInside = EdgeInsets.zero,
       this.containerWrapPadding = const EdgeInsets.all(5),
       this.containerTabsWrapPadding = const EdgeInsets.all(5),
+      this.containerTabsWrapPaddingOutside = const EdgeInsets.all(0),
+      this.containerWrapColorInside,
       this.containerWrapColor,
       this.containerTabsWrapColor,
       this.containerTabsWrapSelectedColor});
@@ -68,6 +71,7 @@ class _NsgTabsState extends State<NsgTabs> {
             child: widget.expanded
                 ? _wrapContainer(
                     color: widget.containerWrapColor ?? nsgtheme.colorSecondary,
+                    color2: widget.containerWrapColorInside ?? nsgtheme.colorSecondary,
                     child: Row(
                       children: tabNames(),
                     ),
@@ -77,8 +81,15 @@ class _NsgTabsState extends State<NsgTabs> {
                     physics: const ClampingScrollPhysics(),
                     controller: tabNamesC,
                     scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: tabNames(),
+                    child: Padding(
+                      padding: widget.tabsPaddingInside,
+                      child: _wrapContainer(
+                        color: widget.containerWrapColor ?? nsgtheme.colorSecondary,
+                        color2: widget.containerWrapColorInside ?? nsgtheme.colorSecondary,
+                        child: Row(
+                          children: tabNames(),
+                        ),
+                      ),
                     ),
                   ),
           ),
@@ -118,10 +129,12 @@ class _NsgTabsState extends State<NsgTabs> {
     });
   }
 
-  Widget _wrapContainer({required Widget child, required Color color}) {
+  Widget _wrapContainer({required Widget child, required Color color, required Color color2}) {
     if (widget.containerTabsWrap) {
       return Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color), padding: const EdgeInsets.all(4), child: Center(child: child));
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color),
+          padding: widget.containerWrapPadding,
+          child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color2), child: Center(child: child)));
     } else {
       return child;
     }
@@ -132,16 +145,18 @@ class _NsgTabsState extends State<NsgTabs> {
     List<Widget> list = [];
     Widget _wrapExpanded({required Widget child}) {
       if (widget.expanded) {
-        return Expanded(child: Center(child: child));
+        return Expanded(child: Padding(padding: widget.containerTabsWrapPaddingOutside, child: child));
       } else {
-        return child;
+        return Padding(padding: widget.containerTabsWrapPaddingOutside, child: child);
       }
     }
 
     Widget _wrapContainerTabs({required Widget child, required Color color}) {
       if (widget.containerTabsWrap) {
         return Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color), padding: const EdgeInsets.all(4), child: Center(child: child));
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color),
+            padding: widget.containerTabsWrapPadding,
+            child: Center(child: child));
       } else {
         return child;
       }
