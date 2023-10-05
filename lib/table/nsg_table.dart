@@ -1628,7 +1628,9 @@ class _NsgTableState extends State<NsgTable> {
                     child: const Center(
                         child: Padding(
                       padding: EdgeInsets.only(top: 30, bottom: 30),
-                      child: NsgSimpleProgressBar(),
+                      child: NsgSimpleProgressBar(
+                        delay: Duration.zero,
+                      ),
                     ))),
               ],
             ))));
