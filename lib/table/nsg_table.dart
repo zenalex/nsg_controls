@@ -12,6 +12,7 @@ import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../formfields/nsg_period_filter.dart';
 import '../formfields/nsg_text_filter.dart';
+import '../nsg_border.dart';
 import '../widgets/nsg_simple_progress_bar.dart';
 import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
@@ -691,7 +692,7 @@ class _NsgTableState extends State<NsgTable> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Icon(sortElement == NsgTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
-                          size: 16, color: ControlOptions.instance.colorMainBack),
+                          size: 16, color: ControlOptions.instance.tableHeaderArrowsColor),
                     ),
                   )
                 ]);
