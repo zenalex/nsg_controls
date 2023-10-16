@@ -299,11 +299,11 @@ class _NsgTableState extends State<NsgTable> {
       if (width <= width2 && width > 0) {
         horizontalScrollEnabled = false;
       }
-      if (height <= height2 && height > 0) {
-        setState(() {
-          hasScrollbar = false;
-        });
-      }
+      // if (height <= height2 && height > 0) { // TODO определение высоты работает неверно
+      //   setState(() {
+      //     hasScrollbar = false;
+      //   });
+      // }
     }
   }
 
@@ -527,7 +527,7 @@ class _NsgTableState extends State<NsgTable> {
               thumbVisibility: true,
               trackVisibility: true,
               child: Padding(
-                  padding: EdgeInsets.only(bottom: 16),
+                  padding: EdgeInsets.only(bottom: widget.controller.currentStatus.isLoading ? 0 : 16), // TODO был отступ 16 пикселей. Мешает прогрессбару
                   child: SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child)))
           : SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child);
     } else {
@@ -1621,6 +1621,7 @@ class _NsgTableState extends State<NsgTable> {
             table.add(Flexible(
                 child: SingleChildScrollView(
                     child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                     height: 100,
@@ -1664,35 +1665,33 @@ class _NsgTableState extends State<NsgTable> {
           //}
 
           return Align(
-            alignment: Alignment.topLeft,
-            child: editMode == NsgTableEditMode.columnsWidth
-                ? Stack(alignment: Alignment.topLeft, children: [
-                    Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
-                    Container(
-                      margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
-                      child: SingleChildScrollView(
-                        controller: scrollHorResizers,
-                        scrollDirection: Axis.horizontal,
-                        child: ResizeLines(
-                            expandedColumnsCount: expandedColumnsCount,
-                            onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
-                            columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
-                            columnsOnResize: (resizedColumns) {
-                              tableColumns = resizedColumns;
-                              setState(() {});
-                            },
-                            columns: visibleColumns),
-                      ),
-                    )
-                  ])
-                : intrinsicWidth(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
-                        children: table),
-                  ),
-          );
+              alignment: Alignment.topLeft,
+              child: editMode == NsgTableEditMode.columnsWidth
+                  ? Stack(alignment: Alignment.topLeft, children: [
+                      Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
+                      Container(
+                        margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
+                        child: SingleChildScrollView(
+                          controller: scrollHorResizers,
+                          scrollDirection: Axis.horizontal,
+                          child: ResizeLines(
+                              expandedColumnsCount: expandedColumnsCount,
+                              onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
+                              columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
+                              columnsOnResize: (resizedColumns) {
+                                tableColumns = resizedColumns;
+                                setState(() {});
+                              },
+                              columns: visibleColumns),
+                        ),
+                      )
+                    ])
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
+                      children: table,
+                    ));
         });
 
     //    else if (widget.controller.currentStatus.isLoading) {

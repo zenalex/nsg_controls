@@ -80,7 +80,7 @@ class _StartPageState extends State<StartPage> {
                 ],
               ),
             ),
-            Expanded(child: controller.obx((state) => showTable())),
+            Flexible(child: controller.obx((state) => showTable())),
             button()
           ],
         ),
@@ -93,7 +93,7 @@ class _StartPageState extends State<StartPage> {
       NsgTableColumn(name: IrrigationRowGenerated.nameDay, presentation: 'День', width: 400),
       NsgTableColumn(name: IrrigationRowGenerated.nameHour, presentation: 'Час', width: 400)
     ];
-    return NsgTable(columns: columns, controller: controller);
+    return NsgTable(key: GlobalKey(), columns: columns, controller: controller);
   }
 
   Widget button() {
@@ -109,7 +109,8 @@ class _StartPageState extends State<StartPage> {
           item.hour = Random().nextInt(24);
           controller.items.add(item);
         }
-        controller.sendNotify();
+        //controller.sendNotify();
+        setState(() {});
       },
     );
   }
