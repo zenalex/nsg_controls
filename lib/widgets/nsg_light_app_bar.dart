@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgLightAppBar extends StatelessWidget {
-  const NsgLightAppBar({super.key, this.title = 'Заголовок', this.leftIcons = const [], this.rightIcons = const [], this.style = const NsgLigthAppBarStyle()});
+  const NsgLightAppBar(
+      {super.key, this.title = 'Заголовок', this.leftIcons = const [], this.rightIcons = const [], this.style = const NsgLigthAppBarStyle(), this.padding});
 
   final String title;
   final List<NsgLigthAppBarIcon> rightIcons;
   final List<NsgLigthAppBarIcon> leftIcons;
   final NsgLigthAppBarStyle style;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,9 @@ class NsgLightAppBar extends StatelessWidget {
   }
 
   EdgeInsets getPaddings() {
+    if (padding != null) {
+      return padding!;
+    }
     if (leftIcons.isEmpty && rightIcons.isEmpty) {
       return const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 10);
     } else {
