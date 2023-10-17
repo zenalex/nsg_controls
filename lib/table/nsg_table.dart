@@ -206,6 +206,8 @@ class _NsgTableState extends State<NsgTable> {
 
   bool horizontalScrollEnabled = true;
 
+  //UniqueKey scrollHorKey = UniqueKey();
+
   //Значения стилей для заголовков и строк по умолчанию
   AlignmentGeometry defaultHeaderAlign = Alignment.center;
   TextStyle defaultHeaderTextStyle = TextStyle(color: ControlOptions.instance.colorMainText, fontSize: ControlOptions.instance.sizeM);
@@ -388,6 +390,7 @@ class _NsgTableState extends State<NsgTable> {
           thumbColor: ControlOptions.instance.colorMain,
           radius: const Radius.circular(0),
           controller: scrollVert,
+          key: UniqueKey(),
           thumbVisibility: true,
           trackVisibility: true,
           child: child);
@@ -406,6 +409,7 @@ class _NsgTableState extends State<NsgTable> {
                       : 16
                   : 0),
           controller: scrollVert,
+          key: UniqueKey(),
           child: child);
     } else {
       return child;
@@ -416,12 +420,18 @@ class _NsgTableState extends State<NsgTable> {
     /* ------------------------------------------- /// На Android и Ios убираем постоянно видимые скроллбары ------------------------------------------ */
     if (isMobile) {
       if (!horizontalScrollEnabled) {
-        return SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child);
+        return SingleChildScrollView(
+          controller: scrollVert,
+          key: UniqueKey(),
+          scrollDirection: Axis.vertical,
+          child: child,
+        );
       } else {
         return singleChildScrollViewCross(
           child: SingleChildScrollView(
             padding: isMobile ? const EdgeInsets.only(bottom: 0) : const EdgeInsets.only(bottom: 16),
             controller: scrollHor,
+            key: UniqueKey(),
             scrollDirection: Axis.horizontal,
             child: child,
           ),
@@ -439,9 +449,15 @@ class _NsgTableState extends State<NsgTable> {
             thumbColor: ControlOptions.instance.colorMain,
             radius: const Radius.circular(0),
             controller: scrollVert,
+            key: UniqueKey(),
             thumbVisibility: true,
             trackVisibility: true,
-            child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
+            child: SingleChildScrollView(
+              controller: scrollVert,
+              key: UniqueKey(),
+              scrollDirection: Axis.vertical,
+              child: child,
+            ));
       } else {
         return rawScrollBarVertCross(
           child: RawScrollbar(
@@ -453,6 +469,7 @@ class _NsgTableState extends State<NsgTable> {
             thumbColor: ControlOptions.instance.colorMain,
             radius: const Radius.circular(0),
             controller: scrollHor,
+            key: UniqueKey(),
             thumbVisibility: true,
             trackVisibility: true,
             notificationPredicate: !hasScrollbar ? defaultScrollNotificationPredicate : (notif) => notif.depth == 1,
@@ -460,6 +477,7 @@ class _NsgTableState extends State<NsgTable> {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.only(bottom: 0), // отступ снизу под скроллбар
                 controller: scrollHor,
+                key: UniqueKey(),
                 scrollDirection: Axis.horizontal,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -512,6 +530,7 @@ class _NsgTableState extends State<NsgTable> {
     return 0;
   }
 
+/* --------------------------------------------------------- Горизонтальный скролл HEADER --------------------------------------------------------- */
   Widget horScrollHeaderWrap(Widget child) {
     if (horizontalScrollEnabled) {
       return tableBody.isEmpty
@@ -524,12 +543,23 @@ class _NsgTableState extends State<NsgTable> {
               thumbColor: ControlOptions.instance.colorMain,
               radius: const Radius.circular(0),
               controller: scrollHorHeader,
+              key: UniqueKey(),
               thumbVisibility: true,
               trackVisibility: true,
               child: Padding(
                   padding: EdgeInsets.only(bottom: widget.controller.currentStatus.isLoading ? 0 : 16), // TODO был отступ 16 пикселей. Мешает прогрессбару
-                  child: SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child)))
-          : SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child);
+                  child: SingleChildScrollView(
+                    controller: scrollHorHeader,
+                    key: UniqueKey(),
+                    scrollDirection: Axis.horizontal,
+                    child: child,
+                  )))
+          : SingleChildScrollView(
+              controller: scrollHorHeader,
+              key: UniqueKey(),
+              scrollDirection: Axis.horizontal,
+              child: child,
+            );
     } else {
       return child;
     }
@@ -563,6 +593,7 @@ class _NsgTableState extends State<NsgTable> {
     }
   }
 
+  /// Удаление строки
   void rowDelete(NsgDataItem row) {
     if (listRowsToDelete.contains(row)) {
       setState(() {
@@ -1673,6 +1704,7 @@ class _NsgTableState extends State<NsgTable> {
                         margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
                         child: SingleChildScrollView(
                           controller: scrollHorResizers,
+                          key: UniqueKey(),
                           scrollDirection: Axis.horizontal,
                           child: ResizeLines(
                               expandedColumnsCount: expandedColumnsCount,
