@@ -199,6 +199,8 @@ class _NsgTableState extends State<NsgTable> {
   late ScrollController scrollHorHeader;
   late ScrollController scrollHorResizers;
   late ScrollController scrollVert;
+  late LinkedScrollControllerGroup scrollHorizontalGroup;
+  late LinkedScrollControllerGroup scrollVerticalGroup;
   late List<NsgTableColumn> tableColumns;
   late List<NsgDataItem> listRowsToDelete;
   late NsgUpdateKey _updatetableKey;
@@ -321,8 +323,8 @@ class _NsgTableState extends State<NsgTable> {
     listRowsToDelete = [];
     hasScrollbar = true;
     tableAlreadyBuilt = false;
-    var scrollHorizontalGroup = LinkedScrollControllerGroup();
-    var scrollVerticalGroup = LinkedScrollControllerGroup();
+    scrollHorizontalGroup = LinkedScrollControllerGroup();
+    scrollVerticalGroup = LinkedScrollControllerGroup();
     scrollHor = scrollHorizontalGroup.addAndGet();
     scrollHorHeader = scrollHorizontalGroup.addAndGet();
     scrollHorResizers = scrollHorizontalGroup.addAndGet();
@@ -1200,7 +1202,7 @@ class _NsgTableState extends State<NsgTable> {
                         scrollHorHeader.dispose();
                         scrollHorResizers.dispose();
 
-                        var scrollHorizontalGroup = LinkedScrollControllerGroup();
+                        scrollHorizontalGroup = LinkedScrollControllerGroup();
                         //var scrollVerticalGroup = LinkedScrollControllerGroup();
                         scrollHor = scrollHorizontalGroup.addAndGet();
                         scrollHorHeader = scrollHorizontalGroup.addAndGet();
@@ -1712,7 +1714,7 @@ class _NsgTableState extends State<NsgTable> {
                               columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
                               columnsOnResize: (resizedColumns) {
                                 tableColumns = resizedColumns;
-                                setState(() {});
+                                //setState(() {});
                               },
                               columns: visibleColumns),
                         ),
