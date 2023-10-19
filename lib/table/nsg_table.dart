@@ -1148,7 +1148,7 @@ class _NsgTableState extends State<NsgTable> {
                     ),
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.refreshTable))
                     NsgTableMenuButton(
-                      tooltip: 'Обновить таблицу',
+                      tooltip: Get.locale!.languageCode == 'en' ? 'Refresh Table' : 'Обновить таблицу',
                       icon: NsgTableMenuButtonType.refreshTable.icon,
                       onPressed: () {
                         NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.refreshTable.toString());
@@ -1222,7 +1222,7 @@ class _NsgTableState extends State<NsgTable> {
 
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
                     NsgTableMenuButton(
-                      tooltip: 'Фильтр по тексту',
+                      tooltip: Get.locale!.languageCode == 'en' ? 'Filter by text' : 'Фильтр по тексту',
                       backColor: isSearchStringFilterOpen ? ControlOptions.instance.colorMainDark : null,
                       icon: isSearchStringFilterOpen ? Icons.filter_alt : NsgTableMenuButtonType.filterText.icon,
                       onPressed: () {
@@ -1432,6 +1432,7 @@ class _NsgTableState extends State<NsgTable> {
               if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
                 _expanded(
                   child: NsgTextFilter(
+                    label: Get.locale!.languageCode == 'en' ? 'Filter by text' : 'Фильтр по тексту',
                     onSetFilter: () {
                       setState(() {
                         editModeLast = NsgTableEditMode.view;
