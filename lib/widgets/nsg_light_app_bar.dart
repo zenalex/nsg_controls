@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgLightAppBar extends StatelessWidget {
-  const NsgLightAppBar({super.key, this.title = 'Заголовок', this.leftIcons = const [], this.rightIcons = const [], this.style = const NsgLigthAppBarStyle()});
+  const NsgLightAppBar(
+      {super.key, this.title = 'Заголовок', this.leftIcons = const [], this.rightIcons = const [], this.style = const NsgLigthAppBarStyle(), this.onTap});
 
   final String title;
   final List<NsgLigthAppBarIcon> rightIcons;
   final List<NsgLigthAppBarIcon> leftIcons;
   final NsgLigthAppBarStyle style;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +23,15 @@ class NsgLightAppBar extends StatelessWidget {
             children: [
               ...leftIcons,
               Flexible(
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: buildStyle.titleStyle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: InkWell(
+                  onTap: onTap,
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: buildStyle.titleStyle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ],
@@ -49,7 +54,7 @@ class NsgLightAppBar extends StatelessWidget {
         onTapCallback: element.onTapCallback,
         color: element.color,
         rotateAngle: element.rotateAngle,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        // padding: const EdgeInsets.symmetric(horizontal: 12),
       ));
     }
     return list;
@@ -57,14 +62,14 @@ class NsgLightAppBar extends StatelessWidget {
 
   EdgeInsets getPaddings() {
     if (leftIcons.isEmpty && rightIcons.isEmpty) {
-      return const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 10);
+      return const EdgeInsets.only(left: 20, right: 10);
     } else {
       if (leftIcons.isEmpty) {
-        return const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 12);
+        return const EdgeInsets.only(left: 20, right: 12);
       } else if (rightIcons.isEmpty) {
-        return const EdgeInsets.only(top: 10, bottom: 10, left: 12);
+        return const EdgeInsets.only(left: 12);
       } else {
-        return const EdgeInsets.only(top: 10, bottom: 10, left: 12, right: 12);
+        return const EdgeInsets.only(left: 12, right: 12);
       }
     }
   }
@@ -79,7 +84,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
       this.nott,
       this.color,
       this.rotateAngle,
-      this.padding = const EdgeInsets.only(right: 8, left: 8)});
+      this.padding = const EdgeInsets.only(right: 0, left: 0)});
 
   final IconData icon;
   final void Function()? onTap;
@@ -96,27 +101,32 @@ class NsgLigthAppBarIcon extends StatelessWidget {
       NsgLightAppBarOnTap(
           onTapDown: onTapCallback,
           onTap: onTap,
-          child: Padding(
-            padding: padding,
-            child: Transform.rotate(
-              angle: rotateAngle ?? 0,
-              child: Icon(
-                icon,
-                size: 20,
-                color: color ?? ControlOptions.instance.colorTertiary.c70,
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: Padding(
+              padding: padding,
+              child: Transform.rotate(
+                angle: rotateAngle ?? 0,
+                child: Icon(
+                  icon,
+                  size: 20,
+                  color: color ?? ControlOptions.instance.colorTertiary.c70,
+                ),
               ),
             ),
           )),
       if (nott != null && nott! > 0)
         Positioned(
-          right: padding.right,
-          child: ClipOval(
-              child: Container(
-            width: 10,
-            height: 10,
+          right: 8,
+          top: 8,
+          child: Container(
+            width: 11,
+            height: 11,
             padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(color: ControlOptions.instance.colorError),
-          )),
+            decoration:
+                BoxDecoration(color: ControlOptions.instance.colorError, border: Border.all(width: 1, color: nsgtheme.colorSecondary), shape: BoxShape.circle),
+          ),
         )
     ]);
   }
