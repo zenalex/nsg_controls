@@ -12,6 +12,7 @@ import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../formfields/nsg_period_filter.dart';
 import '../formfields/nsg_text_filter.dart';
+import '../nsg_border.dart';
 import '../widgets/nsg_simple_progress_bar.dart';
 import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
@@ -198,12 +199,16 @@ class _NsgTableState extends State<NsgTable> {
   late ScrollController scrollHorHeader;
   late ScrollController scrollHorResizers;
   late ScrollController scrollVert;
+  late LinkedScrollControllerGroup scrollHorizontalGroup;
+  late LinkedScrollControllerGroup scrollVerticalGroup;
   late List<NsgTableColumn> tableColumns;
   late List<NsgDataItem> listRowsToDelete;
   late NsgUpdateKey _updatetableKey;
   late bool tableAlreadyBuilt;
 
   bool horizontalScrollEnabled = true;
+
+  //UniqueKey scrollHorKey = UniqueKey();
 
   //Значения стилей для заголовков и строк по умолчанию
   AlignmentGeometry defaultHeaderAlign = Alignment.center;
@@ -298,11 +303,11 @@ class _NsgTableState extends State<NsgTable> {
       if (width <= width2 && width > 0) {
         horizontalScrollEnabled = false;
       }
-      if (height <= height2 && height > 0) {
-        setState(() {
-          hasScrollbar = false;
-        });
-      }
+      // if (height <= height2 && height > 0) { // TODO определение высоты работает неверно
+      //   setState(() {
+      //     hasScrollbar = false;
+      //   });
+      // }
     }
   }
 
@@ -318,8 +323,8 @@ class _NsgTableState extends State<NsgTable> {
     listRowsToDelete = [];
     hasScrollbar = true;
     tableAlreadyBuilt = false;
-    var scrollHorizontalGroup = LinkedScrollControllerGroup();
-    var scrollVerticalGroup = LinkedScrollControllerGroup();
+    scrollHorizontalGroup = LinkedScrollControllerGroup();
+    scrollVerticalGroup = LinkedScrollControllerGroup();
     scrollHor = scrollHorizontalGroup.addAndGet();
     scrollHorHeader = scrollHorizontalGroup.addAndGet();
     scrollHorResizers = scrollHorizontalGroup.addAndGet();
@@ -387,6 +392,7 @@ class _NsgTableState extends State<NsgTable> {
           thumbColor: ControlOptions.instance.colorMain,
           radius: const Radius.circular(0),
           controller: scrollVert,
+          key: UniqueKey(),
           thumbVisibility: true,
           trackVisibility: true,
           child: child);
@@ -405,6 +411,7 @@ class _NsgTableState extends State<NsgTable> {
                       : 16
                   : 0),
           controller: scrollVert,
+          key: UniqueKey(),
           child: child);
     } else {
       return child;
@@ -415,12 +422,18 @@ class _NsgTableState extends State<NsgTable> {
     /* ------------------------------------------- /// На Android и Ios убираем постоянно видимые скроллбары ------------------------------------------ */
     if (isMobile) {
       if (!horizontalScrollEnabled) {
-        return SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child);
+        return SingleChildScrollView(
+          controller: scrollVert,
+          key: UniqueKey(),
+          scrollDirection: Axis.vertical,
+          child: child,
+        );
       } else {
         return singleChildScrollViewCross(
           child: SingleChildScrollView(
             padding: isMobile ? const EdgeInsets.only(bottom: 0) : const EdgeInsets.only(bottom: 16),
             controller: scrollHor,
+            key: UniqueKey(),
             scrollDirection: Axis.horizontal,
             child: child,
           ),
@@ -438,9 +451,15 @@ class _NsgTableState extends State<NsgTable> {
             thumbColor: ControlOptions.instance.colorMain,
             radius: const Radius.circular(0),
             controller: scrollVert,
+            key: UniqueKey(),
             thumbVisibility: true,
             trackVisibility: true,
-            child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
+            child: SingleChildScrollView(
+              controller: scrollVert,
+              key: UniqueKey(),
+              scrollDirection: Axis.vertical,
+              child: child,
+            ));
       } else {
         return rawScrollBarVertCross(
           child: RawScrollbar(
@@ -452,6 +471,7 @@ class _NsgTableState extends State<NsgTable> {
             thumbColor: ControlOptions.instance.colorMain,
             radius: const Radius.circular(0),
             controller: scrollHor,
+            key: UniqueKey(),
             thumbVisibility: true,
             trackVisibility: true,
             notificationPredicate: !hasScrollbar ? defaultScrollNotificationPredicate : (notif) => notif.depth == 1,
@@ -459,6 +479,7 @@ class _NsgTableState extends State<NsgTable> {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.only(bottom: 0), // отступ снизу под скроллбар
                 controller: scrollHor,
+                key: UniqueKey(),
                 scrollDirection: Axis.horizontal,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -511,6 +532,7 @@ class _NsgTableState extends State<NsgTable> {
     return 0;
   }
 
+/* --------------------------------------------------------- Горизонтальный скролл HEADER --------------------------------------------------------- */
   Widget horScrollHeaderWrap(Widget child) {
     if (horizontalScrollEnabled) {
       return tableBody.isEmpty
@@ -523,12 +545,23 @@ class _NsgTableState extends State<NsgTable> {
               thumbColor: ControlOptions.instance.colorMain,
               radius: const Radius.circular(0),
               controller: scrollHorHeader,
+              key: UniqueKey(),
               thumbVisibility: true,
               trackVisibility: true,
               child: Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child)))
-          : SingleChildScrollView(controller: scrollHorHeader, scrollDirection: Axis.horizontal, child: child);
+                  padding: EdgeInsets.only(bottom: widget.controller.currentStatus.isLoading ? 0 : 16), // TODO был отступ 16 пикселей. Мешает прогрессбару
+                  child: SingleChildScrollView(
+                    controller: scrollHorHeader,
+                    key: UniqueKey(),
+                    scrollDirection: Axis.horizontal,
+                    child: child,
+                  )))
+          : SingleChildScrollView(
+              controller: scrollHorHeader,
+              key: UniqueKey(),
+              scrollDirection: Axis.horizontal,
+              child: child,
+            );
     } else {
       return child;
     }
@@ -562,6 +595,7 @@ class _NsgTableState extends State<NsgTable> {
     }
   }
 
+  /// Удаление строки
   void rowDelete(NsgDataItem row) {
     if (listRowsToDelete.contains(row)) {
       setState(() {
@@ -691,7 +725,7 @@ class _NsgTableState extends State<NsgTable> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Icon(sortElement == NsgTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
-                          size: 16, color: ControlOptions.instance.colorMainBack),
+                          size: 16, color: ControlOptions.instance.tableHeaderArrowsColor),
                     ),
                   )
                 ]);
@@ -1168,7 +1202,7 @@ class _NsgTableState extends State<NsgTable> {
                         scrollHorHeader.dispose();
                         scrollHorResizers.dispose();
 
-                        var scrollHorizontalGroup = LinkedScrollControllerGroup();
+                        scrollHorizontalGroup = LinkedScrollControllerGroup();
                         //var scrollVerticalGroup = LinkedScrollControllerGroup();
                         scrollHor = scrollHorizontalGroup.addAndGet();
                         scrollHorHeader = scrollHorizontalGroup.addAndGet();
@@ -1620,6 +1654,7 @@ class _NsgTableState extends State<NsgTable> {
             table.add(Flexible(
                 child: SingleChildScrollView(
                     child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                     height: 100,
@@ -1627,7 +1662,9 @@ class _NsgTableState extends State<NsgTable> {
                     child: const Center(
                         child: Padding(
                       padding: EdgeInsets.only(top: 30, bottom: 30),
-                      child: NsgSimpleProgressBar(),
+                      child: NsgSimpleProgressBar(
+                        delay: Duration.zero,
+                      ),
                     ))),
               ],
             ))));
@@ -1661,35 +1698,34 @@ class _NsgTableState extends State<NsgTable> {
           //}
 
           return Align(
-            alignment: Alignment.topLeft,
-            child: editMode == NsgTableEditMode.columnsWidth
-                ? Stack(alignment: Alignment.topLeft, children: [
-                    Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
-                    Container(
-                      margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
-                      child: SingleChildScrollView(
-                        controller: scrollHorResizers,
-                        scrollDirection: Axis.horizontal,
-                        child: ResizeLines(
-                            expandedColumnsCount: expandedColumnsCount,
-                            onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
-                            columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
-                            columnsOnResize: (resizedColumns) {
-                              tableColumns = resizedColumns;
-                              setState(() {});
-                            },
-                            columns: visibleColumns),
-                      ),
-                    )
-                  ])
-                : intrinsicWidth(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
-                        children: table),
-                  ),
-          );
+              alignment: Alignment.topLeft,
+              child: editMode == NsgTableEditMode.columnsWidth
+                  ? Stack(alignment: Alignment.topLeft, children: [
+                      Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
+                      Container(
+                        margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
+                        child: SingleChildScrollView(
+                          controller: scrollHorResizers,
+                          key: UniqueKey(),
+                          scrollDirection: Axis.horizontal,
+                          child: ResizeLines(
+                              expandedColumnsCount: expandedColumnsCount,
+                              onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
+                              columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
+                              columnsOnResize: (resizedColumns) {
+                                tableColumns = resizedColumns;
+                                //setState(() {});
+                              },
+                              columns: visibleColumns),
+                        ),
+                      )
+                    ])
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
+                      children: table,
+                    ));
         });
 
     //    else if (widget.controller.currentStatus.isLoading) {

@@ -208,6 +208,7 @@ class ControlOptions {
   final Color tableHeaderColor;
   final Color tableHeaderLinesColor;
   final Color tableCellBackColor;
+  final Color tableHeaderArrowsColor;
 
   //NewColors
   ///////////////////////////////
@@ -312,6 +313,7 @@ class ControlOptions {
     this.colorMainDark = const Color.fromARGB(255, 192, 163, 34),
     this.tableHeaderColor = const Color.fromARGB(255, 192, 163, 34),
     this.tableCellBackColor = const Color.fromRGBO(255, 255, 255, 1),
+    this.tableHeaderArrowsColor = const Color.fromRGBO(255, 255, 255, 1),
     this.tableHeaderLinesColor = const Color.fromRGBO(233, 200, 45, 1),
     //@Deprecated('Old variable. Use colorPrimary[int]')
     this.colorMainDarker = const Color.fromARGB(255, 153, 128, 16),

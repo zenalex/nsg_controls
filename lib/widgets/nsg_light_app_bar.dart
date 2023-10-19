@@ -3,13 +3,20 @@ import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgLightAppBar extends StatelessWidget {
   const NsgLightAppBar(
-      {super.key, this.title = 'Заголовок', this.leftIcons = const [], this.rightIcons = const [], this.style = const NsgLigthAppBarStyle(), this.onTap});
+      {super.key,
+      this.title = 'Заголовок',
+      this.leftIcons = const [],
+      this.rightIcons = const [],
+      this.style = const NsgLigthAppBarStyle(),
+      this.onTap,
+      this.padding});
 
   final String title;
   final List<NsgLigthAppBarIcon> rightIcons;
   final List<NsgLigthAppBarIcon> leftIcons;
   final NsgLigthAppBarStyle style;
   final void Function()? onTap;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +68,9 @@ class NsgLightAppBar extends StatelessWidget {
   }
 
   EdgeInsets getPaddings() {
+    if (padding != null) {
+      return padding!;
+    }
     if (leftIcons.isEmpty && rightIcons.isEmpty) {
       return const EdgeInsets.only(left: 20, right: 10);
     } else {
