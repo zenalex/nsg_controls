@@ -786,12 +786,12 @@ class _NsgInputState extends State<NsgInput> {
                   : NsgPopUp(
                       width: 300,
                       onConfirm: () {
-                        textController.text = widget.dynamicList[countItem].toString();
+                        //textController.text = widget.dynamicList[countItem].toString();
                         widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
                         if (widget.onEditingComplete != null) {
                           widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                         }
-                        setState(() {});
+                        //setState(() {});
                       },
                       title: widget.label,
                       contentTop: Container(
