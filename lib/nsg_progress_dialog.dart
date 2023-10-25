@@ -17,7 +17,13 @@ class NsgProgressDialog {
   NsgCancelToken? cancelToken;
   bool visible = false;
   NsgProgressDialog(
-      {this.showPercents = false, this.percent = 0, this.canStopped = false, this.requestStop, this.textDialog = '', this.cancelToken, this.context});
+      {this.showPercents = false,
+      this.percent = 0,
+      this.canStopped = false,
+      this.requestStop,
+      this.textDialog = '',
+      this.cancelToken,
+      this.context});
 
   void show({String text = ''}) {
     visible = true;
@@ -84,7 +90,8 @@ class NsgProgressDialogWidget extends StatefulWidget {
       this.delay = 500});
 
   @override
-  State<NsgProgressDialogWidget> createState() => _NsgProgressDialogWidgetState();
+  State<NsgProgressDialogWidget> createState() =>
+      _NsgProgressDialogWidgetState();
 }
 
 class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
@@ -120,7 +127,9 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
         BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
             child: Container(
-              decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withOpacity(0.8)),
+              decoration: BoxDecoration(
+                  color:
+                      ControlOptions.instance.colorMainBack.withOpacity(0.8)),
               child: Center(
                 child: Material(
                   color: Colors.transparent,
@@ -131,7 +140,10 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
                       if (widget.textDialog.isNotEmpty)
                         Padding(
                             padding: EdgeInsets.only(bottom: 10),
-                            child: Text(widget.textDialog, textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorText))),
+                            child: Text(widget.textDialog,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: ControlOptions.instance.colorText))),
                       NsgProgressBar(
                         text: widget.text!,
                         dialogWidget: widget.dialogWidget,
@@ -140,9 +152,10 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
                         NsgButton(
                           text: 'Отмена',
                           onPressed: () {
-                            if (widget.requestStop != null) widget.requestStop!();
+                            if (widget.requestStop != null)
+                              widget.requestStop!();
                             widget.cancelToken?.calcel();
-                            Get.back();
+                            Navigator.pop(context ?? Get.context!);
                           },
                         ),
                     ],
