@@ -185,17 +185,17 @@ class OpenPainter extends CustomPainter {
       // Paint()..blendMode = BlendMode.dstIn,
       Paint(),
     );
-    canvas.drawArc(
-        Rect.fromCenter(center: center, width: 170, height: 170),
-        vmath.radians(percent == true ? 0 : arc1),
-        vmath.radians(percent == true ? val : arc2 - arc2),
-        false,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round
-          ..shader = gradient2.createShader(rect)
-          ..strokeWidth = 10
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5.0));
+    // canvas.drawArc(
+    //     Rect.fromCenter(center: center, width: 170, height: 170),
+    //     vmath.radians(percent == true ? 0 : arc1),
+    //     vmath.radians(percent == true ? val : arc2 - arc2),
+    //     false,
+    //     Paint()
+    //       ..style = PaintingStyle.stroke
+    //       ..strokeCap = StrokeCap.round
+    //       ..shader = gradient2.createShader(rect)
+    //       ..strokeWidth = 10
+    //       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5.0));
     canvas.drawArc(
         Rect.fromCenter(center: center, width: 170, height: 170),
         vmath.radians(percent == true ? 0 : arc1),
