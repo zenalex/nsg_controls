@@ -13,7 +13,7 @@ Future<dynamic> showNsgDialog(
     String title = 'Необходимо подтверждение',
     String text = 'Вы уверены?',
     String textConfirm = 'ОК',
-    String textCancel = 'Отменя',
+    String textCancel = 'Отмена',
     Widget? child,
     List<Widget>? buttons,
     VoidCallback? onConfirm,
