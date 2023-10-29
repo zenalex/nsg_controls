@@ -16,7 +16,7 @@ class NsgDropdownMenu {
   void showOverlay({required Function(int index, NsgDropdownMenuItem element) onSelect, BuildContext? parentContext, Offset? offset}) async {
     final overlay = Overlay.of(context);
     entry = OverlayEntry(builder: (context) {
-      Offset curOffset = Offset(0, 0);
+      Offset curOffset = const Offset(0, 0);
       if (parentContext != null) {
         curOffset = (parentContext.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
       }

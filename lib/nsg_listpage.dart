@@ -90,7 +90,7 @@ class NsgListPage extends StatelessWidget {
   final Widget? widgetBottom;
 
   final bool showLastAndFavourites;
-  NsgListPage(
+  const NsgListPage(
       {Key? key,
       this.contentPadding = EdgeInsets.zero,
       this.userSettingsController,

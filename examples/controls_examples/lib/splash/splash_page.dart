@@ -1,9 +1,10 @@
 // ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
-import 'package:flutter_fadein/flutter_fadein.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_fadein/flutter_fadein.dart';
 
 import '../model/data_controller.dart';
 

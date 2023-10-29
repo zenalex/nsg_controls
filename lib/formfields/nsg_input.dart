@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:io';
 import 'dart:ui';
 
@@ -744,7 +746,7 @@ class _NsgInputState extends State<NsgInput> {
                   ));
                 }
                 return Padding(
-                  padding: EdgeInsets.only(right: 20),
+                  padding: const EdgeInsets.only(right: 20),
                   child: Column(
                     children: list,
                   ),
@@ -768,6 +770,7 @@ class _NsgInputState extends State<NsgInput> {
                         setState(() {});
                       },
                       title: widget.label,
+                      // ignore: sized_box_for_whitespace
                       contentTop: Container(
                           height: 300,
                           child: RawScrollbar(

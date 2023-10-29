@@ -30,7 +30,7 @@ Future<dynamic> showNsgDialog(
               decoration: BoxDecoration(color: nsgtheme.colorModalBack, borderRadius: BorderRadius.circular(10)),
               child: Center(
                 child: Container(
-                  constraints: BoxConstraints(maxWidth: 640),
+                  constraints: const BoxConstraints(maxWidth: 640),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
