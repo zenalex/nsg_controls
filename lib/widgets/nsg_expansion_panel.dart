@@ -149,7 +149,7 @@ class _NsgExpansionPanelState extends State<NsgExpansionPanel> {
                             color: _expanded == true
                                 ? widget.widgetTopColor ?? ControlOptions.instance.colorText
                                 : widget.widgetTopColor ?? ControlOptions.instance.colorText),
-                  widget.widgetEnd ?? SizedBox.shrink()
+                  widget.widgetEnd ?? const SizedBox.shrink()
                 ]),
               ),
             ),

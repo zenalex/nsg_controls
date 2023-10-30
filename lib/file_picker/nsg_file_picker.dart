@@ -314,7 +314,6 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
       objectsList.add(NsgFilePickerObject(isNew: true));
       objectsList.removeLast();
     } catch (ex) {
-      print(ex);
       throw Exception('Вместо const[] в objectsList нужно добавлять List<NsgFilePickerObject>.empty(growable: true)');
     }
     super.initState();

@@ -13,7 +13,7 @@ Future<dynamic> showNsgDialog(
     String title = 'Необходимо подтверждение',
     String text = 'Вы уверены?',
     String textConfirm = 'ОК',
-    String textCancel = 'Отменя',
+    String textCancel = 'Отмена',
     Widget? child,
     List<Widget>? buttons,
     VoidCallback? onConfirm,
@@ -30,7 +30,7 @@ Future<dynamic> showNsgDialog(
               decoration: BoxDecoration(color: nsgtheme.colorModalBack, borderRadius: BorderRadius.circular(10)),
               child: Center(
                 child: Container(
-                  constraints: BoxConstraints(maxWidth: 640),
+                  constraints: const BoxConstraints(maxWidth: 640),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

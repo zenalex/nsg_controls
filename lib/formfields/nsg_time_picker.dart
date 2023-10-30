@@ -71,7 +71,6 @@ class NsgTimePicker extends StatefulWidget {
                     dateForTime: dateForTime,
                     initialTime: Jiffy(DateTime(0)).add(duration: initialTime).dateTime,
                     onChange: ((endDate) {
-                      print('onChange: $endDate');
                       selectedDate = endDate;
                     })
                     //  onClose,

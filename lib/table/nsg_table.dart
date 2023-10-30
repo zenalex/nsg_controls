@@ -12,7 +12,6 @@ import 'package:nsg_data/nsg_data.dart';
 import 'package:flutter/services.dart';
 import '../formfields/nsg_period_filter.dart';
 import '../formfields/nsg_text_filter.dart';
-import '../nsg_border.dart';
 import '../widgets/nsg_simple_progress_bar.dart';
 import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
@@ -296,8 +295,8 @@ class _NsgTableState extends State<NsgTable> {
   checkScrollbarIsVisible() {
     if (containerKey.currentContext != null && wrapperKey.currentContext != null) {
       tableAlreadyBuilt = true;
-      double height = (containerKey.currentContext!.findRenderObject() as RenderBox).size.height;
-      double height2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.height;
+      // double height = (containerKey.currentContext!.findRenderObject() as RenderBox).size.height;
+      // double height2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.height;
       double width = (containerKey.currentContext!.findRenderObject() as RenderBox).size.width;
       double width2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.width;
       if (width <= width2 && width > 0) {

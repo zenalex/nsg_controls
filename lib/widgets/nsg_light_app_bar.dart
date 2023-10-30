@@ -2,21 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgLightAppBar extends StatelessWidget {
-  const NsgLightAppBar(
-      {super.key,
-      this.title = 'Заголовок',
-      this.leftIcons = const [],
-      this.rightIcons = const [],
-      this.style = const NsgLigthAppBarStyle(),
-      this.onTap,
-      this.padding});
+  const NsgLightAppBar({
+    super.key,
+    this.title = 'Заголовок',
+    this.leftIcons = const [],
+    this.rightIcons = const [],
+    this.centerIcons = const [],
+    this.style = const NsgLigthAppBarStyle(),
+    this.onTap,
+    this.padding,
+    this.centerIconPadding = const EdgeInsets.only(right: 0, left: 0),
+  });
 
   final String title;
   final List<NsgLigthAppBarIcon> rightIcons;
   final List<NsgLigthAppBarIcon> leftIcons;
+  final List<NsgLigthAppBarIcon> centerIcons;
   final NsgLigthAppBarStyle style;
   final void Function()? onTap;
   final EdgeInsets? padding;
+  final EdgeInsets centerIconPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +46,12 @@ class NsgLightAppBar extends StatelessWidget {
                   ),
                 ),
               ),
+              Padding(
+                padding: centerIconPadding,
+                child: Row(
+                  children: getCenterIcons(),
+                ),
+              ),
             ],
           ),
         ),
@@ -54,6 +65,22 @@ class NsgLightAppBar extends StatelessWidget {
   List<NsgLigthAppBarIcon> getRightIcons() {
     List<NsgLigthAppBarIcon> list = [];
     for (var element in rightIcons) {
+      list.add(NsgLigthAppBarIcon(
+        icon: element.icon,
+        onTap: element.onTap,
+        nott: element.nott,
+        onTapCallback: element.onTapCallback,
+        color: element.color,
+        rotateAngle: element.rotateAngle,
+        // padding: const EdgeInsets.symmetric(horizontal: 12),
+      ));
+    }
+    return list;
+  }
+
+  List<NsgLigthAppBarIcon> getCenterIcons() {
+    List<NsgLigthAppBarIcon> list = [];
+    for (var element in centerIcons) {
       list.add(NsgLigthAppBarIcon(
         icon: element.icon,
         onTap: element.onTap,

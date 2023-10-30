@@ -17,9 +17,9 @@ class NsgDialogBodyController {
   }
 
   //AnimationController transitionAnimationController = AnimationController(vsync: vsync);
-  Future openDialog(Widget child, {EdgeInsets? padding}) async {
+  Future openDialog(Widget child, {EdgeInsets? padding, bool enableDrag = true}) async {
     if (currentState != null) {
-      return await currentState!.openDialog(child, padding: padding);
+      return await currentState!.openDialog(child, padding: padding, enableDrag: enableDrag);
     } else {
       throw ErrorDescription('currentState == null!');
     }
@@ -27,13 +27,10 @@ class NsgDialogBodyController {
 }
 
 class NsgDialog {
-  Future<void> show({
-    required BuildContext context,
-    required Widget child,
-    AnimationController? animationController,
-    EdgeInsets? padding,
-  }) {
+  Future<void> show(
+      {required BuildContext context, required Widget child, AnimationController? animationController, EdgeInsets? padding, bool enableDrag = true}) {
     return showModalBottomSheet<void>(
+      enableDrag: enableDrag,
       useSafeArea: true,
       transitionAnimationController: animationController,
       context: context,
@@ -117,18 +114,18 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
             ));
   }
 
-  Future openDialog(Widget child, {EdgeInsets? padding}) async {
-    return await _showNsgDialog(context, child, padding);
+  Future openDialog(Widget child, {EdgeInsets? padding, bool enableDrag = true}) async {
+    return await _showNsgDialog(context, child, padding, enableDrag);
   }
 
-  Future _showNsgDialog(BuildContext context, Widget child, EdgeInsets? padding) async {
+  Future _showNsgDialog(BuildContext context, Widget child, EdgeInsets? padding, bool enableDrag) async {
     try {
       _controller.forward();
     } catch (ex) {
       log(ex.toString());
       ex.printError();
     }
-    return await NsgDialog().show(context: context, child: child, animationController: _controller, padding: padding).then((value) {
+    return await NsgDialog().show(enableDrag: enableDrag, context: context, child: child, animationController: _controller, padding: padding).then((value) {
       try {
         _controller.reverse();
       } catch (ex) {

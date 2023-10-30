@@ -165,12 +165,12 @@ class OpenPainter extends CustomPainter {
       stops: const <double>[0, 1],
       transform: GradientRotation(val2),
     );
-    final gradient2 = RadialGradient(
-      radius: 2,
-      tileMode: TileMode.mirror,
-      colors: [ControlOptions.instance.colorMainDark.withOpacity(.5), ControlOptions.instance.colorMain.withOpacity(.5)],
-      stops: <double>[value / 300, value / 100],
-    );
+    // final gradient2 = RadialGradient(
+    //   radius: 2,
+    //   tileMode: TileMode.mirror,
+    //   colors: [ControlOptions.instance.colorMainDark.withOpacity(.5), ControlOptions.instance.colorMain.withOpacity(.5)],
+    //   stops: <double>[value / 300, value / 100],
+    // );
 
     canvas.drawCircle(
       center,

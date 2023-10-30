@@ -29,7 +29,7 @@ void nsgSnackbar(
         color: Colors.black.withOpacity(0.5),
         spreadRadius: 5,
         blurRadius: 15,
-        offset: Offset(0, -5),
+        offset: const Offset(0, -5),
       )
     ],
     backgroundColor: ControlOptions.instance.colorMain,
