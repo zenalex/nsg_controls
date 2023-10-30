@@ -120,6 +120,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
   Widget _getImages() {
     List<Widget> list = [];
     for (var element in objectsList) {
+      if (element.markToDelete) continue;
       list.add(Container(
         decoration: BoxDecoration(border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
         child: Column(
@@ -170,9 +171,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                           title: 'Удаление фотографии',
                           text: 'После удаления, фотографию нельзя будет восстановить. Удалить?',
                           onConfirm: () {
-                            objectsList.remove(element);
+                            element.markToDelete = true;
+                            //objectsList.remove(element);
                             setState(() {});
-                            Get.back();
+                            //Get.back();
                           },
                         ));
                       },
