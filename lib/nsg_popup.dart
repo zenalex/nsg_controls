@@ -24,6 +24,7 @@ class NsgPopUp extends StatefulWidget {
   final Widget? contentTop;
   final Widget? contentBottom;
   final double? height;
+  final double? maxheight;
   final double? width;
   final NsgBaseController? dataController;
   final bool hideBackButton;
@@ -47,6 +48,7 @@ class NsgPopUp extends StatefulWidget {
       this.onConfirm,
       this.getContent,
       this.height,
+      this.maxheight,
       this.width,
       this.contentSecondary,
       this.contentTop,
@@ -126,7 +128,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
         height: widget.height,
         constraints: BoxConstraints(
           maxWidth: widget.width ?? 640,
-          maxHeight: widget.height ?? 400,
+          maxHeight: widget.maxheight ?? widget.maxheight ?? 400,
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(nsgtheme.borderRadius),
