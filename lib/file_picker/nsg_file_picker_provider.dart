@@ -17,10 +17,11 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class NsgFilePickerProvider {
   static List<String> globalAllowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'];
-  static List<String> globalAllowedVideoFormats = const ['mp4'];
+  static List<String> globalAllowedVideoFormats = const ['mp4', 'mov'];
   static List<String> globalAllowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv'];
 
   static NsgFilePickerObjectType getFileTypeByExtension(String ext) {
+    ext = ext.toLowerCase();
     if (globalAllowedImageFormats.contains(ext)) {
       return NsgFilePickerObjectType.image;
     }
@@ -68,7 +69,7 @@ class NsgFilePickerProvider {
 
   const NsgFilePickerProvider(
       {this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
-      this.allowedVideoFormats = const ['mp4'],
+      this.allowedVideoFormats = const ['mp4', 'mov'],
       this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
       this.imageMaxWidth = 1440.0,
       this.imageMaxHeight = 1440.0,
