@@ -162,6 +162,10 @@ class NsgInput extends StatefulWidget {
 
   final List<dynamic> dynamicList;
 
+  ///Стандартные правила автопростановки заглавных букв при вводе текста
+  ///Просто транслируется в FormTextField и работает по стандартной логике
+  final TextCapitalization textCapitalization;
+
   const NsgInput(
       {Key? key,
       this.child,
@@ -222,7 +226,8 @@ class NsgInput extends StatefulWidget {
       this.prefix,
       this.suffixIcon,
       this.formatDateTime,
-      this.getRequestFilter})
+      this.getRequestFilter,
+      this.textCapitalization = TextCapitalization.none})
       : super(key: key);
 
   @override
@@ -464,6 +469,7 @@ class _NsgInputState extends State<NsgInput> {
                       alignment: Alignment.center,
                       children: [
                         TextFormField(
+                          textCapitalization: widget.textCapitalization,
                           controller: textController,
                           inputFormatters: widget.maskType == NsgInputMaskType.phone
                               ? [phoneFormatter]
