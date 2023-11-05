@@ -21,12 +21,14 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
   GlobalKey objectKey = GlobalKey();
   bool opened = false;
   double width = 0;
+  double height = 0;
   bool animationIsGoing = true;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       width = objectKey.currentContext!.size!.width;
+      height = objectKey.currentContext!.size!.height;
       setState(() {});
     });
   }
@@ -55,6 +57,7 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
           hideOverlay(entry: widget.entry);
         }
         double offsetX = 0;
+        double offsetY = 0;
         if (width > 0) {
           if (widget.offset.dx < constraints.maxWidth - width) {
             offsetX = widget.offset.dx;
@@ -65,6 +68,18 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
               cutWidth = difX;
             }
             offsetX = widget.offset.dx + cutWidth + 16;
+          }
+        }
+        if (height > 0) {
+          if (widget.offset.dy < constraints.maxHeight - height) {
+            offsetY = widget.offset.dy;
+          } else {
+            double difY = constraints.maxHeight - height - widget.offset.dy - 32;
+            double cutHeight = height;
+            if (difY < height) {
+              cutHeight = difY;
+            }
+            offsetY = widget.offset.dy + cutHeight + 16;
           }
         }
         return Material(
@@ -80,7 +95,7 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
             child: Align(
               alignment: Alignment.topLeft,
               child: Transform.translate(
-                offset: Offset(offsetX, widget.offset.dy),
+                offset: Offset(offsetX, offsetY),
                 child: widgetOverlay(
                   key: objectKey,
                   onSelect: widget.onSelect,
