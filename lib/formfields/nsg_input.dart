@@ -34,6 +34,9 @@ class NsgInput extends StatefulWidget {
   final int maxLines;
   final int minLines;
 
+  /// Максимальное количество символов
+  final int? maxLenght;
+
   /// Виджет для Bool переключателя, если нужно что-то сложнее простой текстовой строки
   final Widget? child;
 
@@ -178,6 +181,7 @@ class NsgInput extends StatefulWidget {
       this.initialDateTime,
       this.firstDateTime,
       this.lastDateTime,
+      this.maxLenght,
       this.validateText = '',
       this.textAlign = TextAlign.left,
       required this.dataItem,
@@ -431,10 +435,14 @@ class _NsgInputState extends State<NsgInput> {
     }
 
     int? _maxLength;
-    if (widget.dataItem.getField(widget.fieldName) is NsgDataStringField) {
-      _maxLength = (widget.dataItem.getField(widget.fieldName) as NsgDataStringField).maxLength;
-      if (_maxLength == 0) {
-        _maxLength = null;
+    if (widget.maxLenght != null) {
+      _maxLength = widget.maxLenght;
+    } else {
+      if (widget.dataItem.getField(widget.fieldName) is NsgDataStringField) {
+        _maxLength = (widget.dataItem.getField(widget.fieldName) as NsgDataStringField).maxLength;
+        if (_maxLength == 0) {
+          _maxLength = null;
+        }
       }
     }
 
