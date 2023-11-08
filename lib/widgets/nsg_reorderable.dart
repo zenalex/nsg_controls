@@ -4,7 +4,9 @@ import 'package:reorderables/reorderables.dart';
 class NsgReorderable extends StatefulWidget {
   final List<Widget> widgets;
   final ReorderCallback onReorder;
-  const NsgReorderable({Key? key, required this.widgets, required this.onReorder}) : super(key: key);
+  final double spacing;
+  final double runSpacing;
+  const NsgReorderable({Key? key, required this.widgets, required this.onReorder, this.spacing = 0, this.runSpacing = 0}) : super(key: key);
 
   @override
   State<NsgReorderable> createState() => _NsgReorderableState();
@@ -23,8 +25,8 @@ class _NsgReorderableState extends State<NsgReorderable> {
 
     var wrap = ReorderableWrap(
         direction: Axis.vertical,
-        spacing: 0.0,
-        runSpacing: 0.0,
+        spacing: widget.spacing,
+        runSpacing: widget.runSpacing,
         needsLongPressDraggable: false,
         padding: const EdgeInsets.all(0),
         children: widget.widgets,
