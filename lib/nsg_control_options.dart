@@ -131,6 +131,7 @@ class ControlOptions {
   final Color nsgInputBorderActiveColor;
   final Color nsginputCloseIconColor;
   final Color nsginputCloseIconColorHover;
+  final bool nsgInputShowLabel;
 
   final NsgSwitchHorizontalStyle nsgSwitchHorizontalStyle;
 
@@ -278,6 +279,7 @@ class ControlOptions {
     this.nsgInputColorLabel = Colors.black,
     this.nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
     this.nsgInputContentPadding = const EdgeInsets.all(5),
+    this.nsgInputShowLabel = true,
     this.appMaxWidth = 640,
     this.appMinWidth = 320,
     this.sizeH1 = 36,

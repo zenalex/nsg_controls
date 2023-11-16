@@ -1,3 +1,4 @@
+import 'package:nsg_controls/formfields/nsg_input_selection_widget_type.dart';
 import 'package:nsg_controls/selection_nsg_popup.dart';
 
 import 'nsg_controls.dart';
@@ -16,9 +17,18 @@ class NsgSelection {
   Widget Function(NsgDataItem)? rowWidget;
   Color? textColor;
   Color? colorInverted;
+  NsgInputSelectionWidgetType widgetType;
   var textEditingController = TextEditingController();
 
-  NsgSelection({required this.inputType, this.controller, this.rowWidget, this.allValues, this.selectedElement, this.textColor, this.colorInverted}) {
+  NsgSelection(
+      {required this.inputType,
+      this.controller,
+      this.rowWidget,
+      this.allValues,
+      this.selectedElement,
+      this.textColor,
+      this.colorInverted,
+      this.widgetType = NsgInputSelectionWidgetType.column}) {
     if (inputType == NsgInputType.reference) {
       assert(controller != null);
     }
@@ -94,6 +104,7 @@ class NsgSelection {
       context: context,
       builder: (cont) {
         return SelectionNsgPopUp(
+            widgetType: widgetType,
             title: title,
             getContent: _listArray,
             dataController: controller,

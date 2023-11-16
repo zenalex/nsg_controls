@@ -4,7 +4,9 @@ import 'dart:ui';
 import 'package:event/event.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nsg_controls/nsg_grid.dart';
 import 'package:nsg_data/nsg_data.dart';
+import 'formfields/nsg_input_selection_widget_type.dart';
 import 'nsg_control_options.dart';
 
 // ignore: must_be_immutable
@@ -29,6 +31,7 @@ class SelectionNsgPopUp extends StatefulWidget {
   final bool showCloseButton;
   final String? elementEditPageName;
   final NsgBaseController? editPageController;
+  final NsgInputSelectionWidgetType widgetType;
   var textEditController = TextEditingController();
   Color? colorText;
   Color? colorTitleText;
@@ -41,6 +44,7 @@ class SelectionNsgPopUp extends StatefulWidget {
       this.cancelText,
       this.margin = const EdgeInsets.all(10),
       this.confirmText,
+      this.widgetType = NsgInputSelectionWidgetType.column,
       this.onCancel,
       this.onConfirm,
       this.getContent,
@@ -122,7 +126,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
         height: widget.height,
         constraints: BoxConstraints(
           maxWidth: widget.width ?? 640,
-          maxHeight: widget.height ?? 400,
+          maxHeight: widget.height ?? MediaQuery.of(context).size.height - 40,
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(nsgtheme.borderRadius),
@@ -280,10 +284,16 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
   }
 
   Widget _getContent() {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: widget.getContent!());
+    if (widget.widgetType == NsgInputSelectionWidgetType.column) {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: widget.getContent!());
+    } else if (widget.widgetType == NsgInputSelectionWidgetType.grid) {
+      return SizedBox(width: 300, child: NsgGrid(children: widget.getContent!()));
+    } else {
+      return SizedBox();
+    }
   }
 }

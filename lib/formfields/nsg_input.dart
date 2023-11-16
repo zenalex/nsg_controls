@@ -18,6 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:nsg_controls/formfields/nsg_field_type.dart';
 
+import 'nsg_input_selection_widget_type.dart';
+
 class NsgInput extends StatefulWidget {
   final String label;
   final Color? labelColor;
@@ -67,6 +69,9 @@ class NsgInput extends StatefulWidget {
   /// Контроллер для выбора связанного значения
   final NsgBaseController? selectionController;
 
+  /// Внешний вид отображение Selection (колонка или грид)
+  final NsgInputSelectionWidgetType selectionWidgetType;
+
   /// Контроллер, которому будет подаваться update при изменении значения в Input
   final NsgDataController? updateController;
 
@@ -95,7 +100,7 @@ class NsgInput extends StatefulWidget {
   final List<NsgDataItem>? itemsToSelect;
 
   /// Показывать label
-  final bool showLabel;
+  final bool? showLabel;
 
   /// Показывать иконку удаления
   final bool showDeleteIcon;
@@ -175,6 +180,7 @@ class NsgInput extends StatefulWidget {
       this.dynamicList = const [],
       this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
       this.trackColor,
+      this.selectionWidgetType = NsgInputSelectionWidgetType.column,
       this.activeColor,
       this.thumbColor,
       this.autofocus = false,
@@ -187,7 +193,7 @@ class NsgInput extends StatefulWidget {
       required this.dataItem,
       required this.fieldName,
       this.showDeleteIcon = true,
-      this.showLabel = true,
+      this.showLabel,
       this.controller,
       this.selectionController,
       this.updateController,
@@ -456,7 +462,7 @@ class _NsgInputState extends State<NsgInput> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (widget.showLabel)
+                if (widget.showLabel ?? nsgtheme.nsgInputShowLabel)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 2),
                     child: Text(
@@ -837,7 +843,7 @@ class _NsgInputState extends State<NsgInput> {
       //selectionController!.refreshData();
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        var form = NsgSelection(inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
+        var form = NsgSelection(widgetType: widget.selectionWidgetType, inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
         form.selectFromArray(widget.label, (item) {
           widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
           if (widget.onChanged != null) {
@@ -878,7 +884,12 @@ class _NsgInputState extends State<NsgInput> {
     } else if (inputType == NsgInputType.enumReference) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
-      var form = NsgSelection(allValues: itemsArray, selectedElement: enumItem, rowWidget: widget.rowWidget, inputType: NsgInputType.enumReference);
+      var form = NsgSelection(
+          widgetType: widget.selectionWidgetType,
+          allValues: itemsArray,
+          selectedElement: enumItem,
+          rowWidget: widget.rowWidget,
+          inputType: NsgInputType.enumReference);
       form.selectFromArray(widget.label, (item) {
         widget.dataItem.setFieldValue(widget.fieldName, item);
         if (widget.onChanged != null) {

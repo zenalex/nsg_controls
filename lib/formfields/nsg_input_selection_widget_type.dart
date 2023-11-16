@@ -1,0 +1,1 @@
+enum NsgInputSelectionWidgetType { column, grid }
