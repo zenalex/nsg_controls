@@ -761,7 +761,7 @@ class _NsgInputState extends State<NsgInput> {
                           element.toString(),
                           style: TextStyle(
                               fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
-                              color: element == selectedElement ? nsgtheme.colorSecondary.b0 : nsgtheme.colorSecondary.b100),
+                              color: element == selectedElement ? nsgtheme.colorSecondary.b100 : nsgtheme.colorSecondary.b0),
                         ))),
                   ));
                 }
