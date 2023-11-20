@@ -877,7 +877,9 @@ class _NsgInputState extends State<NsgInput> {
           if (widget.onEditingComplete != null) {
             widget.onEditingComplete!(widget.dataItem, widget.fieldName);
           }
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         };
         Get.toNamed(widget.selectionForm);
       }
