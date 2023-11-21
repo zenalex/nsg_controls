@@ -13,7 +13,7 @@ class NsgDropdownMenu {
     entry = null;
   }
 
-  void showOverlay({required Function(int index, NsgDropdownMenuItem element) onSelect, BuildContext? parentContext, Offset? offset}) async {
+  void showOverlay({required Function(int index, NsgDropdownMenuItem element) onSelect, BuildContext? parentContext, Offset? offset, Widget? child}) async {
     final overlay = Overlay.of(context);
     entry = OverlayEntry(builder: (context) {
       Offset curOffset = const Offset(0, 0);
@@ -31,6 +31,7 @@ class NsgDropdownMenu {
         offset: curOffset,
         widgetList: widgetList,
         entry: entry,
+        child: child,
       );
     });
     overlay.insert(entry!);

@@ -6,10 +6,11 @@ import 'package:nsg_controls/nsg_controls.dart';
 class NsgDropdownMenuOverlay extends StatefulWidget {
   final List<NsgDropdownMenuItem> widgetList;
   final OverlayEntry? entry;
+  final Widget? child;
   final Offset offset;
   final Function(int index, NsgDropdownMenuItem element) onSelect;
 
-  const NsgDropdownMenuOverlay({super.key, this.entry, required this.widgetList, required this.offset, required this.onSelect});
+  const NsgDropdownMenuOverlay({super.key, this.entry, required this.widgetList, required this.offset, required this.onSelect, this.child});
 
   @override
   State<NsgDropdownMenuOverlay> createState() => _NsgDropdownMenuOverlayState();
@@ -96,11 +97,7 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
               alignment: Alignment.topLeft,
               child: Transform.translate(
                 offset: Offset(offsetX, offsetY),
-                child: widgetOverlay(
-                  key: objectKey,
-                  onSelect: widget.onSelect,
-                  widgetList: widget.widgetList,
-                ),
+                child: widgetOverlay(key: objectKey, onSelect: widget.onSelect, widgetList: widget.widgetList, child: widget.child),
               ),
             ),
           ),
@@ -111,7 +108,10 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
 }
 
 Widget widgetOverlay(
-    {required Function(int index, NsgDropdownMenuItem element) onSelect, required List<NsgDropdownMenuItem> widgetList, required GlobalKey key}) {
+    {required Function(int index, NsgDropdownMenuItem element) onSelect,
+    required List<NsgDropdownMenuItem> widgetList,
+    required GlobalKey key,
+    Widget? child}) {
   List<Widget> list = [];
   for (var element in widgetList) {
     bool hovered = false;
@@ -129,14 +129,26 @@ Widget widgetOverlay(
     }));
   }
 
-  return Container(
-      key: key,
-      decoration: BoxDecoration(
-        color: nsgtheme.colorSecondary.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
-      ),
-      padding: const EdgeInsets.all(5),
-      child: IntrinsicWidth(child: Column(mainAxisSize: MainAxisSize.min, children: list)));
+  if (child != null) {
+    return Container(
+        key: key,
+        decoration: BoxDecoration(
+          color: nsgtheme.colorSecondary.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
+        ),
+        padding: const EdgeInsets.all(5),
+        child: IntrinsicWidth(child: child));
+    ;
+  } else {
+    return Container(
+        key: key,
+        decoration: BoxDecoration(
+          color: nsgtheme.colorSecondary.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
+        ),
+        padding: const EdgeInsets.all(5),
+        child: IntrinsicWidth(child: Column(mainAxisSize: MainAxisSize.min, children: list)));
+  }
   //.asGlass(tintColor: Colors.black, frosted: false)
 }
 

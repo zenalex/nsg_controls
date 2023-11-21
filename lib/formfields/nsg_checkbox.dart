@@ -72,12 +72,14 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                     )),
               InkWell(
                 onTap: () {
-                  if (!widget.radio) {
-                    _boxValue = !_boxValue;
-                    widget.onPressed(_boxValue);
-                    if (widget.toggleInside) setState(() {});
-                  } else {
-                    widget.onPressed(_boxValue);
+                  if (widget.disabled == false) {
+                    if (!widget.radio) {
+                      _boxValue = !_boxValue;
+                      widget.onPressed(_boxValue);
+                      if (widget.toggleInside) setState(() {});
+                    } else {
+                      widget.onPressed(_boxValue);
+                    }
                   }
                 },
                 hoverColor: widget.checkColor != null ? widget.checkColor!.withOpacity(0.1) : ControlOptions.instance.colorMain.withOpacity(0.1),
