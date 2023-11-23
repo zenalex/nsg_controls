@@ -259,13 +259,13 @@ class NsgButton extends StatelessWidget {
     if (onPressed != null) {
       onPressed!();
     }
-    if (onTap != null) {
-      onTap!();
-    }
     if (onTapAsync != null) {
       await nsgFutureProgressAndException(func: () async {
         await onTapAsync!();
       });
+    }
+    if (onTap != null) {
+      onTap!();
     }
   }
 }
