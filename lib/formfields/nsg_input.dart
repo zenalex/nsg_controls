@@ -507,19 +507,7 @@ class _NsgInputState extends State<NsgInput> {
                             suffixIcon: widget.suffixIcon,
                             floatingLabelBehavior: widget.floatingLabelBehavior,
                             //label: widget.labelWidget,
-                            prefix: !_disabled
-                                ? null
-                                : widget.showLock
-                                    ? widget.prefix ??
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 3.0),
-                                          child: Icon(
-                                            Icons.lock,
-                                            size: 12,
-                                            color: ControlOptions.instance.colorMain,
-                                          ),
-                                        )
-                                    : null,
+                            prefix: prefix(),
                             counterText: "",
                             contentPadding: getContentPadding(),
                             isDense: widget.isDense ?? true,
@@ -616,6 +604,25 @@ class _NsgInputState extends State<NsgInput> {
                   ),
               ],
             ));
+  }
+
+  Widget? prefix() {
+    if (widget.prefix != null) {
+      return widget.prefix!;
+    }
+    return !_disabled
+        ? null
+        : widget.showLock
+            ? widget.prefix ??
+                Padding(
+                  padding: const EdgeInsets.only(right: 3.0),
+                  child: Icon(
+                    Icons.lock,
+                    size: 12,
+                    color: ControlOptions.instance.colorMain,
+                  ),
+                )
+            : null;
   }
 
   String getValidateText() {
