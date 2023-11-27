@@ -4,7 +4,7 @@ import 'package:nsg_controls/nsg_control_options.dart';
 
 class NsgCheckBox extends StatefulWidget {
   final String label;
-  final bool? disabled;
+  final bool disabled;
   final bool radio;
   final bool value;
   final double? height;
@@ -24,7 +24,7 @@ class NsgCheckBox extends StatefulWidget {
       this.toggleInside = false,
       this.validateText = '',
       required this.label,
-      this.disabled,
+      this.disabled = false,
       this.radio = false,
       required this.value,
       this.height = 44,
