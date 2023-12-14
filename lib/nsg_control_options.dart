@@ -127,6 +127,8 @@ class ControlOptions {
   final EdgeInsets nsgInputContentPadding;
   final Color nsgInputColorLabel;
   final Color nsgInputColorFilled;
+  final Color nsgInputDynamicListTextColor;
+  final Color nsgInputDynamicListTextSelectedColor;
   final Color nsgInputBorderColor;
   final Color nsgInputBorderActiveColor;
   final Color nsginputCloseIconColor;
@@ -275,6 +277,8 @@ class ControlOptions {
     this.nsgInputBorderActiveColor = const Color.fromARGB(255, 70, 59, 11),
     this.nsginputCloseIconColor = const Color.fromARGB(255, 70, 59, 11),
     this.nsginputCloseIconColorHover = const Color.fromARGB(122, 70, 59, 11),
+    this.nsgInputDynamicListTextColor = const Color.fromARGB(255, 0, 0, 0),
+    this.nsgInputDynamicListTextSelectedColor = const Color.fromARGB(255, 0, 0, 0),
     this.nsgInputColorFilled = Colors.transparent,
     this.nsgInputColorLabel = Colors.black,
     this.nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,

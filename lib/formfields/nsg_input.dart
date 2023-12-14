@@ -736,14 +736,14 @@ class _NsgInputState extends State<NsgInput> {
       var value = widget.dataItem.getFieldValue(widget.fieldName);
       int initItem = widget.dynamicList.indexOf(value);
       int countItem = initItem;
-      for (var item in widget.dynamicList) {
-        list.add(
-          Text(
-            item.toString(),
-            style: TextStyle(color: nsgtheme.colorSecondary.c100),
-          ),
-        );
-      }
+      // for (var item in widget.dynamicList) {
+      //   list.add(
+      //     Text(
+      //       item.toString(),
+      //       style: TextStyle(color: nsgtheme.nsgInputDynamicListTextColor),
+      //     ),
+      //   );
+      // }
       var selectedElement = value;
       ScrollController scrollController = ScrollController();
       showDialog(
@@ -768,7 +768,7 @@ class _NsgInputState extends State<NsgInput> {
                           element.toString(),
                           style: TextStyle(
                               fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
-                              color: element == selectedElement ? nsgtheme.colorSecondary.b100 : nsgtheme.colorSecondary.b0),
+                              color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
                         ))),
                   ));
                 }
