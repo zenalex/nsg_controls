@@ -33,6 +33,7 @@ class NsgInput extends StatefulWidget {
   final Function(NsgDataItem)? onChanged;
   final VoidCallback? onPressed;
   final Function(NsgDataItem, String)? onEditingComplete;
+  final Function(NsgDataItem, String)? onFieldSubmitted;
   final int maxLines;
   final int minLines;
 
@@ -209,6 +210,7 @@ class NsgInput extends StatefulWidget {
       this.onChanged,
       this.onPressed,
       this.onEditingComplete,
+      this.onFieldSubmitted,
       this.maxLines = 1,
       this.minLines = 1,
       //this.height = 50,
@@ -526,7 +528,11 @@ class _NsgInputState extends State<NsgInput> {
                                 : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
                             focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                           ),
-
+                          onFieldSubmitted: (String) {
+                            if (widget.onFieldSubmitted != null) {
+                              widget.onFieldSubmitted!(widget.dataItem, widget.fieldName);
+                            }
+                          },
                           // onFieldSubmitted: (value) {
                           //   print("AAA");
                           // },
