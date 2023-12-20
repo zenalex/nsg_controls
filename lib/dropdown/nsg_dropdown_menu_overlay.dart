@@ -138,7 +138,6 @@ Widget widgetOverlay(
         ),
         padding: const EdgeInsets.all(5),
         child: IntrinsicWidth(child: child));
-    ;
   } else {
     return Container(
         key: key,

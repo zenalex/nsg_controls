@@ -732,7 +732,6 @@ class _NsgInputState extends State<NsgInput> {
     }
     var filter = widget.getRequestFilter == null ? null : widget.getRequestFilter!();
     if (inputType == NsgInputType.dynamicList) {
-      List<Widget> list = [];
       var value = widget.dataItem.getFieldValue(widget.fieldName);
       int initItem = widget.dynamicList.indexOf(value);
       int countItem = initItem;
@@ -749,7 +748,7 @@ class _NsgInputState extends State<NsgInput> {
       showDialog(
           context: context,
           builder: (_) {
-            Widget getDynamicList() {
+            Widget dynamicListWidget() {
               return StatefulBuilder(builder: (context, setstate) {
                 List<Widget> list = [];
                 for (var element in widget.dynamicList) {
@@ -779,6 +778,24 @@ class _NsgInputState extends State<NsgInput> {
                   ),
                 );
               });
+            }
+
+            List<Widget> dynamicListWidgets() {
+              List<Widget> list = [];
+              for (var element in widget.dynamicList) {
+                list.add(Container(
+                    //key: GlobalKey(),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    // color: element == selectedElement ? nsgtheme.colorPrimary : Colors.transparent,
+                    height: 50,
+                    child: Center(
+                        child: Text(
+                      element.toString(),
+                      style:
+                          TextStyle(fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400, color: nsgtheme.nsgInputDynamicListTextColor),
+                    ))));
+              }
+              return list;
             }
 
             return BackdropFilter(
@@ -811,7 +828,7 @@ class _NsgInputState extends State<NsgInput> {
                               thumbVisibility: true,
                               trackVisibility: true,
                               controller: scrollController,
-                              child: SingleChildScrollView(controller: scrollController, child: getDynamicList()))),
+                              child: SingleChildScrollView(controller: scrollController, child: dynamicListWidget()))),
                     )
                   : NsgPopUp(
                       width: 300,
@@ -837,7 +854,7 @@ class _NsgInputState extends State<NsgInput> {
                             countItem = value;
                           },
                           scrollController: FixedExtentScrollController(initialItem: initItem),
-                          children: list,
+                          children: dynamicListWidgets(),
                         ),
                       ),
                     ),
