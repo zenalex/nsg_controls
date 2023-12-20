@@ -784,15 +784,15 @@ class _NsgInputState extends State<NsgInput> {
               List<Widget> list = [];
               for (var element in widget.dynamicList) {
                 list.add(Container(
-                    //key: GlobalKey(),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    // color: element == selectedElement ? nsgtheme.colorPrimary : Colors.transparent,
+                    width: 300,
+                    //color: element == selectedElement ? nsgtheme.colorPrimary : Colors.transparent,
                     height: 50,
                     child: Center(
                         child: Text(
                       element.toString(),
-                      style:
-                          TextStyle(fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400, color: nsgtheme.nsgInputDynamicListTextColor),
+                      style: TextStyle(
+                          fontWeight: element == selectedElement ? FontWeight.w800 : FontWeight.w400,
+                          color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor.b100 : nsgtheme.nsgInputDynamicListTextColor.b100),
                     ))));
               }
               return list;
@@ -833,29 +833,34 @@ class _NsgInputState extends State<NsgInput> {
                   : NsgPopUp(
                       width: 300,
                       onConfirm: () {
-                        //textController.text = widget.dynamicList[countItem].toString();
+                        countItem = widget.dynamicList.indexOf(selectedElement);
+                        textController.text = widget.dynamicList[countItem].toString();
                         widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
                         if (widget.onEditingComplete != null) {
                           widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                         }
-                        //setState(() {});
+                        setState(() {});
                       },
                       title: widget.label,
                       contentTop: Container(
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         height: 300,
-                        child: CupertinoPicker(
-                          selectionOverlay: Container(
-                            decoration: BoxDecoration(color: nsgtheme.colorPrimary.b30.withOpacity(0.5)),
-                          ),
-                          backgroundColor: nsgtheme.colorSecondary.c40,
-                          itemExtent: 30,
-                          onSelectedItemChanged: (value) {
-                            countItem = value;
-                          },
-                          scrollController: FixedExtentScrollController(initialItem: initItem),
-                          children: dynamicListWidgets(),
-                        ),
+                        child: StatefulBuilder(builder: (context, setstate) {
+                          return CupertinoPicker(
+                            selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
+                              background: nsgtheme.colorPrimary.withOpacity(0.2),
+                            ),
+                            backgroundColor: null,
+                            itemExtent: 30,
+                            onSelectedItemChanged: (value) {
+                              countItem = value;
+                              selectedElement = widget.dynamicList[countItem];
+                              setstate(() {});
+                            },
+                            scrollController: FixedExtentScrollController(initialItem: initItem),
+                            children: dynamicListWidgets(),
+                          );
+                        }),
                       ),
                     ),
             );
