@@ -281,8 +281,8 @@ class NsgButton extends StatelessWidget {
       });
     }
 
-    if (result) {
-      if (onAfterTapAsync != null) (onAfterTapAsync!());
+    if (result && onAfterTapAsync != null) {
+      onAfterTapAsync!();
     }
   }
 }
