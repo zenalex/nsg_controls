@@ -10,9 +10,20 @@ class NsgButton extends StatelessWidget {
   final String? text;
   final EdgeInsets? margin;
   final IconData? icon;
+
+  /// Обработка нажатия (тоже, что и onTap)
   final VoidCallback? onPressed;
+
+  /// Обработка нажатия (тоже, что и onPressed)
   final VoidCallback? onTap;
-  final Future Function()? onTapAsync;
+
+  /// Выполнение асинхронной функции с прогрессбаром. return true - вызывает выполнение синхронной функции onAfterTapAsync
+  final Future<bool> Function()? onTapAsync;
+
+  /// Выполнение синхронной функции после удачного выполнения onTapAsync
+  final VoidCallback? onAfterTapAsync;
+
+  /// Функция выполняется при нажатии отключенной кнопки (с переменной disabled: true)
   final VoidCallback? onDisabledPressed;
   final bool? disabled;
   final double? borderRadius;
@@ -38,6 +49,7 @@ class NsgButton extends StatelessWidget {
       this.onPressed,
       this.onTap,
       this.onTapAsync,
+      this.onAfterTapAsync,
       this.onDisabledPressed,
       this.disabled,
       this.borderRadius,
@@ -259,13 +271,18 @@ class NsgButton extends StatelessWidget {
     if (onPressed != null) {
       onPressed!();
     }
-    if (onTapAsync != null) {
-      await nsgFutureProgressAndException(func: () async {
-        await onTapAsync!();
-      });
-    }
     if (onTap != null) {
       onTap!();
+    }
+    bool result = false;
+    if (onTapAsync != null) {
+      await nsgFutureProgressAndException(func: () async {
+        result = await onTapAsync!() ?? false;
+      });
+    }
+
+    if (result) {
+      if (onAfterTapAsync != null) (onAfterTapAsync!());
     }
   }
 }
