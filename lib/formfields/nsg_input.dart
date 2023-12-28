@@ -773,7 +773,7 @@ class _NsgInputState extends State<NsgInput> {
                           element.toString(),
                           style: TextStyle(
                               fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
-                              color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
+                              color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor),
                         ))),
                   ));
                 }
@@ -798,7 +798,7 @@ class _NsgInputState extends State<NsgInput> {
                       element.toString(),
                       style: TextStyle(
                           fontWeight: element == selectedElement ? FontWeight.w800 : FontWeight.w400,
-                          color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor.b100 : nsgtheme.nsgInputDynamicListTextColor.b100),
+                          color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
                     ))));
               }
               return list;
