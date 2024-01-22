@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:event/event.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -97,8 +98,8 @@ class _NsgPopUpState extends State<NsgPopUp> {
   Widget build(BuildContext context) {
     widget.colorText ??= ControlOptions.instance.colorText;
     widget.colorTitleText ??= ControlOptions.instance.colorMainText;
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+
+    return nsgBackDrop(
       child: Container(
         decoration: BoxDecoration(color: nsgtheme.colorModalBack),
         child: SimpleDialog(
@@ -274,5 +275,13 @@ class _NsgPopUpState extends State<NsgPopUp> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: widget.getContent!());
+  }
+}
+
+Widget nsgBackDrop({required Widget child}) {
+  if (!kIsWeb) {
+    return BackdropFilter(filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0), child: child);
+  } else {
+    return child;
   }
 }

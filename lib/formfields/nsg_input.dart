@@ -804,8 +804,7 @@ class _NsgInputState extends State<NsgInput> {
               return list;
             }
 
-            return BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            return nsgBackDrop(
               child: kIsWeb || !(Platform.isAndroid || Platform.isIOS)
                   // Если Веб и (не андроид и не иос)
                   ? NsgPopUp(

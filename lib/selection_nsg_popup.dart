@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:event/event.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_grid.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'formfields/nsg_input_selection_widget_type.dart';
@@ -97,8 +98,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
   Widget build(BuildContext context) {
     widget.colorText ??= ControlOptions.instance.colorText;
     widget.colorTitleText ??= ControlOptions.instance.colorMainText;
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+    return nsgBackDrop(
       child: Container(
         decoration: BoxDecoration(color: nsgtheme.colorModalBack),
         child: SimpleDialog(

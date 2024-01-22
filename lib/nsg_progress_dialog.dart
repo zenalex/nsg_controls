@@ -116,11 +116,7 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
   Widget build(BuildContext context) {
     return !loadingTooLong
         ? const SizedBox()
-        :
-        // : BackdropFilter(
-        //     filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-        BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+        : nsgBackDrop(
             child: Container(
               decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withOpacity(0.8)),
               child: Center(
