@@ -31,6 +31,7 @@ class NsgInput extends StatefulWidget {
   final Widget? widget;
   final double borderRadius;
   final Function(NsgDataItem)? onChanged;
+  final Function(bool value)? onFocusChanged;
   final VoidCallback? onPressed;
   final Function(NsgDataItem, String)? onEditingComplete;
   final Function(NsgDataItem, String)? onFieldSubmitted;
@@ -208,6 +209,7 @@ class NsgInput extends StatefulWidget {
       this.gesture,
       this.hint,
       this.onChanged,
+      this.onFocusChanged,
       this.onPressed,
       this.onEditingComplete,
       this.onFieldSubmitted,
@@ -308,8 +310,14 @@ class _NsgInputState extends State<NsgInput> {
     fontSize = widget.fontSize ?? ControlOptions.instance.sizeM;
     focus.addListener(() {
       if (focus.hasFocus) {
+        if (widget.onFocusChanged != null) {
+          widget.onFocusChanged!(true);
+        }
         setState(() {});
       } else {
+        if (widget.onFocusChanged != null) {
+          widget.onFocusChanged!(false);
+        }
         setState(() {});
       }
 
