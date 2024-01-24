@@ -18,7 +18,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 class NsgFilePickerProvider {
   static List<String> globalAllowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'];
   static List<String> globalAllowedVideoFormats = const ['mp4', 'mov'];
-  static List<String> globalAllowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv'];
+  static List<String> globalAllowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv', 'svg'];
 
   static NsgFilePickerObjectType getFileTypeByExtension(String ext) {
     ext = ext.toLowerCase();
