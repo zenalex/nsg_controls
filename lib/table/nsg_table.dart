@@ -1594,7 +1594,7 @@ class _NsgTableState extends State<NsgTable> {
                                   : 0),
                   //margin: EdgeInsets.only(bottom: 10, right: 10),
                   //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: tableBody))),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: tableBody))),
             ));
           } /* else {
           // Если высота строк фиксированная
