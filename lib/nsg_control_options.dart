@@ -435,10 +435,10 @@ Color calculateTextColor(Color background) {
 }
 
 Color stringToColor(String color) {
-  String valueString = '';
+  String valueString = 'ffffffff';
   if (color.contains('(0x')) {
     valueString = color.split('(0x')[1].split(')')[0]; // kind of hacky..
-  } else {
+  } else if (color.isNotEmpty) {
     valueString = color;
   }
   int value = int.parse(valueString, radix: 16);

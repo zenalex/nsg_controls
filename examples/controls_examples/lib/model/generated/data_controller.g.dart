@@ -11,7 +11,7 @@ class DataControllerGenerated extends NsgBaseController {
   @override
   Future onInit() async {
     final info = await PackageInfo.fromPlatform();
-    NsgMetrica.activate();
+    //NsgMetrica.activate();
     NsgMetrica.reportAppStart();
     provider ??= NsgDataProvider(applicationName: 'controls_examples', applicationVersion: info.version, firebaseToken: '');
     provider!.serverUri = NsgServerOptions.serverUriDataController;
