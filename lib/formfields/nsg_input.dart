@@ -562,6 +562,10 @@ class _NsgInputState extends State<NsgInput> {
                                 }
                               });
                             }
+                            focus.unfocus();
+                            if (widget.onFocusChanged != null) {
+                              widget.onFocusChanged!(false);
+                            }
                           },
                           onChanged: (value) {
                             if (widget.onChanged != null) {
@@ -891,6 +895,9 @@ class _NsgInputState extends State<NsgInput> {
           if (widget.onChanged != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
           }
+          if (widget.onFocusChanged != null) {
+            widget.onFocusChanged!(false);
+          }
           if (widget.onEditingComplete != null) {
             widget.onEditingComplete!(widget.dataItem, widget.fieldName);
           }
@@ -938,6 +945,9 @@ class _NsgInputState extends State<NsgInput> {
         widget.dataItem.setFieldValue(widget.fieldName, item);
         if (widget.onChanged != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+        }
+        if (widget.onFocusChanged != null) {
+          widget.onFocusChanged!(false);
         }
         if (widget.onEditingComplete != null) {
           widget.onEditingComplete!(widget.dataItem, widget.fieldName);
