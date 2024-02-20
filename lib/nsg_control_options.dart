@@ -436,10 +436,14 @@ Color calculateTextColor(Color background) {
 
 Color stringToColor(String color) {
   String valueString = 'ffffffff';
+  color.replaceAll('#', '');
   if (color.contains('(0x')) {
     valueString = color.split('(0x')[1].split(')')[0]; // kind of hacky..
   } else if (color.isNotEmpty) {
     valueString = color;
+  }
+  if (valueString == '#ffffff') {
+    valueString = 'ffffffff';
   }
   int value = int.parse(valueString, radix: 16);
   Color otherColor = Color(value);
