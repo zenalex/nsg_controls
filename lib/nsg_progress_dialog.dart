@@ -14,12 +14,20 @@ class NsgProgressDialog {
   String textDialog;
   NsgProgressDialogWidget? dialogWidget;
   BuildContext? context;
+  int? delay;
 
   ///Если пользователь нажмет отменить, будет передан запрос на отмену сетевого соединения
   NsgCancelToken? cancelToken;
   bool visible = false;
   NsgProgressDialog(
-      {this.showPercents = false, this.percent = 0, this.canStopped = false, this.requestStop, this.textDialog = '', this.cancelToken, this.context});
+      {this.delay,
+      this.showPercents = false,
+      this.percent = 0,
+      this.canStopped = false,
+      this.requestStop,
+      this.textDialog = '',
+      this.cancelToken,
+      this.context});
 
   void show({String text = ''}) {
     visible = true;
@@ -29,6 +37,7 @@ class NsgProgressDialog {
     showDialog(
         context: context!,
         builder: ((context) => NsgProgressDialogWidget(
+            delay: delay,
             canStopped: canStopped,
             cancelToken: cancelToken,
             dialogWidget: showPercents ? this : null,
@@ -73,7 +82,7 @@ class NsgProgressDialogWidget extends StatefulWidget {
   bool isClosed = false;
 
   /// Задержка в миллисекундах до появления прогрессбара
-  final int delay;
+  final int? delay;
   NsgProgressDialogWidget(
       {super.key,
       required this.text,
