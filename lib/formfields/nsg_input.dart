@@ -176,6 +176,9 @@ class NsgInput extends StatefulWidget {
   ///Просто транслируется в FormTextField и работает по стандартной логике
   final TextCapitalization textCapitalization;
 
+  ///Режим автозамены. Вкл/Выкл
+  final bool autocorrect;
+
   const NsgInput(
       {Key? key,
       this.child,
@@ -241,7 +244,8 @@ class NsgInput extends StatefulWidget {
       this.suffixIcon,
       this.formatDateTime,
       this.getRequestFilter,
-      this.textCapitalization = TextCapitalization.none})
+      this.textCapitalization = TextCapitalization.none,
+      this.autocorrect = true})
       : super(key: key);
 
   @override
@@ -494,6 +498,7 @@ class _NsgInputState extends State<NsgInput> {
                       children: [
                         TextFormField(
                           textCapitalization: widget.textCapitalization,
+                          autocorrect: widget.autocorrect,
                           controller: textController,
                           inputFormatters: widget.maskType == NsgInputMaskType.phone
                               ? [phoneFormatter]
