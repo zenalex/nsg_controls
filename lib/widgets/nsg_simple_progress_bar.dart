@@ -25,8 +25,8 @@ class NsgSimpleProgressBar extends StatelessWidget {
               height: size ?? 30.0,
               child: CircularProgressIndicator(
                 strokeWidth: width ?? 2,
-                backgroundColor: ControlOptions.instance.colorMain,
-                valueColor: AlwaysStoppedAnimation<Color>(ControlOptions.instance.colorMainLighter),
+                backgroundColor: ControlOptions.instance.colorPrimary,
+                valueColor: AlwaysStoppedAnimation<Color>(ControlOptions.instance.colorSecondary),
               ),
             ),
           ),
