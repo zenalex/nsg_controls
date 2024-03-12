@@ -116,6 +116,8 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   const NsgLigthAppBarIcon(
       {super.key,
       required this.icon,
+      this.height = 40,
+      this.width = 40,
       this.onTap,
       this.onTapCallback,
       this.nott,
@@ -131,6 +133,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   final Color? color;
   final double? rotateAngle;
   final EdgeInsets padding;
+  final double height, width;
 
   @override
   Widget build(BuildContext context) {
@@ -139,8 +142,8 @@ class NsgLigthAppBarIcon extends StatelessWidget {
           onTapDown: onTapCallback,
           onTap: onTap,
           child: SizedBox(
-            width: 40,
-            height: 40,
+            width: width,
+            height: height,
             child: Padding(
               padding: padding,
               child: Transform.rotate(
