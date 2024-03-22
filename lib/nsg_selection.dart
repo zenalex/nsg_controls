@@ -64,6 +64,12 @@ class NsgSelection {
         ));
       }
     }
+    if (inputType == NsgInputType.reference) {
+      if ((controller!.totalCount ?? 0) > itemsList.length) {
+        list.add(const Divider());
+        list.add(Center(child: Text('Есть еще ${(controller!.totalCount ?? 0) - itemsList.length} элементов. Воспользуйтесь поиском.')));
+      }
+    }
     return list;
   }
 

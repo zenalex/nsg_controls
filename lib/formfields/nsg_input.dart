@@ -396,7 +396,13 @@ class _NsgInputState extends State<NsgInput> {
     });
 
     if (useSelectionController) {
-      var sc = widget.selectionController ?? widget.dataItem.defaultController;
+      var sc = widget.selectionController;
+      if (sc == null) {
+        var di = widget.dataItem.getReferentOrNull(widget.fieldName);
+        if (di != null) {
+          sc = di.defaultController;
+        }
+      }
       if (sc == null) {
         assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
         sc = NsgDefaultController(

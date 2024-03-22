@@ -293,7 +293,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
     } else if (widget.widgetType == NsgInputSelectionWidgetType.grid) {
       return SizedBox(width: 300, child: NsgGrid(children: widget.getContent!()));
     } else {
-      return SizedBox();
+      return const SizedBox();
     }
   }
 }
