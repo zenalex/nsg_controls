@@ -192,7 +192,9 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
                 borderRadius: 10,
                 controller: widget.dataController,
                 onChanged: (text) {
-                  widget.textEditController.text = text;
+                  if (widget.dataController == null) {
+                    widget.textEditController.text = text;
+                  }
                 },
               ),
             ),
