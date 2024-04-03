@@ -8,6 +8,7 @@ import 'package:nsg_data/nsg_data.dart';
 
 import 'formfields/nsg_field_type.dart';
 import 'formfields/nsg_switch_horizontal.dart';
+import 'table/nsg_table_style.dart';
 import 'widgets/nsg_dialog_save_or_cancel.dart';
 import 'widgets/nsg_error_widget.dart';
 
@@ -138,6 +139,8 @@ class ControlOptions {
   final bool nsgInputShowLabel;
 
   final NsgSwitchHorizontalStyle nsgSwitchHorizontalStyle;
+
+  final NsgTableStyle nsgTableStyle;
 
   // Главный цвет приложения
   //@Deprecated('Old variable. Use colorPrimary')
@@ -270,6 +273,7 @@ class ControlOptions {
 
   ControlOptions({
     this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
+    this.nsgTableStyle = const NsgTableStyle(),
     this.fileExchangeVersion = 1.0,
     this.nsgInputMargin = const EdgeInsets.all(5),
     this.nsgInputFilled = false,

@@ -17,11 +17,15 @@ import '../widgets/nsg_snackbar.dart';
 import 'column_resizer.dart';
 import 'nsg_table_columns_reorder.dart';
 import 'nsg_table_menu_button.dart';
+import 'nsg_table_style.dart';
 
 /// Виджет отображения таблицы
 class NsgTable extends StatefulWidget {
   NsgTable(
       {Key? key,
+      this.hideCellsBackground = false,
+      this.hideLines = false,
+      this.style = const NsgTableStyle(),
       this.rowsMaxCount = 20,
       required this.controller,
       this.rowFixedHeight,
@@ -54,6 +58,15 @@ class NsgTable extends StatefulWidget {
       this.externaltableKey,
       this.forbidDeleting})
       : super(key: key);
+
+  /// Спрятать все линии
+  final bool hideLines;
+
+  /// Спрятать фон у ячеек в теле таблицы
+  final bool hideCellsBackground;
+
+  /// Оформление таблицы (цвета, стили)
+  final NsgTableStyle style;
 
   final bool Function(NsgDataItem item)? forbidDeleting;
 
@@ -183,6 +196,8 @@ class NsgTable extends StatefulWidget {
 
 /* ------------------------------------- Переменные таблицы ------------------------------------- */
 class _NsgTableState extends State<NsgTable> {
+  int count = 0;
+  late NsgTableStyleMain buildStyle;
   List<Widget> table = [];
   List<Widget> tableHeader = [];
   List<Widget> tableBody = [];
@@ -190,7 +205,7 @@ class _NsgTableState extends State<NsgTable> {
   List<NsgDataItem> items = [];
   final containerKey = GlobalKey();
   final wrapperKey = GlobalKey();
-  late bool hasScrollbar;
+  late bool hasVerticalScrollbar;
   late bool isMobile;
   late NsgTableEditMode editMode;
   late NsgTableEditMode editModeLast;
@@ -239,10 +254,11 @@ class _NsgTableState extends State<NsgTable> {
 
   Widget showCell(
       {double? height,
+      bool hideBackColor = false,
       bool? isFinal,
       bool? isSelected,
       Color? backColor,
-      Color? color,
+      Color? borderColor,
       required Widget child,
       AlignmentGeometry? align,
       double? width,
@@ -260,12 +276,18 @@ class _NsgTableState extends State<NsgTable> {
           decoration: BoxDecoration(
 
               /// Меняем цвет ячейки при наведении мыши
-              color: isSelected == true ? ControlOptions.instance.colorMain.withOpacity(0.2) : backColor,
-              border: Border(
-                left: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
-                top: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
-                bottom: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
-              )),
+              color: hideBackColor
+                  ? null
+                  : isSelected == true
+                      ? ControlOptions.instance.colorMain.withOpacity(0.2)
+                      : backColor,
+              border: widget.hideLines
+                  ? null
+                  : Border(
+                      left: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
+                      top: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
+                      bottom: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
+                    )),
 
           // Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
           child: child);
@@ -279,11 +301,17 @@ class _NsgTableState extends State<NsgTable> {
           decoration: BoxDecoration(
 
               /// Меняем цвет ячейки при наведении мыши
-              color: isSelected == true ? ControlOptions.instance.colorMain.withOpacity(0.2) : backColor,
-              border: Border(
-                left: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
-                top: BorderSide(width: 1, color: color ?? ControlOptions.instance.colorMain),
-              )),
+              color: hideBackColor
+                  ? null
+                  : isSelected == true
+                      ? ControlOptions.instance.colorMain.withOpacity(0.2)
+                      : backColor,
+              border: widget.hideLines
+                  ? null
+                  : Border(
+                      left: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
+                      top: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
+                    )),
 
           // Border.all(width: 1, color: color ?? ControlOptions.instance.colorMain)),
           child: child);
@@ -295,14 +323,16 @@ class _NsgTableState extends State<NsgTable> {
   checkScrollbarIsVisible() {
     if (containerKey.currentContext != null && wrapperKey.currentContext != null) {
       tableAlreadyBuilt = true;
-      // double height = (containerKey.currentContext!.findRenderObject() as RenderBox).size.height;
-      // double height2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.height;
+      double height = (containerKey.currentContext!.findRenderObject() as RenderBox).size.height;
+      double height2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.height;
       double width = (containerKey.currentContext!.findRenderObject() as RenderBox).size.width;
       double width2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.width;
       if (width <= width2 && width > 0) {
         horizontalScrollEnabled = false;
       }
-      // if (height <= height2 && height > 0) { // TODO определение высоты работает неверно
+      setState(() {});
+      // if (height <= height2 && height > 0) {
+      //   // TODO определение высоты работает неверно
       //   setState(() {
       //     hasScrollbar = false;
       //   });
@@ -315,12 +345,13 @@ class _NsgTableState extends State<NsgTable> {
   @override
   void initState() {
     super.initState();
+    buildStyle = widget.style.style();
     _updatetableKey = widget.externaltableKey ?? widget.controller.getUpdateKey('nsg_table ${Guid.newGuid()}', NsgUpdateKeyType.list);
     widget.controller.registerUpdateKey(_updatetableKey);
     editModeLast = NsgTableEditMode.view;
     isMobile = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
     listRowsToDelete = [];
-    hasScrollbar = true;
+    hasVerticalScrollbar = true;
     tableAlreadyBuilt = false;
     scrollHorizontalGroup = LinkedScrollControllerGroup();
     scrollVerticalGroup = LinkedScrollControllerGroup();
@@ -381,14 +412,14 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   Widget rawScrollBarVertCross({required Widget child}) {
-    if (hasScrollbar && !isMobile) {
+    if (hasVerticalScrollbar && !isMobile) {
       return RawScrollbar(
           minOverscrollLength: 100,
           minThumbLength: 100,
           thickness: 16,
-          trackBorderColor: ControlOptions.instance.colorMainDark,
-          trackColor: ControlOptions.instance.colorMainDark,
-          thumbColor: ControlOptions.instance.colorMain,
+          trackBorderColor: buildStyle.scrollbarBorderColor,
+          trackColor: buildStyle.scrollbarTrackColor,
+          thumbColor: buildStyle.scrollbarThumbColor,
           radius: const Radius.circular(0),
           controller: scrollVert,
           key: UniqueKey(),
@@ -401,10 +432,10 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   Widget singleChildScrollViewCross({required Widget child}) {
-    if (hasScrollbar) {
+    if (hasVerticalScrollbar) {
       return SingleChildScrollView(
           padding: EdgeInsets.only(
-              right: hasScrollbar == true
+              right: hasVerticalScrollbar == true
                   ? isMobile
                       ? 0
                       : 16
@@ -445,9 +476,9 @@ class _NsgTableState extends State<NsgTable> {
             minOverscrollLength: 100,
             minThumbLength: 100,
             thickness: 16,
-            trackBorderColor: ControlOptions.instance.colorMainDark,
-            trackColor: ControlOptions.instance.colorMainDark,
-            thumbColor: ControlOptions.instance.colorMain,
+            trackBorderColor: buildStyle.scrollbarBorderColor,
+            trackColor: buildStyle.scrollbarTrackColor,
+            thumbColor: buildStyle.scrollbarThumbColor,
             radius: const Radius.circular(0),
             controller: scrollVert,
             key: UniqueKey(),
@@ -465,15 +496,15 @@ class _NsgTableState extends State<NsgTable> {
             minOverscrollLength: 100,
             minThumbLength: 100,
             thickness: 16,
-            trackBorderColor: ControlOptions.instance.colorMainDark,
-            trackColor: ControlOptions.instance.colorMainDark,
-            thumbColor: ControlOptions.instance.colorMain,
+            trackBorderColor: buildStyle.scrollbarBorderColor,
+            trackColor: buildStyle.scrollbarTrackColor,
+            thumbColor: buildStyle.scrollbarThumbColor,
             radius: const Radius.circular(0),
             controller: scrollHor,
             key: UniqueKey(),
             thumbVisibility: true,
             trackVisibility: true,
-            notificationPredicate: !hasScrollbar ? defaultScrollNotificationPredicate : (notif) => notif.depth == 1,
+            notificationPredicate: !hasVerticalScrollbar ? defaultScrollNotificationPredicate : (notif) => notif.depth == 1,
             child: singleChildScrollViewCross(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.only(bottom: 0), // отступ снизу под скроллбар
@@ -539,9 +570,9 @@ class _NsgTableState extends State<NsgTable> {
               minOverscrollLength: 100,
               minThumbLength: 100,
               thickness: 16,
-              trackBorderColor: ControlOptions.instance.colorMainDark,
-              trackColor: ControlOptions.instance.colorMainDark,
-              thumbColor: ControlOptions.instance.colorMain,
+              trackBorderColor: buildStyle.scrollbarBorderColor,
+              trackColor: buildStyle.scrollbarTrackColor,
+              thumbColor: buildStyle.scrollbarThumbColor,
               radius: const Radius.circular(0),
               controller: scrollHorHeader,
               key: UniqueKey(),
@@ -630,12 +661,11 @@ class _NsgTableState extends State<NsgTable> {
   }
 
 /* ------------------------------------------------------------- BUILD виджета таблицы ------------------------------------------------------------ */
-  var bkey = GlobalKey();
+  //var bkey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    //print(">> Build table ${DateTime.now()}");
     return GetBuilder(
-        key: bkey,
+        key: GlobalKey(),
         id: _updatetableKey,
         init: widget.controller,
         assignId: true,
@@ -724,7 +754,7 @@ class _NsgTableState extends State<NsgTable> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Icon(sortElement == NsgTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
-                          size: 16, color: ControlOptions.instance.tableHeaderArrowsColor),
+                          size: 16, color: buildStyle.arrowsColor),
                     ),
                   )
                 ]);
@@ -780,8 +810,8 @@ class _NsgTableState extends State<NsgTable> {
                       height: widget.rowFixedHeight,
                       align: column.headerAlign ?? defaultHeaderAlign,
                       padding: const EdgeInsets.all(0),
-                      backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-                      color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+                      backColor: buildStyle.headerCellBackColor,
+                      borderColor: buildStyle.headerCellBorderColor,
                       width: column.width,
                       sort: column.sort,
                       child: child),
@@ -818,7 +848,7 @@ class _NsgTableState extends State<NsgTable> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Icon(sortElement == NsgTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
-                              size: 16, color: ControlOptions.instance.colorMainBack),
+                              size: 16, color: buildStyle.arrowsColor),
                         ),
                       )
                     ]);
@@ -872,8 +902,8 @@ class _NsgTableState extends State<NsgTable> {
                           height: widget.rowFixedHeight,
                           align: subcolumn.headerAlign ?? defaultHeaderAlign,
                           padding: const EdgeInsets.all(0),
-                          backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-                          color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+                          backColor: buildStyle.headerCellBackColor,
+                          borderColor: buildStyle.headerCellBorderColor,
                           width: subcolumn.width,
                           sort: subcolumn.sort,
                           child: child),
@@ -884,7 +914,10 @@ class _NsgTableState extends State<NsgTable> {
                 tableHeader.add(Column(children: [
                   cell,
                   Expanded(
-                      child: Row(crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start, children: list))
+                      child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
+                          children: list))
                 ]));
               }
             }
@@ -914,11 +947,12 @@ class _NsgTableState extends State<NsgTable> {
                       rowDelete(row);
                     },
                     child: showCell(
+                      hideBackColor: widget.hideCellsBackground,
                       isFinal: row == items.last,
                       height: widget.rowFixedHeight,
                       padding: const EdgeInsets.all(0),
-                      backColor: isSelected ? ControlOptions.instance.colorMainLighter : ControlOptions.instance.tableCellBackColor,
-                      color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                      backColor: isSelected ? buildStyle.bodyCellBackSelColor : buildStyle.bodyCellBackColor,
+                      borderColor: buildStyle.bodyCellBackColor,
                       width: 40,
                       child: Icon(Icons.delete_forever_outlined,
                           color: isSelected ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain, size: 24),
@@ -929,12 +963,12 @@ class _NsgTableState extends State<NsgTable> {
                     rowEdit(row);
                   },
                   child: showCell(
+                      hideBackColor: widget.hideCellsBackground,
                       isFinal: row == items.last,
                       height: widget.rowFixedHeight,
                       padding: const EdgeInsets.all(0),
-                      //backColor: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
-                      color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-                      backColor: ControlOptions.instance.tableCellBackColor,
+                      borderColor: widget.headerBackColor ?? buildStyle.bodyCellBorderColor,
+                      backColor: buildStyle.bodyCellBackColor,
                       width: 40,
                       child: Icon(Icons.edit, color: ControlOptions.instance.colorMain, size: 24)),
                 ));
@@ -944,11 +978,12 @@ class _NsgTableState extends State<NsgTable> {
                     rowCopy(row);
                   },
                   child: showCell(
+                      hideBackColor: widget.hideCellsBackground,
                       isFinal: row == items.last,
                       height: widget.rowFixedHeight,
                       padding: const EdgeInsets.all(0),
-                      color: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-                      backColor: ControlOptions.instance.tableCellBackColor,
+                      borderColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                      backColor: buildStyle.bodyCellBackColor,
                       width: 40,
                       child: Icon(Icons.copy, color: ControlOptions.instance.colorMain, size: 24)),
                 ));
@@ -1039,14 +1074,15 @@ class _NsgTableState extends State<NsgTable> {
                                 //setState(() {});
                               },
                               child: showCell(
+                                  hideBackColor: widget.hideCellsBackground,
                                   isFinal: row == items.last,
                                   height: widget.rowFixedHeight,
                                   align: column.verticalAlign ?? defaultRowAlign,
                                   backColor: column.getBackColor != null
                                       ? column.getBackColor!(row, column)
                                       : isSelected
-                                          ? ControlOptions.instance.colorMain.withOpacity(0.2)
-                                          : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                                          ? buildStyle.bodyCellBackSelColor
+                                          : column.rowBackColor ?? buildStyle.bodyCellBackColor,
                                   width: column.width,
                                   child: _rowWidget(row, column),
                                   isSelected: row == _selectedRow && (_selectedColumn == null || _selectedColumn == column))),
@@ -1060,8 +1096,8 @@ class _NsgTableState extends State<NsgTable> {
                               backColor: column.getBackColor != null
                                   ? column.getBackColor!(row, column)
                                   : isSelected
-                                      ? ControlOptions.instance.colorError.withOpacity(0.3)
-                                      : column.rowBackColor ?? ControlOptions.instance.tableCellBackColor,
+                                      ? buildStyle.bodyCellBackSelColor
+                                      : column.rowBackColor ?? buildStyle.bodyCellBackColor,
                               width: column.width,
                               child: _rowWidget(row, column)),
                           expanded: column.expanded,
@@ -1075,6 +1111,7 @@ class _NsgTableState extends State<NsgTable> {
                     slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites),
                     rowFixedHeight: widget.rowFixedHeight,
                     controller: widget.controller,
+                    backgroundColor: (count++).isEven ? buildStyle.bodyRowEvenBackColor : buildStyle.bodyRowOddBackColor,
                     dataItem: row,
                     tableRow: tableRow,
                     rowStateList: widget.rowStateList,
@@ -1088,16 +1125,16 @@ class _NsgTableState extends State<NsgTable> {
             }
           }
 
-          /// Верхнее меню управления таблицей------------------------------------------------------------------------------------------------------------------->
+          /// Верхнее меню управления таблицей-------------------------------------------------------------------------------------------->
           if (editMode == NsgTableEditMode.view || editMode == NsgTableEditMode.recent || editMode == NsgTableEditMode.favorites) {
             table.add(Container(
-              decoration: BoxDecoration(color: ControlOptions.instance.colorMain, border: Border.all(width: 0, color: ControlOptions.instance.colorMain)),
+              decoration: BoxDecoration(color: buildStyle.menuBackColor),
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.createNewElement))
                     NsgTableMenuButton(
+                        color: buildStyle.menuIconColor,
                         tooltip: 'Добавить строку',
                         icon: NsgTableMenuButtonType.createNewElement.icon,
                         onPressed: () {
@@ -1109,6 +1146,7 @@ class _NsgTableState extends State<NsgTable> {
 
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement) && widget.elementEditPageName != null)
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: 'Редактировать строку',
                       icon: NsgTableMenuButtonType.editElement.icon,
                       onPressed: () {
@@ -1121,6 +1159,7 @@ class _NsgTableState extends State<NsgTable> {
                     ),
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.copyElement))
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: 'Копировать строку',
                       icon: NsgTableMenuButtonType.copyElement.icon,
                       onPressed: () {
@@ -1133,6 +1172,7 @@ class _NsgTableState extends State<NsgTable> {
                     ),
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.removeElement))
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: 'Удалить строку',
                       icon: NsgTableMenuButtonType.removeElement.icon,
                       onPressed: () {
@@ -1147,6 +1187,7 @@ class _NsgTableState extends State<NsgTable> {
                     ),
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.refreshTable))
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: Get.locale!.languageCode == 'en' ? 'Refresh Table' : 'Обновить таблицу',
                       icon: NsgTableMenuButtonType.refreshTable.icon,
                       onPressed: () {
@@ -1157,6 +1198,7 @@ class _NsgTableState extends State<NsgTable> {
 
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSelect))
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: 'Отображение колонок',
                       icon: NsgTableMenuButtonType.columnsSelect.icon,
                       onPressed: () {
@@ -1190,6 +1232,7 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize) &&
                       !(visibleColumns.length == 1 && visibleColumns.first.expanded == true)) //&& horizontalScrollEnabled)
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: 'Ширина колонок',
                       icon: NsgTableMenuButtonType.columnsSize.icon,
                       onPressed: () {
@@ -1221,6 +1264,7 @@ class _NsgTableState extends State<NsgTable> {
 
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: Get.locale!.languageCode == 'en' ? 'Filter by text' : 'Фильтр по тексту',
                       backColor: isSearchStringFilterOpen ? ControlOptions.instance.colorMainDark : null,
                       icon: isSearchStringFilterOpen ? Icons.filter_alt : NsgTableMenuButtonType.filterText.icon,
@@ -1238,6 +1282,7 @@ class _NsgTableState extends State<NsgTable> {
 
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: 'Фильтр по периоду',
                       backColor: isPeriodFilterOpen ? ControlOptions.instance.colorMainDark : null,
                       icon: isPeriodFilterOpen ? Icons.date_range : NsgTableMenuButtonType.filterPeriod.icon,
@@ -1249,6 +1294,7 @@ class _NsgTableState extends State<NsgTable> {
                     ),
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.recent))
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: 'Последние',
                       backColor: editMode == NsgTableEditMode.recent ? ControlOptions.instance.colorMainDark : null,
                       icon: editMode == NsgTableEditMode.recent ? Icons.history : NsgTableMenuButtonType.recent.icon,
@@ -1268,6 +1314,7 @@ class _NsgTableState extends State<NsgTable> {
                     ),
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.favorites))
                     NsgTableMenuButton(
+                      color: buildStyle.menuIconColor,
                       tooltip: 'Избранное',
                       backColor: editMode == NsgTableEditMode.favorites ? ControlOptions.instance.colorMainDark : null,
                       icon: editMode == NsgTableEditMode.favorites ? Icons.star : NsgTableMenuButtonType.favorites.icon,
@@ -1296,6 +1343,7 @@ class _NsgTableState extends State<NsgTable> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   NsgTableMenuButton(
+                    color: buildStyle.menuIconColor,
                     tooltip: 'Отмена',
                     icon: Icons.close,
                     onPressed: () {
@@ -1313,6 +1361,7 @@ class _NsgTableState extends State<NsgTable> {
                     style: TextStyle(color: ControlOptions.instance.colorMainText),
                   ),
                   NsgTableMenuButton(
+                    color: buildStyle.menuIconColor,
                     tooltip: 'Применить',
                     icon: Icons.check,
                     onPressed: () {
@@ -1335,6 +1384,7 @@ class _NsgTableState extends State<NsgTable> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   NsgTableMenuButton(
+                    color: buildStyle.menuIconColor,
                     tooltip: 'Отмена',
                     icon: Icons.arrow_back_ios_new_outlined,
                     onPressed: () {
@@ -1351,6 +1401,7 @@ class _NsgTableState extends State<NsgTable> {
                     ),
                   ),
                   NsgTableMenuButton(
+                    color: buildStyle.menuIconColor,
                     tooltip: 'Удалить',
                     icon: Icons.check,
                     onPressed: () {
@@ -1371,6 +1422,7 @@ class _NsgTableState extends State<NsgTable> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   NsgTableMenuButton(
+                    color: buildStyle.menuIconColor,
                     tooltip: 'Отмена',
                     icon: Icons.arrow_back_ios_new_outlined,
                     onPressed: () {
@@ -1398,6 +1450,7 @@ class _NsgTableState extends State<NsgTable> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   NsgTableMenuButton(
+                    color: buildStyle.menuIconColor,
                     tooltip: 'Отмена',
                     icon: Icons.arrow_back_ios_new_outlined,
                     onPressed: () {
@@ -1424,9 +1477,11 @@ class _NsgTableState extends State<NsgTable> {
           // ignore: avoid_unnecessary_containers
           table.add(Container(
             decoration: BoxDecoration(
-                border: Border(
-                    left: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor),
-                    right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
+                border: widget.hideLines
+                    ? null
+                    : Border(
+                        left: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor),
+                        right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
             child: _rowcolumn(children: [
               if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
                 _expanded(
@@ -1459,13 +1514,13 @@ class _NsgTableState extends State<NsgTable> {
 
           /// Если showHeader, то показываем Header
           if (widget.showHeader) {
-            if (editMode == NsgTableEditMode.view && hasScrollbar && !isMobile) {
+            if (editMode == NsgTableEditMode.view && hasVerticalScrollbar && !isMobile) {
               tableHeader.add(showCell(
                   height: widget.rowFixedHeight,
                   padding: const EdgeInsets.all(0),
-                  backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-                  color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
-                  width: 18,
+                  backColor: buildStyle.headerCellBackColor,
+                  borderColor: buildStyle.headerCellBorderColor,
+                  width: 16,
                   child: const SizedBox()));
             }
 
@@ -1476,8 +1531,8 @@ class _NsgTableState extends State<NsgTable> {
                   showCell(
                       height: widget.rowFixedHeight,
                       padding: const EdgeInsets.all(0),
-                      backColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
-                      color: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+                      backColor: buildStyle.headerCellBackColor,
+                      borderColor: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
                       width: 40,
                       child: const SizedBox()));
             }
@@ -1485,8 +1540,9 @@ class _NsgTableState extends State<NsgTable> {
             /// Добавляем HEADER в таблицу
             table.add(intrinsicHeight(
                 child: horScrollHeaderWrap(Container(
-              decoration:
-                  hasScrollbar ? null : BoxDecoration(border: Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
+              decoration: hasVerticalScrollbar
+                  ? null
+                  : BoxDecoration(border: widget.hideLines ? null : Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
               padding: editMode == NsgTableEditMode.columnsWidth ? const EdgeInsets.only(right: 510) : null,
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -1529,7 +1585,7 @@ class _NsgTableState extends State<NsgTable> {
                     child: showCell(
                         height: widget.rowFixedHeight,
                         align: column.verticalAlign ?? defaultRowAlign,
-                        backColor: ControlOptions.instance.tableHeaderColor,
+                        backColor: buildStyle.headerCellBackColor,
                         width: column.width,
                         child: index == 0
                             ? Row(
@@ -1574,20 +1630,22 @@ class _NsgTableState extends State<NsgTable> {
               key: wrapperKey,
               child: crossWrap(Container(
                   key: containerKey,
-                  decoration:
-                      hasScrollbar ? null : BoxDecoration(border: Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
+                  decoration: hasVerticalScrollbar
+                      ? null
+                      : BoxDecoration(
+                          border: widget.hideLines ? null : Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor))),
                   padding: editMode == NsgTableEditMode.columnsWidth
                       ? const EdgeInsets.only(right: 500, bottom: 0)
                       : EdgeInsets.only(
                           bottom: widget.controller.currentStatus.isLoading
                               ? 0
-                              /* ---------------------------------------------------------- Отступ снизу под скроллбар ---------------------------------------------------------- */
+                              /* --------------------------- Отступ снизу под скроллбар ---------------------------------------------------------- */
                               : horizontalScrollEnabled
                                   ? 16
                                   : 0,
                           right: horizontalScrollEnabled
                               ? 0
-                              : hasScrollbar
+                              : hasVerticalScrollbar
                                   ? !isMobile
                                       ? 16
                                       : 0
@@ -1658,7 +1716,8 @@ class _NsgTableState extends State<NsgTable> {
               children: [
                 Container(
                     height: 100,
-                    decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
+                    decoration: BoxDecoration(
+                        color: buildStyle.bodyCellBackColor, border: widget.hideLines ? null : Border.all(width: 1, color: buildStyle.tableBorderColor)),
                     child: const Center(
                         child: Padding(
                       padding: EdgeInsets.only(top: 30, bottom: 30),
@@ -1696,7 +1755,7 @@ class _NsgTableState extends State<NsgTable> {
             }
           });*/
           //}
-
+/* -------------------------------------------------------- Вывод итогового виджета таблицы ------------------------------------------------------- */
           return Align(
               alignment: Alignment.topLeft,
               child: editMode == NsgTableEditMode.columnsWidth
@@ -1714,17 +1773,23 @@ class _NsgTableState extends State<NsgTable> {
                               columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
                               columnsOnResize: (resizedColumns) {
                                 tableColumns = resizedColumns;
-                                //setState(() {});
+                                //setState(() {}); // FIXME это обновление экрана при изменении ширины колонок, падает linkedScroll
                               },
                               columns: visibleColumns),
                         ),
                       )
                     ])
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
-                      children: table,
+                  : IntrinsicWidth(
+                      child: Container(
+                        decoration: BoxDecoration(border: Border.all(width: 1, color: buildStyle.tableBorderColor)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          //  crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start, // FIXME что это такое?
+                          children: table,
+                        ),
+                      ),
                     ));
         });
 
@@ -1788,13 +1853,13 @@ class _NsgTableState extends State<NsgTable> {
 
   Widget _headerWidget(NsgTableColumn column) {
     var textHeader = column.presentation ?? NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.presentation ?? '';
-    return Text(textHeader, style: column.headerTextStyle ?? defaultHeaderTextStyle, textAlign: column.headerTextAlign ?? defaultHeaderTextAlign);
+    return Text(textHeader, style: column.headerTextStyle ?? buildStyle.headerCellTextStyle, textAlign: column.headerTextAlign ?? defaultHeaderTextAlign);
   }
 
   Widget _rowWidget(NsgDataItem item, NsgTableColumn column) {
     var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(item) ?? '';
     String text = textValue;
-    TextStyle style = column.rowTextStyle ?? defaultRowTextStyle;
+    TextStyle style = column.rowTextStyle ?? buildStyle.bodyCellTextStyle;
     TextAlign textAlign = TextAlign.center;
     Widget? icon;
     var fieldkey = item.getFieldValue(column.name);

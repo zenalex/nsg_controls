@@ -90,10 +90,16 @@ class _StartPageState extends State<StartPage> {
 
   Widget showTable() {
     List<NsgTableColumn> columns = [
-      NsgTableColumn(name: IrrigationRowGenerated.nameDay, presentation: 'День', width: 400),
-      NsgTableColumn(name: IrrigationRowGenerated.nameHour, presentation: 'Час', width: 400)
+      NsgTableColumn(name: IrrigationRowGenerated.nameDay, presentation: 'День', width: 100),
+      NsgTableColumn(name: IrrigationRowGenerated.nameHour, presentation: 'Час', width: 100),
+      NsgTableColumn(name: IrrigationRowGenerated.nameDay, presentation: 'День', width: 100),
+      NsgTableColumn(name: IrrigationRowGenerated.nameHour, presentation: 'Час', width: 100),
+      NsgTableColumn(name: IrrigationRowGenerated.nameDay, presentation: 'День', width: 100),
+      NsgTableColumn(name: IrrigationRowGenerated.nameHour, presentation: 'Час', width: 100),
+      NsgTableColumn(name: IrrigationRowGenerated.nameDay, presentation: 'День', width: 100),
+      NsgTableColumn(name: IrrigationRowGenerated.nameHour, presentation: 'Час', width: 100),
     ];
-    return NsgTable(key: GlobalKey(), columns: columns, controller: controller);
+    return NsgTable(hideCellsBackground: true, key: GlobalKey(), columns: columns, controller: controller);
   }
 
   Widget button() {

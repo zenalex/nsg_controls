@@ -6,6 +6,7 @@ class NsgTableMenuButton extends StatelessWidget {
   final IconData icon;
   final EdgeInsets margin;
   final VoidCallback onPressed;
+  final Color? color;
   final Color? backColor;
   const NsgTableMenuButton(
       {Key? key,
@@ -13,6 +14,7 @@ class NsgTableMenuButton extends StatelessWidget {
       required this.icon,
       this.margin = const EdgeInsets.only(right: 5, top: 5, bottom: 5),
       required this.onPressed,
+      this.color,
       this.backColor})
       : super(key: key);
 
@@ -29,7 +31,7 @@ class NsgTableMenuButton extends StatelessWidget {
         width: 32,
         borderRadius: 5,
         style: 'widget',
-        widget: Icon(icon, color: ControlOptions.instance.colorMainText),
+        widget: Icon(icon, color: color ?? ControlOptions.instance.colorMainText),
         padding: const EdgeInsets.all(3),
         margin: margin,
         onPressed: onPressed,

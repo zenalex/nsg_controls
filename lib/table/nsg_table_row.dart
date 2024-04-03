@@ -13,12 +13,14 @@ class NsgTableRow extends StatefulWidget {
   final NsgDataItem dataItem;
   final NsgDataController controller;
   final List<NsgTableRowState> rowStateList;
+  final Color? backgroundColor;
   final Function(NsgTableRowState) rowStateCloseOthers;
 
   const NsgTableRow(
       {Key? key,
       this.slideEnable = false,
       this.rowFixedHeight,
+      this.backgroundColor,
       required this.tableRow,
       required this.dataItem,
       required this.controller,
@@ -124,6 +126,7 @@ class NsgTableRowState extends State<NsgTableRow> {
                         },
                         child: Icon(isFavorite ? Icons.star : Icons.star_outline, color: ControlOptions.instance.colorMain)))),
         AnimatedContainer(
+            decoration: BoxDecoration(color: widget.backgroundColor),
             transform: Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, _translateX, 0, 0, 1),
             duration: const Duration(milliseconds: 100),
             child: Row(
