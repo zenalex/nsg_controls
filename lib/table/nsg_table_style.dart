@@ -4,6 +4,8 @@ import '../nsg_control_options.dart';
 
 class NsgTableStyle {
   const NsgTableStyle({
+    this.progressbarColorPrimary,
+    this.progressbarColorSecondary,
     this.menuIconColor,
     this.menuCellBorderColor,
     this.headerCellBorderColor,
@@ -24,7 +26,7 @@ class NsgTableStyle {
     this.bodyRowOddBackColor,
   });
 
-  final Color? arrowsColor;
+  final Color? arrowsColor, progressbarColorPrimary, progressbarColorSecondary;
   final Color? scrollbarTrackColor, scrollbarBorderColor, scrollbarThumbColor;
   final Color? menuIconColor, menuCellBackColor, menuCellBorderColor;
   final Color? headerCellBackColor, headerCellBorderColor;
@@ -36,6 +38,8 @@ class NsgTableStyle {
   NsgTableStyleMain style() {
     return NsgTableStyleMain(
       arrowsColor: arrowsColor ?? nsgtheme.nsgTableStyle.arrowsColor ?? Colors.black,
+      progressbarColorPrimary: progressbarColorPrimary ?? nsgtheme.nsgTableStyle.progressbarColorPrimary ?? nsgtheme.colorPrimary,
+      progressbarColorSecondary: progressbarColorSecondary ?? nsgtheme.nsgTableStyle.progressbarColorSecondary ?? nsgtheme.colorSecondary,
       menuIconColor: menuIconColor ?? nsgtheme.nsgTableStyle.menuIconColor ?? nsgtheme.colorBase.b100,
       menuBackColor: menuCellBackColor ?? nsgtheme.nsgTableStyle.menuCellBackColor ?? nsgtheme.colorPrimary,
       menuBorderColor: menuCellBorderColor ?? nsgtheme.nsgTableStyle.menuCellBorderColor ?? nsgtheme.colorSecondary,
@@ -59,6 +63,8 @@ class NsgTableStyle {
 
 class NsgTableStyleMain {
   const NsgTableStyleMain({
+    required this.progressbarColorPrimary,
+    required this.progressbarColorSecondary,
     required this.menuIconColor,
     required this.bodyCellBorderColor,
     required this.menuBorderColor,
@@ -79,7 +85,7 @@ class NsgTableStyleMain {
     required this.bodyRowOddBackColor,
   });
 
-  final Color arrowsColor;
+  final Color arrowsColor, progressbarColorPrimary, progressbarColorSecondary;
   final Color scrollbarTrackColor, scrollbarBorderColor, scrollbarThumbColor;
   final Color menuIconColor, menuBackColor, menuBorderColor;
   final Color headerCellBackColor, headerCellBorderColor;

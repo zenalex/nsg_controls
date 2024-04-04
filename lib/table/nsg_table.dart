@@ -1718,10 +1718,12 @@ class _NsgTableState extends State<NsgTable> {
                     height: 100,
                     decoration: BoxDecoration(
                         color: buildStyle.bodyCellBackColor, border: widget.hideLines ? null : Border.all(width: 1, color: buildStyle.tableBorderColor)),
-                    child: const Center(
+                    child: Center(
                         child: Padding(
                       padding: EdgeInsets.only(top: 30, bottom: 30),
                       child: NsgSimpleProgressBar(
+                        colorPrimary: buildStyle.progressbarColorPrimary,
+                        colorSecondary: buildStyle.progressbarColorSecondary,
                         delay: Duration.zero,
                       ),
                     ))),
