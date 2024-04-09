@@ -6,6 +6,7 @@ import 'nsg_controls.dart';
 
 // ignore: must_be_immutable
 class NsgButton extends StatelessWidget {
+  final bool autoWidth;
   final String? style;
   final String? text;
   final EdgeInsets? margin;
@@ -40,6 +41,7 @@ class NsgButton extends StatelessWidget {
   final BoxShadow? shadow;
   const NsgButton(
       {Key? key,
+      this.autoWidth = false,
       this.style,
       this.text = '',
       this.margin,
@@ -223,9 +225,10 @@ class NsgButton extends StatelessWidget {
       return Container(
         margin: margin ?? ControlOptions.instance.nsgButtonMargin,
         constraints: const BoxConstraints(minHeight: 20, maxWidth: 800),
-        width: width ?? double.infinity,
+        width: width ?? (autoWidth ? null : double.infinity),
         height: height ?? ControlOptions.instance.nsgButtonHeight,
         decoration: BoxDecoration(
+          boxShadow: shadow == null ? null : [shadow!],
           border: borderColor == null ? null : Border.all(width: 2, color: borderColor!),
           borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
         ),
