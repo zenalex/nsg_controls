@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgLightAppBar extends StatelessWidget {
@@ -116,7 +117,8 @@ class NsgLightAppBar extends StatelessWidget {
 class NsgLigthAppBarIcon extends StatelessWidget {
   const NsgLigthAppBarIcon(
       {super.key,
-      required this.icon,
+      this.icon,
+      this.svg,
       this.height = 40,
       this.width = 40,
       this.onTap,
@@ -127,7 +129,9 @@ class NsgLigthAppBarIcon extends StatelessWidget {
       this.rotateAngle,
       this.padding = const EdgeInsets.only(right: 0, left: 0)});
 
-  final IconData icon;
+  final String? svg;
+  final IconData? icon;
+
   final void Function()? onTap;
   final void Function(Offset position, TapDownDetails details, Size? objectSize)? onTapCallback;
   //final ValueChanged<TapDownDetails>? onTapCallback;
@@ -152,11 +156,15 @@ class NsgLigthAppBarIcon extends StatelessWidget {
               padding: padding,
               child: Transform.rotate(
                 angle: rotateAngle ?? 0,
-                child: Icon(
-                  icon,
-                  size: 20,
-                  color: color ?? ControlOptions.instance.colorTertiary.c70,
-                ),
+                child: icon != null
+                    ? Icon(
+                        icon,
+                        size: 20,
+                        color: color ?? ControlOptions.instance.colorTertiary.c70,
+                      )
+                    : svg != null
+                        ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
+                        : SizedBox(),
               ),
             ),
           )),

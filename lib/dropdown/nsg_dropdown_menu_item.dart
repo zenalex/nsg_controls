@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgDropdownMenuItem extends StatelessWidget {
-  const NsgDropdownMenuItem({super.key, required this.text, this.iconLeft, this.iconRight, this.color, this.rotateAngle, this.value});
+  const NsgDropdownMenuItem({super.key, required this.text, this.iconLeft, this.iconRight, this.color, this.rotateAngle, this.value, this.svgLeft});
   final String text;
+  final String? svgLeft;
   final IconData? iconLeft;
   final IconData? iconRight;
   final double? rotateAngle;
@@ -17,6 +19,11 @@ class NsgDropdownMenuItem extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
+          if (svgLeft != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: SvgPicture.asset(svgLeft!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn)),
+            ),
           if (iconLeft != null)
             Padding(
               padding: const EdgeInsets.only(right: 10),
