@@ -1,7 +1,5 @@
 // импорт
 import 'package:flutter/material.dart';
-import 'package:nsg_data/helpers/nsg_future_progress_exception.dart';
-import 'nsg_control_options.dart';
 import 'nsg_controls.dart';
 
 // ignore: must_be_immutable
@@ -280,7 +278,7 @@ class NsgButton extends StatelessWidget {
     bool result = false;
     if (onTapAsync != null) {
       await nsgFutureProgressAndException(func: () async {
-        result = await onTapAsync!() ?? false;
+        result = await onTapAsync!();
       });
     }
 
