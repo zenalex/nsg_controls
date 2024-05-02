@@ -101,14 +101,15 @@ class NsgTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: padding,
-        child: InkWell(
-          onTap: onTap,
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+          padding: padding,
           child: Text(text,
               textAlign: textAlign,
-              style: TextStyle(color: color ?? ControlOptions.instance.colorWarning, fontSize: fontSize ?? ControlOptions.instance.sizeM, fontFamily: 'Inter')),
-        ));
+              style:
+                  TextStyle(color: color ?? ControlOptions.instance.colorWarning, fontSize: fontSize ?? ControlOptions.instance.sizeM, fontFamily: 'Inter'))),
+    );
     /*return Padding(
         padding: const EdgeInsets.all(10),
         child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
