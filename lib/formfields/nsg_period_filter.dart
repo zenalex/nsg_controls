@@ -484,18 +484,18 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       onPressed: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
                                           ? (value) {
                                               if (!_timeselected) {
-                                                date.beginDate = Jiffy(date.beginDate)
-                                                    .startOf(Units.DAY)
-                                                    .add(duration: Duration(hours: time1.hour, minutes: time1.minute))
+                                                date.beginDate = Jiffy.parseFromDateTime(date.beginDate)
+                                                    .startOf(Unit.day)
+                                                    .add(hours: time1.hour, minutes: time1.minute)
                                                     .dateTime;
-                                                date.endDate = Jiffy(date.endDate)
-                                                    .startOf(Units.DAY)
-                                                    .add(duration: Duration(hours: time2.hour, minutes: time2.minute))
+                                                date.endDate = Jiffy.parseFromDateTime(date.endDate)
+                                                    .startOf(Unit.day)
+                                                    .add(hours: time2.hour, minutes: time2.minute)
                                                     .dateTime;
                                                 _selected = NsgPeriodType.periodWidthTime;
                                               } else {
-                                                date.beginDate = Jiffy(date.beginDate).startOf(Units.DAY).dateTime;
-                                                date.endDate = Jiffy(date.endDate).startOf(Units.DAY).dateTime;
+                                                date.beginDate = Jiffy.parseFromDateTime(date.beginDate).startOf(Unit.day).dateTime;
+                                                date.endDate = Jiffy.parseFromDateTime(date.endDate).startOf(Unit.day).dateTime;
                                                 _selected = NsgPeriodType.period;
                                               }
                                               date.setToPeriodWithTime(date);
