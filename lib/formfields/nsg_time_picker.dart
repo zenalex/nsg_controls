@@ -69,7 +69,7 @@ class NsgTimePicker extends StatefulWidget {
               getContent: () => [
                 TimePickerContent(
                     dateForTime: dateForTime,
-                    initialTime: Jiffy(DateTime(0)).add(duration: initialTime).dateTime,
+                    initialTime: Jiffy.parseFromDateTime(DateTime(0)).addDuration(initialTime).dateTime,
                     onChange: ((endDate) {
                       selectedDate = endDate;
                     })

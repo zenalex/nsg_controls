@@ -25,7 +25,7 @@ dependencies:
   pull_to_refresh: #^2.0.0
     git:
       https://github.com/ymback/flutter_pulltorefresh.git
-  jiffy: ^5.0.0 
+  jiffy: ^6.0.0 
   flutter_svg: ^2.0.1
   flutter_calendar_carousel: ^2.1.0
   share_plus: ^7.2.1
