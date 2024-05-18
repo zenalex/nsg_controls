@@ -788,7 +788,7 @@ class _NsgInputState extends State<NsgInput> {
                     child: Container(
                         //key: GlobalKey(),
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        color: element == selectedElement ? nsgtheme.colorPrimary : Colors.transparent,
+                        color: element == selectedElement ? nsgtheme.colorPrimary : nsgtheme.colorSecondaryLight,
                         height: 50,
                         child: Center(
                             child: Text(
