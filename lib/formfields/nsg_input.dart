@@ -781,23 +781,22 @@ class _NsgInputState extends State<NsgInput> {
                 List<Widget> list = [];
                 for (var element in widget.dynamicList) {
                   list.add(InkWell(
-                    onTap: () {
-                      selectedElement = element;
-                      setstate(() {});
-                    },
-                    child: Container(
+                      onTap: () {
+                        selectedElement = element;
+                        setstate(() {});
+                      },
+                      child: Container(
                         //key: GlobalKey(),
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        color: element == selectedElement ? nsgtheme.colorPrimary : nsgtheme.colorSecondaryLight,
+                        color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
                         height: 50,
                         child: Center(
-                            child: Text(
-                          element.toString(),
-                          style: TextStyle(
-                              fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
-                              color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor),
-                        ))),
-                  ));
+                            child: Text(element.toString(),
+                                style: TextStyle(
+                                  fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
+                                  color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor,
+                                ))),
+                      )));
                 }
                 return Padding(
                   padding: const EdgeInsets.only(right: 20),
