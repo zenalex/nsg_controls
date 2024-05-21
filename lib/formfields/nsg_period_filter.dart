@@ -59,28 +59,29 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
 
   void showPopup(BuildContext context, Function(NsgPeriod date) onClose) {
     Get.dialog(
-        NsgPopUp(
-            height: 400,
-            title: 'Выберите период',
-            getContent: () => [
-                  NsgPeriodFilterContent(
-                    onSelect: (value) {
-                      selectedDate = value;
-                    },
-                    controller: widget.controller,
-                    periodTimeEnabled: widget.controller.controllerFilter.periodTimeEnabled,
-                    period: widget.period,
-                  )
-                ],
-            onConfirm: () {
-              //widget.onConfirm!(selectedDate);
-              period.beginDate = selectedDate.beginDate;
-              period.endDate = selectedDate.endDate;
-              widget.controller.refreshData();
-              //setState(() {});
-              Get.back();
-            }),
-        barrierDismissible: false);
+            NsgPopUp(
+                height: 400,
+                title: 'Выберите период',
+                getContent: () => [
+                      NsgPeriodFilterContent(
+                        onSelect: (value) {
+                          selectedDate = value;
+                        },
+                        controller: widget.controller,
+                        periodTimeEnabled: widget.controller.controllerFilter.periodTimeEnabled,
+                        period: widget.period,
+                      )
+                    ],
+                onConfirm: () {
+                  //widget.onConfirm!(selectedDate);
+                  period.beginDate = selectedDate.beginDate;
+                  period.endDate = selectedDate.endDate;
+                  widget.controller.refreshData();
+                  //setState(() {});
+                  Get.back();
+                }),
+            barrierDismissible: false)
+        .then((value) => setState(() {}));
   }
 
   @override

@@ -34,7 +34,8 @@ class SelectionNsgPopUp extends StatefulWidget {
   final String? elementEditPageName;
   final NsgBaseController? editPageController;
   final NsgInputSelectionWidgetType widgetType;
-  var textEditController = TextEditingController();
+  //Здесь создавался новый контродллер, из-за этого не работал поиск в стандартных формах
+  final TextEditingController textEditController;
   Color? colorText;
   Color? colorTitleText;
   SelectionNsgPopUp(
