@@ -323,8 +323,8 @@ class _NsgTableState extends State<NsgTable> {
   checkScrollbarIsVisible() {
     if (containerKey.currentContext != null && wrapperKey.currentContext != null) {
       tableAlreadyBuilt = true;
-      double height = (containerKey.currentContext!.findRenderObject() as RenderBox).size.height;
-      double height2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.height;
+      // double height = (containerKey.currentContext!.findRenderObject() as RenderBox).size.height;
+      // double height2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.height;
       double width = (containerKey.currentContext!.findRenderObject() as RenderBox).size.width;
       double width2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.width;
       if (width <= width2 && width > 0) {
@@ -1720,7 +1720,7 @@ class _NsgTableState extends State<NsgTable> {
                         color: buildStyle.bodyCellBackColor, border: widget.hideLines ? null : Border.all(width: 1, color: buildStyle.tableBorderColor)),
                     child: Center(
                         child: Padding(
-                      padding: EdgeInsets.only(top: 30, bottom: 30),
+                      padding: const EdgeInsets.only(top: 30, bottom: 30),
                       child: NsgSimpleProgressBar(
                         colorPrimary: buildStyle.progressbarColorPrimary,
                         colorSecondary: buildStyle.progressbarColorSecondary,

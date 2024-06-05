@@ -164,7 +164,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
                       )
                     : svg != null
                         ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
-                        : SizedBox(),
+                        : const SizedBox(),
               ),
             ),
           )),

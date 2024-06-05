@@ -356,7 +356,7 @@ class _NsgInputState extends State<NsgInput> {
         var end = textController.selection.end;
         String text = textController.text;
         text = text.replaceAll(',', '.');
-        text = text.replaceAll(RegExp('[^0-9.\-]'), '');
+        text = text.replaceAll(RegExp('[^0-9.-]'), '');
         widget.dataItem.setFieldValue(widget.fieldName, text);
         _ignoreChange = true;
         try {
@@ -546,7 +546,7 @@ class _NsgInputState extends State<NsgInput> {
                                 : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
                             focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                           ),
-                          onFieldSubmitted: (String) {
+                          onFieldSubmitted: (s) {
                             if (widget.onFieldSubmitted != null) {
                               widget.onFieldSubmitted!(widget.dataItem, widget.fieldName);
                             }

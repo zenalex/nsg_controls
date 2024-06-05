@@ -1,5 +1,4 @@
 // импорт
-import 'dart:ui';
 
 import 'package:event/event.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:nsg_controls/nsg_grid.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'formfields/nsg_input_selection_widget_type.dart';
 import 'formfields/nsg_search_textfield.dart';
-import 'nsg_control_options.dart';
 
 // ignore: must_be_immutable
 class SelectionNsgPopUp extends StatefulWidget {
