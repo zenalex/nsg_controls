@@ -37,8 +37,8 @@ class NsgSelection {
       selectionController = _SelectionController();
       selectionController!.status = GetStatus.success(0);
     }
-    textColor ??= ControlOptions.instance.colorText;
-    colorInverted ??= ControlOptions.instance.colorInverted;
+    textColor ??= nsgtheme.colorText;
+    colorInverted ??= nsgtheme.colorInverted;
   }
 
   List<Widget> _listArray() {
@@ -84,7 +84,7 @@ class NsgSelection {
     return Container(
         //key: GlobalKey(),
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        color: element == selectedElement ? ControlOptions.instance.colorMain : Colors.transparent,
+        color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
         height: 50,
         child: Center(child: _showRowWidget(element)));
   }
@@ -95,7 +95,7 @@ class NsgSelection {
     } else {
       return Text(
         element.toString(),
-        style: TextStyle(color: element == selectedElement ? colorInverted : textColor),
+        style: TextStyle(color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
       );
     }
   }
