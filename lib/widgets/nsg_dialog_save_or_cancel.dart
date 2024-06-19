@@ -5,7 +5,7 @@ import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:nsg_controls/nsg_popup.dart';
 
 class NsgDialogSaveOrCancel {
-  static Future<bool?> saveOrCancel() async {
+  static Future<bool?> saveOrCancel({BuildContext? context}) async {
     bool? value;
     await Get.dialog(
         NsgPopUp(
@@ -63,7 +63,11 @@ class NsgDialogSaveOrCancel {
               icon: Icons.close,
               onPressed: () {
                 value = false;
-                Get.back();
+                if (context != null) {
+                  Navigator.pop(context);
+                } else {
+                  Get.back();
+                }
               },
             ),
           ),
@@ -71,11 +75,20 @@ class NsgDialogSaveOrCancel {
           confirmText: 'Подтвердить',
           onConfirm: () {
             value = true;
-            Get.back();
+            if (context != null) {
+              Navigator.pop(context);
+            } else {
+              Get.back();
+            }
           },
           onCancel: () {
             value = null;
-            Get.back();
+            //19-06-2024 Зенков. Футболист, редактирование медиа - выход без сохранения приводил к выходу с экрана
+            if (context != null) {
+              Navigator.pop(context);
+            } else {
+              Get.back();
+            }
           },
         ),
         barrierDismissible: false);
