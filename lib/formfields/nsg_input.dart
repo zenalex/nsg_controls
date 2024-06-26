@@ -592,11 +592,16 @@ class _NsgInputState extends State<NsgInput> {
                               alignment: Alignment.centerLeft,
                               child: Padding(
                                 padding: getHintPadding(),
-                                child: widget.labelWidget ??
-                                    Text(
-                                      (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
-                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
-                                    ),
+                                child: widget.hint != null
+                                    ? Text(
+                                        widget.hint!,
+                                        style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorNeutral),
+                                      )
+                                    : widget.labelWidget ??
+                                        Text(
+                                          (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? widget.label + ' *' : widget.label,
+                                          style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorNeutral),
+                                        ),
                               ),
                             ),
                           ),
@@ -611,7 +616,7 @@ class _NsgInputState extends State<NsgInput> {
                                         padding: getHintPadding(),
                                         child: Text(
                                           widget.hint!,
-                                          style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
+                                          style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorNeutral),
                                         ),
                                       ));
                                 } else {
