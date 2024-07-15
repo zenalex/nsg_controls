@@ -12,7 +12,7 @@ Future<dynamic> showNsgSimpleDialog({
   // String textCancel = 'Отмена',
   // Widget? child,
   // List<Widget>? buttons,
-  // VoidCallback? onConfirm,
+  VoidCallback? onConfirm,
   // VoidCallback? onCancel
 }) {
   return showDialog(
@@ -35,7 +35,11 @@ Future<dynamic> showNsgSimpleDialog({
                     width: 100,
                     text: 'ОК',
                     onTap: () {
-                      Navigator.pop(context);
+                      if (onConfirm != null) {
+                        onConfirm();
+                      } else {
+                        Navigator.pop(context);
+                      }
                     },
                   ),
                 ],
