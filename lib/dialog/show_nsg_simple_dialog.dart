@@ -8,6 +8,7 @@ Future<dynamic> showNsgSimpleDialog({
   // bool showCancelButton = true,
   // String title = 'Необходимо подтверждение',
   String text = 'Вы уверены?',
+  Color? barrierColor,
   // String textConfirm = 'ОК',
   // String textCancel = 'Отмена',
   // Widget? child,
@@ -16,7 +17,7 @@ Future<dynamic> showNsgSimpleDialog({
   // VoidCallback? onCancel
 }) {
   return showDialog(
-    barrierColor: nsgtheme.colorMainBack.withOpacity(0.9),
+    barrierColor: barrierColor ?? nsgtheme.colorMainBack.withOpacity(0.9),
     context: context,
     builder: (context) {
       return SimpleDialog(

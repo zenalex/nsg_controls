@@ -127,11 +127,13 @@ class ControlOptions {
   final TextFormFieldType nsgInputOutlineBorderType;
   final EdgeInsets nsgInputContentPadding;
   final Color nsgInputColorLabel;
+  final Color nsgInputTextColor;
   final Color nsgInputColorFilled;
   final Color nsgInputDynamicListTextColor;
   final Color nsgInputDynamicListTextSelectedColor;
   final Color nsgInputDynamicListBackColor;
   final Color nsgInputDynamicListBackSelectedColor;
+  final Color nsgInputHintColor;
   final Color nsgInputBorderColor;
   final Color nsgInputBorderActiveColor;
   final Color nsginputCloseIconColor;
@@ -279,6 +281,8 @@ class ControlOptions {
     this.nsgInputFilled = false,
     this.nsgInputHintAlwaysOnTop = false,
     this.nsgInputHintHidden = false,
+    this.nsgInputTextColor = const Color.fromARGB(255, 0, 0, 0),
+    this.nsgInputHintColor = const Color.fromARGB(122, 70, 59, 11),
     this.nsgInputBorderColor = const Color.fromARGB(122, 70, 59, 11),
     this.nsgInputBorderActiveColor = const Color.fromARGB(255, 70, 59, 11),
     this.nsginputCloseIconColor = const Color.fromARGB(255, 70, 59, 11),
@@ -455,13 +459,16 @@ Color stringToColor(String color) {
 }
 
 class ColorsCalc {
-  Color dark(Color c) => Color.fromARGB(-1, (c.red * c.red) ~/ 255, (c.green * c.green) ~/ 255, (c.blue * c.blue) ~/ 255);
+  Color dark(Color c) =>
+      Color.fromARGB(-1, (c.red * c.red) ~/ 255, (c.green * c.green) ~/ 255, (c.blue * c.blue) ~/ 255);
 
-  Color light(Color c) => Color.fromARGB(-1, (sqrt(c.red / 255) * 255).floor(), (sqrt(c.green / 255) * 255).floor(), (sqrt(c.blue / 255) * 255).floor());
+  Color light(Color c) => Color.fromARGB(
+      -1, (sqrt(c.red / 255) * 255).floor(), (sqrt(c.green / 255) * 255).floor(), (sqrt(c.blue / 255) * 255).floor());
 
   Color tweak(Color base, double bf, double df, double lf, double wf, {Color? darker, Color? lighter}) {
     darker ??= dark(base);
     lighter ??= light(base);
-    return Color.lerp(Colors.black, Color.lerp(Colors.white, Color.lerp(darker, Color.lerp(lighter, base, lf), df), wf), bf)!;
+    return Color.lerp(
+        Colors.black, Color.lerp(Colors.white, Color.lerp(darker, Color.lerp(lighter, base, lf), df), wf), bf)!;
   }
 }
