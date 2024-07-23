@@ -15,12 +15,12 @@ class NsgTextInput extends StatelessWidget {
   final int? maxlines;
 
   //Поле для отображения и задания значения
-  final String fieldName;
+//
 
   /// NsgTextInput
   const NsgTextInput(
       {Key? key,
-      required this.fieldName,
+      //   required this.fieldName,
       this.label,
       this.disabled,
       this.fontSize = 16,

@@ -127,7 +127,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
       this.color,
       this.backColor,
       this.rotateAngle,
-      this.padding = const EdgeInsets.only(right: 0, left: 0)});
+      this.padding = const EdgeInsets.only(right: 5, left: 5)});
 
   final String? svg;
   final IconData? icon;
@@ -144,43 +144,45 @@ class NsgLigthAppBarIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(alignment: Alignment.topRight, children: [
-      NsgLightAppBarOnTap(
-          onTapDown: onTapCallback,
-          onTap: onTap,
-          child: SizedBox(
-            width: width,
-            height: height,
-            child: Container(
-              decoration: BoxDecoration(color: backColor ?? Colors.transparent, borderRadius: BorderRadius.circular(15)),
-              padding: padding,
-              child: Transform.rotate(
-                angle: rotateAngle ?? 0,
-                child: icon != null
-                    ? Icon(
-                        icon,
-                        size: 20,
-                        color: color ?? ControlOptions.instance.colorTertiary.c70,
-                      )
-                    : svg != null
-                        ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
-                        : const SizedBox(),
+    return Padding(
+      padding: padding,
+      child: Stack(alignment: Alignment.topRight, children: [
+        NsgLightAppBarOnTap(
+            onTapDown: onTapCallback,
+            onTap: onTap,
+            child: SizedBox(
+              width: width,
+              height: height,
+              child: Container(
+                decoration: BoxDecoration(color: backColor ?? Colors.transparent, borderRadius: BorderRadius.circular(15)),
+                child: Transform.rotate(
+                  angle: rotateAngle ?? 0,
+                  child: icon != null
+                      ? Icon(
+                          icon,
+                          size: 20,
+                          color: color ?? ControlOptions.instance.colorTertiary.c70,
+                        )
+                      : svg != null
+                          ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
+                          : const SizedBox(),
+                ),
               ),
+            )),
+        if (nott != null && nott! > 0)
+          Positioned(
+            right: 8,
+            top: 8,
+            child: Container(
+              width: 11,
+              height: 11,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  color: ControlOptions.instance.colorError, border: Border.all(width: 1, color: nsgtheme.colorSecondary), shape: BoxShape.circle),
             ),
-          )),
-      if (nott != null && nott! > 0)
-        Positioned(
-          right: 8,
-          top: 8,
-          child: Container(
-            width: 11,
-            height: 11,
-            padding: const EdgeInsets.all(5),
-            decoration:
-                BoxDecoration(color: ControlOptions.instance.colorError, border: Border.all(width: 1, color: nsgtheme.colorSecondary), shape: BoxShape.circle),
-          ),
-        )
-    ]);
+          )
+      ]),
+    );
   }
 }
 
