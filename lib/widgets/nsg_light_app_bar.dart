@@ -67,6 +67,7 @@ class NsgLightAppBar extends StatelessWidget {
     List<NsgLigthAppBarIcon> list = [];
     for (var element in rightIcons) {
       list.add(NsgLigthAppBarIcon(
+        padding: element.padding,
         icon: element.icon,
         onTap: element.onTap,
         nott: element.nott,
@@ -127,7 +128,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
       this.color,
       this.backColor,
       this.rotateAngle,
-      this.padding = const EdgeInsets.only(right: 5, left: 5)});
+      this.padding});
 
   final String? svg;
   final IconData? icon;
@@ -139,13 +140,14 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   final Color? color;
   final Color? backColor;
   final double? rotateAngle;
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
   final double height, width;
 
   @override
   Widget build(BuildContext context) {
+    print(padding);
     return Padding(
-      padding: padding,
+      padding: padding ?? EdgeInsets.zero,
       child: Stack(alignment: Alignment.topRight, children: [
         NsgLightAppBarOnTap(
             onTapDown: onTapCallback,
