@@ -145,7 +145,6 @@ class NsgLigthAppBarIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(padding);
     return Padding(
       padding: padding ?? EdgeInsets.zero,
       child: Stack(alignment: Alignment.topRight, children: [
