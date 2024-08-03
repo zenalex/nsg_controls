@@ -385,7 +385,7 @@ class NsgListPage extends StatelessWidget {
           text: error != null ? 'Ошибка: $error'.toUpperCase() : title,
           text2: showCount != null
               ? controller.totalCount != null
-                  ? showCount! + ' ' + controller.totalCount.toString()
+                  ? '${showCount!} ${controller.totalCount}'
                   : null
               : subtitle,
           colorsInverted: true,

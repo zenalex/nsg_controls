@@ -143,7 +143,7 @@ class _NsgTabsState extends State<NsgTabs> {
 /* -------------------------------------------------------------- Верхняя часть табов ------------------------------------------------------------- */
   List<Widget> tabNames() {
     List<Widget> list = [];
-    Widget _wrapExpanded({required Widget child}) {
+    Widget wrapExpanded({required Widget child}) {
       if (widget.expanded) {
         return Expanded(child: Padding(padding: widget.containerTabsWrapPaddingOutside, child: child));
       } else {
@@ -151,7 +151,7 @@ class _NsgTabsState extends State<NsgTabs> {
       }
     }
 
-    Widget _wrapContainerTabs({required Widget child, required Color color}) {
+    Widget wrapContainerTabs({required Widget child, required Color color}) {
       if (widget.containerTabsWrap) {
         return Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color),
@@ -164,7 +164,7 @@ class _NsgTabsState extends State<NsgTabs> {
 
     widget.tabs.asMap().forEach((key, tab) {
       gKeys.add(GlobalKey());
-      list.add(_wrapExpanded(
+      list.add(wrapExpanded(
         child: InkWell(
             key: gKeys[key],
             hoverColor: Colors.transparent,
@@ -173,8 +173,8 @@ class _NsgTabsState extends State<NsgTabs> {
               setNamePos(key: key);
             },
             child: currentTab == key
-                ? _wrapContainerTabs(child: tab.tabSelected, color: widget.containerTabsWrapSelectedColor ?? nsgtheme.colorBase)
-                : _wrapContainerTabs(child: tab.tab, color: widget.containerTabsWrapColor ?? nsgtheme.colorSecondary)),
+                ? wrapContainerTabs(child: tab.tabSelected, color: widget.containerTabsWrapSelectedColor ?? nsgtheme.colorBase)
+                : wrapContainerTabs(child: tab.tab, color: widget.containerTabsWrapColor ?? nsgtheme.colorSecondary)),
       ));
     });
     return list;

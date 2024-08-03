@@ -1,7 +1,9 @@
+import 'package:get/get.dart';
 import 'package:nsg_data/helpers/nsg_data_format.dart';
 
 import 'nsg_control_options.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:flutter_gen/gen_l10n/nsg_controls_localizations.dart';
 
 extension NsgDate on DateTime {
   bool get isEmpty {
@@ -136,3 +138,5 @@ enum DatePart {
   final int ind;
   final num microseconds;
 }
+
+NsgControlsLocalizations get tran => NsgControlsLocalizations.of(Get.context!)!;

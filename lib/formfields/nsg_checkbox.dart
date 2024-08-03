@@ -1,4 +1,6 @@
 // импорт
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+import '../helpers.dart';
+
 class NsgSearchTextfield extends StatefulWidget {
   final NsgBaseController? controller;
   final double borderRadius;
@@ -71,7 +73,7 @@ class _NsgSearchTextfieldState extends State<NsgSearchTextfield> {
                     size: 20,
                   )),
               // prefixIcon: Icon(Icons.search),
-              hintText: 'Поиск',
+              hintText: tran.search,
               hintStyle: TextStyle(color: ControlOptions.instance.colorSecondary, fontWeight: FontWeight.w500)),
           textAlignVertical: TextAlignVertical.bottom,
           style: TextStyle(color: ControlOptions.instance.colorBase.c100),

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:nsg_controls/formfields/nsg_input_selection_widget_type.dart';
 import 'package:nsg_controls/selection_nsg_popup.dart';
 

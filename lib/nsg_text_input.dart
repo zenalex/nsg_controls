@@ -36,10 +36,11 @@ class NsgTextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Оборачивание disabled текстового поля, чтобы обработать нажатие на него
-    Widget _gestureWrap(Widget widget) {
+    Widget gestureWrap(Widget widget) {
       return (onPressed == null)
           ? widget
           : GestureDetector(
+              onTap: onPressed,
               child: Stack(
                 alignment: Alignment.centerRight,
                 children: [
@@ -54,11 +55,10 @@ class NsgTextInput extends StatelessWidget {
                   )
                 ],
               ),
-              onTap: onPressed,
             );
     }
 
-    return _gestureWrap(Container(
+    return gestureWrap(Container(
         margin: margin,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         decoration: BoxDecoration(

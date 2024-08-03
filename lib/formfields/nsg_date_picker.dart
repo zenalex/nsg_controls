@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -7,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
+import '../helpers.dart';
 
 class NsgDatePicker extends StatefulWidget {
   final String? label;
@@ -60,7 +64,7 @@ class NsgDatePicker extends StatefulWidget {
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
-              title: 'Выберите дату',
+              title: tran.select_date,
               //height: 410,
               onConfirm: () {
                 onClose(selectedDate);
@@ -99,7 +103,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
   @override
   Widget build(BuildContext context) {
     textScaleFactor = MediaQuery.of(context).textScaleFactor;
-    _inkWellWrapper({required Widget child}) {
+    inkWellWrapper({required Widget child}) {
       if (widget.disabled == true) {
         return child;
       } else {
@@ -117,7 +121,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
       }
     }
 
-    return _inkWellWrapper(
+    return inkWellWrapper(
       child: Padding(
         padding: widget.margin,
         child: Column(
@@ -219,13 +223,13 @@ class _DatePickerContentState extends State<DatePickerContent> {
         _initialTime = value;
       }
 
-      DateTime? _initialTimeNew;
+      DateTime? initialTimeNew;
       try {
-        _initialTimeNew = DateFormat('dd.MM.yyyy').parse(_initialTime);
+        initialTimeNew = DateFormat('dd.MM.yyyy').parse(_initialTime);
         // ignore: empty_catches
       } catch (e) {}
-      if (_initialTimeNew != null) {
-        _initialTime2 = _initialTimeNew;
+      if (initialTimeNew != null) {
+        _initialTime2 = initialTimeNew;
 /* ---------------------------------------------------- только на мобильных обновляем Дейтпикер --------------------------------------------------- */
         if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
           datepicker!.setState(_initialTime2);

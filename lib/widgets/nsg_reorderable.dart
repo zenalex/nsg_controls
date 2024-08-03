@@ -15,7 +15,7 @@ class NsgReorderable extends StatefulWidget {
 class _NsgReorderableState extends State<NsgReorderable> {
   @override
   Widget build(BuildContext context) {
-    void _onReorder(int oldIndex, int newIndex) {
+    void onReorder(int oldIndex, int newIndex) {
       setState(() {
         Widget row = widget.widgets.removeAt(oldIndex);
         widget.widgets.insert(newIndex, row);
@@ -29,10 +29,10 @@ class _NsgReorderableState extends State<NsgReorderable> {
         runSpacing: widget.runSpacing,
         needsLongPressDraggable: false,
         padding: const EdgeInsets.all(0),
-        children: widget.widgets,
-        onReorder: _onReorder,
+        onReorder: onReorder,
         onNoReorder: (int index) {},
-        onReorderStarted: (int index) {});
+        onReorderStarted: (int index) {},
+        children: widget.widgets);
 
     return SingleChildScrollView(
       child: wrap,

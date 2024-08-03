@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:image/image.dart' as imagedit;
 import 'package:nsg_controls/nsg_controls.dart';
 
+import '../helpers.dart';
 import '../widgets/nsg_light_app_bar.dart';
 import '../widgets/nsg_simple_progress_bar.dart';
 
@@ -40,6 +41,7 @@ class NsgCrop {
   }
 }
 
+// ignore: must_be_immutable
 class NsgCropPage extends StatefulWidget {
   NsgCropPage(
       {Key? key,
@@ -80,7 +82,7 @@ class NsgCropPageState extends State<NsgCropPage> {
     super.initState();
   }
 
-  String text = 'Loading...';
+  String text = tran.loading;
   bool showSplash = true;
 
   @override
@@ -135,19 +137,19 @@ class NsgCropPageState extends State<NsgCropPage> {
               onStatusChanged: (status) {
                 if (status == CropStatus.ready) {
                   _controller.aspectRatio = widget.aspectRatio;
-                  text = 'Подготовьте фотографию';
+                  text = tran.prepare_photo;
                   showSplash = false;
                   setState(() {});
                 }
                 if (status == CropStatus.cropping) {
                   //splash
-                  text = 'Loading...';
+                  text = tran.loading;
                   showSplash = true;
                   setState(() {});
                 }
                 if (status == CropStatus.loading) {
                   //splash
-                  text = 'Loading...';
+                  text = tran.loading;
                   showSplash = true;
                   setState(() {});
                 }

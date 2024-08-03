@@ -1,17 +1,20 @@
 // импорт
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/widgets/nsg_snackbar.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+import '../helpers.dart';
 import '../nsg_icon_button.dart';
 
 class NsgTextFilter extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables
   NsgTextFilter(
       {Key? key,
-      this.label = 'Фильтр по тексту',
+      this.label,
       this.margin = const EdgeInsets.fromLTRB(5, 5, 5, 5),
       this.required = false,
       required this.controller,
@@ -24,7 +27,7 @@ class NsgTextFilter extends StatefulWidget {
   final NsgDataController controller;
   final bool? isOpen;
   final VoidCallback? onSetFilter;
-  final String label;
+  final String? label;
   final bool required;
   final EdgeInsets margin;
   final List<NsgUpdateKey>? updateKey;
@@ -81,7 +84,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
         widget.controller.refreshData(keys: widget.updateKey);
         if (widget.onSetFilter != null) widget.onSetFilter!();
       } else {
-        nsgSnackbar(text: 'Фильтр по тексту не изменился', type: NsgSnarkBarType.warning);
+        nsgSnackbar(text: tran.text_filter_unchanged, type: NsgSnarkBarType.warning);
       }
     }
 
@@ -103,8 +106,8 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
                         child: Text(
                           focus.hasFocus || textController.text != ''
                               ? widget.required
-                                  ? widget.label + ' *'
-                                  : widget.label
+                                  ? '${widget.label ?? tran.text_filter} *'
+                                  : widget.label ?? tran.text_filter
                               : '',
                           style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                         ),
@@ -120,7 +123,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    widget.label,
+                                    widget.label ?? tran.text_filter,
                                     style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
                                   ),
                                 ),

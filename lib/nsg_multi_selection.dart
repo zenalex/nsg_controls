@@ -91,7 +91,7 @@ class NsgMultiSelection {
     Get.dialog(
         controller.obxBase((state) => NsgPopUp(
             title: title,
-            title2: title2 + (_selectedItems.isEmpty ? '' : ' (' + _selectedItems.length.toString() + ')'),
+            title2: title2 + (_selectedItems.isEmpty ? '' : ' (${_selectedItems.length})'),
             getContent: () => _itemList(),
             contentSecondary: _selectedItemList(),
             confirmText: 'Подтвердить',

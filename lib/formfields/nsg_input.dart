@@ -459,14 +459,14 @@ class _NsgInputState extends State<NsgInput> {
       return _buildBoolWidget(fieldValue);
     }
 
-    int? _maxLength;
+    int? maxLength;
     if (widget.maxLenght != null) {
-      _maxLength = widget.maxLenght;
+      maxLength = widget.maxLenght;
     } else {
       if (widget.dataItem.getField(widget.fieldName) is NsgDataStringField) {
-        _maxLength = (widget.dataItem.getField(widget.fieldName) as NsgDataStringField).maxLength;
-        if (_maxLength == 0) {
-          _maxLength = null;
+        maxLength = (widget.dataItem.getField(widget.fieldName) as NsgDataStringField).maxLength;
+        if (maxLength == 0) {
+          maxLength = null;
         }
       }
     }
@@ -487,12 +487,10 @@ class _NsgInputState extends State<NsgInput> {
                     child: Text(
                       focus.hasFocus || textController.text != '' || nsgtheme.nsgInputHintAlwaysOnTop == true
                           ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
-                              ? widget.label + ' *'
+                              ? '${widget.label} *'
                               : widget.label
                           : ' ',
-                      style: TextStyle(
-                          fontSize: ControlOptions.instance.sizeS,
-                          color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
+                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
                     ),
                   ),
                 _gestureWrap(
@@ -517,13 +515,12 @@ class _NsgInputState extends State<NsgInput> {
                                       )
                                     ]
                                   : null,
-                          maxLength: _maxLength,
+                          maxLength: maxLength,
                           autofocus: widget.autofocus,
                           focusNode: focus,
                           maxLines: widget.maxLines,
                           minLines: widget.minLines,
-                          textInputAction:
-                              keyboard == TextInputType.multiline ? TextInputAction.newline : TextInputAction.next,
+                          textInputAction: keyboard == TextInputType.multiline ? TextInputAction.newline : TextInputAction.next,
                           keyboardType: keyboard,
                           cursorColor: ControlOptions.instance.colorText,
                           decoration: InputDecoration(
@@ -539,21 +536,15 @@ class _NsgInputState extends State<NsgInput> {
                             border: textFormFieldType == TextFormFieldType.outlineInputBorder
                                 ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                            focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                ? focusedOutlineBorder
-                                : focusedUnderlineBorder,
+                            focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
                             enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
                                 ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                            errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                ? errorOutlineBorder
-                                : errorUnderlineBorder,
+                            errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                             disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
                                 ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
                                 : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                            focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                ? errorOutlineBorder
-                                : errorUnderlineBorder,
+                            focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                           ),
                           onFieldSubmitted: (s) {
                             if (widget.onFieldSubmitted != null) {
@@ -604,17 +595,12 @@ class _NsgInputState extends State<NsgInput> {
                                 child: widget.hint != null
                                     ? Text(
                                         widget.hint!,
-                                        style: TextStyle(
-                                            fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
+                                        style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
                                       )
                                     : widget.labelWidget ??
                                         Text(
-                                          (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
-                                              ? widget.label + ' *'
-                                              : widget.label,
-                                          style: TextStyle(
-                                              fontSize: ControlOptions.instance.sizeM,
-                                              color: nsgtheme.nsgInputHintColor),
+                                          (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? '${widget.label} *' : widget.label,
+                                          style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
                                         ),
                               ),
                             ),
@@ -630,9 +616,7 @@ class _NsgInputState extends State<NsgInput> {
                                         padding: getHintPadding(),
                                         child: Text(
                                           widget.hint!,
-                                          style: TextStyle(
-                                              fontSize: ControlOptions.instance.sizeM,
-                                              color: nsgtheme.nsgInputHintColor),
+                                          style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
                                         ),
                                       ));
                                 } else {
@@ -648,8 +632,7 @@ class _NsgInputState extends State<NsgInput> {
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
                       getValidateText(),
-                      style:
-                          TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
                     ),
                   ),
               ],
@@ -676,9 +659,7 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   String getValidateText() {
-    if (widget.controller != null &&
-        widget.controller!.fieldsWithError.isNotEmpty &&
-        widget.controller!.fieldsWithError[widget.fieldName] != null) {
+    if (widget.controller != null && widget.controller!.fieldsWithError.isNotEmpty && widget.controller!.fieldsWithError[widget.fieldName] != null) {
       return widget.controller!.fieldsWithError[widget.fieldName]!;
     } else {
       return widget.validateText;
@@ -692,8 +673,7 @@ class _NsgInputState extends State<NsgInput> {
           : EdgeInsets.zero;
     } else {
       return nsgtheme.nsgInputContentPadding
-          .subtract(
-              EdgeInsets.only(top: nsgtheme.nsgInputContentPadding.top, bottom: nsgtheme.nsgInputContentPadding.bottom))
+          .subtract(EdgeInsets.only(top: nsgtheme.nsgInputContentPadding.top, bottom: nsgtheme.nsgInputContentPadding.bottom))
           .resolve(TextDirection.ltr);
     }
   }
@@ -813,17 +793,13 @@ class _NsgInputState extends State<NsgInput> {
                       child: Container(
                         //key: GlobalKey(),
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        color: element == selectedElement
-                            ? nsgtheme.nsgInputDynamicListBackSelectedColor
-                            : nsgtheme.nsgInputDynamicListBackColor,
+                        color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
                         height: 50,
                         child: Center(
                             child: Text(element.toString(),
                                 style: TextStyle(
                                   fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
-                                  color: element == selectedElement
-                                      ? nsgtheme.nsgInputDynamicListTextSelectedColor
-                                      : nsgtheme.nsgInputDynamicListTextColor,
+                                  color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor,
                                 ))),
                       )));
                 }
@@ -839,6 +815,7 @@ class _NsgInputState extends State<NsgInput> {
             List<Widget> dynamicListWidgets() {
               List<Widget> list = [];
               for (var element in widget.dynamicList) {
+                // ignore: sized_box_for_whitespace
                 list.add(Container(
                     width: 300,
                     //color: element == selectedElement ? nsgtheme.colorPrimary : Colors.transparent,
@@ -848,9 +825,7 @@ class _NsgInputState extends State<NsgInput> {
                       element.toString(),
                       style: TextStyle(
                           fontWeight: element == selectedElement ? FontWeight.w800 : FontWeight.w400,
-                          color: element == selectedElement
-                              ? nsgtheme.nsgInputDynamicListTextSelectedColor
-                              : nsgtheme.nsgInputDynamicListTextColor),
+                          color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
                     ))));
               }
               return list;
@@ -929,11 +904,7 @@ class _NsgInputState extends State<NsgInput> {
       //selectionController!.refreshData();
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        var form = NsgSelection(
-            widgetType: widget.selectionWidgetType,
-            inputType: inputType,
-            controller: selectionController,
-            rowWidget: widget.rowWidget);
+        var form = NsgSelection(widgetType: widget.selectionWidgetType, inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
         form.selectFromArray(widget.label, (item) {
           widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
           if (widget.onChanged != null) {
@@ -943,8 +914,7 @@ class _NsgInputState extends State<NsgInput> {
             widget.onFocusChanged!(false);
           }
           if (widget.onEditingComplete != null) {
-            WidgetsBinding.instance
-                .addPostFrameCallback((_) => widget.onEditingComplete!(widget.dataItem, widget.fieldName));
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onEditingComplete!(widget.dataItem, widget.fieldName));
           }
           if (widget.controller != null) {
             widget.controller!.sendNotify();
@@ -1024,11 +994,9 @@ class _NsgInputState extends State<NsgInput> {
           ? NsgTimePicker(
               dateForTime: widget.dataItem[widget.fieldName],
               initialTime: Duration(
-                  hours: (widget.dataItem[widget.fieldName] ?? DateTime.now()).hour,
-                  minutes: (widget.dataItem[widget.fieldName] ?? DateTime.now()).minute),
+                  hours: (widget.dataItem[widget.fieldName] ?? DateTime.now()).hour, minutes: (widget.dataItem[widget.fieldName] ?? DateTime.now()).minute),
               onClose: (Duration endDate) {},
-            ).showPopup(context, widget.dataItem[widget.fieldName].hour, widget.dataItem[widget.fieldName].minute,
-              (value) {
+            ).showPopup(context, widget.dataItem[widget.fieldName].hour, widget.dataItem[widget.fieldName].minute, (value) {
               if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
               if (widget.onEditingComplete != null) {
                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
@@ -1070,7 +1038,6 @@ class _NsgInputState extends State<NsgInput> {
                   //key: GlobalKey(),
                   style: widget.nsgSwitchHorizontalStyle,
                   text: widget.label,
-                  child: widget.child,
                   isOn: fieldValue,
                   onTap: () {
                     fieldValue = !fieldValue;
@@ -1083,7 +1050,8 @@ class _NsgInputState extends State<NsgInput> {
                     } else {
                       setState(() {});
                     }
-                  })
+                  },
+                  child: widget.child)
 
               //  CupertinoSwitch(
               //     trackColor: widget.trackColor ?? ControlOptions.instance.colorMainDarker,

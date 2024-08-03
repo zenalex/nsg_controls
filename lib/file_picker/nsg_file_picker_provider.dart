@@ -15,6 +15,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../helpers.dart';
+
 class NsgFilePickerProvider {
   static List<String> globalAllowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'];
   static List<String> globalAllowedVideoFormats = const ['mp4', 'mov'];
@@ -139,7 +141,7 @@ class NsgFilePickerProvider {
                 fileType: fileType,
                 filePath: fileName));
           } else {
-            error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
           }
         }
       }
@@ -175,7 +177,7 @@ class NsgFilePickerProvider {
                   fileType: fileType,
                   filePath: element.path ?? ''));
             } else {
-              error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+              error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
             }
           }
           if (GetPlatform.isLinux) {
@@ -197,7 +199,7 @@ class NsgFilePickerProvider {
                   fileType: fileType,
                   filePath: element.path ?? ''));
             } else {
-              error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+              error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
             }
           }
         }
@@ -247,7 +249,7 @@ class NsgFilePickerProvider {
                 fileType: fileType,
                 filePath: element.path));
           } else {
-            error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
           }
         }
       }
@@ -306,7 +308,7 @@ class NsgFilePickerProvider {
               fileType: fileType,
               filePath: element.path));
         } else {
-          error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+          error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
         }
       }
     }
@@ -332,7 +334,7 @@ class NsgFilePickerProvider {
           var file = File(element.bytes.toString());
 
           if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
-            error = 'Превышен максимальный размер файла ${(fileMaxSize / 1024).toString()} кБайт';
+            error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
           }
           if (fileType == NsgFilePickerObjectType.image) {
             objectsList.add(NsgFilePickerObject(
@@ -350,14 +352,14 @@ class NsgFilePickerProvider {
                 fileType: fileType,
                 filePath: ''));
           } else {
-            error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
           }
         } else if (GetPlatform.isWindows) {
           if (element.path != null) {
             var file = File(element.path!);
 
             if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
-              error = 'Превышен максимальный размер файла ${(fileMaxSize / 1024).toString()} кБайт';
+              error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
             }
             if (fileType == NsgFilePickerObjectType.image) {
               objectsList.add(NsgFilePickerObject(
@@ -378,10 +380,10 @@ class NsgFilePickerProvider {
                   fileContent: await file.readAsBytes(),
                   filePath: element.path ?? ''));
             } else {
-              error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+              error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
             }
           } else {
-            error = '${element.path} - ошибка пути';
+            error = '${element.path} - ${tran.path_error}';
           }
         }
         if (GetPlatform.isLinux || GetPlatform.isMacOS || GetPlatform.isAndroid || GetPlatform.isIOS) {
@@ -407,7 +409,7 @@ class NsgFilePickerProvider {
                 fileType: fileType,
                 filePath: element.path ?? ''));
           } else {
-            error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
           }
         }
       }
@@ -471,7 +473,7 @@ class NsgFilePickerProvider {
             fileType: fileType,
             filePath: element.path));
       } else {
-        error = '${fileType.toString().toUpperCase()} - неподдерживаемый формат';
+        error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
       }
     }
 
@@ -500,7 +502,7 @@ class NsgFilePickerProvider {
     if (!kIsWeb) {
       if (!GetPlatform.isAndroid && !GetPlatform.isIOS) {
         var fileName = await FilePicker.platform
-            .saveFile(dialogTitle: 'Сохранить файл', type: fileType, allowedExtensions: [extension(fileObject.filePath).replaceAll('.', '')]);
+            .saveFile(dialogTitle: tran.save_file, type: fileType, allowedExtensions: [extension(fileObject.filePath).replaceAll('.', '')]);
         if (fileName == null) return;
         var ext = extension(fileName);
         if (ext.isEmpty) {
@@ -541,10 +543,10 @@ class NsgFilePickerProvider {
 
           html.Url.revokeObjectUrl(url);
         } else {
-          Get.snackbar('failed download', 'Failed to download file try again');
+          Get.snackbar(tran.failed_download, tran.failed_download_try_again);
         }
       } catch (e) {
-        Get.snackbar('error', 'Error while downloading file: $e');
+        Get.snackbar(tran.error, '${tran.error_file_download}: $e');
       }
     }
   }

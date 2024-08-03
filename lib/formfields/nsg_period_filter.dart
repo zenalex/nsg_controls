@@ -1,9 +1,13 @@
 // импорт
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
+
+import '../helpers.dart';
 
 /// Виджет фильтра периода по датам (времени) + метод открытия диалогового окна с виджетом контента фильтра
 class NsgPeriodFilter extends StatefulWidget {
@@ -61,7 +65,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
     Get.dialog(
             NsgPopUp(
                 height: 400,
-                title: 'Выберите период',
+                title: tran.select_period,
                 getContent: () => [
                       NsgPeriodFilterContent(
                         onSelect: (value) {
@@ -180,8 +184,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
     _timeselected = widget.periodTimeEnabled;
   }
 
-  void _setToSelected(NsgPeriodType _selected) {
-    switch (_selected) {
+  void _setToSelected(NsgPeriodType selected) {
+    switch (selected) {
       case NsgPeriodType.year:
         date.setToYear(date.beginDate);
         break;
@@ -211,7 +215,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
 
   @override
   Widget build(BuildContext context) {
-    double _timeOpacity() {
+    double timeOpacity() {
       if (_selected != NsgPeriodType.period && _selected != NsgPeriodType.periodWidthTime) {
         return 1;
       } else if (_timeselected == true) {
@@ -312,7 +316,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: 'Год',
+                                        label: tran.year,
                                         value: _selected == NsgPeriodType.year ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.year;
@@ -326,7 +330,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: 'Квартал',
+                                        label: tran.quarter,
                                         value: _selected == NsgPeriodType.quarter ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.quarter;
@@ -345,7 +349,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: 'Месяц',
+                                        label: tran.month,
                                         value: _selected == NsgPeriodType.month ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.month;
@@ -359,7 +363,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: 'Неделя',
+                                        label: tran.week,
                                         value: _selected == NsgPeriodType.week ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.week;
@@ -378,7 +382,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: 'День',
+                                        label: tran.day,
                                         value: _selected == NsgPeriodType.day ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.day;
@@ -390,7 +394,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       child: NsgButton(
                                           margin: const EdgeInsets.only(top: 5),
                                           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                                          text: 'Сегодня',
+                                          text: tran.today,
                                           borderRadius: 10,
                                           color: ControlOptions.instance.colorInverted,
                                           onPressed: () {
@@ -418,7 +422,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),
                                       radio: true,
-                                      label: 'Период',
+                                      label: tran.period,
                                       value: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? true : false,
                                       onPressed: (value) {
                                         if (_timeselected) {
@@ -480,7 +484,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   NsgCheckBox(
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),
-                                      label: 'Время',
+                                      label: tran.time,
                                       value: _timeselected == true ? true : false,
                                       onPressed: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
                                           ? (value) {
@@ -505,7 +509,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                             }
                                           : (value) {}),
                                   Opacity(
-                                    opacity: _timeOpacity(),
+                                    opacity: timeOpacity(),
                                     child: NsgTimePicker(
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),
@@ -518,7 +522,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     ),
                                   ),
                                   Opacity(
-                                    opacity: _timeOpacity(),
+                                    opacity: timeOpacity(),
                                     child: NsgTimePicker(
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),

@@ -8,6 +8,8 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+import '../helpers.dart';
+
 class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T> with NsgFilePickerInterface {
   var _files = <NsgFilePickerObject>[];
   @override
@@ -31,7 +33,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
 
   @override
   Future<bool> saveImages() async {
-    var progress = NsgProgressDialog(textDialog: 'Сохранение фото');
+    var progress = NsgProgressDialog(textDialog: tran.save_photo);
     progress.show();
     var ids = <String>[];
 
@@ -95,7 +97,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
               Get.back();
             },
             margin: const EdgeInsets.all(15),
-            title: "Просмотр изображений",
+            title: tran.view_photo,
             width: Get.width,
             height: Get.height,
             getContent: () => [

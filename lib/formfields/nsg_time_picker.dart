@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -9,6 +11,8 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_icon_button.dart';
 import 'package:nsg_data/nsg_data.dart';
+
+import '../helpers.dart';
 
 class NsgTimePicker extends StatefulWidget {
   final String? label;
@@ -53,13 +57,13 @@ class NsgTimePicker extends StatefulWidget {
   }) : super(key: key);
 
   void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
-    DateTime _today = DateTime.now();
-    DateTime selectedDate = DateTime(_today.year, _today.month, _today.day, hours, minutes);
+    DateTime today = DateTime.now();
+    DateTime selectedDate = DateTime(today.year, today.month, today.day, hours, minutes);
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
               height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 420 : 120,
-              title: 'Введите время',
+              title: tran.enter_time,
               onConfirm: () {
                 onClose(selectedDate);
               },
@@ -100,7 +104,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
     int minutes = _initialTime.inMinutes - hours * 60;
     String minutesString = minutes.toString().padLeft(2, '0');
 
-    _inkWellWrapper({required Widget child}) {
+    inkWellWrapper({required Widget child}) {
       if (widget.disabled == true) {
         return child;
       } else {
@@ -125,7 +129,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
       }
     }
 
-    return _inkWellWrapper(
+    return inkWellWrapper(
       child: Padding(
         padding: widget.margin,
         child: Column(
@@ -218,16 +222,16 @@ class _TimePickerContentState extends State<TimePickerContent> {
   //bool _ignoreChange = false;
   void textChanged() {
     _initialTime = textController.text;
-    DateTime? _initialTimeNew;
+    DateTime? initialTimeNew;
     var splitedTime = _initialTime.split(':');
     if (splitedTime.length > 1) {
       var hour = int.tryParse(splitedTime[0]) ?? 0;
       var minutes = int.tryParse(splitedTime[1]) ?? 0;
       var now = widget.dateForTime ?? DateTime.now();
-      _initialTimeNew = DateTime(now.year, now.month, now.day, hour, minutes);
+      initialTimeNew = DateTime(now.year, now.month, now.day, hour, minutes);
     }
-    if (_initialTimeNew != null) {
-      _initialTime2 = _initialTimeNew;
+    if (initialTimeNew != null) {
+      _initialTime2 = initialTimeNew;
       if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) datepicker!.setState(_initialTime2);
       widget.onChange(_initialTime2);
     }

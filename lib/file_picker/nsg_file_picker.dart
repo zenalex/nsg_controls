@@ -5,6 +5,7 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:path/path.dart';
 import 'package:video_player_win/video_player_win.dart';
+import '../helpers.dart';
 import '../nsg_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -22,7 +23,7 @@ class NsgFilePicker extends StatefulWidget {
   ///Например, можно использовать для задания картинки профиля, установив ограничение равное 1
   ///По умолчанию равно нулю - не ограничено
   final int maxFilesCount;
-  final String textChooseFile;
+  final String? textChooseFile;
 
   ///Сохраненные объекты (картинки и документы)
   final List<NsgFilePickerObject> objectsList;
@@ -41,7 +42,7 @@ class NsgFilePicker extends StatefulWidget {
       this.maxFilesCount = 0,
       required this.callback,
       required this.objectsList,
-      this.textChooseFile = 'Добавить фото',
+      this.textChooseFile,
       this.oneFile = false,
       this.fromGallery = true})
       : super(key: key) {
@@ -61,7 +62,7 @@ class NsgFilePicker extends StatefulWidget {
   // popup() {
   //   Get.dialog(
   //       NsgPopUp(
-  //         title: 'Загрузите фотографию',
+  //         title: tran.upload_photo,
   //         contentTop: SizedBox(width: 300, height: 300, child: this),
   //       ),
   //       barrierDismissible: true);
@@ -81,8 +82,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   Widget _appBar() {
     return NsgAppBar(
-      text: objectsList.isEmpty ? 'Добавление фотографий'.toUpperCase() : 'Сохранение фотографий'.toUpperCase(),
-      text2: objectsList.isNotEmpty ? 'вы добавили ${objectsList.length} фото' : null,
+      text: objectsList.isEmpty ? tran.add_photos.toUpperCase() : tran.save_photos.toUpperCase(),
+      text2: objectsList.isNotEmpty ? tran.photos_added(objectsList.length) : null,
       icon: Icons.arrow_back_ios_new,
       color: ControlOptions.instance.colorInverted,
       colorsInverted: true,
@@ -168,8 +169,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                       hoverColor: ControlOptions.instance.colorMainDark,
                       onTap: () {
                         Get.dialog(NsgPopUp(
-                          title: 'Удаление фотографии',
-                          text: 'После удаления, фотографию нельзя будет восстановить. Удалить?',
+                          title: tran.delete_photos,
+                          text: tran.delete_photo_warning,
                           onConfirm: () {
                             element.markToDelete = true;
                             //objectsList.remove(element);
@@ -210,7 +211,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                               Get.back();
                             },
                             margin: const EdgeInsets.all(15),
-                            title: "Просмотр изображений",
+                            title: tran.view_photo,
                             width: Get.width,
                             height: Get.height,
                             getContent: () => [
@@ -221,7 +222,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                                 ]),
                         barrierDismissible: true);
                   } else {
-                    Get.snackbar('Ошибка', 'Этот файл не является изображением',
+                    Get.snackbar(tran.error, tran.not_an_image_file,
                         duration: const Duration(seconds: 3),
                         maxWidth: 300,
                         snackPosition: SnackPosition.bottom,
@@ -255,7 +256,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     }
     List<Widget> listWithPlus = list;
     listWithPlus.add(NsgImagePickerButton(
-        textChooseFile: widget.textChooseFile,
+        textChooseFile: widget.textChooseFile ?? tran.add_photo,
         onPressed: () async {
           var ans = await widget.filePicker.autoSelectPicker();
           //widget.objectsList.clear();
@@ -417,8 +418,8 @@ class NsgImagePickerButton extends StatelessWidget {
                               Icon(Icons.camera_alt_outlined, size: 24, color: ControlOptions.instance.colorInverted),
                               Padding(
                                 padding: const EdgeInsets.only(top: 0),
-                                child:
-                                    Text('Камера', style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
+                                child: Text(tran.camera,
+                                    style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
                               ),
                             ],
                           ),
@@ -441,8 +442,8 @@ class NsgImagePickerButton extends StatelessWidget {
                               Icon(Icons.photo_library_outlined, size: 24, color: ControlOptions.instance.colorInverted),
                               Padding(
                                 padding: const EdgeInsets.only(top: 0),
-                                child:
-                                    Text('Галерея', style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
+                                child: Text(tran.gallery,
+                                    style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
                               ),
                             ],
                           ),
