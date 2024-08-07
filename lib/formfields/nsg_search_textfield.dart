@@ -21,6 +21,7 @@ class _NsgSearchTextfieldState extends State<NsgSearchTextfield> {
   void initState() {
     if (widget.controller != null) {
       widget.controller!.controllerFilter.isOpen = true;
+      textEditController.text = widget.controller!.controllerFilter.searchString;
     }
     super.initState();
   }

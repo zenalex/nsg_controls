@@ -77,6 +77,9 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
     if (widget.editPageController != null) {
       widget.editPageController!.statusChanged.subscribe(editControllerUpdate);
     }
+    //Сбрасываем поисковую строку, которая осталась от прошлого открытия формы
+    //Если не сбрасывать, то надо при открытии применять фильтр, иначе нелогично
+    widget.dataController?.controllerFilter.searchString = '';
     super.initState();
   }
 
@@ -184,7 +187,8 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
               ],
             ),
           ),
-          if (widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length > 5)
+          if ((widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length > 5) ||
+              widget.dataController!.controllerFilter.searchString.isNotEmpty)
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 15, 20, 10),
               child: NsgSearchTextfield(
