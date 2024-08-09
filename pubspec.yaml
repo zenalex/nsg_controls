@@ -36,13 +36,14 @@ dependencies:
   responsive_grid: ^2.1.0
   photo_view: ^0.14.0
   reorderables: ^0.6.0
-  package_info_plus: ^4.0.0
+  package_info_plus: ^8.0.1
   vector_math: ^2.1.2
   flutter_multi_formatter: ^2.6.2
   dotted_line: ^3.1.0
   event: ^2.0.5
   hovering: ^1.0.4
   image: ^4.0.6
+  timeago: ^3.7.0
   
 
   # to controls!!!
