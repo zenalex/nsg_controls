@@ -187,8 +187,9 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
               ],
             ),
           ),
-          if ((widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length > 5) ||
-              widget.dataController!.controllerFilter.searchString.isNotEmpty)
+          if (widget.dataController != null &&
+              ((widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length > 5) ||
+                  widget.dataController!.controllerFilter.searchString.isNotEmpty))
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 15, 20, 10),
               child: NsgSearchTextfield(
