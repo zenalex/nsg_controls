@@ -848,7 +848,7 @@ class _NsgInputState extends State<NsgInput> {
                       title: widget.label,
                       // ignore: sized_box_for_whitespace
                       contentTop: Container(
-                          height: 300,
+                          constraints: BoxConstraints(maxHeight: 300),
                           child: RawScrollbar(
                               minOverscrollLength: 100,
                               minThumbLength: 100,
@@ -876,7 +876,7 @@ class _NsgInputState extends State<NsgInput> {
                       title: widget.label,
                       contentTop: Container(
                         padding: EdgeInsets.symmetric(horizontal: 10),
-                        height: 300,
+                        constraints: BoxConstraints(maxHeight: 300),
                         child: StatefulBuilder(builder: (context, setstate) {
                           return CupertinoPicker(
                             selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
