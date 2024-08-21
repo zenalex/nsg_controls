@@ -224,7 +224,7 @@ class NsgButton extends StatelessWidget {
       /* --------------------------------------------------------------- // Кнопка обычная -------------------------------------------------------------- */
       return Container(
         margin: margin ?? ControlOptions.instance.nsgButtonMargin,
-        constraints: const BoxConstraints(minHeight: 20, maxWidth: 800),
+        constraints: const BoxConstraints(minHeight: 20, maxWidth: 1900),
         width: width ?? (autoWidth ? null : double.infinity),
         height: height ?? ControlOptions.instance.nsgButtonHeight,
         decoration: BoxDecoration(
