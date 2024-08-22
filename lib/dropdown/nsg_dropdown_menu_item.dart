@@ -3,7 +3,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
 class NsgDropdownMenuItem extends StatelessWidget {
-  const NsgDropdownMenuItem({super.key, required this.text, this.iconLeft, this.iconRight, this.color, this.rotateAngle, this.value, this.svgLeft});
+  const NsgDropdownMenuItem(
+      {super.key,
+      required this.text,
+      this.iconLeft,
+      this.iconRight,
+      this.color,
+      this.rotateAngle,
+      this.value,
+      this.textStyle = const TextStyle(color: Colors.white, fontSize: 16),
+      this.svgLeft});
+  final TextStyle textStyle;
   final String text;
   final String? svgLeft;
   final IconData? iconLeft;
@@ -14,7 +24,6 @@ class NsgDropdownMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const TextStyle textStyle = TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Inter');
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -22,7 +31,8 @@ class NsgDropdownMenuItem extends StatelessWidget {
           if (svgLeft != null)
             Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: SvgPicture.asset(svgLeft!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn)),
+              child: SvgPicture.asset(svgLeft!,
+                  colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn)),
             ),
           if (iconLeft != null)
             Padding(
