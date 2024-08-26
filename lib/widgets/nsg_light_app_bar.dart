@@ -74,6 +74,7 @@ class NsgLightAppBar extends StatelessWidget {
         onTapCallback: element.onTapCallback,
         color: element.color,
         backColor: element.backColor,
+        borderColor: element.borderColor,
         rotateAngle: element.rotateAngle,
         // padding: const EdgeInsets.symmetric(horizontal: 12),
       ));
@@ -127,6 +128,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
       this.nott,
       this.color,
       this.backColor,
+      this.borderColor,
       this.rotateAngle,
       this.padding});
 
@@ -139,6 +141,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   final int? nott;
   final Color? color;
   final Color? backColor;
+  final Color? borderColor;
   final double? rotateAngle;
   final EdgeInsets? padding;
   final double height, width;
@@ -155,7 +158,10 @@ class NsgLigthAppBarIcon extends StatelessWidget {
               width: width,
               height: height,
               child: Container(
-                decoration: BoxDecoration(color: backColor ?? Colors.transparent, borderRadius: BorderRadius.circular(15)),
+                decoration: BoxDecoration(
+                    border: borderColor != null ? Border.all(width: 1, color: borderColor!) : null,
+                    color: backColor ?? Colors.transparent,
+                    borderRadius: BorderRadius.circular(15)),
                 child: Transform.rotate(
                   angle: rotateAngle ?? 0,
                   child: icon != null
