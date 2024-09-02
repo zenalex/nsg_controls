@@ -453,22 +453,19 @@ Color stringToColor(String color) {
   if (valueString == '#ffffff') {
     valueString = 'ffffffff';
   }
-  int value = int.parse(valueString, radix: 16);
+  int value = int.tryParse(valueString, radix: 16) ?? 0;
   Color otherColor = Color(value);
   return otherColor;
 }
 
 class ColorsCalc {
-  Color dark(Color c) =>
-      Color.fromARGB(-1, (c.red * c.red) ~/ 255, (c.green * c.green) ~/ 255, (c.blue * c.blue) ~/ 255);
+  Color dark(Color c) => Color.fromARGB(-1, (c.red * c.red) ~/ 255, (c.green * c.green) ~/ 255, (c.blue * c.blue) ~/ 255);
 
-  Color light(Color c) => Color.fromARGB(
-      -1, (sqrt(c.red / 255) * 255).floor(), (sqrt(c.green / 255) * 255).floor(), (sqrt(c.blue / 255) * 255).floor());
+  Color light(Color c) => Color.fromARGB(-1, (sqrt(c.red / 255) * 255).floor(), (sqrt(c.green / 255) * 255).floor(), (sqrt(c.blue / 255) * 255).floor());
 
   Color tweak(Color base, double bf, double df, double lf, double wf, {Color? darker, Color? lighter}) {
     darker ??= dark(base);
     lighter ??= light(base);
-    return Color.lerp(
-        Colors.black, Color.lerp(Colors.white, Color.lerp(darker, Color.lerp(lighter, base, lf), df), wf), bf)!;
+    return Color.lerp(Colors.black, Color.lerp(Colors.white, Color.lerp(darker, Color.lerp(lighter, base, lf), df), wf), bf)!;
   }
 }
