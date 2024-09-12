@@ -76,7 +76,7 @@ class NsgFilePickerProvider {
       this.imageMaxWidth = 1440.0,
       this.imageMaxHeight = 1440.0,
       this.imageQuality = 70,
-      this.fileMaxSize = 1000000.0,
+      this.fileMaxSize = 10000000.0,
       this.ignoreMaxSize = false,
       this.savePrefix = 'NsgFile',
       this.maxFilesCount = 0,
