@@ -6,7 +6,6 @@ import 'package:nsg_controls/file_picker/nsg_video_player.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-
 import '../nsg_control_options.dart';
 import '../widgets/nsg_progressbar.dart';
 import 'nsg_file_picker_object.dart';
