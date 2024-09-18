@@ -128,7 +128,7 @@ class NsgCropPageState extends State<NsgCropPage> {
                 widget.imageDataList[_currentImage] = image;
                 currentImage = _currentImage;
               },
-              initialAreaBuilder: (rect) => Rect.fromLTRB(rect.left + 24, rect.top + 32, rect.right - 24, rect.bottom - 32),
+              initialRectBuilder: (rect, rect2) => Rect.fromLTRB(rect.left + 24, rect.top + 32, rect.right - 24, rect.bottom - 32),
               withCircleUi: widget.isCircle,
               baseColor: ControlOptions.instance.colorMainLighter,
               maskColor: Colors.black.withAlpha(150),
@@ -156,7 +156,7 @@ class NsgCropPageState extends State<NsgCropPage> {
               },
               cornerDotBuilder: (size, edgeAlignment) => const DotControl(color: Colors.blue),
               interactive: widget.interactive,
-              fixArea: !widget.isFree,
+              fixCropRect: !widget.isFree,
               progressIndicator: const NsgSimpleProgressBar(
                 size: 100,
                 width: 10,
