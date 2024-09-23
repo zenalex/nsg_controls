@@ -38,12 +38,16 @@ class NsgLightAppBar extends StatelessWidget {
               Flexible(
                 child: InkWell(
                   onTap: onTap,
-                  child: Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: buildStyle.titleStyle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  child: Container(
+                    constraints: BoxConstraints(minHeight: 50),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: buildStyle.titleStyle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ),
