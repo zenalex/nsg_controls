@@ -39,10 +39,9 @@ class NsgPeriodFilter extends StatefulWidget {
   State<NsgPeriodFilter> createState() => _NsgPeriodFilterState();
 }
 
-/// Выбранная дата
-NsgPeriod selectedDate = NsgPeriod();
-
 class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
+  /// Выбранная дата
+  NsgPeriod selectedDate = NsgPeriod();
   late double textScaleFactor;
   var isOpen = false;
 
@@ -112,18 +111,18 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                     child: Text(
                       widget.disabled == false ? widget.label! : '🔒 ${widget.label}',
                       textAlign: widget.textAlign,
-                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
+                      style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorMainDark),
                     ),
                   ),
                   Container(
                       padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
                       alignment: Alignment.center,
                       // height: 20 * textScaleFactor,
-                      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: nsgtheme.colorMain))),
                       child: Text(
                         _showPeriod(),
                         textAlign: widget.textAlign,
-                        style: TextStyle(fontSize: ControlOptions.instance.sizeM),
+                        style: TextStyle(fontSize: nsgtheme.sizeM, color: nsgtheme.colorBase.b0),
                       )),
                 ],
               ),
@@ -133,7 +132,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
               child: Text(
                 'Период: ${_showPeriod()}'.toUpperCase(),
                 textAlign: widget.textAlign,
-                style: const TextStyle(fontSize: 10),
+                style: TextStyle(fontSize: 10, color: nsgtheme.colorBase.b0),
               ),
             ),
     );
@@ -260,7 +259,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     widget: Center(
                                         child: Icon(
                                       Icons.remove,
-                                      color: ControlOptions.instance.colorMainText,
+                                      color: nsgtheme.colorMainText,
                                     )),
                                     onPressed: () {
                                       date.minus();
@@ -279,11 +278,15 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 },
                                 child: Container(
                                     decoration: BoxDecoration(
-                                        color: ControlOptions.instance.colorInverted,
-                                        borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
-                                        border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
+                                        color: nsgtheme.colorSecondary,
+                                        borderRadius: BorderRadius.circular(nsgtheme.borderRadius),
+                                        border: Border.all(width: 2, color: nsgtheme.colorMain)),
                                     padding: const EdgeInsets.symmetric(vertical: 10),
-                                    child: Center(child: Text(date.dateTextWithoutTime))),
+                                    child: Center(
+                                        child: Text(
+                                      date.dateTextWithoutTime,
+                                      style: TextStyle(color: nsgtheme.colorBase.b100),
+                                    ))),
                               ),
                             )),
                             SizedBox(
@@ -293,7 +296,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     margin: const EdgeInsets.all(0),
                                     padding: const EdgeInsets.all(0),
                                     style: "widget",
-                                    widget: Center(child: Icon(Icons.add, color: ControlOptions.instance.colorMainText)),
+                                    widget: Center(child: Icon(Icons.add, color: nsgtheme.colorMainText)),
                                     onPressed: () {
                                       date.plus();
                                       setState(() {});
@@ -396,7 +399,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
                                           text: tran.today,
                                           borderRadius: 10,
-                                          color: ControlOptions.instance.colorInverted,
+                                          color: nsgtheme.colorBase.b0,
                                           onPressed: () {
                                             date.setToDay(DateTime.now());
                                             _setToSelected(_selected);

@@ -135,7 +135,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                   textAlign: widget.textAlign,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
+                  style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorMainDark),
                 ),
               ),
             Container(
@@ -147,9 +147,9 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                     border:
                         // widget.textFormFieldType == TextFormFieldType.outlineInputBorder
                         //     ? Border.fromBorderSide(
-                        //         BorderSide(color: widget.outlineBorderColor ?? ControlOptions.instance.colorGreyLighter),
+                        //         BorderSide(color: widget.outlineBorderColor ?? nsgtheme.colorGreyLighter),
                         //       )
-                        Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
+                        Border(bottom: BorderSide(width: 1, color: nsgtheme.colorMain))),
                 child: Row(
                   children: [
                     if (widget.disabled == true)
@@ -158,7 +158,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                         child: Icon(
                           Icons.lock,
                           size: 12,
-                          color: ControlOptions.instance.colorMain,
+                          color: nsgtheme.colorMain,
                         ),
                       ),
                     Expanded(
@@ -168,7 +168,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                             textAlign: widget.textAlign,
                             style:
                                 // widget.textStyle ??
-                                TextStyle(fontSize: ControlOptions.instance.sizeM),
+                                TextStyle(fontSize: nsgtheme.sizeM),
                           ),
                     ),
                   ],
@@ -276,23 +276,25 @@ class _DatePickerContentState extends State<DatePickerContent> {
               )
             ],
             keyboardType: TextInputType.number,
-            cursorColor: ControlOptions.instance.colorMainText,
+            cursorColor: nsgtheme.colorBase.b100,
             textAlign: widget.textAlign,
             controller: textController,
             decoration: InputDecoration(
               labelText: '',
               contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
               isDense: true,
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainText)),
-              labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainDark)),
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainText)),
+              labelStyle: TextStyle(color: nsgtheme.colorMainDark, backgroundColor: Colors.transparent),
             ),
             // key: GlobalKey(),
             onEditingComplete: () {
               FocusScope.of(context).unfocus();
             },
-            onChanged: (String value) {},
-            style: TextStyle(color: ControlOptions.instance.colorText, fontSize: 24),
+            onChanged: (String value) {
+              //
+            },
+            style: TextStyle(color: nsgtheme.colorText, fontSize: 24),
           ),
         ),
         !kIsWeb && (Platform.isAndroid || Platform.isIOS)
@@ -446,11 +448,11 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
       child: Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(
-              background: ControlOptions.instance.colorMainBack,
-              onBackground: ControlOptions.instance.colorMain,
-              primary: ControlOptions.instance.colorMain,
-              onPrimary: ControlOptions.instance.colorMainText,
-              onSurface: ControlOptions.instance.colorText),
+              background: nsgtheme.colorMainBack,
+              onBackground: nsgtheme.colorMain,
+              primary: nsgtheme.colorMain,
+              onPrimary: nsgtheme.colorMainText,
+              onSurface: nsgtheme.colorText),
         ),
         child: CalendarDatePicker(
           key: GlobalKey(),
