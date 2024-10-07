@@ -212,44 +212,44 @@ class _DatePickerContentState extends State<DatePickerContent> {
   void textChanged() {
     if (_ignoreChange) return;
     var value = textController.text;
-    if (value.length < _initialTime.length) {
-      _initialTime = value;
-      return;
-    } else if (value.length == _initialTime.length) {
-      var start = textController.selection.start;
-      if (start < _initialTime.length) {
-        _initialTime = value.substring(0, start) + _initialTime.substring(start);
-      } else {
-        _initialTime = value;
-      }
-
-      DateTime? initialTimeNew;
-      try {
-        initialTimeNew = DateFormat('dd.MM.yyyy').parse(_initialTime);
-        // ignore: empty_catches
-      } catch (e) {}
-      if (initialTimeNew != null) {
-        _initialTime2 = initialTimeNew;
-/* ---------------------------------------------------- только на мобильных обновляем Дейтпикер --------------------------------------------------- */
-        if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-          datepicker!.setState(_initialTime2);
-        } else {
-/* ----------------------------------------------------- на десктопе обновляем Календарьпикер ----------------------------------------------------- */
-          calendarpicker!.setState(_initialTime2);
-        }
-        widget.onChange(_initialTime2);
-      }
-      if (textController.text != _initialTime) {
-        var start = textController.selection.start;
-        _ignoreChange = true;
-        textController.text = _initialTime;
-
-        textController.selection = TextSelection.fromPosition(TextPosition(offset: start));
-        _ignoreChange = false;
-      }
+    // if (value.length < _initialTime.length) {
+    //   _initialTime = value;
+    //   return;
+    // } else if (value.length == _initialTime.length) {
+    var start = textController.selection.start;
+    if (start < _initialTime.length) {
+      _initialTime = value.substring(0, start) + _initialTime.substring(start);
     } else {
       _initialTime = value;
     }
+
+    DateTime? initialTimeNew;
+    try {
+      initialTimeNew = DateFormat('dd.MM.yyyy').parse(_initialTime);
+      // ignore: empty_catches
+    } catch (e) {}
+    if (initialTimeNew != null) {
+      _initialTime2 = initialTimeNew;
+/* ---------------------------------------------------- только на мобильных обновляем Дейтпикер --------------------------------------------------- */
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+        datepicker!.setState(_initialTime2);
+      } else {
+/* ----------------------------------------------------- на десктопе обновляем Календарьпикер ----------------------------------------------------- */
+        calendarpicker!.setState(_initialTime2);
+      }
+      widget.onChange(_initialTime2);
+    }
+    if (textController.text != _initialTime) {
+      var start = textController.selection.start;
+      _ignoreChange = true;
+      textController.text = _initialTime;
+
+      textController.selection = TextSelection.fromPosition(TextPosition(offset: start));
+      _ignoreChange = false;
+    }
+    // } else {
+    //   _initialTime = value;
+    // }
   }
 
   @override

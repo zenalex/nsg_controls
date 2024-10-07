@@ -14,7 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.19.0
-  get: ^5.0.0-release-candidate-9.2
+  get: ^5.0.0-release-candidate-9.2.1
   # get:
   #   path: 
   #     ../getx
@@ -28,7 +28,7 @@ dependencies:
   jiffy: ^6.0.0 
   flutter_svg: ^2.0.1
   # flutter_calendar_carousel: ^2.1.0
-  share_plus: ^10.0.2
+  share_plus: ^10.0.0
   flutter_slidable: ^3.0.0
   another_flushbar: ^1.12.30
   linked_scroll_controller: ^0.2.0
