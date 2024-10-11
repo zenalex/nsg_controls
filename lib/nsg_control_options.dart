@@ -247,6 +247,7 @@ class ControlOptions {
   double sizeM;
   double sizeS;
   double sizeXS;
+  double sizeXXS;
 
   /// Высота в NsgButton
   double nsgButtonHeight;
@@ -308,6 +309,7 @@ class ControlOptions {
     this.sizeM = 14,
     this.sizeS = 12,
     this.sizeXS = 10,
+    this.sizeXXS = 9,
     this.nsgButtonHeight = 40,
     this.nsgButtonMargin = const EdgeInsets.all(5),
     this.borderRadius = 15.0,
