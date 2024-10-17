@@ -60,6 +60,11 @@ class NsgDatePicker extends StatefulWidget {
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
     DateTime selectedDate = date;
+    //Если не задана дата (<1755) устанавливаем initialTime как начальную
+    //Иначе, при нажатии на галку не происходит выбор даты
+    if (selectedDate.year < 1800) {
+      selectedDate = initialTime;
+    }
 
     showDialog(
         context: context,
