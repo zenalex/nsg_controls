@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart';
 
 class NsgLightAppBar extends StatelessWidget {
   const NsgLightAppBar({
@@ -80,6 +82,8 @@ class NsgLightAppBar extends StatelessWidget {
         backColor: element.backColor,
         borderColor: element.borderColor,
         rotateAngle: element.rotateAngle,
+        controller: element.controller,
+        insideObx: element.insideObx,
         // padding: const EdgeInsets.symmetric(horizontal: 12),
       ));
     }
@@ -90,12 +94,17 @@ class NsgLightAppBar extends StatelessWidget {
     List<NsgLigthAppBarIcon> list = [];
     for (var element in centerIcons) {
       list.add(NsgLigthAppBarIcon(
+        padding: element.padding,
         icon: element.icon,
         onTap: element.onTap,
         nott: element.nott,
         onTapCallback: element.onTapCallback,
         color: element.color,
+        backColor: element.backColor,
+        borderColor: element.borderColor,
         rotateAngle: element.rotateAngle,
+        controller: element.controller,
+        insideObx: element.insideObx,
         // padding: const EdgeInsets.symmetric(horizontal: 12),
       ));
     }
@@ -134,7 +143,9 @@ class NsgLigthAppBarIcon extends StatelessWidget {
       this.backColor,
       this.borderColor,
       this.rotateAngle,
-      this.padding});
+      this.padding,
+      this.controller,
+      this.insideObx});
 
   final String? svg;
   final IconData? icon;
@@ -149,9 +160,24 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   final double? rotateAngle;
   final EdgeInsets? padding;
   final double height, width;
+  final NsgBaseController? controller;
+  final void Function()? insideObx;
 
   @override
   Widget build(BuildContext context) {
+    print("Build");
+
+    Widget wrapper({required Widget child}) {
+      return controller != null
+          ? controller!.obx((state) {
+              if (insideObx != null && controller!.status == GetStatus.success(NsgBaseController.emptyData)) {
+                insideObx!();
+              }
+              return child;
+            })
+          : child;
+    }
+
     return Padding(
       padding: padding ?? EdgeInsets.zero,
       child: Stack(alignment: Alignment.topRight, children: [
@@ -168,15 +194,17 @@ class NsgLigthAppBarIcon extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15)),
                 child: Transform.rotate(
                   angle: rotateAngle ?? 0,
-                  child: icon != null
-                      ? Icon(
-                          icon,
-                          size: 20,
-                          color: color ?? ControlOptions.instance.colorTertiary.c70,
-                        )
-                      : svg != null
-                          ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
-                          : const SizedBox(),
+                  child: wrapper(
+                    child: icon != null
+                        ? Icon(
+                            icon,
+                            size: 20,
+                            color: color ?? ControlOptions.instance.colorTertiary.c70,
+                          )
+                        : svg != null
+                            ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
+                            : const SizedBox(),
+                  ),
                 ),
               ),
             )),
