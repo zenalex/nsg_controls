@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
-import 'package:nsg_data/nsg_data.dart';
 
 class NsgLightAppBar extends StatelessWidget {
   const NsgLightAppBar({
@@ -82,8 +80,7 @@ class NsgLightAppBar extends StatelessWidget {
         backColor: element.backColor,
         borderColor: element.borderColor,
         rotateAngle: element.rotateAngle,
-        controller: element.controller,
-        insideObx: element.insideObx,
+        customBuild: element.customBuild,
         // padding: const EdgeInsets.symmetric(horizontal: 12),
       ));
     }
@@ -94,19 +91,18 @@ class NsgLightAppBar extends StatelessWidget {
     List<NsgLigthAppBarIcon> list = [];
     for (var element in centerIcons) {
       list.add(NsgLigthAppBarIcon(
-        padding: element.padding,
-        icon: element.icon,
-        onTap: element.onTap,
-        nott: element.nott,
-        onTapCallback: element.onTapCallback,
-        color: element.color,
-        backColor: element.backColor,
-        borderColor: element.borderColor,
-        rotateAngle: element.rotateAngle,
-        controller: element.controller,
-        insideObx: element.insideObx,
-        // padding: const EdgeInsets.symmetric(horizontal: 12),
-      ));
+          padding: element.padding,
+          icon: element.icon,
+          onTap: element.onTap,
+          nott: element.nott,
+          onTapCallback: element.onTapCallback,
+          color: element.color,
+          backColor: element.backColor,
+          borderColor: element.borderColor,
+          rotateAngle: element.rotateAngle,
+          customBuild: element.customBuild
+          // padding: const EdgeInsets.symmetric(horizontal: 12),
+          ));
     }
     return list;
   }
@@ -144,8 +140,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
       this.borderColor,
       this.rotateAngle,
       this.padding,
-      this.controller,
-      this.insideObx});
+      this.customBuild});
 
   final String? svg;
   final IconData? icon;
@@ -160,68 +155,54 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   final double? rotateAngle;
   final EdgeInsets? padding;
   final double height, width;
-  final NsgBaseController? controller;
-  final void Function()? insideObx;
+  final Widget Function(BuildContext context)? customBuild;
 
   @override
   Widget build(BuildContext context) {
-    print("Build");
-
-    Widget wrapper({required Widget child}) {
-      return controller != null
-          ? controller!.obx((state) {
-              if (insideObx != null && controller!.status == GetStatus.success(NsgBaseController.emptyData)) {
-                insideObx!();
-              }
-              return child;
-            })
-          : child;
-    }
-
-    return Padding(
-      padding: padding ?? EdgeInsets.zero,
-      child: Stack(alignment: Alignment.topRight, children: [
-        NsgLightAppBarOnTap(
-            onTapDown: onTapCallback,
-            onTap: onTap,
-            child: SizedBox(
-              width: width,
-              height: height,
-              child: Container(
-                decoration: BoxDecoration(
-                    border: borderColor != null ? Border.all(width: 1, color: borderColor!) : null,
-                    color: backColor ?? Colors.transparent,
-                    borderRadius: BorderRadius.circular(15)),
-                child: Transform.rotate(
-                  angle: rotateAngle ?? 0,
-                  child: wrapper(
-                    child: icon != null
-                        ? Icon(
-                            icon,
-                            size: 20,
-                            color: color ?? ControlOptions.instance.colorTertiary.c70,
-                          )
-                        : svg != null
-                            ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
-                            : const SizedBox(),
+    return customBuild != null
+        ? customBuild!(context)
+        : Padding(
+            padding: padding ?? EdgeInsets.zero,
+            child: Stack(alignment: Alignment.topRight, children: [
+              NsgLightAppBarOnTap(
+                  onTapDown: onTapCallback,
+                  onTap: onTap,
+                  child: SizedBox(
+                    width: width,
+                    height: height,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: borderColor != null ? Border.all(width: 1, color: borderColor!) : null,
+                          color: backColor ?? Colors.transparent,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Transform.rotate(
+                        angle: rotateAngle ?? 0,
+                        child: icon != null
+                            ? Icon(
+                                icon,
+                                size: 20,
+                                color: color ?? ControlOptions.instance.colorTertiary.c70,
+                              )
+                            : svg != null
+                                ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
+                                : const SizedBox(),
+                      ),
+                    ),
+                  )),
+              if (nott != null && nott! > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    width: 11,
+                    height: 11,
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        color: ControlOptions.instance.colorError, border: Border.all(width: 1, color: nsgtheme.colorSecondary), shape: BoxShape.circle),
                   ),
-                ),
-              ),
-            )),
-        if (nott != null && nott! > 0)
-          Positioned(
-            right: 8,
-            top: 8,
-            child: Container(
-              width: 11,
-              height: 11,
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  color: ControlOptions.instance.colorError, border: Border.all(width: 1, color: nsgtheme.colorSecondary), shape: BoxShape.circle),
-            ),
-          )
-      ]),
-    );
+                )
+            ]),
+          );
   }
 }
 
