@@ -43,9 +43,9 @@ class NsgLightAppBar extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       title,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       style: buildStyle.titleStyle,
-                      maxLines: 1,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
