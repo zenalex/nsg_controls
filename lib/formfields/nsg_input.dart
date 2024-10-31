@@ -1009,7 +1009,7 @@ class _NsgInputState extends State<NsgInput> {
                   lastDateTime: widget.lastDateTime,
                   initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
                           DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
-                      ? widget.initialDateTime ?? DateTime.now()
+                      ? widget.initialDateTime ?? NsgPeriod.beginOfDay(DateTime.now())
                       : widget.dataItem[widget.fieldName],
                   onClose: (value) {})
               .showPopup(context, widget.dataItem[widget.fieldName], (value) {
@@ -1025,13 +1025,6 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   Widget _buildBoolWidget(bool fieldValue) {
-    // Widget label = widget.labelWidget ??
-    //     Expanded(
-    //         child: Text(
-    //       widget.label,
-    //       style: widget.textStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeM),
-    //     ));
-
     Widget boolBox = widget.boolWidget ??
         StatefulBuilder(
           builder: ((context, setState) => NsgSwitchHorizontal(
