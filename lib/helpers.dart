@@ -68,26 +68,33 @@ extension NsgDuration on Duration {
 
     switch (firstNotEmpty) {
       case DatePart.year:
-        return '';
+        return 'yyy.MM.dd hh:mm:ss';
       case DatePart.mounth:
-        return '';
+        return 'MMM.dd hh:mm:ss';
       case DatePart.day:
-        return '';
+        return 'ddd hh:mm:ss';
       case DatePart.hour:
-        return '';
+        return 'hhh:mm:ss';
       case DatePart.minute:
-        return '';
+        return 'mmm:ss';
       case DatePart.second:
-        return '';
+        return 'ss.SSS';
       case DatePart.millisecond:
-        return '';
+        return 'SSSS';
       case DatePart.microsecond:
-        return '';
+        return 'CCCCC';
     }
   }
 
   String formatAsInterval(String? format) {
     format ??= 'hh:mm:ss';
+    DatePart biggestPart = DatePart.listFromSmall.first;
+    for (var part in DatePart.listFromSmall) {
+      var matchesCount = format.allMatches(part.mark).length;
+      if (matchesCount > 0) {
+        biggestPart = part;
+      }
+    }
     return '';
   }
 
@@ -125,18 +132,42 @@ extension NsgDuration on Duration {
 }
 
 enum DatePart {
-  year(0, Duration.microsecondsPerDay * 365),
-  mounth(1, Duration.microsecondsPerDay * 30.5),
-  day(2, Duration.microsecondsPerDay),
-  hour(3, Duration.microsecondsPerHour),
-  minute(4, Duration.microsecondsPerMinute),
-  second(5, Duration.microsecondsPerSecond),
-  millisecond(6, Duration.microsecondsPerMillisecond),
-  microsecond(7, 1);
+  year(7, Duration.microsecondsPerDay * 365, 'y'),
+  mounth(6, Duration.microsecondsPerDay * 30.5, 'M'),
+  day(5, Duration.microsecondsPerDay, 'd'),
+  hour(4, Duration.microsecondsPerHour, 'h'),
+  minute(3, Duration.microsecondsPerMinute, 'm'),
+  second(2, Duration.microsecondsPerSecond, 's'),
+  millisecond(1, Duration.microsecondsPerMillisecond, 'S'),
+  microsecond(0, 1, 'C');
 
-  const DatePart(this.ind, this.microseconds);
+  static DatePart getPartFromIndex(int index) {
+    return DatePart.values.firstWhereOrNull((element) => element.ind == index) ?? DatePart.year;
+  }
+
+  static List<DatePart> get listFromBig {
+    var list = DatePart.values;
+    list.sort(((a, b) => b.ind.compareTo(a.ind)));
+    return list;
+  }
+
+  static List<DatePart> get listFromSmall {
+    var list = DatePart.values;
+    list.sort(((a, b) => a.ind.compareTo(b.ind)));
+    return list;
+  }
+
+  const DatePart(this.ind, this.microseconds, this.mark);
   final int ind;
   final num microseconds;
+  final String mark;
+}
+
+class DatePartFormat {
+  const DatePartFormat({required this.datePart, this.count = 1, required this.position});
+  final DatePart datePart;
+  final int count;
+  final int position;
 }
 
 NsgControlsLocalizations get tran => NsgControlsLocalizations.of(Get.context!)!;
