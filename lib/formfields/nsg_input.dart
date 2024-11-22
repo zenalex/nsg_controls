@@ -765,7 +765,9 @@ class _NsgInputState extends State<NsgInput> {
     }
     var filter = widget.getRequestFilter == null ? null : widget.getRequestFilter!();
     if (inputType == NsgInputType.dynamicList) {
-      var value = widget.dataItem.getFieldValue(widget.fieldName);
+      var field = widget.dataItem.getField(widget.fieldName);
+
+      var value = field is NsgDataReferenceField ? widget.dataItem.getReferent(widget.fieldName) : widget.dataItem.getFieldValue(widget.fieldName);
       int initItem = widget.dynamicList.indexOf(value);
       int countItem = initItem;
       // for (var item in widget.dynamicList) {
