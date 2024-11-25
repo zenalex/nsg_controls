@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/dropdown/nsg_dropdown_menu_item.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart';
+
+import '../widgets/nsg_simple_progress_bar.dart';
 
 class NsgDropdownMenuOverlay extends StatefulWidget {
-  final List<NsgDropdownMenuItem> widgetList;
+  final List<NsgDropdownMenuItem> Function() widgetList;
   final OverlayEntry? entry;
   final Widget? child;
   final Offset offset;
+  final NsgBaseController? listController;
   final Function(int index, NsgDropdownMenuItem element) onSelect;
 
-  const NsgDropdownMenuOverlay({super.key, this.entry, required this.widgetList, required this.offset, required this.onSelect, this.child});
+  const NsgDropdownMenuOverlay(
+      {super.key, this.entry, required this.widgetList, required this.offset, required this.onSelect, this.child, required this.listController});
 
   @override
   State<NsgDropdownMenuOverlay> createState() => _NsgDropdownMenuOverlayState();
@@ -97,7 +102,8 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
               alignment: Alignment.topLeft,
               child: Transform.translate(
                 offset: Offset(offsetX, offsetY),
-                child: widgetOverlay(key: objectKey, onSelect: widget.onSelect, widgetList: widget.widgetList, child: widget.child),
+                child: widgetOverlay(
+                    key: objectKey, onSelect: widget.onSelect, widgetList: widget.widgetList, child: widget.child, listController: widget.listController),
               ),
             ),
           ),
@@ -109,24 +115,29 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
 
 Widget widgetOverlay(
     {required Function(int index, NsgDropdownMenuItem element) onSelect,
-    required List<NsgDropdownMenuItem> widgetList,
+    required List<NsgDropdownMenuItem> Function() widgetList,
     required GlobalKey key,
+    final NsgBaseController? listController,
     Widget? child}) {
-  List<Widget> list = [];
-  for (var element in widgetList) {
-    bool hovered = false;
-    list.add(StatefulBuilder(builder: (context, setstate) {
-      return InkWell(
-        onHover: (value) {
-          hovered = value;
-          setstate(() {});
-        },
-        onTap: () {
-          onSelect(widgetList.indexOf(element), element);
-        },
-        child: Container(decoration: BoxDecoration(color: hovered ? nsgtheme.colorPrimary.withOpacity(0.2) : Colors.transparent), child: element),
-      );
-    }));
+  List<Widget> list() {
+    List<Widget> resultList = [];
+    var widgetList2 = widgetList();
+    for (var element in widgetList2) {
+      bool hovered = false;
+      resultList.add(StatefulBuilder(builder: (context, setstate) {
+        return InkWell(
+          onHover: (value) {
+            hovered = value;
+            setstate(() {});
+          },
+          onTap: () {
+            onSelect(widgetList2.indexOf(element), element);
+          },
+          child: Container(decoration: BoxDecoration(color: hovered ? nsgtheme.colorPrimary.withOpacity(0.2) : Colors.transparent), child: element),
+        );
+      }));
+    }
+    return resultList;
   }
 
   if (child != null) {
@@ -146,7 +157,23 @@ Widget widgetOverlay(
           borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
         ),
         padding: const EdgeInsets.all(5),
-        child: IntrinsicWidth(child: Column(mainAxisSize: MainAxisSize.min, children: list)));
+        child: IntrinsicWidth(
+            child: listController == null
+                ? Column(mainAxisSize: MainAxisSize.min, children: list())
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      listController.obx(
+                          (state) => Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: list(),
+                              ),
+                          onLoading: const Padding(
+                            padding: EdgeInsets.all(15.0),
+                            child: NsgSimpleProgressBar(disableAnimation: true),
+                          )),
+                    ],
+                  )));
   }
   //.asGlass(tintColor: Colors.black, frosted: false)
 }

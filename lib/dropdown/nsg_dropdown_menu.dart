@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/dropdown/nsg_dropdown_menu_item.dart';
+import 'package:nsg_data/nsg_data.dart';
 import 'nsg_dropdown_menu_overlay.dart';
 
 class NsgDropdownMenu {
   final BuildContext context;
-  List<NsgDropdownMenuItem> widgetList;
+  List<NsgDropdownMenuItem> Function() widgetList;
+  final NsgBaseController? listController;
 
-  NsgDropdownMenu({required this.context, required this.widgetList});
+  NsgDropdownMenu({required this.context, required this.widgetList, this.listController});
   OverlayEntry? entry;
   void hideOverlay() {
     entry?.remove();
@@ -28,6 +30,7 @@ class NsgDropdownMenu {
           onSelect(index, element);
           hideOverlay();
         },
+        listController: listController,
         offset: curOffset,
         widgetList: widgetList,
         entry: entry,
