@@ -69,7 +69,7 @@ class NsgDatePicker extends StatefulWidget {
     showDialog(
         context: context,
         builder: (BuildContext context) => NsgPopUp(
-              title: tran.select_date,
+              title: tranControls.select_date,
               //height: 410,
               onConfirm: () {
                 onClose(selectedDate);

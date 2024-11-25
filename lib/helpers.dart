@@ -170,4 +170,4 @@ class DatePartFormat {
   final int position;
 }
 
-NsgControlsLocalizations get tran => NsgControlsLocalizations.of(Get.context!)!;
+NsgControlsLocalizations get tranControls => NsgControlsLocalizations.of(Get.context!)!;

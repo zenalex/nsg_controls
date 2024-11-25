@@ -63,7 +63,7 @@ class NsgTimePicker extends StatefulWidget {
         context: context,
         builder: (BuildContext context) => NsgPopUp(
               height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 420 : 120,
-              title: tran.enter_time,
+              title: tranControls.enter_time,
               onConfirm: () {
                 onClose(selectedDate);
               },

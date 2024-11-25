@@ -74,7 +74,7 @@ class _NsgSearchTextfieldState extends State<NsgSearchTextfield> {
                     size: 20,
                   )),
               // prefixIcon: Icon(Icons.search),
-              hintText: tran.search,
+              hintText: tranControls.search,
               hintStyle: TextStyle(color: ControlOptions.instance.colorSecondary, fontWeight: FontWeight.w500)),
           textAlignVertical: TextAlignVertical.bottom,
           style: TextStyle(color: ControlOptions.instance.colorBase.c100),

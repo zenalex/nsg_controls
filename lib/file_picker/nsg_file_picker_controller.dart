@@ -33,7 +33,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
 
   @override
   Future<bool> saveImages() async {
-    var progress = NsgProgressDialog(textDialog: tran.save_photo);
+    var progress = NsgProgressDialog(textDialog: tranControls.save_photo);
     progress.show();
     var ids = <String>[];
 
@@ -97,7 +97,7 @@ class NsgFilePickerController<T extends NsgDataItem> extends NsgDataController<T
               Get.back();
             },
             margin: const EdgeInsets.all(15),
-            title: tran.view_photo,
+            title: tranControls.view_photo,
             width: Get.width,
             height: Get.height,
             getContent: () => [

@@ -64,7 +64,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
     Get.dialog(
             NsgPopUp(
                 height: 400,
-                title: tran.select_period,
+                title: tranControls.select_period,
                 getContent: () => [
                       NsgPeriodFilterContent(
                         onSelect: (value) {
@@ -319,7 +319,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: tran.year,
+                                        label: tranControls.year,
                                         value: _selected == NsgPeriodType.year ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.year;
@@ -333,7 +333,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: tran.quarter,
+                                        label: tranControls.quarter,
                                         value: _selected == NsgPeriodType.quarter ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.quarter;
@@ -352,7 +352,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: tran.month,
+                                        label: tranControls.month,
                                         value: _selected == NsgPeriodType.month ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.month;
@@ -366,7 +366,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: tran.week,
+                                        label: tranControls.week,
                                         value: _selected == NsgPeriodType.week ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.week;
@@ -385,7 +385,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         simple: true,
                                         margin: const EdgeInsets.only(top: 5),
                                         radio: true,
-                                        label: tran.day,
+                                        label: tranControls.day,
                                         value: _selected == NsgPeriodType.day ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.day;
@@ -397,7 +397,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       child: NsgButton(
                                           margin: const EdgeInsets.only(top: 5),
                                           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                                          text: tran.today,
+                                          text: tranControls.today,
                                           borderRadius: 10,
                                           color: nsgtheme.colorBase.b0,
                                           onPressed: () {
@@ -425,7 +425,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),
                                       radio: true,
-                                      label: tran.period,
+                                      label: tranControls.period,
                                       value: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? true : false,
                                       onPressed: (value) {
                                         if (_timeselected) {
@@ -487,7 +487,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                   NsgCheckBox(
                                       simple: true,
                                       margin: const EdgeInsets.only(top: 5),
-                                      label: tran.time,
+                                      label: tranControls.time,
                                       value: _timeselected == true ? true : false,
                                       onPressed: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime
                                           ? (value) {

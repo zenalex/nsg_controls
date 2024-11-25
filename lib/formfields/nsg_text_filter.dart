@@ -84,7 +84,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
         widget.controller.refreshData(keys: widget.updateKey);
         if (widget.onSetFilter != null) widget.onSetFilter!();
       } else {
-        nsgSnackbar(text: tran.text_filter_unchanged, type: NsgSnarkBarType.warning);
+        nsgSnackbar(text: tranControls.text_filter_unchanged, type: NsgSnarkBarType.warning);
       }
     }
 
@@ -106,8 +106,8 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
                         child: Text(
                           focus.hasFocus || textController.text != ''
                               ? widget.required
-                                  ? '${widget.label ?? tran.text_filter} *'
-                                  : widget.label ?? tran.text_filter
+                                  ? '${widget.label ?? tranControls.text_filter} *'
+                                  : widget.label ?? tranControls.text_filter
                               : '',
                           style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                         ),
@@ -123,7 +123,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    widget.label ?? tran.text_filter,
+                                    widget.label ?? tranControls.text_filter,
                                     style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
                                   ),
                                 ),
