@@ -141,7 +141,7 @@ class NsgFilePickerProvider {
                 fileType: fileType,
                 filePath: fileName));
           } else {
-            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
           }
         }
       }
@@ -177,7 +177,7 @@ class NsgFilePickerProvider {
                   fileType: fileType,
                   filePath: element.path ?? ''));
             } else {
-              error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+              error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
             }
           }
           if (GetPlatform.isLinux) {
@@ -199,7 +199,7 @@ class NsgFilePickerProvider {
                   fileType: fileType,
                   filePath: element.path ?? ''));
             } else {
-              error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+              error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
             }
           }
         }
@@ -249,7 +249,7 @@ class NsgFilePickerProvider {
                 fileType: fileType,
                 filePath: element.path));
           } else {
-            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
           }
         }
       }
@@ -308,7 +308,7 @@ class NsgFilePickerProvider {
               fileType: fileType,
               filePath: element.path));
         } else {
-          error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+          error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
         }
       }
     }
@@ -334,7 +334,7 @@ class NsgFilePickerProvider {
           var file = File(element.bytes.toString());
 
           if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
-            error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
+            error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
           }
           if (fileType == NsgFilePickerObjectType.image) {
             objectsList.add(NsgFilePickerObject(
@@ -352,14 +352,14 @@ class NsgFilePickerProvider {
                 fileType: fileType,
                 filePath: ''));
           } else {
-            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
           }
         } else if (GetPlatform.isWindows) {
           if (element.path != null) {
             var file = File(element.path!);
 
             if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
-              error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
+              error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
             }
             if (fileType == NsgFilePickerObjectType.image) {
               objectsList.add(NsgFilePickerObject(
@@ -380,10 +380,10 @@ class NsgFilePickerProvider {
                   fileContent: await file.readAsBytes(),
                   filePath: element.path ?? ''));
             } else {
-              error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+              error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
             }
           } else {
-            error = '${element.path} - ${tran.path_error}';
+            error = '${element.path} - ${tranControls.path_error}';
           }
         }
         if (GetPlatform.isLinux || GetPlatform.isMacOS || GetPlatform.isAndroid || GetPlatform.isIOS) {
@@ -409,7 +409,7 @@ class NsgFilePickerProvider {
                 fileType: fileType,
                 filePath: element.path ?? ''));
           } else {
-            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
           }
         }
       }
@@ -473,7 +473,7 @@ class NsgFilePickerProvider {
             fileType: fileType,
             filePath: element.path));
       } else {
-        error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+        error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
       }
     }
 
@@ -502,7 +502,7 @@ class NsgFilePickerProvider {
     if (!kIsWeb) {
       if (!GetPlatform.isAndroid && !GetPlatform.isIOS) {
         var fileName = await FilePicker.platform
-            .saveFile(dialogTitle: tran.save_file, type: fileType, allowedExtensions: [extension(fileObject.filePath).replaceAll('.', '')]);
+            .saveFile(dialogTitle: tranControls.save_file, type: fileType, allowedExtensions: [extension(fileObject.filePath).replaceAll('.', '')]);
         if (fileName == null) return;
         var ext = extension(fileName);
         if (ext.isEmpty) {
@@ -543,10 +543,10 @@ class NsgFilePickerProvider {
 
           html.Url.revokeObjectUrl(url);
         } else {
-          Get.snackbar(tran.failed_download, tran.failed_download_try_again);
+          Get.snackbar(tranControls.failed_download, tranControls.failed_download_try_again);
         }
       } catch (e) {
-        Get.snackbar(tran.error, '${tran.error_file_download}: $e');
+        Get.snackbar(tranControls.error, '${tranControls.error_file_download}: $e');
       }
     }
   }

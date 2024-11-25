@@ -82,7 +82,7 @@ class NsgCropPageState extends State<NsgCropPage> {
     super.initState();
   }
 
-  String text = tran.loading;
+  String text = tranControls.loading;
   bool showSplash = true;
 
   @override
@@ -137,19 +137,19 @@ class NsgCropPageState extends State<NsgCropPage> {
               onStatusChanged: (status) {
                 if (status == CropStatus.ready) {
                   _controller.aspectRatio = widget.aspectRatio;
-                  text = tran.prepare_photo;
+                  text = tranControls.prepare_photo;
                   showSplash = false;
                   setState(() {});
                 }
                 if (status == CropStatus.cropping) {
                   //splash
-                  text = tran.loading;
+                  text = tranControls.loading;
                   showSplash = true;
                   setState(() {});
                 }
                 if (status == CropStatus.loading) {
                   //splash
-                  text = tran.loading;
+                  text = tranControls.loading;
                   showSplash = true;
                   setState(() {});
                 }
