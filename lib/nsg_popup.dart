@@ -29,6 +29,7 @@ class NsgPopUp extends StatefulWidget {
   final double? width;
   final NsgBaseController? dataController;
   final bool hideBackButton;
+  final bool hideCheckButton;
   final bool showCloseButton;
   final bool disableScroll;
   final String? elementEditPageName;
@@ -59,6 +60,7 @@ class NsgPopUp extends StatefulWidget {
       this.colorTitleText,
       this.disableScroll = false,
       this.hideBackButton = false,
+      this.hideCheckButton = false,
       this.showCloseButton = false,
       this.editPageController,
       this.elementEditPageName})
@@ -170,22 +172,23 @@ class _NsgPopUpState extends State<NsgPopUp> {
                           (widget.editPageController! as NsgDataController).itemNewPageOpen(widget.elementEditPageName!);
                         }
                       }),
-                IconButton(
-                    icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: widget.colorTitleText, size: 24), // set your color here
-                    onPressed: () async {
-                      if (widget.onConfirm != null && widget.showCloseButton == false) {
-                        if (widget.popOnConfirm) Navigator.of(context).pop();
-                        widget.onConfirm!();
-                      }
-                      if (widget.showCloseButton == true) {
-                        if (widget.onCancel != null) {
-                          widget.onCancel!();
-                          Navigator.of(context).pop();
-                        } else {
-                          Navigator.of(context).pop();
+                if (!widget.hideCheckButton)
+                  IconButton(
+                      icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: widget.colorTitleText, size: 24), // set your color here
+                      onPressed: () async {
+                        if (widget.onConfirm != null && widget.showCloseButton == false) {
+                          if (widget.popOnConfirm) Navigator.of(context).pop();
+                          widget.onConfirm!();
                         }
-                      }
-                    }),
+                        if (widget.showCloseButton == true) {
+                          if (widget.onCancel != null) {
+                            widget.onCancel!();
+                            Navigator.of(context).pop();
+                          } else {
+                            Navigator.of(context).pop();
+                          }
+                        }
+                      }),
               ],
             ),
           ),
