@@ -119,7 +119,7 @@ class NsgAppBar extends StatelessWidget {
                                 color: colorsInverted == true
                                     ? color ?? ControlOptions.instance.colorMainText
                                     : ControlOptions.instance.colorMain,
-                                fontSize: ControlOptions.instance.sizeXS),
+                                fontSize: ControlOptions.instance.sizeS),
                             textAlign: TextAlign.center,
                             maxLines: 2,
                             overflow: TextOverflow.clip,
@@ -132,7 +132,7 @@ class NsgAppBar extends StatelessWidget {
                               color: colorsInverted == true
                                   ? color ?? ControlOptions.instance.colorMainText
                                   : ControlOptions.instance.colorMain,
-                              fontSize: ControlOptions.instance.sizeXS),
+                              fontSize: ControlOptions.instance.sizeS),
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           overflow: TextOverflow.clip,
