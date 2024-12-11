@@ -95,7 +95,7 @@ class NsgFilePickerProvider {
         } else {
           return [];
         }
-      } else {
+      } else if (eSourceType == ESourceType.auto && mainContext == null) {
         eSourceType = ESourceType.gallery;
       }
       switch (eSourceType) {
