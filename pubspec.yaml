@@ -29,7 +29,10 @@ dependencies:
   flutter_svg: ^2.0.1
   # flutter_calendar_carousel: ^2.1.0
   share_plus: ^10.0.0
-  flutter_slidable: ^3.0.0
+  flutter_slidable:
+    git:
+      url: "https://github.com/letsar/flutter_slidable"
+  # flutter_slidable: ^3.0.0
   another_flushbar: ^1.12.30
   linked_scroll_controller: ^0.2.0
   mask_text_input_formatter: ^2.9.0
