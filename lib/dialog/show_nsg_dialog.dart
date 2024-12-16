@@ -70,6 +70,7 @@ Future<dynamic> showNsgDialog(
                                     onPressed: () {
                                       if (onCancel != null) {
                                         onCancel();
+                                        Navigator.of(context).pop();
                                       } else {
                                         Navigator.of(context).pop();
                                       }
