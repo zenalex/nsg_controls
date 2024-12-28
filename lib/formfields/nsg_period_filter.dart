@@ -81,7 +81,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
                   period.endDate = selectedDate.endDate;
                   widget.controller.refreshData();
                   //setState(() {});
-                  Get.back();
+                  //Navigator.of(context).pop();
                 }),
             barrierDismissible: false)
         .then((value) => setState(() {}));
