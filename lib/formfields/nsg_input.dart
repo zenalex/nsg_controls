@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/formfields/nsg_position_boolBox.dart';
@@ -36,6 +37,9 @@ class NsgInput extends StatefulWidget {
   final Function(NsgDataItem, String)? onFieldSubmitted;
   final int maxLines;
   final int minLines;
+
+  ///Для обработки нажатия на физические кнопки при нахождении в фокусе
+  final KeyEventResult Function(FocusNode focus, KeyEvent event)? onKeyEvent;
 
   /// Максимальное количество символов
   final int? maxLenght;
@@ -179,7 +183,7 @@ class NsgInput extends StatefulWidget {
   final bool autocorrect;
 
   const NsgInput(
-      {Key? key,
+      {super.key,
       this.child,
       this.dynamicList = const [],
       this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
@@ -191,6 +195,7 @@ class NsgInput extends StatefulWidget {
       this.initialDateTime,
       this.firstDateTime,
       this.lastDateTime,
+      this.onKeyEvent,
       this.maxLenght,
       this.validateText = '',
       this.textAlign = TextAlign.left,
@@ -244,8 +249,7 @@ class NsgInput extends StatefulWidget {
       this.formatDateTime,
       this.getRequestFilter,
       this.textCapitalization = TextCapitalization.none,
-      this.autocorrect = true})
-      : super(key: key);
+      this.autocorrect = true});
 
   @override
   State<NsgInput> createState() => _NsgInputState();
@@ -309,6 +313,9 @@ class _NsgInputState extends State<NsgInput> {
   @override
   void initState() {
     super.initState();
+
+    focus = FocusNode(onKeyEvent: widget.onKeyEvent);
+
     textFormFieldType = widget.textFormFieldType ?? nsgtheme.nsgInputOutlineBorderType;
     fontSize = widget.fontSize ?? ControlOptions.instance.sizeM;
     focus.addListener(() {
