@@ -1862,6 +1862,9 @@ class _NsgTableState extends State<NsgTable> {
     var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(item) ?? '';
     String text = textValue;
     TextStyle style = column.rowTextStyle ?? buildStyle.bodyCellTextStyle;
+    if (column.getRowTextStyle != null) {
+      style = column.getRowTextStyle!(item, column);
+    }
     TextAlign textAlign = TextAlign.center;
     Widget? icon;
     var fieldkey = item.getFieldValue(column.name);

@@ -69,12 +69,13 @@ class NsgTableColumn {
   ///Строка форматирования. Используется не для всех типов. Пока реализовано только для даты
   String format;
 
-  String Function(NsgDataItem item, NsgTableColumn column, String defaultText)?
-      getColumnText;
+  String Function(NsgDataItem item, NsgTableColumn column, String defaultText)? getColumnText;
 
   Widget Function(NsgDataItem item, NsgTableColumn column)? getColumnWidget;
 
   Color Function(NsgDataItem item, NsgTableColumn column)? getBackColor;
+
+  TextStyle Function(NsgDataItem item, NsgTableColumn column)? getRowTextStyle;
 
   NsgTableColumn(
       {required this.name,
@@ -100,6 +101,7 @@ class NsgTableColumn {
       this.getColumnText,
       this.getColumnWidget,
       this.getBackColor,
+      this.getRowTextStyle,
       this.format = ''});
 
   static const String usVisible = 'visible';
@@ -111,8 +113,7 @@ class NsgTableColumn {
   void fromJson(Map<String, dynamic> json) {
     json.forEach((name, jsonValue) {
       if (name == usVisible) {
-        visible = (jsonValue.toString().toLowerCase() == 'true' ||
-            jsonValue.toString().toLowerCase() == '1');
+        visible = (jsonValue.toString().toLowerCase() == 'true' || jsonValue.toString().toLowerCase() == '1');
       }
       if (name == usWidth) {
         if (jsonValue is int) {

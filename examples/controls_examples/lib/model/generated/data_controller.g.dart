@@ -13,7 +13,11 @@ class DataControllerGenerated extends NsgBaseController {
     final info = await PackageInfo.fromPlatform();
     //NsgMetrica.activate();
     NsgMetrica.reportAppStart();
-    provider ??= NsgDataProvider(applicationName: 'controls_examples', applicationVersion: info.version, firebaseToken: '');
+    provider ??= NsgDataProvider(
+        applicationName: 'controls_examples',
+        applicationVersion: info.version,
+        firebaseToken: '',
+        availableServers: NsgServerParams({'serverGroups': 'https://currentServer'}, 'https://currentServer'));
     provider!.serverUri = NsgServerOptions.serverUriDataController;
 
     NsgDataClient.client.registerDataItem(Student(), remoteProvider: provider);

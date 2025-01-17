@@ -14,7 +14,11 @@ class DataController extends DataControllerGenerated {
   @override
   Future onInit() async {
     if (provider == null) {
-      provider = NsgDataProvider(applicationName: 'controls_examples', firebaseToken: '', applicationVersion: '');
+      provider = NsgDataProvider(
+          applicationName: 'controls_examples',
+          firebaseToken: '',
+          applicationVersion: '',
+          availableServers: NsgServerParams({'serverGroups': 'https://currentServer'}, 'https://currentServer'));
       //firebaseToken: nsgFirebase == null ? '' : nsgFirebase!.firebasetoken);
       //provider!.getLoginWidget = (provider) => LoginPage(provider);
       //provider!.getVerificationWidget = (provider) => VerificationPage(provider);
