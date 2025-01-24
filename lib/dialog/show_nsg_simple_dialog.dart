@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
-Future<dynamic> showNsgSimpleDialog({
+Future showNsgSimpleDialog({
   required BuildContext context,
   // bool showCancelButton = true,
   // String title = 'Необходимо подтверждение',
@@ -15,8 +15,8 @@ Future<dynamic> showNsgSimpleDialog({
   // List<Widget>? buttons,
   VoidCallback? onConfirm,
   // VoidCallback? onCancel
-}) {
-  return showDialog(
+}) async {
+  await showDialog(
     barrierColor: barrierColor ?? nsgtheme.colorMainBack.withOpacity(0.9),
     context: context,
     builder: (context) {

@@ -159,7 +159,9 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         } else {
                           Navigator.pop(context, false);
                         }
-                      }),
+                      })
+                else
+                  SizedBox(width: 40),
                 Expanded(
                   child: Text(widget.title,
                       textAlign: TextAlign.center, style: TextStyle(color: widget.colorTitleText, fontWeight: FontWeight.bold, fontSize: 18)),
