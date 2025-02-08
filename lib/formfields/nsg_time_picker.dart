@@ -206,8 +206,6 @@ class _TimePickerContentState extends State<TimePickerContent> {
 
   @override
   void initState() {
-    _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'HH:mm', ignoreYear: true, locale: Localizations.localeOf(context).languageCode);
-    _initialTime2 = widget.initialTime;
     textController.text = _initialTime;
     textController.addListener(textChanged);
     super.initState();
@@ -247,6 +245,10 @@ class _TimePickerContentState extends State<TimePickerContent> {
 
   @override
   Widget build(BuildContext context) {
+    if (_initialTime.isEmpty) {
+      _initialTime = DateFormat('HH:mm', 'ru_RU').format(widget.initialTime);
+      textController.text = _initialTime;
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,

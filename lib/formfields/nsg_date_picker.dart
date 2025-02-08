@@ -206,8 +206,6 @@ class _DatePickerContentState extends State<DatePickerContent> {
   var lastDate = DateTime.now().add(const Duration(days: 200));
   @override
   void initState() {
-    _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
-    _initialTime2 = widget.initialTime;
     textController.text = _initialTime;
     textController.addListener(textChanged);
     super.initState();
@@ -265,6 +263,10 @@ class _DatePickerContentState extends State<DatePickerContent> {
 
   @override
   Widget build(BuildContext context) {
+    if (_initialTime.isEmpty) {
+      _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
+      _initialTime2 = widget.initialTime;
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
