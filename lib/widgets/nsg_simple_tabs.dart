@@ -51,7 +51,7 @@ class _NsgSimpleTabsState extends State<NsgSimpleTabs> {
                   tab.name,
                   style: TextStyle(
                       fontSize: ControlOptions.instance.sizeM,
-                      color: widget.currentTab.name == tab.name ? ControlOptions.instance.colorText : ControlOptions.instance.colorText.withOpacity(0.7)),
+                      color: widget.currentTab.name == tab.name ? ControlOptions.instance.colorText : ControlOptions.instance.colorText.withAlpha(180)),
                 ),
               )),
         )),

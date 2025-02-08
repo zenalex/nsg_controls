@@ -17,7 +17,7 @@ Future showNsgSimpleDialog({
   // VoidCallback? onCancel
 }) async {
   await showDialog(
-    barrierColor: barrierColor ?? nsgtheme.colorMainBack.withOpacity(0.9),
+    barrierColor: barrierColor ?? nsgtheme.colorMainBack.withAlpha(230),
     context: context,
     builder: (context) {
       return SimpleDialog(

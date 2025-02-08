@@ -89,7 +89,7 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
           }
         }
         return Material(
-          color: nsgtheme.colorBase.c0.withOpacity(0.5),
+          color: nsgtheme.colorBase.c0.withAlpha(128),
           child: GestureDetector(
             onTap: () {
               if (!animationIsGoing) {
@@ -133,7 +133,7 @@ Widget widgetOverlay(
           onTap: () {
             onSelect(widgetList2.indexOf(element), element);
           },
-          child: Container(decoration: BoxDecoration(color: hovered ? nsgtheme.colorPrimary.withOpacity(0.2) : Colors.transparent), child: element),
+          child: Container(decoration: BoxDecoration(color: hovered ? nsgtheme.colorPrimary.withAlpha(51) : Colors.transparent), child: element),
         );
       }));
     }
@@ -144,7 +144,7 @@ Widget widgetOverlay(
     return Container(
         key: key,
         decoration: BoxDecoration(
-          color: nsgtheme.colorSecondary.withOpacity(0.8),
+          color: nsgtheme.colorSecondary.withAlpha(200),
           borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
         ),
         padding: const EdgeInsets.all(5),
@@ -153,7 +153,7 @@ Widget widgetOverlay(
     return Container(
         key: key,
         decoration: BoxDecoration(
-          color: nsgtheme.colorSecondary.withOpacity(0.8),
+          color: nsgtheme.colorSecondary.withAlpha(200),
           borderRadius: BorderRadius.circular(ControlOptions.instance.borderRadius),
         ),
         padding: const EdgeInsets.all(5),

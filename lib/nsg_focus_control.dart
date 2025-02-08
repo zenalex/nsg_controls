@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nsg_controls/formfields/nsg_input.dart';
 
 class NsgFocusItem extends StatefulWidget {
   final int? tabIndex; // Индекс для Tab навигации
@@ -79,7 +78,7 @@ class NsgFocusController {
   }
 
   void moveFocus(BuildContext context, bool forward) {
-    FocusNode? currentFocus = FocusManager.instance.primaryFocus;
+    // FocusNode? currentFocus = FocusManager.instance.primaryFocus;
 
     int currentIndex = -1;
 
@@ -115,8 +114,8 @@ class NsgFocusController {
         //}
       }
     }
-    FocusNode? secondCurrentFocus = FocusManager.instance.primaryFocus;
-    var s = 3;
+    // FocusNode? secondCurrentFocus = FocusManager.instance.primaryFocus;
+    // var s = 3;
   }
 }
 

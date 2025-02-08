@@ -57,7 +57,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
   }
 
   String _showPeriod() {
-    return selectedDate.dateTextWithTime;
+    return selectedDate.dateTextWithTime(Localizations.localeOf(context).languageCode);
   }
 
   void showPopup(BuildContext context, Function(NsgPeriod date) onClose) {
@@ -206,9 +206,6 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
       case NsgPeriodType.periodWidthTime:
         date.setToPeriodWithTime(date);
         break;
-
-      default:
-        throw Exception('Ошибка в задании периода');
     }
   }
 
@@ -284,7 +281,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     padding: const EdgeInsets.symmetric(vertical: 10),
                                     child: Center(
                                         child: Text(
-                                      date.dateTextWithoutTime,
+                                      date.dateTextWithoutTime(Localizations.localeOf(context).languageCode),
                                       style: TextStyle(color: nsgtheme.colorBase.b100),
                                     ))),
                               ),

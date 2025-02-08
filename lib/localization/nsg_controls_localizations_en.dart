@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'nsg_controls_localizations.dart';
 
 /// The translations for English (`en`).

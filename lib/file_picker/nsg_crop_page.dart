@@ -18,7 +18,7 @@ class NsgCrop {
       final background = imagedit.Image(width: mainImage!.width + 500, height: mainImage.height + 500);
 
       for (var pixel in background) {
-        pixel.setRgba(backColor.red, backColor.green, backColor.blue, backColor.alpha);
+        pixel.setRgba(backColor.r, backColor.g, backColor.b, backColor.a);
       }
 
       imagedit.Image mergeImage = imagedit.compositeImage(background, mainImage, center: true);

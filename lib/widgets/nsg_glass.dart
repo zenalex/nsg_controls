@@ -29,8 +29,8 @@ extension NsgGlassWidget<T extends Widget> on T {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      tintColor.withOpacity(0.1),
-                      tintColor.withOpacity(0.08),
+                      tintColor.withAlpha(25),
+                      tintColor.withAlpha(20),
                     ],
                   )
                 : null,

@@ -179,7 +179,7 @@ class OpenPainter extends CustomPainter {
       85,
       Paint()
         ..style = PaintingStyle.stroke
-        ..color = ControlOptions.instance.colorMain.withOpacity(0.1)
+        ..color = ControlOptions.instance.colorMain.withAlpha(25)
         ..strokeWidth = 5,
     );
     canvas.saveLayer(
@@ -216,7 +216,7 @@ class OpenPainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
-          ..color = ControlOptions.instance.colorMain.withOpacity(.3)
+          ..color = ControlOptions.instance.colorMain.withAlpha(77)
           ..strokeWidth = 1);
     canvas.drawArc(
         Rect.fromCenter(center: center, width: 190, height: 190),
@@ -226,7 +226,7 @@ class OpenPainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
-          ..color = ControlOptions.instance.colorMain.withOpacity(.3)
+          ..color = ControlOptions.instance.colorMain.withAlpha(77)
           ..strokeWidth = 1);
 
     canvas.restore();

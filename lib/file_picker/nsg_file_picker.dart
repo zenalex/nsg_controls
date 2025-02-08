@@ -103,7 +103,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     return Container(
         height: 100,
         decoration: BoxDecoration(
-          color: ControlOptions.instance.colorMain.withOpacity(0.2),
+          color: ControlOptions.instance.colorMain.withAlpha(51),
         ),
         child: Center(
             child: Opacity(
@@ -130,7 +130,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             Stack(
               children: [
                 Container(
-                  decoration: BoxDecoration(color: ControlOptions.instance.colorMain.withOpacity(1)),
+                  decoration: BoxDecoration(color: ControlOptions.instance.colorMain.withAlpha(255)),
                   padding: const EdgeInsets.fromLTRB(5, 0, 30, 0),
                   alignment: Alignment.centerLeft,
                   height: 40,
@@ -147,7 +147,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Material(
-                    color: ControlOptions.instance.colorMain.withOpacity(0),
+                    color: ControlOptions.instance.colorMain.withAlpha(0),
                     child: InkWell(
                       hoverColor: ControlOptions.instance.colorMainDark,
                       onTap: () {
@@ -164,7 +164,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                 Align(
                   alignment: Alignment.topRight,
                   child: Material(
-                    color: ControlOptions.instance.colorMain.withOpacity(0),
+                    color: ControlOptions.instance.colorMain.withAlpha(0),
                     child: InkWell(
                       hoverColor: ControlOptions.instance.colorMainDark,
                       onTap: () {
@@ -296,7 +296,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           NsgText(
             margin: const EdgeInsets.only(top: 10),
             error,
-            backColor: ControlOptions.instance.colorError.withOpacity(0.2),
+            backColor: ControlOptions.instance.colorError.withAlpha(51),
           ),
         Flexible(
             child: Padding(

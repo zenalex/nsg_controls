@@ -86,7 +86,7 @@ class NsgText extends StatelessWidget {
                 child: Theme(
                   data: ThemeData(
                       textSelectionTheme: TextSelectionThemeData(
-                    selectionColor: ControlOptions.instance.colorMain.withOpacity(0.3),
+                    selectionColor: ControlOptions.instance.colorMain.withAlpha(77),
                   )),
                   child: SelectableText(
                     text,

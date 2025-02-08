@@ -57,7 +57,7 @@ Future<dynamic> showNsgDialog(
                       ),
                       Container(
                         alignment: Alignment.center,
-                        decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withOpacity(0.9)),
+                        decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withAlpha(230)),
                         padding: const EdgeInsets.all(15),
                         child: NsgGrid(
                           vGap: 10,

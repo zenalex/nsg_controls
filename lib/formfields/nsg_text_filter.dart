@@ -178,7 +178,10 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
           widget.controller.controllerFilter.searchString = '';
           //widget.controller.refreshData();
           Future.delayed(const Duration(milliseconds: 10), () {
-            FocusScope.of(context).requestFocus(focus);
+            if (context.mounted) {
+              // ignore: use_build_context_synchronously
+              FocusScope.of(context).requestFocus(focus);
+            }
           });
           setState(() {});
         },

@@ -26,7 +26,7 @@ void nsgSnackbar(
     onTap: onTap,
     boxShadows: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withAlpha(128),
         spreadRadius: 5,
         blurRadius: 15,
         offset: const Offset(0, -5),

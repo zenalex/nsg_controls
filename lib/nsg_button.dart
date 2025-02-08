@@ -160,7 +160,7 @@ class NsgButton extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: <Color>[ControlOptions.instance.colorMainText.withOpacity(0.0), ControlOptions.instance.colorMainText.withOpacity(0.3)],
+                    colors: <Color>[ControlOptions.instance.colorMainText.withAlpha(0), ControlOptions.instance.colorMainText.withAlpha(77)],
                   ),
                   borderRadius: BorderRadius.circular(25),
                 ),
@@ -234,7 +234,7 @@ class NsgButton extends StatelessWidget {
         ),
         child: Material(
           borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-          color: disabled == true ? _backColor.withOpacity(0.5) : _backColor,
+          color: disabled == true ? _backColor.withAlpha(128) : _backColor,
           child: InkWell(
             onTap: () async {
               if (disabled == true) {

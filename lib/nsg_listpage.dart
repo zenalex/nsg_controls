@@ -229,7 +229,7 @@ class NsgListPage extends StatelessWidget {
             height: 50,
             child: TabBar(
               indicatorColor: ControlOptions.instance.colorMain,
-              unselectedLabelColor: ControlOptions.instance.colorText.withOpacity(0.5),
+              unselectedLabelColor: ControlOptions.instance.colorText.withAlpha(128),
               labelColor: ControlOptions.instance.colorText,
               labelPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               tabs: [

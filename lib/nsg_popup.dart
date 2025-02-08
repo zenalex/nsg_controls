@@ -161,7 +161,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         }
                       })
                 else
-                  SizedBox(width: 40),
+                  const SizedBox(width: 40),
                 Expanded(
                   child: Text(widget.title,
                       textAlign: TextAlign.center, style: TextStyle(color: widget.colorTitleText, fontWeight: FontWeight.bold, fontSize: 18)),
@@ -256,7 +256,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
           if (widget.hint != null)
             Container(
               padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
-              child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: widget.colorText?.withOpacity(0.5))),
+              child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: widget.colorText?.withAlpha(128))),
             ),
           if (widget.contentBottom != null)
             Container(
@@ -267,7 +267,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                   bottomRight: Radius.circular(nsgtheme.borderRadius),
                   bottomLeft: Radius.circular(nsgtheme.borderRadius),
                 ),
-                color: ControlOptions.instance.colorText.withOpacity(0.05),
+                color: ControlOptions.instance.colorText.withAlpha(13),
               ),
               child: widget.contentBottom!,
             ),

@@ -217,7 +217,7 @@ class _NsgTabsState extends State<NsgTabs> {
                       thickness: 10,
                       trackBorderColor: ControlOptions.instance.colorGreyLight,
                       trackColor: ControlOptions.instance.colorGreyLight,
-                      thumbColor: ControlOptions.instance.colorMain.withOpacity(0.2),
+                      thumbColor: ControlOptions.instance.colorMain.withAlpha(51),
                       radius: const Radius.circular(0),
                       child: SingleChildScrollView(
                         controller: scrollControllers[key],

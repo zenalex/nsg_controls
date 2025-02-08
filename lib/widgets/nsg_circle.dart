@@ -44,7 +44,7 @@ class NsgCircle extends StatelessWidget {
                 boxShadow: [
                   shadow ??
                       BoxShadow(
-                        color: ControlOptions.instance.colorText.withOpacity(0.2),
+                        color: ControlOptions.instance.colorText.withAlpha(51),
                         spreadRadius: 1,
                         blurRadius: 5,
                         offset: const Offset(3, 3), // changes position of shadow

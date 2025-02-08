@@ -39,7 +39,7 @@ class NsgLightAppBar extends StatelessWidget {
                 child: InkWell(
                   onTap: onTap,
                   child: Container(
-                    constraints: BoxConstraints(minHeight: 50),
+                    constraints: const BoxConstraints(minHeight: 50),
                     alignment: Alignment.centerLeft,
                     child: Text(
                       title,

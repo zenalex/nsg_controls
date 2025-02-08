@@ -279,7 +279,7 @@ class _NsgTableState extends State<NsgTable> {
               color: hideBackColor
                   ? null
                   : isSelected == true
-                      ? ControlOptions.instance.colorMain.withOpacity(0.2)
+                      ? ControlOptions.instance.colorMain.withAlpha(51)
                       : backColor,
               border: widget.hideLines
                   ? null
@@ -304,7 +304,7 @@ class _NsgTableState extends State<NsgTable> {
               color: hideBackColor
                   ? null
                   : isSelected == true
-                      ? ControlOptions.instance.colorMain.withOpacity(0.2)
+                      ? ControlOptions.instance.colorMain.withAlpha(51)
                       : backColor,
               border: widget.hideLines
                   ? null
@@ -1029,7 +1029,11 @@ class _NsgTableState extends State<NsgTable> {
                                 }
                               },
                               onLongPress: () {
-                                var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(row) ?? '';
+                                var textValue = NsgDataClient.client
+                                        .getFieldList(widget.controller.dataType)
+                                        .fields[column.name]
+                                        ?.formattedValue(row, Localizations.localeOf(context).languageCode) ??
+                                    '';
 
                                 Get.dialog(
                                     NsgPopUp(
@@ -1859,7 +1863,9 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   Widget _rowWidget(NsgDataItem item, NsgTableColumn column) {
-    var textValue = NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(item) ?? '';
+    var textValue =
+        NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(item, Localizations.localeOf(context).languageCode) ??
+            '';
     String text = textValue;
     TextStyle style = column.rowTextStyle ?? buildStyle.bodyCellTextStyle;
     if (column.getRowTextStyle != null) {
@@ -1889,7 +1895,7 @@ class _NsgTableState extends State<NsgTable> {
         if (column.format.isNotEmpty) {
           format = column.format;
         }
-        text = '${NsgDateFormat.dateFormat(fieldkey, format: format)}';
+        text = '${NsgDateFormat.dateFormat(fieldkey, format: format, locale: Localizations.localeOf(context).languageCode)}';
       } else {
         text = '';
       }

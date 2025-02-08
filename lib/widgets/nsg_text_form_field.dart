@@ -357,7 +357,10 @@ class _NsgTextFormFieldState extends State<NsgTextFormField> {
                 textController.text = widget.defaultValue ?? "";
                 textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
                 Future.delayed(const Duration(milliseconds: 10), () {
-                  FocusScope.of(context).requestFocus(focus);
+                  if (context.mounted) {
+                    // ignore: use_build_context_synchronously
+                    FocusScope.of(context).requestFocus(focus);
+                  }
                   if (widget.onEditingComplete != null) {
                     widget.onEditingComplete!(textController.text);
                   }

@@ -283,7 +283,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
           if (widget.hint != null)
             Container(
               padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
-              child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: widget.colorText?.withOpacity(0.5))),
+              child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: widget.colorText?.withAlpha(128))),
             ),
           if (widget.contentBottom != null)
             Container(
@@ -294,7 +294,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
                   bottomRight: Radius.circular(nsgtheme.borderRadius),
                   bottomLeft: Radius.circular(nsgtheme.borderRadius),
                 ),
-                color: ControlOptions.instance.colorText.withOpacity(0.05),
+                color: ControlOptions.instance.colorText.withAlpha(13),
               ),
               child: widget.contentBottom!,
             ),

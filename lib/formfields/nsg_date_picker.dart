@@ -169,7 +169,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                     Expanded(
                       child: widget.labelWidget ??
                           Text(
-                            NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy'),
+                            NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy', locale: Localizations.localeOf(context).languageCode),
                             textAlign: widget.textAlign,
                             style:
                                 // widget.textStyle ??
@@ -206,7 +206,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
   var lastDate = DateTime.now().add(const Duration(days: 200));
   @override
   void initState() {
-    _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy');
+    _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
     _initialTime2 = widget.initialTime;
     textController.text = _initialTime;
     textController.addListener(textChanged);
@@ -325,7 +325,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         widget.onChange(value);
-        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy');
+        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
         _ignoreChange = true;
         textController.text = _initialTime;
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
@@ -344,7 +344,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         widget.onChange(value);
-        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy');
+        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
         _ignoreChange = true;
         textController.text = _initialTime;
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));

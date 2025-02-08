@@ -127,7 +127,7 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
         ? const SizedBox()
         : nsgBackDrop(
             child: Container(
-              decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withOpacity(0.8)),
+              decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withAlpha(200)),
               child: Center(
                 child: Material(
                   color: Colors.transparent,

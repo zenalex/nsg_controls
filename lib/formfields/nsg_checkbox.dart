@@ -84,10 +84,10 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                     }
                   }
                 },
-                hoverColor: widget.checkColor != null ? widget.checkColor!.withOpacity(0.1) : ControlOptions.instance.colorMain.withOpacity(0.1),
-                splashColor: widget.checkColor != null ? widget.checkColor!.withOpacity(0.2) : ControlOptions.instance.colorMain.withOpacity(0.2),
+                hoverColor: widget.checkColor != null ? widget.checkColor!.withAlpha(25) : ControlOptions.instance.colorMain.withAlpha(25),
+                splashColor: widget.checkColor != null ? widget.checkColor!.withAlpha(51) : ControlOptions.instance.colorMain.withAlpha(51),
                 //focusColor: ControlOptions.instance.colorMain.withOpacity(0.5),
-                highlightColor: widget.checkColor != null ? widget.checkColor!.withOpacity(0.2) : ControlOptions.instance.colorMain.withOpacity(0.2),
+                highlightColor: widget.checkColor != null ? widget.checkColor!.withAlpha(51) : ControlOptions.instance.colorMain.withAlpha(51),
                 child: SizedBox(
                   height: widget.height,
                   child: Row(

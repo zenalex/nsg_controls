@@ -14,8 +14,8 @@ extension NsgDate on DateTime {
     return !isEmpty;
   }
 
-  String format(String? format) {
-    return NsgDateFormat.dateFormat(this, format: format ?? ControlOptions.instance.dateformat);
+  String format(String? format, String locale) {
+    return NsgDateFormat.dateFormat(this, format: format ?? ControlOptions.instance.dateformat, locale: locale);
   }
 
   Duration toDuration() {
@@ -37,8 +37,8 @@ extension NsgDate on DateTime {
 }
 
 extension NsgDuration on Duration {
-  String formatAsDate(String? format) {
-    return NsgDateFormat.dateFormat(toDateTime(), format: format ?? ControlOptions.instance.dateformat, ignoreYear: true);
+  String formatAsDate(String? format, String locale) {
+    return NsgDateFormat.dateFormat(toDateTime(), format: format ?? ControlOptions.instance.dateformat, ignoreYear: true, locale: locale);
   }
 
   String get defaultFormat {
@@ -86,17 +86,17 @@ extension NsgDuration on Duration {
     }
   }
 
-  String formatAsInterval(String? format) {
-    format ??= 'hh:mm:ss';
-    DatePart biggestPart = DatePart.listFromSmall.first;
-    for (var part in DatePart.listFromSmall) {
-      var matchesCount = format.allMatches(part.mark).length;
-      if (matchesCount > 0) {
-        biggestPart = part;
-      }
-    }
-    return '';
-  }
+  // String formatAsInterval(String? format) {
+  //   format ??= 'hh:mm:ss';
+  //   DatePart biggestPart = DatePart.listFromSmall.first;
+  //   for (var part in DatePart.listFromSmall) {
+  //     var matchesCount = format.allMatches(part.mark).length;
+  //     if (matchesCount > 0) {
+  //       biggestPart = part;
+  //     }
+  //   }
+  //   return '';
+  // }
 
   String timeAgo({String locale = 'ru', bool short = false, Duration? fromDateTime}) {
     return timeago.format(toDateTime(),

@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -453,11 +452,11 @@ class _NsgInputState extends State<NsgInput> {
     }
     if (inputType == NsgInputType.dateValue) {
       if (DateTime(01, 01, 01).isAtSameMomentAs(fieldValue) || DateTime(1754, 01, 01).isAtSameMomentAs(fieldValue)) {
-        //TODO Убрал это, зачем вообще присваивать в текст значение лейбла?
+        //Убрал это, зачем вообще присваивать в текст значение лейбла?
         //textController.text = widget.label;
         textController.text = '';
       } else {
-        textController.text = NsgDateFormat.dateFormat(fieldValue, format: widget.formatDateTime);
+        textController.text = NsgDateFormat.dateFormat(fieldValue, format: widget.formatDateTime, locale: Localizations.localeOf(context).languageCode);
       }
     } else {
       textController.text = fieldValue.toString();
@@ -728,12 +727,15 @@ class _NsgInputState extends State<NsgInput> {
                 textController.text = widget.dataItem[widget.fieldName].toString();
                 textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
                 Future.delayed(const Duration(milliseconds: 10), () {
-                  FocusScope.of(context).requestFocus(focus);
-                  if (widget.onEditingComplete != null) {
-                    widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                  }
-                  if (widget.onChanged != null) {
-                    widget.onChanged!(widget.dataItem);
+                  if (context.mounted) {
+                    // ignore: use_build_context_synchronously
+                    FocusScope.of(context).requestFocus(focus);
+                    if (widget.onEditingComplete != null) {
+                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                    }
+                    if (widget.onChanged != null) {
+                      widget.onChanged!(widget.dataItem);
+                    }
                   }
                 });
 
@@ -889,7 +891,9 @@ class _NsgInputState extends State<NsgInput> {
                         child: StatefulBuilder(builder: (context, setstate) {
                           return CupertinoPicker(
                             selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
-                              background: nsgtheme.colorPrimary.withOpacity(0.2),
+                              background: nsgtheme.colorPrimary.withValues(
+                                alpha: 51,
+                              ),
                             ),
                             backgroundColor: null,
                             itemExtent: 30,
@@ -898,7 +902,13 @@ class _NsgInputState extends State<NsgInput> {
                               selectedElement = widget.dynamicList[countItem];
                               setstate(() {});
                             },
-                            scrollController: FixedExtentScrollController(initialItem: initItem),
+                            scrollController: FixedExtentScrollController(
+                              initialItem: widget.dynamicList.indexOf(
+                                widget.dataItem.getField(widget.fieldName) is NsgDataReferenceField
+                                    ? widget.dataItem.getReferent(widget.fieldName)
+                                    : widget.dataItem.getFieldValue(widget.fieldName),
+                              ),
+                            ),
                             children: dynamicListWidgets(),
                           );
                         }),
