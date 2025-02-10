@@ -54,7 +54,7 @@ class NsgSelection {
     for (var element in itemsList) {
       if (textEditingController.text.isEmpty ||
           (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase()))) {
-        list.add(GestureDetector(
+        list.add(InkWell(
           onTap: () {
             selectedElement = element;
             // ignore: invalid_use_of_protected_member
