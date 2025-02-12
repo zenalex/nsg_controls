@@ -56,3 +56,9 @@ examples/controls_examples/ios/Runner/GeneratedPluginRegistrant.m
 /examples/controls_examples/ios/Runner/GeneratedPluginRegistrant.m
 /examples/controls_examples/macos/Flutter/GeneratedPluginRegistrant.swift
 /examples/controls_examples/pubspec.lock
+examples/controls_examples/android/local.properties
+examples/controls_examples/ios/Flutter/flutter_export_environment.sh
+examples/controls_examples/ios/Flutter/Generated.xcconfig
+examples/controls_examples/ios/Runner/GeneratedPluginRegistrant.h
+examples/controls_examples/macos/Flutter/ephemeral/flutter_export_environment.sh
+examples/controls_examples/macos/Flutter/ephemeral/Flutter-Generated.xcconfig
