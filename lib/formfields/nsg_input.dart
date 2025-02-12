@@ -835,8 +835,9 @@ class _NsgInputState extends State<NsgInput> {
                         child: Text(
                       element.toString(),
                       style: TextStyle(
-                          fontWeight: element == selectedElement ? FontWeight.w800 : FontWeight.w400,
-                          color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
+                          fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w200,
+                          //color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
+                          color: nsgtheme.nsgInputDynamicListTextColor),
                     ))));
               }
               return list;
@@ -890,12 +891,10 @@ class _NsgInputState extends State<NsgInput> {
                         constraints: BoxConstraints(maxHeight: 300),
                         child: StatefulBuilder(builder: (context, setstate) {
                           return CupertinoPicker(
-                            selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
-                              background: nsgtheme.colorPrimary.withValues(
-                                alpha: 51,
-                              ),
-                            ),
-                            backgroundColor: null,
+                            // selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
+                            //   background: nsgtheme.colorPrimary.withAlpha(50),
+                            // ),
+                            backgroundColor: Colors.transparent,
                             itemExtent: 30,
                             onSelectedItemChanged: (value) {
                               countItem = value;
