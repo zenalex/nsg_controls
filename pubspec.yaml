@@ -16,16 +16,14 @@ dependencies:
   intl: ^0.19.0
   get: ^5.0.0-release-candidate-9.2.1
   # get:
-  #   path: 
+  #   path:
   #     ../getx
   nsg_data: #^0.2.0
-    path: 
-      ../nsg_data
+    path: ../nsg_data
   flutter_fadein: ^2.0.0
   pull_to_refresh: #^2.0.0
-    git:
-      https://github.com/ymback/flutter_pulltorefresh.git
-  jiffy: ^6.0.0 
+    git: https://github.com/ymback/flutter_pulltorefresh.git
+  jiffy: ^6.0.0
   flutter_svg: ^2.0.1
   # flutter_calendar_carousel: ^2.1.0
   share_plus: ^10.0.0
@@ -47,7 +45,6 @@ dependencies:
   hovering: ^1.0.4
   image: ^4.0.6
   timeago: ^3.7.0
-  
 
   # to controls!!!
   universal_html: ^2.2.3
@@ -62,9 +59,8 @@ dependencies:
   file_picker: 8.1.4
   path: ^1.8.1
   path_provider: ^2.0.14
-  
 
-  syncfusion_flutter_pdfviewer: ^26.2.14
+  syncfusion_flutter_pdfviewer: ^27.2.5
   #adaptive_scrollbar: ^2.1.2
   video_player_win: ^2.2.0
   video_player: ^2.6.0
@@ -75,13 +71,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  
 
 flutter:
   uses-material-design: true
   generate: true
   fonts:
-    - family:  NsgIcons
+    - family: NsgIcons
       fonts:
-       - asset: fonts/NsgIcons.ttf
-
+        - asset: fonts/NsgIcons.ttf
