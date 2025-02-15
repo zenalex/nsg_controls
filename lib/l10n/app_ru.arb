@@ -37,5 +37,11 @@
   "text_filter_unchanged": "Фильтр по тексту не изменился",
   "enter_time": "Введите время",
   "error_file_download": "Ошибка скачивания файла",
-  "time": "Время"
+  "time": "Время",
+  "saveChangesPrompt": "Вы внесли изменения. Сохранить?",
+  "saveChangesOption": "Вы можете сохранить изменения",
+  "continue_editing": "продолжить редактирование",
+  "discardAndExit": "или выйти назад без сохранения",
+  "exitWithoutSaving": "Выйти без сохранения",
+  "confirm": "Подтвердить"
 }

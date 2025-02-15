@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -9,6 +7,8 @@ import 'package:intl/intl.dart' as intl;
 
 import 'nsg_controls_localizations_en.dart';
 import 'nsg_controls_localizations_ru.dart';
+
+// ignore_for_file: type=lint
 
 /// Callers can lookup localized strings with an instance of NsgControlsLocalizations
 /// returned by `NsgControlsLocalizations.of(context)`.
@@ -90,7 +90,10 @@ abstract class NsgControlsLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ru')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('ru')
+  ];
 
   /// No description provided for @search.
   ///
@@ -325,6 +328,42 @@ abstract class NsgControlsLocalizations {
   /// In ru, this message translates to:
   /// **'Время'**
   String get time;
+
+  /// No description provided for @saveChangesPrompt.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы внесли изменения. Сохранить?'**
+  String get saveChangesPrompt;
+
+  /// No description provided for @saveChangesOption.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы можете сохранить изменения'**
+  String get saveChangesOption;
+
+  /// No description provided for @continue_editing.
+  ///
+  /// In ru, this message translates to:
+  /// **'продолжить редактирование'**
+  String get continue_editing;
+
+  /// No description provided for @discardAndExit.
+  ///
+  /// In ru, this message translates to:
+  /// **'или выйти назад без сохранения'**
+  String get discardAndExit;
+
+  /// No description provided for @exitWithoutSaving.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выйти без сохранения'**
+  String get exitWithoutSaving;
+
+  /// No description provided for @confirm.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подтвердить'**
+  String get confirm;
 }
 
 class _NsgControlsLocalizationsDelegate extends LocalizationsDelegate<NsgControlsLocalizations> {
@@ -343,16 +382,18 @@ class _NsgControlsLocalizationsDelegate extends LocalizationsDelegate<NsgControl
 }
 
 NsgControlsLocalizations lookupNsgControlsLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return NsgControlsLocalizationsEn();
-    case 'ru':
-      return NsgControlsLocalizationsRu();
+    case 'en': return NsgControlsLocalizationsEn();
+    case 'ru': return NsgControlsLocalizationsRu();
   }
 
-  throw FlutterError('NsgControlsLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+  throw FlutterError(
+    'NsgControlsLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
 }

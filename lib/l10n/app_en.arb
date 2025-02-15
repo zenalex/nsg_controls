@@ -37,5 +37,11 @@
   "text_filter_unchanged": "Text filter has not changed",
   "enter_time": "Enter Time",
   "error_file_download": "Error file download",
-  "time": "Time"
+  "time": "Time",
+  "saveChangesPrompt": "You have made changes. Save?",
+  "saveChangesOption": "You can save the changes",
+  "continue_editing": "Continue Editing",
+  "discardAndExit": "or exit without saving",
+  "exitWithoutSaving": "Exit Without Saving",
+  "confirm": "Confirm"
 }

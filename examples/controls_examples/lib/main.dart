@@ -19,7 +19,7 @@ void main() async {
       nsgButtonMargin: const EdgeInsets.only(bottom: 10),
       nsgInputMargin: const EdgeInsets.only(bottom: 10),
       nsgInputFilled: true,
-      nsgInputColorFilled: const Color(0xFF65982F).withOpacity(0.1),
+      nsgInputColorFilled: const Color(0xFF65982F).withAlpha(25),
       nsgInputOutlineBorderType: TextFormFieldType.outlineInputBorder,
       nsgInputHintAlwaysOnTop: true,
       nsgInputContentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),

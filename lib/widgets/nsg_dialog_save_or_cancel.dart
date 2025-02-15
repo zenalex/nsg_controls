@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nsg_controls/helpers.dart';
 import 'package:nsg_controls/nsg_button.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:nsg_controls/nsg_popup.dart';
@@ -9,7 +10,7 @@ class NsgDialogSaveOrCancel {
     bool? value;
     await Get.dialog(
         NsgPopUp(
-          title: 'Вы внесли изменения. Сохранить?',
+          title: tranControls.saveChangesPrompt,
           getContent: () {
             return [
               Padding(
@@ -18,7 +19,7 @@ class NsgDialogSaveOrCancel {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Вы можете сохранить изменения ',
+                      tranControls.saveChangesOption,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: ControlOptions.instance.colorText),
                     ),
@@ -32,7 +33,7 @@ class NsgDialogSaveOrCancel {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'продолжить редактирование ',
+                      tranControls.continue_editing,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: ControlOptions.instance.colorText),
                     ),
@@ -46,7 +47,7 @@ class NsgDialogSaveOrCancel {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'или выйти назад без сохранения ',
+                      tranControls.discardAndExit,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: ControlOptions.instance.colorText),
                     ),
@@ -59,7 +60,7 @@ class NsgDialogSaveOrCancel {
           contentBottom: Center(
             child: NsgButton(
               width: 260,
-              text: 'Выйти без сохранения',
+              text: tranControls.exitWithoutSaving,
               icon: Icons.close,
               onPressed: () {
                 value = false;
@@ -72,7 +73,7 @@ class NsgDialogSaveOrCancel {
             ),
           ),
           //dataController: controller,
-          confirmText: 'Подтвердить',
+          confirmText: tranControls.confirm,
           onConfirm: () {
             value = true;
             if (context != null) {

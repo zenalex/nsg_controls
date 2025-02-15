@@ -10,7 +10,6 @@ import 'package:jiffy/jiffy.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_icon_button.dart';
-import 'package:nsg_data/nsg_data.dart';
 
 import '../helpers.dart';
 

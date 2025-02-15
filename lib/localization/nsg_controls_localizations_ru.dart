@@ -1,6 +1,8 @@
-// ignore_for_file: non_constant_identifier_names
-
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'nsg_controls_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for Russian (`ru`).
 class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
@@ -126,4 +128,22 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
 
   @override
   String get time => 'Время';
+
+  @override
+  String get saveChangesPrompt => 'Вы внесли изменения. Сохранить?';
+
+  @override
+  String get saveChangesOption => 'Вы можете сохранить изменения';
+
+  @override
+  String get continue_editing => 'продолжить редактирование';
+
+  @override
+  String get discardAndExit => 'или выйти назад без сохранения';
+
+  @override
+  String get exitWithoutSaving => 'Выйти без сохранения';
+
+  @override
+  String get confirm => 'Подтвердить';
 }

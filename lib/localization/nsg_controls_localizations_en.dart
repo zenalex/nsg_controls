@@ -1,6 +1,8 @@
-// ignore_for_file: non_constant_identifier_names
-
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'nsg_controls_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for English (`en`).
 class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
@@ -126,4 +128,22 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
 
   @override
   String get time => 'Time';
+
+  @override
+  String get saveChangesPrompt => 'You have made changes. Save?';
+
+  @override
+  String get saveChangesOption => 'You can save the changes';
+
+  @override
+  String get continue_editing => 'Continue Editing';
+
+  @override
+  String get discardAndExit => 'or exit without saving';
+
+  @override
+  String get exitWithoutSaving => 'Exit Without Saving';
+
+  @override
+  String get confirm => 'Confirm';
 }
