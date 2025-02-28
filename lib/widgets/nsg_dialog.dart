@@ -34,7 +34,7 @@ class NsgDialog {
       useSafeArea: true,
       transitionAnimationController: animationController,
       context: context,
-      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height - 40, maxWidth: nsgtheme.appMaxWidth),
+      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height - 40, maxWidth: nsgtheme.appMinWidth),
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
