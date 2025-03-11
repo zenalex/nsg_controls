@@ -1015,11 +1015,11 @@ class _NsgInputState extends State<NsgInput> {
                   hours: (widget.dataItem[widget.fieldName] ?? DateTime.now()).hour, minutes: (widget.dataItem[widget.fieldName] ?? DateTime.now()).minute),
               onClose: (Duration endDate) {},
             ).showPopup(context, widget.dataItem[widget.fieldName].hour, widget.dataItem[widget.fieldName].minute, (value) {
+              widget.dataItem[widget.fieldName] = value;
               if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
               if (widget.onEditingComplete != null) {
                 widget.onEditingComplete!(widget.dataItem, widget.fieldName);
               }
-              widget.dataItem[widget.fieldName] = value;
               setState(() {});
             })
           : NsgDatePicker(
