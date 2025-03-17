@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 
 class NsgIconButton extends StatefulWidget {
   final VoidCallback onPressed;
-  final IconData icon;
+  final IconData? icon;
   final double size;
   final EdgeInsets padding;
   final Color? color;
   final Color? backColor;
+  final String? svg;
   const NsgIconButton(
-      {Key? key, required this.icon, required this.onPressed, this.color, this.backColor, this.size = 24, this.padding = const EdgeInsets.all(10)})
+      {Key? key, this.icon, required this.onPressed, this.color, this.backColor, this.size = 24, this.padding = const EdgeInsets.all(10), this.svg})
       : super(key: key);
 
   @override
@@ -44,11 +46,18 @@ class _NsgIconButtonState extends State<NsgIconButton> {
           child: Container(
             padding: widget.padding,
             decoration: BoxDecoration(shape: BoxShape.circle, color: widget.backColor ?? Colors.transparent),
-            child: Icon(
-              widget.icon,
-              size: widget.size,
-              color: widget.color ?? ControlOptions.instance.colorMain,
-            ),
+            child: widget.svg != null
+                ? SvgPicture.asset(
+                    widget.svg!,
+                    height: widget.size,
+                    width: widget.size,
+                    colorFilter: ColorFilter.mode(widget.color ?? ControlOptions.instance.colorMain, BlendMode.srcIn),
+                  )
+                : Icon(
+                    widget.icon,
+                    size: widget.size,
+                    color: widget.color ?? ControlOptions.instance.colorMain,
+                  ),
           ),
         ),
       ),
