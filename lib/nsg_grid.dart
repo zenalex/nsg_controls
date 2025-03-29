@@ -61,14 +61,16 @@ class NsgGrid extends StatelessWidget {
         var difAdd = (dif / 2).floor();
         /* ---------------------------------------------------------- Выравнивание по левому краю --------------------------------------------------------- */
         if (!centered) {
-          for (var i = 0; i < dif; i++) {
-            row.add(const Expanded(flex: 2, child: SizedBox()));
-          }
+          // Don't add any spacers for left alignment - just add the gaps between existing items
           for (var i = 0; i <= row.length; i++) {
             if (i < row.length - 1) row.insert(i + 1, SizedBox(width: hGap));
             i++;
           }
-          list.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: row)));
+          list.add(IntrinsicHeight(
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.start, // Explicitly set left alignment
+                  children: row)));
         } else
 
         /* ------------------------------------------------------------ Выравнивание по центру ------------------------------------------------------------ */
