@@ -32,68 +32,72 @@ class NsgGrid extends StatelessWidget {
       }
 
       int count = 0;
-      int rowCount = 0;
       List<Widget> list = [];
       List<Widget> row = [];
+
       for (var element in children) {
-        if (needExpanded) {
-          row.add(Expanded(flex: 2, child: element));
-        } else {
-          row.add(element);
-        }
+        row.add(Expanded(child: element));
 
         count++;
-        rowCount++;
-        if (count > axisCount - 1) {
-          for (var i = 0; i <= row.length; i++) {
-            if (i < row.length - 1) row.insert(i + 1, SizedBox(width: hGap));
-            i++;
-          }
-          list.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: row)));
+        if (count >= axisCount) {
+          // Создаем строку с отступами
+          list.add(IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: _addHorizontalGaps(row),
+            ),
+          ));
 
+          // Сбрасываем счетчики
           count = 0;
-          rowCount = 0;
           row = [];
         }
       }
+
+      // Обрабатываем оставшиеся элементы, если они есть
       if (row.isNotEmpty) {
-        var dif = axisCount - rowCount;
-        var difAdd = (dif / 2).floor();
-        /* ---------------------------------------------------------- Выравнивание по левому краю --------------------------------------------------------- */
-        if (!centered) {
-          for (var i = 0; i < dif; i++) {
-            row.add(const Expanded(flex: 2, child: SizedBox()));
-          }
-          for (var i = 0; i <= row.length; i++) {
-            if (i < row.length - 1) row.insert(i + 1, SizedBox(width: hGap));
-            i++;
-          }
-          list.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: row)));
-        } else
-
-        /* ------------------------------------------------------------ Выравнивание по центру ------------------------------------------------------------ */
-        {
-          for (var i = 0; i < difAdd; i++) {
-            row.insert(0, const Expanded(flex: 2, child: SizedBox()));
-            row.add(const Expanded(flex: 2, child: SizedBox()));
-          }
-          if (dif.isOdd) {
-            row.insert(0, const Expanded(flex: 1, child: SizedBox()));
-            row.add(const Expanded(flex: 1, child: SizedBox()));
-          }
-          for (var i = 0; i <= row.length; i++) {
-            if (i < row.length - 1) row.insert(i + 1, SizedBox(width: hGap));
-            i++;
-          }
-          list.add(IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: row)));
+        // Добавляем пустые элементы для заполнения строки
+        while (row.length < axisCount) {
+          row.add(const Expanded(child: SizedBox()));
         }
+
+        // Создаем строку с отступами
+        list.add(IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: _addHorizontalGaps(row),
+          ),
+        ));
       }
 
-      for (var i = 0; i <= list.length; i++) {
-        if (i < list.length - 1) list.insert(i + 1, SizedBox(height: vGap));
-        i++;
-      }
-      return Column(children: list);
+      // Добавляем вертикальные отступы между строками
+      return Column(
+        children: _addVerticalGaps(list),
+      );
     });
+  }
+
+  /// Добавляет горизонтальные отступы между элементами строки
+  List<Widget> _addHorizontalGaps(List<Widget> row) {
+    List<Widget> rowWithGaps = [];
+    for (var i = 0; i < row.length; i++) {
+      rowWithGaps.add(row[i]);
+      if (i < row.length - 1) {
+        rowWithGaps.add(SizedBox(width: hGap));
+      }
+    }
+    return rowWithGaps;
+  }
+
+  /// Добавляет вертикальные отступы между строками
+  List<Widget> _addVerticalGaps(List<Widget> list) {
+    List<Widget> listWithGaps = [];
+    for (var i = 0; i < list.length; i++) {
+      listWithGaps.add(list[i]);
+      if (i < list.length - 1) {
+        listWithGaps.add(SizedBox(height: vGap));
+      }
+    }
+    return listWithGaps;
   }
 }
