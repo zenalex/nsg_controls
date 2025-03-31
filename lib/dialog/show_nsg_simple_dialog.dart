@@ -11,7 +11,7 @@ Future showNsgSimpleDialog({
   Color? barrierColor,
   // String textConfirm = 'ОК',
   // String textCancel = 'Отмена',
-  // Widget? child,
+  Widget? child,
   // List<Widget>? buttons,
   VoidCallback? onConfirm,
   // VoidCallback? onCancel
@@ -26,7 +26,7 @@ Future showNsgSimpleDialog({
           contentPadding: const EdgeInsets.all(20),
           backgroundColor: nsgtheme.colorModalBack,
           children: [
-            Center(child: Text(text)),
+            Center(child: child ?? Text(text)),
             Padding(
               padding: const EdgeInsets.only(top: 20),
               child: Row(
