@@ -190,7 +190,9 @@ class _NsgPopUpState extends State<NsgPopUp> {
                             Navigator.of(context).pop();
                           }
                         }
-                      }),
+                      })
+                else
+                  SizedBox(width: 40),
               ],
             ),
           ),
