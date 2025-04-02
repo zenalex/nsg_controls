@@ -17,9 +17,9 @@ class NsgDialogBodyController {
   }
 
   //AnimationController transitionAnimationController = AnimationController(vsync: vsync);
-  Future openDialog(Widget child, {EdgeInsets? padding, bool enableDrag = true}) async {
+  Future openDialog(Widget child, {EdgeInsets? padding, bool enableDrag = true, bool autoHeight = false}) async {
     if (currentState != null) {
-      return await currentState!.openDialog(child, padding: padding, enableDrag: enableDrag);
+      return await currentState!.openDialog(child, padding: padding, enableDrag: enableDrag, autoHeight: autoHeight);
     } else {
       throw ErrorDescription('currentState == null!');
     }
@@ -28,27 +28,37 @@ class NsgDialogBodyController {
 
 class NsgDialog {
   Future<void> show(
-      {required BuildContext context, required Widget child, AnimationController? animationController, EdgeInsets? padding, bool enableDrag = true}) {
+      {required BuildContext context,
+      required Widget child,
+      AnimationController? animationController,
+      EdgeInsets? padding,
+      bool enableDrag = true,
+      bool autoHeight = false}) {
     return showModalBottomSheet<void>(
-      enableDrag: enableDrag,
-      useSafeArea: true,
+      barrierColor: nsgtheme.colorModalBack.withAlpha(200),
+      enableDrag: autoHeight ? false : enableDrag,
+      useSafeArea: autoHeight ? false : true,
       transitionAnimationController: animationController,
       context: context,
-      constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height - 40, maxWidth: nsgtheme.appMinWidth),
-      isScrollControlled: true,
+      constraints: autoHeight
+          ? BoxConstraints(maxWidth: nsgtheme.appMinWidth)
+          : BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height - 40, maxWidth: nsgtheme.appMinWidth),
+      isScrollControlled: autoHeight ? false : true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
-        return Dialog(
-            backgroundColor: nsgtheme.colorMainBack,
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-            insetPadding: const EdgeInsets.all(0),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-              child: Padding(
-                padding: padding ?? const EdgeInsets.only(bottom: 10),
-                child: child,
-              ),
-            ));
+        return Container(
+          decoration: BoxDecoration(
+            color: nsgtheme.colorMainBack,
+            //    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+            child: Padding(
+              padding: padding ?? const EdgeInsets.only(bottom: 10),
+              child: child,
+            ),
+          ),
+        );
       },
     );
   }
@@ -114,18 +124,20 @@ class NsgDialogBodyState extends State<NsgDialogBody> with SingleTickerProviderS
             ));
   }
 
-  Future openDialog(Widget child, {EdgeInsets? padding, bool enableDrag = true}) async {
-    return await _showNsgDialog(context, child, padding, enableDrag);
+  Future openDialog(Widget child, {EdgeInsets? padding, bool enableDrag = true, bool autoHeight = false}) async {
+    return await _showNsgDialog(context, child, padding, enableDrag, autoHeight);
   }
 
-  Future _showNsgDialog(BuildContext context, Widget child, EdgeInsets? padding, bool enableDrag) async {
+  Future _showNsgDialog(BuildContext context, Widget child, EdgeInsets? padding, bool enableDrag, bool autoHeight) async {
     try {
       _controller.forward();
     } catch (ex) {
       log(ex.toString());
       ex.printError();
     }
-    return await NsgDialog().show(enableDrag: enableDrag, context: context, child: child, animationController: _controller, padding: padding).then((value) {
+    return await NsgDialog()
+        .show(enableDrag: enableDrag, context: context, child: child, animationController: _controller, padding: padding, autoHeight: autoHeight)
+        .then((value) {
       try {
         _controller.reverse();
       } catch (ex) {
