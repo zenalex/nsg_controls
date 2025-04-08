@@ -56,13 +56,13 @@ dependencies:
   image_picker_for_web: ^3.0.1
   file_selector_macos: ^0.9.2
   #эта версия необходима для flutter 3.27 для Android
-  file_picker: 8.1.4
+  file_picker: ^10.0.0
   path: ^1.8.1
   path_provider: ^2.0.14
 
   syncfusion_flutter_pdfviewer: ^29.1.35
   #adaptive_scrollbar: ^2.1.2
-  video_player_win: ^2.2.0
+  video_player_win: ^3.1.1
   video_player: ^2.6.0
   url_launcher: ^6.1.10
   crop_your_image: ^1.1.0
@@ -70,7 +70,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
