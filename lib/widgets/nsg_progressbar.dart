@@ -46,14 +46,14 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut))
       ..addListener(() {
         setState(() {
-          arc3 += 1;
+          arc3 += .5;
 
           if (arc3 < 180) {
-            arc1 += 2;
-            arc2 += 4;
-          } else if (arc3 < 360) {
-            arc1 += 4;
+            arc1 += 1;
             arc2 += 2;
+          } else if (arc3 < 360) {
+            arc1 += 2;
+            arc2 += 1;
           } else {
             arc3 = 0;
           }
@@ -69,7 +69,6 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
       });
 
     _controller.repeat();
-    //_controller.forward();
   }
 
   @override
@@ -91,51 +90,54 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
         child: SizedBox(
           width: 210,
           height: 210,
-          child: kIsWeb
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget.text.isNotEmpty)
-                      Text(
-                        widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.2,
-                          color: ControlOptions.instance.colorText,
-                        ),
-                      ),
-                    const SizedBox(height: 15),
-                    const NsgSimpleProgressBar(
-                      size: 100,
-                      width: 3,
-                    ),
-                  ],
-                )
-              : Stack(
-                  children: <Widget>[
-                    Center(
-                      child: CustomPaint(
-                        painter: OpenPainter(
-                            value: widget.dialogWidget == null ? _animation.value : widget.dialogWidget!.percent,
-                            arc1: arc1,
-                            arc2: arc2,
-                            percent: widget.dialogWidget == null ? false : true),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.2,
-                          color: ControlOptions.instance.colorText,
-                        ),
-                      ),
-                    ),
-                  ],
+          child:
+              //  kIsWeb
+              //     ? Column(
+              //         mainAxisSize: MainAxisSize.min,
+              //         children: [
+              //           if (widget.text.isNotEmpty)
+              //             Text(
+              //               widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
+              //               style: TextStyle(
+              //                 fontSize: 14.0,
+              //                 fontWeight: FontWeight.w600,
+              //                 letterSpacing: 1.2,
+              //                 color: ControlOptions.instance.colorText,
+              //               ),
+              //             ),
+              //           const SizedBox(height: 15),
+              //           const NsgSimpleProgressBar(
+              //             disableAnimation: true,
+              //             size: 170,
+              //             width: 5,
+              //           ),
+              //         ],
+              //       )
+              //     :
+              Stack(
+            children: <Widget>[
+              Center(
+                child: CustomPaint(
+                  painter: OpenPainter(
+                      value: widget.dialogWidget == null ? _animation.value : widget.dialogWidget!.percent,
+                      arc1: arc1,
+                      arc2: arc2,
+                      percent: widget.dialogWidget == null ? false : true),
                 ),
+              ),
+              Center(
+                child: Text(
+                  widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.2,
+                    color: ControlOptions.instance.colorText,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -152,21 +154,22 @@ class OpenPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     double val = value * 3.6;
-    double val2 = value / 8;
+    double val2 = value / 4;
     const rect = Rect.fromLTWH(0.0, 0.0, 200, 200);
-    /*final gradient = new RadialGradient(
-      radius: 1,
-      tileMode: TileMode.mirror,
-      colors: [colorMain, colorBack1],
-      stops: <double>[value / 300, value / 100],
-    );*/
+    // final gradient = new RadialGradient(
+    //   radius: 1,
+    //   tileMode: TileMode.mirror,
+    //   colors: [Colors.red, Colors.blue],
+    //   stops: <double>[value / 300, value / 100],
+    // );
     final gradient = LinearGradient(
       begin: const Alignment(-1.0, 0.0),
       end: const Alignment(1.0, 0.0),
-      colors: [ControlOptions.instance.colorMain, ControlOptions.instance.colorMainDark],
-      stops: const <double>[0, 1],
+      colors: [nsgtheme.colorPrimary, nsgtheme.colorPrimary, nsgtheme.colorPrimary.b70],
+      stops: const <double>[0, .5, 1],
       transform: GradientRotation(val2),
     );
+
     // final gradient2 = RadialGradient(
     //   radius: 2,
     //   tileMode: TileMode.mirror,
@@ -179,7 +182,7 @@ class OpenPainter extends CustomPainter {
       85,
       Paint()
         ..style = PaintingStyle.stroke
-        ..color = ControlOptions.instance.colorMain.withAlpha(25)
+        ..color = ControlOptions.instance.colorSecondary
         ..strokeWidth = 5,
     );
     canvas.saveLayer(
@@ -216,7 +219,7 @@ class OpenPainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
-          ..color = ControlOptions.instance.colorMain.withAlpha(77)
+          ..color = ControlOptions.instance.colorPrimary.withAlpha(120)
           ..strokeWidth = 1);
     canvas.drawArc(
         Rect.fromCenter(center: center, width: 190, height: 190),
@@ -226,7 +229,7 @@ class OpenPainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
-          ..color = ControlOptions.instance.colorMain.withAlpha(77)
+          ..color = ControlOptions.instance.colorPrimary.withAlpha(120)
           ..strokeWidth = 1);
 
     canvas.restore();
