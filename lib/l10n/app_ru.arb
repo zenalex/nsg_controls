@@ -43,5 +43,6 @@
   "continue_editing": "продолжить редактирование",
   "discardAndExit": "или выйти назад без сохранения",
   "exitWithoutSaving": "Выйти без сохранения",
-  "confirm": "Подтвердить"
+  "confirm": "Подтвердить",
+  "are_you_sure": "Вы уверены?"
 }

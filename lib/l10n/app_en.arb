@@ -43,5 +43,6 @@
   "continue_editing": "Continue Editing",
   "discardAndExit": "or exit without saving",
   "exitWithoutSaving": "Exit Without Saving",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "are_you_sure": "Are you sure?"
 }
