@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 
+import '../helpers.dart';
+
 Future showNsgSimpleDialog({
   required BuildContext context,
   // bool showCancelButton = true,
   // String title = 'Необходимо подтверждение',
-  String text = 'Вы уверены?',
+  String text = tranControls.are_you_sure,
   Color? barrierColor,
   // String textConfirm = 'ОК',
   // String textCancel = 'Отмена',
