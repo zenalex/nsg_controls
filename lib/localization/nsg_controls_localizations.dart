@@ -370,6 +370,24 @@ abstract class NsgControlsLocalizations {
   /// In ru, this message translates to:
   /// **'Вы уверены?'**
   String get are_you_sure;
+
+  /// No description provided for @need_confirmation.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нужно подтверждение'**
+  String get need_confirmation;
+
+  /// No description provided for @cancel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get cancel;
+
+  /// No description provided for @ok.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ок'**
+  String get ok;
 }
 
 class _NsgControlsLocalizationsDelegate extends LocalizationsDelegate<NsgControlsLocalizations> {

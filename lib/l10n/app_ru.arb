@@ -44,5 +44,8 @@
   "discardAndExit": "или выйти назад без сохранения",
   "exitWithoutSaving": "Выйти без сохранения",
   "confirm": "Подтвердить",
-  "are_you_sure": "Вы уверены?"
+  "are_you_sure": "Вы уверены?",
+  "need_confirmation": "Нужно подтверждение",
+  "cancel": "Отмена",
+  "ok": "Ок"
 }

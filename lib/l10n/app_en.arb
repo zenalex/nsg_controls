@@ -44,5 +44,8 @@
   "discardAndExit": "or exit without saving",
   "exitWithoutSaving": "Exit Without Saving",
   "confirm": "Confirm",
-  "are_you_sure": "Are you sure?"
+  "are_you_sure": "Are you sure?",
+  "need_confirmation": "Need confirmation",
+  "cancel": "Cancel",
+  "ok": "Ok"
 }

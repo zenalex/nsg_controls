@@ -9,7 +9,7 @@ Future showNsgSimpleDialog({
   required BuildContext context,
   // bool showCancelButton = true,
   // String title = 'Необходимо подтверждение',
-  String text = tranControls.are_you_sure,
+  String? text,
   Color? barrierColor,
   // String textConfirm = 'ОК',
   // String textCancel = 'Отмена',
@@ -18,6 +18,7 @@ Future showNsgSimpleDialog({
   VoidCallback? onConfirm,
   // VoidCallback? onCancel
 }) async {
+  text ??= tranControls.are_you_sure;
   await showDialog(
     barrierColor: barrierColor ?? nsgtheme.colorMainBack.withAlpha(230),
     context: context,
@@ -28,7 +29,7 @@ Future showNsgSimpleDialog({
           contentPadding: const EdgeInsets.all(20),
           backgroundColor: nsgtheme.colorModalBack,
           children: [
-            Center(child: child ?? Text(text)),
+            Center(child: child ?? Text(text!)),
             Padding(
               padding: const EdgeInsets.only(top: 20),
               child: Row(
@@ -36,7 +37,7 @@ Future showNsgSimpleDialog({
                 children: [
                   NsgButton(
                     width: 100,
-                    text: 'ОК',
+                    text: tranControls.ok.toUpperCase(),
                     onTap: () {
                       if (onConfirm != null) {
                         onConfirm();
