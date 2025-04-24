@@ -146,4 +146,7 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
 
   @override
   String get confirm => 'Confirm';
+
+  @override
+  String get are_you_sure => 'Are you sure?';
 }

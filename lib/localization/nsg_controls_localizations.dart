@@ -364,6 +364,12 @@ abstract class NsgControlsLocalizations {
   /// In ru, this message translates to:
   /// **'Подтвердить'**
   String get confirm;
+
+  /// No description provided for @are_you_sure.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы уверены?'**
+  String get are_you_sure;
 }
 
 class _NsgControlsLocalizationsDelegate extends LocalizationsDelegate<NsgControlsLocalizations> {

@@ -146,4 +146,7 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
 
   @override
   String get confirm => 'Подтвердить';
+
+  @override
+  String get are_you_sure => 'Вы уверены?';
 }
