@@ -329,10 +329,8 @@ class NsgFilePickerProvider {
     if (result != null) {
       for (var element in result.files) {
         var fileType = getFileTypeByPath(element.name);
-
         if (kIsWeb) {
           var file = File(element.bytes.toString());
-
           if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
             error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
           }

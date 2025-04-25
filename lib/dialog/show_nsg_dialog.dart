@@ -17,13 +17,13 @@ Future<dynamic> showNsgDialog(
     List<Widget>? buttons,
     VoidCallback? onConfirm,
     VoidCallback? onCancel}) {
-  title ??= tranControls.need_confirmation;
-  text ??= tranControls.are_you_sure;
-  textConfirm ??= tranControls.ok.toUpperCase();
-  textCancel ??= tranControls.cancel;
   return showDialog(
       context: context,
       builder: (context) {
+        title ??= tranControls.need_confirmation;
+        text ??= tranControls.are_you_sure;
+        textConfirm ??= tranControls.ok.toUpperCase();
+        textCancel ??= tranControls.cancel;
         return nsgBackDrop(
           child: Material(
             color: Colors.transparent,
