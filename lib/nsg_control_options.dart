@@ -341,7 +341,7 @@ class ControlOptions {
     this.colorMainLight = const Color.fromARGB(255, 255, 245, 201),
     //@Deprecated('Old variable. Use colorPrimary[int]')
     this.colorMainLighter = const Color.fromARGB(255, 255, 245, 201),
-    this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
+
     //@Deprecated('Old variable. Use colorSecondary[int]')
     this.colorSecondaryDark = const Color.fromRGBO(255, 255, 255, 1),
     //@Deprecated('Old variable. Use colorSecondary[int]')
@@ -360,11 +360,18 @@ class ControlOptions {
     this.colorGreyLighter = const Color.fromARGB(255, 230, 230, 230),
     this.colorGreyDark = const Color.fromARGB(255, 55, 55, 55),
     this.colorGreyDarker = const Color.fromARGB(255, 33, 33, 33),
+
+
     this.colorPrimary = const Color.fromRGBO(233, 200, 45, 1),
+    this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
     this.colorTertiary = const Color.fromRGBO(255, 255, 255, 1),
+
+
     this.colorNeutral = const Color.fromRGBO(255, 255, 255, 1),
     this.colorSuccess = const Color.fromARGB(255, 31, 138, 75),
+
     this.colorBase = const Color.fromRGBO(255, 255, 255, 1),
+
     this.colorOverlay = const Color.fromARGB(150, 0, 0, 0),
   }) {
     NsgApiException.showExceptionDefault = NsgErrorWidget.showError;

@@ -57,7 +57,7 @@ class NsgButton extends StatelessWidget {
       this.borderRadius,
       this.width,
       this.height,
-      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       this.color,
       this.borderColor,
       this.backColor,
