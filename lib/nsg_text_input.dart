@@ -17,10 +17,12 @@ class NsgTextInput extends StatefulWidget {
   final Function(String)? onChangedDelayed;
   final int? maxlines;
   final Duration onChangeDelay; // Длительность задержки
+  final Widget? prefixIcon;
+  final TextAlign textAlign;
 
   /// NsgTextInput
   const NsgTextInput({
-    Key? key,
+    super.key,
     this.label,
     this.disabled,
     this.fontSize = 16,
@@ -33,8 +35,10 @@ class NsgTextInput extends StatefulWidget {
     this.onChanged,
     this.onChangedDelayed,
     this.maxlines,
+    this.prefixIcon,
+    this.textAlign = TextAlign.left,
     this.onChangeDelay = const Duration(seconds: 1), // По умолчанию 1 секунда
-  }) : super(key: key);
+  });
 
   @override
   State<NsgTextInput> createState() => _NsgTextInputState();
@@ -86,7 +90,7 @@ class _NsgTextInputState extends State<NsgTextInput> {
       ),
       child: TextFormField(
         controller: textC,
-        textAlign: TextAlign.left,
+        textAlign: widget.textAlign,
         maxLines: widget.maxlines ?? 1,
         cursorColor: ControlOptions.instance.colorText,
         onChanged: (String value) {
@@ -113,10 +117,12 @@ class _NsgTextInputState extends State<NsgTextInput> {
           label: Text(
             widget.label != null ? '${widget.label}'.toUpperCase() : '',
           ),
-          prefixIcon: Icon(
-            Icons.search,
-            color: nsgtheme.colorTertiary,
-          ),
+          prefixIcon: widget.prefixIcon
+          //  Icon(
+          //   Icons.search,
+          //   color: nsgtheme.colorTertiary,
+          // )
+          ,
           suffixIcon: InkWell(
             onTap: () {
               textC.text = '';

@@ -14,6 +14,8 @@ Future<dynamic> showNsgDialog(
     String? textConfirm,
     String? textCancel,
     Widget? child,
+    Color? titleBackColor,
+    Color? titleTextColor,
     List<Widget>? buttons,
     VoidCallback? onConfirm,
     VoidCallback? onCancel}) {
@@ -39,17 +41,17 @@ Future<dynamic> showNsgDialog(
                       Container(
                           alignment: Alignment.center,
                           width: double.infinity,
-                          decoration: BoxDecoration(color: ControlOptions.instance.colorMain),
+                          decoration: BoxDecoration(color: titleBackColor ?? nsgtheme.colorMain),
                           padding: const EdgeInsets.all(20),
                           child: Text(
                             title!,
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: ControlOptions.instance.sizeL),
+                            style: TextStyle(color: titleTextColor ?? nsgtheme.colorMainText, fontSize: nsgtheme.sizeL),
                           )),
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: ControlOptions.instance.colorMainBack,
+                          color: nsgtheme.colorMainBack,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
@@ -60,44 +62,47 @@ Future<dynamic> showNsgDialog(
                               ),
                         ),
                       ),
-                      Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withAlpha(230)),
-                        padding: const EdgeInsets.all(15),
-                        child: NsgGrid(
-                          vGap: 10,
-                          hGap: 10,
-                          width: 300,
-                          children: buttons ??
-                              [
-                                if (showCancelButton)
+                      if (buttons != null && buttons.isEmpty)
+                        SizedBox()
+                      else
+                        Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(color: nsgtheme.colorMainBack.withAlpha(230)),
+                          padding: const EdgeInsets.all(15),
+                          child: NsgGrid(
+                            vGap: 10,
+                            hGap: 10,
+                            width: 300,
+                            children: buttons ??
+                                [
+                                  if (showCancelButton)
+                                    NsgButton(
+                                      onPressed: () {
+                                        if (onCancel != null) {
+                                          onCancel();
+                                          Navigator.of(context).pop();
+                                        } else {
+                                          Navigator.of(context).pop();
+                                        }
+                                      },
+                                      width: 150,
+                                      height: 40,
+                                      text: textCancel,
+                                      color: Colors.black,
+                                      backColor: nsgtheme.colorGrey,
+                                    ),
                                   NsgButton(
                                     onPressed: () {
-                                      if (onCancel != null) {
-                                        onCancel();
-                                        Navigator.of(context).pop();
-                                      } else {
-                                        Navigator.of(context).pop();
-                                      }
+                                      Navigator.of(context).pop();
+                                      if (onConfirm != null) onConfirm();
                                     },
                                     width: 150,
                                     height: 40,
-                                    text: textCancel,
-                                    color: Colors.black,
-                                    backColor: ControlOptions.instance.colorGrey,
+                                    text: textConfirm,
                                   ),
-                                NsgButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    if (onConfirm != null) onConfirm();
-                                  },
-                                  width: 150,
-                                  height: 40,
-                                  text: textConfirm,
-                                ),
-                              ],
-                        ),
-                      )
+                                ],
+                          ),
+                        )
                     ],
                   ),
                 ),
