@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 
@@ -17,11 +18,14 @@ Future nsgFutureProgressAndException({required Future<void> Function() func, Str
     if (showProgress) {
       progress.hide();
     }
-    if (ex is Exception) {
-      await NsgErrorWidget.showError(ex);
-    } else {
-      NsgErrorWidget.showErrorByString(ex.toString());
-    }
+    //await Future.delayed(Duration(seconds: 0));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (ex is Exception) {
+        await NsgErrorWidget.showError(ex);
+      } else {
+        await NsgErrorWidget.showErrorByString(ex.toString());
+      }
+    });
     rethrow;
   }
 }

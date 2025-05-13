@@ -16,8 +16,8 @@ Future _copyToClipboard(String text, BuildContext dialogContext) async {
 
 ///Класс для отображение ошибок для пользователю
 class NsgErrorWidget {
-  static void showErrorByString(String errorMessage, {String title = 'Ошибка'}) {
-    _showError(errorMessage, title);
+  static Future showErrorByString(String errorMessage, {String title = 'Ошибка'}) async {
+    await _showError(errorMessage, title);
   }
 
   static Future showError(Exception ex) async {
