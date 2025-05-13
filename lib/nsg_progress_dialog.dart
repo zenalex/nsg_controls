@@ -33,9 +33,10 @@ class NsgProgressDialog {
     // открываем popup с прогрессбаром NsgProgressBar
     //print("SHOW");
     context ??= Get.context!;
-    Get.dialog(
-        //ANCHOR -  context: context!,
-        NsgProgressDialogWidget(
+
+    showDialog(
+        context: context!,
+        builder: (context) => NsgProgressDialogWidget(
             delay: delay,
             canStopped: canStopped,
             cancelToken: cancelToken,
@@ -44,6 +45,18 @@ class NsgProgressDialog {
             text: text,
             textDialog: textDialog,
             visible: visible));
+
+    // showDialog(
+    //     //ANCHOR -  context: context!,
+    //     NsgProgressDialogWidget(
+    //         delay: delay,
+    //         canStopped: canStopped,
+    //         cancelToken: cancelToken,
+    //         dialogWidget: showPercents ? this : null,
+    //         requestStop: requestStop,
+    //         text: text,
+    //         textDialog: textDialog,
+    //         visible: visible));
     // Get.dialog(
     //     dialogWidget = NsgProgressDialogWidget(
     //         canStopped: canStopped,
@@ -64,10 +77,10 @@ class NsgProgressDialog {
         dialogWidget!.isClosed = true;
       }
 
-      //Navigator.of(context ?? Get.context!, rootNavigator: true).pop();
+      Navigator.of(context ?? Get.context!, rootNavigator: true).pop();
       //Navigator.of(context, rootNavigator: true).pop();
 
-      Get.back();
+      //Get.back();
       //Navigator.pop(context ?? Get.context!);
     }
   }
