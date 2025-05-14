@@ -158,4 +158,7 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
 
   @override
   String get ok => 'Ok';
+
+  @override
+  String get empty_list => 'Empty list';
 }

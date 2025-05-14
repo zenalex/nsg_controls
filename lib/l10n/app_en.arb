@@ -47,5 +47,6 @@
   "are_you_sure": "Are you sure?",
   "need_confirmation": "Need confirmation",
   "cancel": "Cancel",
-  "ok": "Ok"
+  "ok": "Ok",
+  "empty_list": "Empty list"
 }

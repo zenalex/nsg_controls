@@ -158,4 +158,7 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
 
   @override
   String get ok => 'Ок';
+
+  @override
+  String get empty_list => 'Пустой список';
 }
