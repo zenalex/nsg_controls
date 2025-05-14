@@ -17,11 +17,13 @@ Future nsgFutureProgressAndException({required Future<void> Function() func, Str
     if (showProgress) {
       progress.hide();
     }
-    if (ex is Exception) {
-      await NsgErrorWidget.showError(ex);
-    } else {
-      NsgErrorWidget.showErrorByString(ex.toString());
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (ex is Exception) {
+        await NsgErrorWidget.showError(ex);
+      } else {
+        await NsgErrorWidget.showErrorByString(ex.toString());
+      }
+    });
     rethrow;
   }
 }
