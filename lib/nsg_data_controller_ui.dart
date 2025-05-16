@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/new_path_route.dart';
 import 'package:nsg_controls/helpers.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_controls/nsg_measurable.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 
 extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
   ///Виджет списка объектов
   Widget getListWidget(Widget? Function(T item) itemBuilder,
-      {Widget? onEmptyList, String? grFieldName, Widget? Function(dynamic value)? dividerBuilder, PartOfDate partOfDate = PartOfDate.day}) {
+      {Widget? onEmptyList, String? grFieldName, Widget? Function(dynamic value)? dividerBuilder, PartOfDate partOfDate = PartOfDate.day, Key? key}) {
     return obx(
       (state) {
         DataGroupList dataGroups;
@@ -19,29 +19,32 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
           dataGroups = DataGroupList([DataGroup(data: items, groupFieldName: "")]);
         }
 
+        scrollController.heightMap.clear();
+        scrollController.dataGroups = dataGroups;
+
         return ListView.builder(
           controller: scrollController,
-          itemCount: dataGroups.length + (items.isEmpty ? 1 : 2),
+          itemCount: scrollController.dataGroups.length + (items.isEmpty ? 1 : 2),
           itemBuilder: (context, i) {
             if (items.isEmpty) {
               return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tranControls.empty_list));
             } else {
-              if (i > dataGroups.length) {
+              if (i > scrollController.dataGroups.length) {
                 if (scrollController.status == NsgLoadingScrollStatus.loading) {
                   return NsgBaseController.getDefaultProgressIndicator();
                 } else {
                   return const SizedBox();
                 }
               } else {
-                var elem = dataGroups.getElemet(i);
+                var elem = scrollController.dataGroups.getElemet(i);
                 if (elem.isDivider) {
                   if (dividerBuilder != null) {
-                    return dividerBuilder(elem.value);
+                    return MeasurableWidget(onHeight: (h) => scrollController.heightMap.addAll({i: h}), child: dividerBuilder(elem.value) ?? SizedBox());
                   } else {
-                    return elem.group.goupDividerWidget;
+                    return MeasurableWidget(onHeight: (h) => scrollController.heightMap.addAll({i: h}), child: elem.group.goupDividerWidget);
                   }
                 } else {
-                  return itemBuilder(elem.value as T);
+                  return MeasurableWidget(onHeight: (h) => scrollController.heightMap.addAll({i: h}), child: itemBuilder(elem.value as T) ?? SizedBox());
                 }
               }
 
@@ -99,81 +102,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
   }
 }
 
-class DataGroupList {
-  DataGroupList(this.groups, {this.needDivider = false}) {
-    Map<DataGroup, ({int first, int last})> map = {};
-    int firstIndex = 0;
-    for (var gr in groups) {
-      map.addAll({gr: (first: firstIndex, last: firstIndex + gr.data.length - (needDivider ? 0 : 1))});
-      _length = firstIndex + gr.data.length - (needDivider ? 0 : 1);
-      firstIndex += gr.data.length + (needDivider ? 1 : 0);
-    }
-    _sizes = map;
-  }
-
-  bool needDivider;
-  List<DataGroup> groups;
-
-  Map<DataGroup, ({int first, int last})> _sizes = {};
-  int _length = 0;
-
-  int get length => _length;
-
-  ({dynamic value, DataGroup group, bool isDivider}) getElemet(int index) {
-    var group = _sizes.entries.firstWhereOrNull((i) => i.value.first <= index && index <= i.value.last);
-    if (group != null) {
-      if (index - group.value.first > 0 || !needDivider) {
-        return (value: group.key.data[index - group.value.first - (needDivider ? 1 : 0)], group: group.key, isDivider: false);
-      }
-      return (value: group.key.groupValue, group: group.key, isDivider: true);
-    }
-    throw (RangeError("index $index out of range"));
-  }
-}
-
-class DataGroup {
-  const DataGroup({required this.data, required this.groupFieldName, this.dividerBuilder, this.forDateFilters = PartOfDate.day});
-  final List<NsgDataItem> data;
-  final String groupFieldName;
-  final Widget Function(String grName, dynamic fieldValue)? dividerBuilder;
-  final PartOfDate forDateFilters;
-
-  String get groupName {
-    if (groupValue != null) {
-      try {
-        return groupValue.toString();
-      } catch (ex) {
-        return "error";
-      }
-    }
-    return "";
-  }
-
-  dynamic get groupValue {
-    if (data.isNotEmpty) {
-      try {
-        if (data.first.getField(groupFieldName) is NsgDataReferenceField) {
-          return data.first.getReferent(groupFieldName);
-        } else if (data.first.getField(groupFieldName) is NsgDataEnumReferenceField) {
-          return data.first.getReferent(groupFieldName);
-        } else if (data.first.getField(groupFieldName) is NsgDataBoolField) {
-          return data.first.getFieldValue(groupFieldName);
-        } else if (data.first.getField(groupFieldName) is NsgDataStringField ||
-            data.first.getField(groupFieldName) is NsgDataIntField ||
-            data.first.getField(groupFieldName) is NsgDataDoubleField) {
-          return data.first.getFieldValue(groupFieldName);
-        } else if (data.first.getField(groupFieldName) is NsgDataDateField) {
-          return data.first.getFieldValue(groupFieldName);
-        } else {
-          throw Exception("Не указан тип поля ввода, тип данных неизвестен");
-        }
-      } catch (ex) {
-        return null;
-      }
-    }
-    return null;
-  }
-
+extension DataGroupUi on DataGroup {
   Widget get goupDividerWidget {
     if (dividerBuilder != null) {
       return dividerBuilder!(groupName, groupValue);
