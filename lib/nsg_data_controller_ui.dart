@@ -19,7 +19,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
           dataGroups = DataGroupList([DataGroup(data: items, groupFieldName: "")]);
         }
 
-        scrollController.heightMap.clear();
+        //scrollController.heightMap.clear();
         scrollController.dataGroups = dataGroups;
 
         return ListView.builder(
@@ -39,12 +39,14 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
                 var elem = scrollController.dataGroups.getElemet(i);
                 if (elem.isDivider) {
                   if (dividerBuilder != null) {
-                    return MeasurableWidget(onHeight: (h) => scrollController.heightMap.addAll({i: h}), child: dividerBuilder(elem.value) ?? SizedBox());
+                    return Container(
+                        key: elem.key, /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: dividerBuilder(elem.value) ?? SizedBox());
                   } else {
-                    return MeasurableWidget(onHeight: (h) => scrollController.heightMap.addAll({i: h}), child: elem.group.goupDividerWidget);
+                    return Container(key: elem.key, /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: elem.group.goupDividerWidget);
                   }
                 } else {
-                  return MeasurableWidget(onHeight: (h) => scrollController.heightMap.addAll({i: h}), child: itemBuilder(elem.value as T) ?? SizedBox());
+                  return Container(
+                      key: elem.key, /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: itemBuilder(elem.value as T) ?? SizedBox());
                 }
               }
 
