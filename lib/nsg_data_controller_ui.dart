@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/helpers.dart';
 import 'package:nsg_controls/nsg_controls.dart';
-import 'package:nsg_controls/nsg_measurable.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 
@@ -21,6 +20,8 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
 
         //scrollController.heightMap.clear();
         scrollController.dataGroups = dataGroups;
+
+        Future.delayed(Duration(seconds: 0), () => scrollController.jumpTo(scrollController.lastOffset));
 
         return ListView.builder(
           controller: scrollController,
