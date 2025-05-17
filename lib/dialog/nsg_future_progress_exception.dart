@@ -7,7 +7,7 @@ Future nsgFutureProgressAndException({required Future<void> Function() func, Str
   var progress = NsgProgressDialog(textDialog: text ?? '', context: context, delay: delay);
   try {
     if (showProgress) {
-      await progress.show();
+      progress.show();
     }
     await func();
     if (showProgress) {

@@ -28,13 +28,13 @@ class NsgProgressDialog {
       this.cancelToken,
       this.context});
 
-  Future<void> show({String text = ''}) async {
+  void show({String text = ''}) {
     visible = true;
     // открываем popup с прогрессбаром NsgProgressBar
     //print("SHOW");
     context ??= Get.context!;
 
-    await showDialog(
+    showDialog(
         context: context!,
         builder: (context) => NsgProgressDialogWidget(
             delay: delay,
