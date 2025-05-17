@@ -7,15 +7,17 @@ Future nsgFutureProgressAndException({required Future<void> Function() func, Str
   var progress = NsgProgressDialog(textDialog: text ?? '', context: context, delay: delay);
   try {
     if (showProgress) {
-      progress.show();
+      await progress.show();
     }
     await func();
     if (showProgress) {
       progress.hide();
+      await Future.delayed(const Duration(milliseconds: 100));
     }
   } catch (ex) {
     if (showProgress) {
       progress.hide();
+      await Future.delayed(const Duration(milliseconds: 100));
     }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (ex is Exception) {
