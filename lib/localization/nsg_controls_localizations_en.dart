@@ -161,4 +161,9 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
 
   @override
   String get empty_list => 'Empty list';
+
+  @override
+  String there_are_count_elements_more_use_search(Object count) {
+    return 'There are $count elements more. Use search';
+  }
 }

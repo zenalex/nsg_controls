@@ -161,4 +161,9 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
 
   @override
   String get empty_list => 'Пустой список';
+
+  @override
+  String there_are_count_elements_more_use_search(Object count) {
+    return 'Есть еще $count элементов. Воспользуйтесь поиском.';
+  }
 }

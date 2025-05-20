@@ -48,5 +48,6 @@
   "need_confirmation": "Need confirmation",
   "cancel": "Cancel",
   "ok": "Ok",
-  "empty_list": "Empty list"
+  "empty_list": "Empty list",
+  "there_are_count_elements_more_use_search": "There are {count} elements more. Use search"
 }

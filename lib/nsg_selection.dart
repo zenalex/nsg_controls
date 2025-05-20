@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:nsg_controls/formfields/nsg_input_selection_widget_type.dart';
+import 'package:nsg_controls/helpers.dart';
 import 'package:nsg_controls/selection_nsg_popup.dart';
 
 import 'nsg_controls.dart';
@@ -69,7 +70,7 @@ class NsgSelection {
     if (inputType == NsgInputType.reference) {
       if ((controller!.totalCount ?? 0) > itemsList.length) {
         list.add(const Divider());
-        list.add(Center(child: Text('Есть еще ${(controller!.totalCount ?? 0) - itemsList.length} элементов. Воспользуйтесь поиском.')));
+        list.add(Center(child: Text(tranControls.there_are_count_elements_more_use_search((controller!.totalCount ?? 0) - itemsList.length))));
       }
     }
     return list;
