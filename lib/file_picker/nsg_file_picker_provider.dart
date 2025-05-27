@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../dialog/nsg_future_progress_exception.dart';
 import '../helpers.dart';
 
 class NsgFilePickerProvider {
@@ -324,10 +325,13 @@ class NsgFilePickerProvider {
   Future<List<NsgFilePickerObject>> pickFile({bool oneFile = false}) async {
     String? error;
     List<NsgFilePickerObject> objectsList = [];
-    FilePickerResult? result = await FilePicker.platform
-        .pickFiles(type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
+    FilePickerResult? result;
+    await nsgFutureProgressAndException(func: () async {
+      result = await FilePicker.platform.pickFiles(
+          type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
+    });
     if (result != null) {
-      for (var element in result.files) {
+      for (var element in result!.files) {
         var fileType = getFileTypeByPath(element.name);
         if (kIsWeb) {
           var file = File(element.bytes.toString());
