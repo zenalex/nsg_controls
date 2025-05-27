@@ -117,10 +117,14 @@ class NsgFilePickerProvider {
     String? error;
     if (kIsWeb) {
       /* ----------------------------------------------- Галерея в браузере ----------------------------------------------- */
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
+      FilePickerResult? result;
+      await nsgFutureProgressAndException(func: () async {
+        result = await FilePicker.platform.pickFiles(
+            type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
+      });
+
       if (result != null) {
-        for (var element in result.files) {
+        for (var element in result!.files) {
           Uint8List? fileBytes = element.bytes;
           String fileName = element.name;
           var fileType = getFileTypeByPath(fileName);
@@ -148,11 +152,15 @@ class NsgFilePickerProvider {
       }
     } else if (GetPlatform.isWindows || GetPlatform.isLinux) {
       /* --------------------------------------------- Галерея Windows и Linux -------------------------------------------- */
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
+
+      FilePickerResult? result;
+      await nsgFutureProgressAndException(func: () async {
+        result = await FilePicker.platform.pickFiles(
+            type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
+      });
 
       if (result != null) {
-        for (var element in result.files) {
+        for (var element in result!.files) {
           var fileType = getFileTypeByPath(element.name);
           Uint8List? fileContent;
           if (element.path != null) {
