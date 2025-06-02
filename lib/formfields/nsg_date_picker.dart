@@ -459,7 +459,7 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
       padding: const EdgeInsets.only(top: 10, bottom: 15),
       child: Theme(
         data: Theme.of(context).copyWith(
-            inputDecorationTheme: InputDecorationTheme(fillColor: nsgtheme.colorPrimary),
+            inputDecorationTheme: InputDecorationTheme(fillColor: nsgtheme.colorPrimary),            
             colorScheme: ColorScheme.light(
               primary: nsgtheme.colorTertiary,
               onPrimary: nsgtheme.colorText,
