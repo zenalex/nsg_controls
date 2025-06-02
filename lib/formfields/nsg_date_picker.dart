@@ -191,8 +191,7 @@ class DatePickerContent extends StatefulWidget {
   final TextAlign textAlign;
   final DateTime? firstDateTime;
   final DateTime? lastDateTime;
-  const DatePickerContent({Key? key, this.firstDateTime, this.lastDateTime, required this.initialTime, required this.textAlign, required this.onChange})
-      : super(key: key);
+  const DatePickerContent({super.key, this.firstDateTime, this.lastDateTime, required this.initialTime, required this.textAlign, required this.onChange});
 
   @override
   State<DatePickerContent> createState() => _DatePickerContentState();
@@ -460,13 +459,14 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
       padding: const EdgeInsets.only(top: 10, bottom: 15),
       child: Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.light(
-              background: nsgtheme.colorMainBack,
-              onBackground: nsgtheme.colorMain,
-              primary: nsgtheme.colorMain,
-              onPrimary: nsgtheme.colorMainText,
-              onSurface: nsgtheme.colorText),
-        ),
+            inputDecorationTheme: InputDecorationTheme(fillColor: nsgtheme.colorPrimary),
+            colorScheme: ColorScheme.light(
+              primary: nsgtheme.colorTertiary,
+              onPrimary: nsgtheme.colorText,
+              onSurface: nsgtheme.colorText.withAlpha(80),
+              secondary: nsgtheme.colorText,
+              tertiary: nsgtheme.colorText,
+            )),
         child: CalendarDatePicker(
           key: GlobalKey(),
           firstDate: widget.firstDateTime ?? DateTime(0),
