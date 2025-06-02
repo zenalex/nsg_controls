@@ -140,7 +140,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                   textAlign: widget.textAlign,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorMainDark),
+                  style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorPrimary),
                 ),
               ),
             Container(
@@ -206,7 +206,10 @@ class _DatePickerContentState extends State<DatePickerContent> {
   var lastDate = DateTime.now().add(const Duration(days: 200));
   @override
   void initState() {
-    textController.text = _initialTime;
+    //textController.text = _initialTime;
+    //var loc = Localizations.localeOf(context).languageCode;
+
+    textController.text = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy', locale: 'en');
     textController.addListener(textChanged);
     super.initState();
   }
@@ -287,6 +290,8 @@ class _DatePickerContentState extends State<DatePickerContent> {
             textAlign: widget.textAlign,
             controller: textController,
             decoration: InputDecoration(
+              hintStyle: TextStyle(color: nsgtheme.colorText),
+              errorStyle: TextStyle(color: nsgtheme.colorText),
               labelText: '',
               contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
               isDense: true,
@@ -301,6 +306,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
             onChanged: (String value) {
               //
             },
+
             style: TextStyle(color: nsgtheme.colorText, fontSize: 24),
           ),
         ),

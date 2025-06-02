@@ -9,15 +9,21 @@ class NsgSwitchHorizontal extends StatefulWidget {
   final VoidCallback onTap;
   final Widget? child;
   final NsgSwitchHorizontalStyle style;
-  const NsgSwitchHorizontal({super.key, this.text = '', required this.isOn, required this.onTap, this.style = const NsgSwitchHorizontalStyle(), this.child});
+  final int animationTime;
+  const NsgSwitchHorizontal(
+      {super.key,
+      this.text = '',
+      required this.isOn,
+      required this.onTap,
+      this.style = const NsgSwitchHorizontalStyle(),
+      this.child,
+      this.animationTime = 300});
 
   @override
   State<NsgSwitchHorizontal> createState() => _NsgSwitchHorizontalState();
 }
 
 class _NsgSwitchHorizontalState extends State<NsgSwitchHorizontal> {
-  bool isOn = false;
-
   @override
   void initState() {
     super.initState();
@@ -26,7 +32,7 @@ class _NsgSwitchHorizontalState extends State<NsgSwitchHorizontal> {
   @override
   Widget build(BuildContext context) {
     var buildStyle = widget.style.style();
-    isOn = widget.isOn;
+
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
@@ -41,8 +47,8 @@ class _NsgSwitchHorizontalState extends State<NsgSwitchHorizontal> {
             Expanded(
               child: widget.child == null
                   ? AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 200),
-                      style: isOn ? buildStyle.textActiveStyle : buildStyle.textStyle,
+                      duration: Duration(milliseconds: widget.animationTime),
+                      style: widget.isOn ? buildStyle.textActiveStyle : buildStyle.textStyle,
                       child: Text(
                         widget.text,
                       ),
@@ -50,17 +56,18 @@ class _NsgSwitchHorizontalState extends State<NsgSwitchHorizontal> {
                   : widget.child!,
             ),
             AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              alignment: isOn ? Alignment.centerRight : Alignment.centerLeft,
+              duration: Duration(milliseconds: widget.animationTime),
+              alignment: widget.isOn ? Alignment.centerRight : Alignment.centerLeft,
               width: buildStyle.trackWidth,
               height: buildStyle.trackHeight,
-              decoration: BoxDecoration(color: isOn ? buildStyle.trackActiveColor : buildStyle.trackColor, borderRadius: buildStyle.thumbBorderRadius),
+              decoration: BoxDecoration(color: widget.isOn ? buildStyle.trackActiveColor : buildStyle.trackColor, borderRadius: buildStyle.thumbBorderRadius),
               child: AnimatedContainer(
                   margin: buildStyle.thumbMargin,
-                  duration: const Duration(milliseconds: 200),
+                  duration: Duration(milliseconds: widget.animationTime),
                   width: buildStyle.thumbWidth,
                   height: buildStyle.thumbHeight,
-                  decoration: BoxDecoration(color: isOn ? buildStyle.thumbActiveColor : buildStyle.thumbColor, borderRadius: buildStyle.thumbBorderRadius)),
+                  decoration:
+                      BoxDecoration(color: widget.isOn ? buildStyle.thumbActiveColor : buildStyle.thumbColor, borderRadius: buildStyle.thumbBorderRadius)),
             ),
           ],
         ),

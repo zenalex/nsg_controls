@@ -253,8 +253,8 @@ class NsgInput extends StatefulWidget {
   @override
   State<NsgInput> createState() => _NsgInputState();
 
+  // if (dynamicList.isNotEmpty && !kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   NsgInputType selectInputType() {
-    // if (dynamicList.isNotEmpty && !kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
     if (dynamicList.isNotEmpty) {
       return NsgInputType.dynamicList;
     }
@@ -422,6 +422,12 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   @override
+  void didUpdateWidget(NsgInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    inputType = widget.selectInputType();
+  }
+
+  @override
   void dispose() {
     _notifier.dispose();
     textController.dispose();
@@ -482,6 +488,7 @@ class _NsgInputState extends State<NsgInput> {
     }
 
     return Container(
+        //key: widget.key ?? GlobalKey(),
         margin: widget.margin ?? nsgtheme.nsgInputMargin,
         child: widget.widget ??
             Column(
@@ -1025,8 +1032,9 @@ class _NsgInputState extends State<NsgInput> {
           : NsgDatePicker(
                   firstDateTime: widget.firstDateTime,
                   lastDateTime: widget.lastDateTime,
-                  initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
-                          DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
+                  // initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
+                  //         DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
+                  initialTime: (widget.dataItem[widget.fieldName] as DateTime).year < 1900
                       ? widget.initialDateTime ?? NsgPeriod.beginOfDay(DateTime.now())
                       : widget.dataItem[widget.fieldName],
                   onClose: (value) {})
@@ -1043,10 +1051,11 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   Widget _buildBoolWidget(bool fieldValue) {
+    var animKey = ValueKey(widget.fieldName);
     Widget boolBox = widget.boolWidget ??
         StatefulBuilder(
+          key: animKey,
           builder: ((context, setState) => NsgSwitchHorizontal(
-                  //key: GlobalKey(),
                   style: widget.nsgSwitchHorizontalStyle,
                   text: widget.label,
                   isOn: fieldValue,
@@ -1083,6 +1092,7 @@ class _NsgInputState extends State<NsgInput> {
         );
 
     return Container(
+        //key: widget.key ?? GlobalKey(),
         margin: widget.margin ?? nsgtheme.nsgInputMargin,
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         decoration: BoxDecoration(
