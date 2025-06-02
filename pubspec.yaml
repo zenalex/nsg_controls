@@ -39,7 +39,7 @@ dependencies:
   reorderables: ^0.6.0
   package_info_plus: ^8.0.1
   vector_math: ^2.1.2
-  flutter_multi_formatter: ^2.6.2
+  flutter_multi_formatter: ^2.13.7
   dotted_line: ^3.1.0
   event: ^2.0.5
   hovering: ^1.0.4
