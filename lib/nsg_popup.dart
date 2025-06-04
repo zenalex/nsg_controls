@@ -140,7 +140,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
         child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 3),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(nsgtheme.borderRadius),
@@ -151,15 +151,18 @@ class _NsgPopUpState extends State<NsgPopUp> {
             child: Row(
               children: [
                 if (widget.hideBackButton == false)
-                  IconButton(
-                      icon: Icon(Icons.arrow_back_ios_new, color: widget.colorTitleText, size: 24), // set your color here
-                      onPressed: () {
-                        if (widget.onCancel != null) {
-                          widget.onCancel!();
-                        } else {
-                          Navigator.pop(context, false);
-                        }
-                      })
+                  Center(
+                    child: IconButton(
+                        iconSize: 32,
+                        icon: Icon(Icons.arrow_back_ios_new, color: widget.colorTitleText, size: 32), // set your color here
+                        onPressed: () {
+                          if (widget.onCancel != null) {
+                            widget.onCancel!();
+                          } else {
+                            Navigator.pop(context, false);
+                          }
+                        }),
+                  )
                 else
                   const SizedBox(width: 40),
                 Expanded(
@@ -175,22 +178,25 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         }
                       }),
                 if (!widget.hideCheckButton)
-                  IconButton(
-                      icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: widget.colorTitleText, size: 24), // set your color here
-                      onPressed: () async {
-                        if (widget.onConfirm != null && widget.showCloseButton == false) {
-                          if (widget.popOnConfirm) Navigator.of(context).pop();
-                          widget.onConfirm!();
-                        }
-                        if (widget.showCloseButton == true) {
-                          if (widget.onCancel != null) {
-                            widget.onCancel!();
-                            Navigator.of(context).pop();
-                          } else {
-                            Navigator.of(context).pop();
+                  Container(
+                    decoration: BoxDecoration(color: widget.colorTitleText, borderRadius: BorderRadius.circular(10)),
+                    child: IconButton(
+                        icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: nsgtheme.colorPrimary, size: 24), // set your color here
+                        onPressed: () async {
+                          if (widget.onConfirm != null && widget.showCloseButton == false) {
+                            if (widget.popOnConfirm) Navigator.of(context).pop();
+                            widget.onConfirm!();
                           }
-                        }
-                      })
+                          if (widget.showCloseButton == true) {
+                            if (widget.onCancel != null) {
+                              widget.onCancel!();
+                              Navigator.of(context).pop();
+                            } else {
+                              Navigator.of(context).pop();
+                            }
+                          }
+                        }),
+                  )
                 else
                   SizedBox(width: 40),
               ],
