@@ -18,7 +18,7 @@ import 'nsg_controls_localizations_ru.dart';
 /// `supportedLocales` list. For example:
 ///
 /// ```dart
-/// import 'gen_l10n/nsg_controls_localizations.dart';
+/// import 'localization/nsg_controls_localizations.dart';
 ///
 /// return MaterialApp(
 ///   localizationsDelegates: NsgControlsLocalizations.localizationsDelegates,
@@ -62,15 +62,18 @@ import 'nsg_controls_localizations_ru.dart';
 /// be consistent with the languages listed in the NsgControlsLocalizations.supportedLocales
 /// property.
 abstract class NsgControlsLocalizations {
-  NsgControlsLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  NsgControlsLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
   static NsgControlsLocalizations? of(BuildContext context) {
-    return Localizations.of<NsgControlsLocalizations>(context, NsgControlsLocalizations);
+    return Localizations.of<NsgControlsLocalizations>(
+        context, NsgControlsLocalizations);
   }
 
-  static const LocalizationsDelegate<NsgControlsLocalizations> delegate = _NsgControlsLocalizationsDelegate();
+  static const LocalizationsDelegate<NsgControlsLocalizations> delegate =
+      _NsgControlsLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,7 +85,8 @@ abstract class NsgControlsLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -402,34 +406,36 @@ abstract class NsgControlsLocalizations {
   String there_are_count_elements_more_use_search(Object count);
 }
 
-class _NsgControlsLocalizationsDelegate extends LocalizationsDelegate<NsgControlsLocalizations> {
+class _NsgControlsLocalizationsDelegate
+    extends LocalizationsDelegate<NsgControlsLocalizations> {
   const _NsgControlsLocalizationsDelegate();
 
   @override
   Future<NsgControlsLocalizations> load(Locale locale) {
-    return SynchronousFuture<NsgControlsLocalizations>(lookupNsgControlsLocalizations(locale));
+    return SynchronousFuture<NsgControlsLocalizations>(
+        lookupNsgControlsLocalizations(locale));
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_NsgControlsLocalizationsDelegate old) => false;
 }
 
 NsgControlsLocalizations lookupNsgControlsLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return NsgControlsLocalizationsEn();
-    case 'ru': return NsgControlsLocalizationsRu();
+    case 'en':
+      return NsgControlsLocalizationsEn();
+    case 'ru':
+      return NsgControlsLocalizationsRu();
   }
 
   throw FlutterError(
-    'NsgControlsLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
-  );
+      'NsgControlsLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

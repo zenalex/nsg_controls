@@ -41,7 +41,8 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
   String get failed_download => 'ошибка загрузки';
 
   @override
-  String get failed_download_try_again => 'Ошибка загрузки файла. Попробуйте еще раз';
+  String get failed_download_try_again =>
+      'Ошибка загрузки файла. Попробуйте еще раз';
 
   @override
   String get error => 'Ошибка';
@@ -68,7 +69,8 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
   String get delete_photos => 'Удаление фотографии';
 
   @override
-  String get delete_photo_warning => 'После удаления, фотографию нельзя будет восстановить. Удалить?';
+  String get delete_photo_warning =>
+      'После удаления, фотографию нельзя будет восстановить. Удалить?';
 
   @override
   String get not_an_image_file => 'Этот файл не является изображением';

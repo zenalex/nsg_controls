@@ -5,7 +5,7 @@ homepage: https://github.com/zenalex/nsg_controls.git
 # publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=3.0.3 <4.0.0"
+  sdk: ">=3.8.1 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
+  intl: ^0.20.2
   get: ^5.0.0-release-candidate-9.2.1
   # get:
   #   path:
@@ -60,7 +60,7 @@ dependencies:
   path: ^1.8.1
   path_provider: ^2.0.14
 
-  syncfusion_flutter_pdfviewer: ^27.2.5
+  syncfusion_flutter_pdfviewer: ^29.2.9
   #adaptive_scrollbar: ^2.1.2
   video_player_win: ^3.1.1
   video_player: ^2.6.0

@@ -68,7 +68,8 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
   String get delete_photos => 'Delete photos';
 
   @override
-  String get delete_photo_warning => 'Once deleted, the photo cannot be restored. Do you want to delete it?';
+  String get delete_photo_warning =>
+      'Once deleted, the photo cannot be restored. Do you want to delete it?';
 
   @override
   String get not_an_image_file => 'This file is not an image';
