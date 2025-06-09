@@ -9,8 +9,6 @@ import '../nsg_control_options.dart';
 import '../nsg_progress_dialog.dart';
 //import 'dart:io' show Platform;
 
-import 'nsg_simple_progress_bar.dart';
-
 class NsgProgressBar extends StatefulWidget {
   final NsgProgressDialog? dialogWidget;
   final String text;
