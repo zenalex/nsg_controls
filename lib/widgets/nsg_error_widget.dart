@@ -23,10 +23,10 @@ class NsgErrorWidget {
   static Future showError(Exception ex) async {
     String message = ex.toString();
 
-    String title = 'ERROR';
+    String title = 'ERROR ';
     if (ex is NsgApiException) {
       message = ex.error.message ?? '';
-      title += ' ' + ex.error.code?.toString() ?? '';
+      title += ex.error.code?.toString() ?? '';
     }
     message = extractErrorMessage(message);
     await _showError(message, title);
