@@ -26,34 +26,39 @@ class NsgErrorWidget {
     String title = 'ERROR';
     if (ex is NsgApiException) {
       message = ex.error.message ?? '';
-      title = ex.error.code?.toString() ?? '';
+      title += ' ' + ex.error.code?.toString() ?? '';
     }
     message = extractErrorMessage(message);
     await _showError(message, title);
   }
 
-  static String extractErrorMessage(String serverError) {
-    // 1. Попробуем вытащить http-код и краткое пояснение (если есть)
-    final regExpHttp = RegExp(r'(\d{3}) \|\|\| ([^\n]+) -> ([^\n]+)');
-    final httpMatch = regExpHttp.firstMatch(serverError);
-    String mainMessage = '';
+  static String extractErrorMessage(String error) {
+    // Ищем код ошибки (например, 500)
+    final codeMatch = RegExp(r'^\d+').firstMatch(error);
+    final code = codeMatch != null ? codeMatch.group(0) : '';
 
-    if (httpMatch != null) {
-      // 500 ||| https://... -> InternalServerError
-      mainMessage = 'Ошибка ${httpMatch.group(1)}: ${httpMatch.group(3)}';
+    // Ищем первую строку с русским текстом (например, "Хет-триков")
+    final lines = error.split('\n').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    String? message;
+    for (final line in lines) {
+      // Пропускаем строки, похожие на stacktrace и url
+      if (line.contains('://') || line.contains('->') || RegExp(r'^\d+').hasMatch(line)) continue;
+      // Берём первую строку с кириллицей или буквой
+      if (RegExp(r'[А-Яа-яA-Za-z]').hasMatch(line)) {
+        message = line;
+        break;
+      }
     }
 
-    // 2. Попробуем вытащить информативную строку на русском или английском, не зависит от регистра
-    final regExpError = RegExp(r'(Ошибка|Error)\.[^\n]+', caseSensitive: false);
-    final errorMatch = regExpError.firstMatch(serverError);
-    if (errorMatch != null) {
-      mainMessage = errorMatch.group(0)!;
-    } else if (mainMessage.isEmpty) {
-      // Fallback: берем первую строку
-      mainMessage = serverError.split('\n').first;
+    // Собираем результат
+    if (code != null && code.isNotEmpty && message != null) {
+      return '$code. $message';
+    } else if (code != null && code.isNotEmpty) {
+      return code;
+    } else if (message != null) {
+      return message;
     }
-
-    return mainMessage.trim();
+    return error;
   }
 
   static Future _showError(String errorMessage, String title) async {
