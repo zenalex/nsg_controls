@@ -24,32 +24,33 @@ Future showNsgSimpleDialog({
     context: context,
     builder: (context) {
       return SimpleDialog(
-          insetPadding: const EdgeInsets.all(10),
-          titlePadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.all(20),
-          backgroundColor: nsgtheme.colorModalBack,
-          children: [
-            Center(child: child ?? Text(text!)),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  NsgButton(
-                    width: 100,
-                    text: tranControls.ok.toUpperCase(),
-                    onTap: () {
-                      if (onConfirm != null) {
-                        onConfirm();
-                      } else {
-                        Navigator.pop(context);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            )
-          ]);
+        insetPadding: const EdgeInsets.all(10),
+        titlePadding: EdgeInsets.zero,
+        contentPadding: const EdgeInsets.all(20),
+        backgroundColor: nsgtheme.colorModalBack,
+        children: [
+          Center(child: child ?? Text(text!)),
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                NsgButton(
+                  width: 100,
+                  text: tranControls.ok.toUpperCase(),
+                  onTap: () {
+                    if (onConfirm != null) {
+                      onConfirm();
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
     },
   );
 }

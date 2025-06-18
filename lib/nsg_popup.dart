@@ -179,6 +179,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                       }),
                 if (!widget.hideCheckButton)
                   Container(
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                     decoration: BoxDecoration(color: widget.colorTitleText, borderRadius: BorderRadius.circular(10)),
                     child: IconButton(
                         icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: nsgtheme.colorPrimary, size: 24), // set your color here
