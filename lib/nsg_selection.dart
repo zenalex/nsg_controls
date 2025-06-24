@@ -23,15 +23,16 @@ class NsgSelection {
   NsgInputSelectionWidgetType widgetType;
   var textEditingController = TextEditingController();
 
-  NsgSelection(
-      {required this.inputType,
-      this.controller,
-      this.rowWidget,
-      this.allValues,
-      this.selectedElement,
-      this.textColor,
-      this.colorInverted,
-      this.widgetType = NsgInputSelectionWidgetType.column}) {
+  NsgSelection({
+    required this.inputType,
+    this.controller,
+    this.rowWidget,
+    this.allValues,
+    this.selectedElement,
+    this.textColor,
+    this.colorInverted,
+    this.widgetType = NsgInputSelectionWidgetType.column,
+  }) {
     if (inputType == NsgInputType.reference) {
       assert(controller != null);
     }
@@ -55,22 +56,24 @@ class NsgSelection {
     for (var element in itemsList) {
       if (textEditingController.text.isEmpty ||
           (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase()))) {
-        list.add(InkWell(
-          onTap: () {
-            selectedElement = element;
-            // ignore: invalid_use_of_protected_member
-            selectionController?.refresh();
-            // ignore: invalid_use_of_protected_member
-            controller?.refresh();
-          },
-          child: _controllerUpdateWidget(element),
-        ));
+        list.add(
+          InkWell(
+            onTap: () {
+              selectedElement = element;
+              // ignore: invalid_use_of_protected_member
+              selectionController?.refresh();
+              // ignore: invalid_use_of_protected_member
+              controller?.refresh();
+            },
+            child: _controllerUpdateWidget(element),
+          ),
+        );
       }
     }
     if (inputType == NsgInputType.reference) {
       if ((controller!.totalCount ?? 0) > itemsList.length) {
         list.add(const Divider());
-        list.add(Center(child: Text(tranControls.there_are_count_elements_more_use_search((controller!.totalCount ?? 0) - itemsList.length))));
+        list.add(Center(child: Text(tran.there_are_count_elements_more_use_search((controller!.totalCount ?? 0) - itemsList.length))));
       }
     }
     return list;
@@ -85,11 +88,12 @@ class NsgSelection {
 
   Widget _elementWidget(NsgDataItem element) {
     return Container(
-        //key: GlobalKey(),
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
-        height: 50,
-        child: Center(child: _showRowWidget(element)));
+      //key: GlobalKey(),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
+      height: 50,
+      child: Center(child: _showRowWidget(element)),
+    );
   }
 
   Widget _showRowWidget(NsgDataItem element) {
@@ -113,19 +117,20 @@ class NsgSelection {
       context: context,
       builder: (cont) {
         return SelectionNsgPopUp(
-            widgetType: widgetType,
-            title: title,
-            getContent: _listArray,
-            dataController: controller,
-            textEditController: textEditingController,
-            confirmText: 'Подтвердить',
-            onConfirm: () {
-              if (selectedElement != null) {
-                controller?.selectedItem = selectedElement;
-                onSelected(selectedElement!);
-              }
-              Navigator.pop(cont);
-            });
+          widgetType: widgetType,
+          title: title,
+          getContent: _listArray,
+          dataController: controller,
+          textEditController: textEditingController,
+          confirmText: 'Подтвердить',
+          onConfirm: () {
+            if (selectedElement != null) {
+              controller?.selectedItem = selectedElement;
+              onSelected(selectedElement!);
+            }
+            Navigator.pop(cont);
+          },
+        );
       },
       barrierDismissible: false,
     );

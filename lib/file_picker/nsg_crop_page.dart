@@ -10,8 +10,14 @@ import '../widgets/nsg_light_app_bar.dart';
 import '../widgets/nsg_simple_progress_bar.dart';
 
 class NsgCrop {
-  Future<List<List<int>>?> cropImages(BuildContext context,
-      {required List<List<int>> imageList, double? ratio = 1 / 1, bool isCircle = false, bool isFree = true, Color backColor = Colors.white}) async {
+  Future<List<List<int>>?> cropImages(
+    BuildContext context, {
+    required List<List<int>> imageList,
+    double? ratio = 1 / 1,
+    bool isCircle = false,
+    bool isFree = true,
+    Color backColor = Colors.white,
+  }) async {
     List<Uint8List> imageDataList = [];
     for (var el in imageList) {
       final mainImage = imagedit.decodeImage(Uint8List.fromList(el));
@@ -26,32 +32,30 @@ class NsgCrop {
       //imageDataList.add(Uint8List.fromList(el));
       imageDataList.add(imagedit.encodePng(mergeImage));
     }
-    Future<List<Uint8List>?> imdd = Navigator.push(
-        context,
-        CupertinoPageRoute(
-            builder: ((context) => NsgCropPage(
-                  imageDataList: imageDataList,
-                  aspectRatio: ratio,
-                  isFree: isFree,
-                  isCircle: isCircle,
-                )))).then((value) {
-      return value;
-    });
+    Future<List<Uint8List>?> imdd =
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: ((context) => NsgCropPage(imageDataList: imageDataList, aspectRatio: ratio, isFree: isFree, isCircle: isCircle)),
+          ),
+        ).then((value) {
+          return value;
+        });
     return await imdd;
   }
 }
 
 // ignore: must_be_immutable
 class NsgCropPage extends StatefulWidget {
-  NsgCropPage(
-      {Key? key,
-      required this.imageDataList,
-      //required this.img,
-      this.isCircle = false,
-      this.isFree = true,
-      this.aspectRatio = 16 / 9,
-      this.interactive = true})
-      : super(key: key);
+  NsgCropPage({
+    Key? key,
+    required this.imageDataList,
+    //required this.img,
+    this.isCircle = false,
+    this.isFree = true,
+    this.aspectRatio = 16 / 9,
+    this.interactive = true,
+  }) : super(key: key);
 
   final bool isCircle;
   //final Uint8List img;
@@ -82,132 +86,133 @@ class NsgCropPageState extends State<NsgCropPage> {
     super.initState();
   }
 
-  String text = tranControls.loading;
+  String text = tran.loading;
   bool showSplash = true;
 
   @override
   Widget build(BuildContext context) {
     return BodyWrap(
-        child: Scaffold(
-      body: Column(
-        children: [
-          NsgLightAppBar(
-            title: text,
-            leftIcons: [
-              NsgLigthAppBarIcon(
-                icon: Icons.arrow_back_ios_new,
-                onTap: () {
-                  if (!showSplash) {
-                    Navigator.pop(context, null);
-                  }
-                },
-              )
-            ],
-            rightIcons: [
-              NsgLigthAppBarIcon(
-                icon: Icons.check,
-                onTap: () {
-                  if (!showSplash) {
-                    Navigator.pop(context, widget.imageDataList);
-                  }
-                },
-              )
-            ],
-          ),
-          Expanded(
-              child: Stack(alignment: Alignment.bottomCenter, children: [
-            Crop(
-              image: widget.imageDataList[_currentImage],
-              controller: _controller,
-              onCropped: (image) {
-                /*final img = Image.memory(image, 
+      child: Scaffold(
+        body: Column(
+          children: [
+            NsgLightAppBar(
+              title: text,
+              leftIcons: [
+                NsgLigthAppBarIcon(
+                  icon: Icons.arrow_back_ios_new,
+                  onTap: () {
+                    if (!showSplash) {
+                      Navigator.pop(context, null);
+                    }
+                  },
+                ),
+              ],
+              rightIcons: [
+                NsgLigthAppBarIcon(
+                  icon: Icons.check,
+                  onTap: () {
+                    if (!showSplash) {
+                      Navigator.pop(context, widget.imageDataList);
+                    }
+                  },
+                ),
+              ],
+            ),
+            Expanded(
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Crop(
+                    image: widget.imageDataList[_currentImage],
+                    controller: _controller,
+                    onCropped: (image) {
+                      /*final img = Image.memory(image, 
                         width: double.infinity,
                         fit: BoxFit.cover,
                         );*/
-                // _croppedDataList[_currentImage] = image;
-                widget.imageDataList[_currentImage] = image;
-                currentImage = _currentImage;
-              },
-              initialRectBuilder: (rect, rect2) => Rect.fromLTRB(rect.left + 24, rect.top + 32, rect.right - 24, rect.bottom - 32),
-              withCircleUi: widget.isCircle,
-              baseColor: ControlOptions.instance.colorMainLighter,
-              maskColor: Colors.black.withAlpha(150),
-              radius: 20,
-              onMoved: (newRect) {},
-              onStatusChanged: (status) {
-                if (status == CropStatus.ready) {
-                  _controller.aspectRatio = widget.aspectRatio;
-                  text = tranControls.prepare_photo;
-                  showSplash = false;
-                  setState(() {});
-                }
-                if (status == CropStatus.cropping) {
-                  //splash
-                  text = tranControls.loading;
-                  showSplash = true;
-                  setState(() {});
-                }
-                if (status == CropStatus.loading) {
-                  //splash
-                  text = tranControls.loading;
-                  showSplash = true;
-                  setState(() {});
-                }
-              },
-              cornerDotBuilder: (size, edgeAlignment) => const DotControl(color: Colors.blue),
-              interactive: widget.interactive,
-              fixCropRect: !widget.isFree,
-              progressIndicator: const NsgSimpleProgressBar(
-                size: 100,
-                width: 10,
+                      // _croppedDataList[_currentImage] = image;
+                      widget.imageDataList[_currentImage] = image;
+                      currentImage = _currentImage;
+                    },
+                    initialRectBuilder: (rect, rect2) => Rect.fromLTRB(rect.left + 24, rect.top + 32, rect.right - 24, rect.bottom - 32),
+                    withCircleUi: widget.isCircle,
+                    baseColor: ControlOptions.instance.colorMainLighter,
+                    maskColor: Colors.black.withAlpha(150),
+                    radius: 20,
+                    onMoved: (newRect) {},
+                    onStatusChanged: (status) {
+                      if (status == CropStatus.ready) {
+                        _controller.aspectRatio = widget.aspectRatio;
+                        text = tran.prepare_photo;
+                        showSplash = false;
+                        setState(() {});
+                      }
+                      if (status == CropStatus.cropping) {
+                        //splash
+                        text = tran.loading;
+                        showSplash = true;
+                        setState(() {});
+                      }
+                      if (status == CropStatus.loading) {
+                        //splash
+                        text = tran.loading;
+                        showSplash = true;
+                        setState(() {});
+                      }
+                    },
+                    cornerDotBuilder: (size, edgeAlignment) => const DotControl(color: Colors.blue),
+                    interactive: widget.interactive,
+                    fixCropRect: !widget.isFree,
+                    progressIndicator: const NsgSimpleProgressBar(size: 100, width: 10),
+                  ),
+                  Positioned(
+                    child: NsgCropToolsMenu(
+                      buttons: [
+                        NsgCropToolsMenuItem(
+                          icon: Icons.crop,
+                          onTap: () {
+                            _controller.crop();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  //getSpash(showSplash),
+                ],
               ),
             ),
-            Positioned(
-                child: NsgCropToolsMenu(
-              buttons: [
-                NsgCropToolsMenuItem(
-                  icon: Icons.crop,
-                  onTap: () {
-                    _controller.crop();
-                  },
-                )
-              ],
-            )),
-            //getSpash(showSplash),
-          ])),
-          if (widget.imageDataList.length > 1)
-            NsgCropGallery(
-              images: widget.imageDataList,
-              onItemTap: (index) {
-                if (_currentImage != index) {
-                  currentImage = index;
-                }
-              },
-              deleteImage: (newList) {
-                if (newList.isNotEmpty) {
-                  widget.imageDataList = newList;
-                  currentImage = 0;
-                } else {
-                  Navigator.pop(context, null);
-                }
-              },
-            )
-        ],
+            if (widget.imageDataList.length > 1)
+              NsgCropGallery(
+                images: widget.imageDataList,
+                onItemTap: (index) {
+                  if (_currentImage != index) {
+                    currentImage = index;
+                  }
+                },
+                deleteImage: (newList) {
+                  if (newList.isNotEmpty) {
+                    widget.imageDataList = newList;
+                    currentImage = 0;
+                  } else {
+                    Navigator.pop(context, null);
+                  }
+                },
+              ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 
   Widget getSpash(bool showSplash) {
     Widget splash;
     if (showSplash) {
       splash = Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Colors.black.withAlpha(170),
-          child: const NsgSimpleProgressBar(
-            size: 100,
-            width: 10,
-          ));
+        width: double.infinity,
+        height: double.infinity,
+        color: Colors.black.withAlpha(170),
+        child: const NsgSimpleProgressBar(size: 100, width: 10),
+      );
     } else {
       splash = Container();
     }
@@ -247,10 +252,7 @@ class _NsgCropToolsMenuItemState extends State<NsgCropToolsMenuItem> {
         margin: const EdgeInsets.all(5),
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(shape: BoxShape.circle, color: getBackColor()),
-        child: Icon(
-          widget.icon,
-          color: getIconColor(),
-        ),
+        child: Icon(widget.icon, color: getIconColor()),
       ),
     );
   }
@@ -295,19 +297,12 @@ class _NsgCropToolsMenuState extends State<NsgCropToolsMenu> {
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: ControlOptions.instance.colorMain.withAlpha(200),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorMain.withAlpha(200)),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: widget.buttons.asMap().entries.map((entry) {
-            return NsgCropToolsMenuItem(
-              icon: entry.value.icon,
-              onTap: entry.value.onTap,
-              isSelected: true,
-            );
+            return NsgCropToolsMenuItem(icon: entry.value.icon, onTap: entry.value.onTap, isSelected: true);
           }).toList(),
         ),
       ),
@@ -328,22 +323,22 @@ class NsgCropGallery extends StatelessWidget {
       height: 124,
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-          border: Border.all(
-            color: ControlOptions.instance.colorMainLight,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(15)),
+        border: Border.all(color: ControlOptions.instance.colorMainLight, width: 2),
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: getImages().length,
-          itemBuilder: (BuildContext ctx, index) {
-            return Container(
-                margin: const EdgeInsets.all(10),
-                width: 100,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
-                child: getImages()[index]);
-          }),
+        scrollDirection: Axis.horizontal,
+        itemCount: getImages().length,
+        itemBuilder: (BuildContext ctx, index) {
+          return Container(
+            margin: const EdgeInsets.all(10),
+            width: 100,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+            child: getImages()[index],
+          );
+        },
+      ),
     ); //выстраиваем сетку из фотографий и иконки +
   }
 
@@ -351,22 +346,24 @@ class NsgCropGallery extends StatelessWidget {
     List<Widget> list = [];
 
     for (int i = 0; i < images.length; i++) {
-      list.add(SelectPhotoItem(
-        photoData: images[i],
-        index: i,
-        onTap: (index) {
-          if (onItemTap != null) {
-            onItemTap!(index);
-          }
-        },
-        onPressDelete: (index) {
-          images.removeAt(index);
-          if (deleteImage != null) {
-            deleteImage!(images);
-          }
-          //callback
-        },
-      ));
+      list.add(
+        SelectPhotoItem(
+          photoData: images[i],
+          index: i,
+          onTap: (index) {
+            if (onItemTap != null) {
+              onItemTap!(index);
+            }
+          },
+          onPressDelete: (index) {
+            images.removeAt(index);
+            if (deleteImage != null) {
+              deleteImage!(images);
+            }
+            //callback
+          },
+        ),
+      );
     }
     return list;
   }
@@ -390,24 +387,21 @@ class _SelectPhotoItemState extends State<SelectPhotoItem> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        child: Stack(
-      clipBehavior: Clip.none,
-      children: [
-        InkWell(
-          onTap: () {
-            if (widget.onTap != null) {
-              widget.onTap!(widget.index);
-            }
-          },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Image.memory(
-              widget.photoData,
-              fit: BoxFit.cover,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          InkWell(
+            onTap: () {
+              if (widget.onTap != null) {
+                widget.onTap!(widget.index);
+              }
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Image.memory(widget.photoData, fit: BoxFit.cover),
             ),
           ),
-        ),
-        Positioned(
+          Positioned(
             top: -10,
             right: -10,
             child: InkWell(
@@ -419,13 +413,12 @@ class _SelectPhotoItemState extends State<SelectPhotoItem> {
               onHover: (value) {
                 value ? iconColor = Colors.red : iconColor = ControlOptions.instance.colorMain;
               },
-              child: Icon(
-                Icons.cancel,
-                color: iconColor,
-              ),
-            ))
-      ],
-    ));
+              child: Icon(Icons.cancel, color: iconColor),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -436,8 +429,9 @@ class NsgCropPageStyle {
 
   NsgCropPageStyleMain style() {
     return NsgCropPageStyleMain(
-        mainButtonsColor: mainButtonsColor ?? ControlOptions.instance.colorMainLight,
-        titleStyle: titleStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.w500, fontFamily: 'Inter'));
+      mainButtonsColor: mainButtonsColor ?? ControlOptions.instance.colorMainLight,
+      titleStyle: titleStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.w500, fontFamily: 'Inter'),
+    );
   }
 }
 

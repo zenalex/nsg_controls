@@ -99,8 +99,11 @@ extension NsgDuration on Duration {
   // }
 
   String timeAgo({String locale = 'ru', bool short = false, Duration? fromDateTime}) {
-    return timeago.format(toDateTime(),
-        locale: short ? '${locale}_short' : locale, clock: fromDateTime != null ? fromDateTime.toDateTime() : const Duration().toDateTime());
+    return timeago.format(
+      toDateTime(),
+      locale: short ? '${locale}_short' : locale,
+      clock: fromDateTime != null ? fromDateTime.toDateTime() : const Duration().toDateTime(),
+    );
   }
 
   DateTime toDateTime() {
@@ -170,4 +173,4 @@ class DatePartFormat {
   final int position;
 }
 
-NsgControlsLocalizations get tranControls => NsgControlsLocalizations.of(Get.context!)!;
+NsgControlsLocalizations get tran => NsgControlsLocalizations.of(Get.context!)!;

@@ -49,5 +49,6 @@
   "cancel": "Отмена",
   "ok": "Ок",
   "empty_list": "Пустой список",
-  "there_are_count_elements_more_use_search": "Есть еще {count} элементов. Воспользуйтесь поиском."
+  "there_are_count_elements_more_use_search": "Есть еще {count} элементов. Воспользуйтесь поиском.",
+  "no_options_available": "Нет доступных опций"
 }

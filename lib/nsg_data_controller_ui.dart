@@ -7,64 +7,72 @@ import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 
 extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
   ///Виджет списка объектов
-  Widget getListWidget(Widget? Function(T item) itemBuilder,
-      {Widget? onEmptyList, String? grFieldName, Widget? Function(dynamic value)? dividerBuilder, PartOfDate partOfDate = PartOfDate.day, Key? key}) {
-    return obx(
-      (state) {
-        DataGroupList dataGroups;
-        if (grFieldName != null) {
-          dataGroups = DataGroupList(_getGroupsByFieldName(grFieldName, partOfDate), needDivider: true);
-        } else {
-          dataGroups = DataGroupList([DataGroup(data: items, groupFieldName: "")]);
-        }
+  Widget getListWidget(
+    Widget? Function(T item) itemBuilder, {
+    Widget? onEmptyList,
+    String? grFieldName,
+    Widget? Function(dynamic value)? dividerBuilder,
+    PartOfDate partOfDate = PartOfDate.day,
+    Key? key,
+  }) {
+    return obx((state) {
+      DataGroupList dataGroups;
+      if (grFieldName != null) {
+        dataGroups = DataGroupList(_getGroupsByFieldName(grFieldName, partOfDate), needDivider: true);
+      } else {
+        dataGroups = DataGroupList([DataGroup(data: items, groupFieldName: "")]);
+      }
 
-        //scrollController.heightMap.clear();
-        scrollController.dataGroups = dataGroups;
+      //scrollController.heightMap.clear();
+      scrollController.dataGroups = dataGroups;
 
-        Future.delayed(Duration(seconds: 0), () => scrollController.jumpTo(scrollController.lastOffset));
+      Future.delayed(Duration(seconds: 0), () => scrollController.jumpTo(scrollController.lastOffset));
 
-        return ListView.builder(
-          controller: scrollController,
-          itemCount: scrollController.dataGroups.length + (items.isEmpty ? 1 : 2),
-          itemBuilder: (context, i) {
-            if (items.isEmpty) {
-              return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tranControls.empty_list));
+      return ListView.builder(
+        controller: scrollController,
+        itemCount: scrollController.dataGroups.length + (items.isEmpty ? 1 : 2),
+        itemBuilder: (context, i) {
+          if (items.isEmpty) {
+            return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tran.empty_list));
+          } else {
+            if (i > scrollController.dataGroups.length) {
+              if (scrollController.status == NsgLoadingScrollStatus.loading) {
+                return NsgBaseController.getDefaultProgressIndicator();
+              } else {
+                return const SizedBox();
+              }
             } else {
-              if (i > scrollController.dataGroups.length) {
-                if (scrollController.status == NsgLoadingScrollStatus.loading) {
-                  return NsgBaseController.getDefaultProgressIndicator();
+              var elem = scrollController.dataGroups.getElemet(i);
+              if (elem.isDivider) {
+                if (dividerBuilder != null) {
+                  return Container(
+                    key: elem.key,
+                    /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: dividerBuilder(elem.value) ?? SizedBox(),
+                  );
                 } else {
-                  return const SizedBox();
+                  return Container(key: elem.key, /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: elem.group.goupDividerWidget);
                 }
               } else {
-                var elem = scrollController.dataGroups.getElemet(i);
-                if (elem.isDivider) {
-                  if (dividerBuilder != null) {
-                    return Container(
-                        key: elem.key, /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: dividerBuilder(elem.value) ?? SizedBox());
-                  } else {
-                    return Container(key: elem.key, /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: elem.group.goupDividerWidget);
-                  }
-                } else {
-                  return Container(
-                      key: elem.key, /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: itemBuilder(elem.value as T) ?? SizedBox());
-                }
+                return Container(
+                  key: elem.key,
+                  /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: itemBuilder(elem.value as T) ?? SizedBox(),
+                );
               }
-
-              // if (i >= items.length) {
-              //   if (scrollController.status == NsgLoadingScrollStatus.loading) {
-              //     return NsgBaseController.getDefaultProgressIndicator();
-              //   } else {
-              //     return const SizedBox();
-              //   }
-              // } else {
-              //   return itemBuilder(items[i]);
-              // }
             }
-          },
-        );
-      },
-    );
+
+            // if (i >= items.length) {
+            //   if (scrollController.status == NsgLoadingScrollStatus.loading) {
+            //     return NsgBaseController.getDefaultProgressIndicator();
+            //   } else {
+            //     return const SizedBox();
+            //   }
+            // } else {
+            //   return itemBuilder(items[i]);
+            // }
+          }
+        },
+      );
+    });
   }
 
   List<DataGroup> _getGroupsByFieldName(String fieldName, PartOfDate partOfDate) {
@@ -74,8 +82,11 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
       bool equialDate = false;
       String formatedDate = "";
       if (item.getField(fieldName) is NsgDataDateField) {
-        formatedDate =
-            NsgDateFormat.dateFormat(item.getFieldValue(fieldName), format: partOfDate.formatTime, locale: Localizations.localeOf(Get.context!).languageCode);
+        formatedDate = NsgDateFormat.dateFormat(
+          item.getFieldValue(fieldName),
+          format: partOfDate.formatTime,
+          locale: Localizations.localeOf(Get.context!).languageCode,
+        );
 
         equialDate = (item.getField(fieldName) is NsgDataDateField && groupsMap.containsKey(formatedDate));
 
@@ -83,7 +94,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
           groupsMap[formatedDate] != null ? groupsMap[formatedDate]!.add(item) : groupsMap[formatedDate] = [item];
         } else {
           groupsMap.addAll({
-            formatedDate: [item]
+            formatedDate: [item],
           });
         }
       } else {
@@ -93,7 +104,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
               : groupsMap[item.getFieldValue(fieldName)] = [item];
         } else {
           groupsMap.addAll({
-            item.getFieldValue(fieldName): [item]
+            item.getFieldValue(fieldName): [item],
           });
         }
       }
@@ -111,10 +122,11 @@ extension DataGroupUi on DataGroup {
       return dividerBuilder!(groupName, groupValue);
     } else {
       return Container(
-          margin: EdgeInsets.symmetric(vertical: 5),
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(color: nsgtheme.colorSecondary, borderRadius: BorderRadius.circular(10)),
-          child: Row(children: [Center(child: Text(groupName))]));
+        margin: EdgeInsets.symmetric(vertical: 5),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(color: nsgtheme.colorSecondary, borderRadius: BorderRadius.circular(10)),
+        child: Row(children: [Center(child: Text(groupName))]),
+      );
     }
   }
 }

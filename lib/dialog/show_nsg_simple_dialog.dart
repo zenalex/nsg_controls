@@ -18,7 +18,7 @@ Future showNsgSimpleDialog({
   VoidCallback? onConfirm,
   // VoidCallback? onCancel
 }) async {
-  text ??= tranControls.are_you_sure;
+  text ??= tran.are_you_sure;
   await showDialog(
     barrierColor: barrierColor ?? nsgtheme.colorMainBack.withAlpha(230),
     context: context,
@@ -37,7 +37,7 @@ Future showNsgSimpleDialog({
               children: [
                 NsgButton(
                   width: 100,
-                  text: tranControls.ok.toUpperCase(),
+                  text: tran.ok.toUpperCase(),
                   onTap: () {
                     if (onConfirm != null) {
                       onConfirm();

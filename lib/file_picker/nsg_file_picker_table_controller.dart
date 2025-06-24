@@ -36,7 +36,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
 
   @override
   Future<bool> saveImages() async {
-    var progress = NsgProgressDialog(textDialog: tranControls.save_files);
+    var progress = NsgProgressDialog(textDialog: tran.save_files);
     progress.show();
     var ids = <String>[];
     var table = NsgDataTable(owner: masterController!.selectedItem!, fieldName: tableFieldName);
@@ -99,23 +99,20 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
     }
 
     Get.dialog(
-        NsgPopUp(
-            onCancel: () {
-              Get.back();
-            },
-            onConfirm: () {
-              Get.back();
-            },
-            margin: const EdgeInsets.all(15),
-            title: tranControls.view_files,
-            width: Get.width,
-            height: Get.height,
-            getContent: () => [
-                  NsgGallery(
-                    imagesList: files,
-                    currentPage: curIndex,
-                  )
-                ]),
-        barrierDismissible: true);
+      NsgPopUp(
+        onCancel: () {
+          Get.back();
+        },
+        onConfirm: () {
+          Get.back();
+        },
+        margin: const EdgeInsets.all(15),
+        title: tran.view_files,
+        width: Get.width,
+        height: Get.height,
+        getContent: () => [NsgGallery(imagesList: files, currentPage: curIndex)],
+      ),
+      barrierDismissible: true,
+    );
   }
 }

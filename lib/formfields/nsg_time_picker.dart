@@ -59,27 +59,28 @@ class NsgTimePicker extends StatefulWidget {
     DateTime today = DateTime.now();
     DateTime selectedDate = DateTime(today.year, today.month, today.day, hours, minutes);
     showDialog(
-        context: context,
-        builder: (BuildContext context) => NsgPopUp(
-              height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 420 : 120,
-              title: tranControls.enter_time,
-              onConfirm: () {
-                onClose(selectedDate);
-              },
-              onCancel: () {
-                Navigator.pop(context);
-              },
-              getContent: () => [
-                TimePickerContent(
-                    dateForTime: dateForTime,
-                    initialTime: Jiffy.parseFromDateTime(DateTime(0)).addDuration(initialTime).dateTime,
-                    onChange: ((endDate) {
-                      selectedDate = endDate;
-                    })
-                    //  onClose,
-                    )
-              ],
-            ));
+      context: context,
+      builder: (BuildContext context) => NsgPopUp(
+        height: (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) ? 420 : 120,
+        title: tran.enter_time,
+        onConfirm: () {
+          onClose(selectedDate);
+        },
+        onCancel: () {
+          Navigator.pop(context);
+        },
+        getContent: () => [
+          TimePickerContent(
+            dateForTime: dateForTime,
+            initialTime: Jiffy.parseFromDateTime(DateTime(0)).addDuration(initialTime).dateTime,
+            onChange: ((endDate) {
+              selectedDate = endDate;
+            }),
+            //  onClose,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -108,23 +109,25 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
         return child;
       } else {
         return InkWell(
-            onTap: widget.disabled != true
-                ? () {
-                    NsgTimePicker(
-                        initialTime: _initialTime,
-                        onClose: (value) {
-                          _initialTime = value;
-                          setState(() {});
-                        }).showPopup(context, hours, minutes, (endDate) {
-                      DateTime date = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
-                      Duration duration = endDate.difference(date);
-                      widget.onClose(duration);
-                      _initialTime = duration;
+          onTap: widget.disabled != true
+              ? () {
+                  NsgTimePicker(
+                    initialTime: _initialTime,
+                    onClose: (value) {
+                      _initialTime = value;
                       setState(() {});
-                    });
-                  }
-                : null,
-            child: child);
+                    },
+                  ).showPopup(context, hours, minutes, (endDate) {
+                    DateTime date = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
+                    Duration duration = endDate.difference(date);
+                    widget.onClose(duration);
+                    _initialTime = duration;
+                    setState(() {});
+                  });
+                }
+              : null,
+          child: child,
+        );
       }
     }
 
@@ -146,41 +149,39 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
                 ),
               ),
             Container(
-                padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
-                //height: 24 * textScaleFactor - 1,
-                decoration: BoxDecoration(
-                    // color: widget.fieldColor ?? Colors.transparent,
-                    // borderRadius: widget.borderRadius,
-                    border:
-                        // widget.textFormFieldType == TextFormFieldType.outlineInputBorder
-                        //     ? Border.fromBorderSide(
-                        //         BorderSide(color: widget.outlineBorderColor ?? ControlOptions.instance.colorGreyLighter),
-                        //       )
-                        Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-                child: Row(
-                  children: [
-                    if (widget.disabled == true)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 3.0),
-                        child: Icon(
-                          Icons.lock,
-                          size: 12,
-                          color: ControlOptions.instance.colorMain,
-                        ),
-                      ),
-                    Expanded(
-                      child:
-                          // widget.lableWidget ??
-                          Text(
-                        "$hours:$minutesString",
-                        textAlign: widget.textAlign,
-                        style:
-                            // widget.textStyle ??
-                            TextStyle(fontSize: ControlOptions.instance.sizeM),
-                      ),
+              padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
+              //height: 24 * textScaleFactor - 1,
+              decoration: BoxDecoration(
+                // color: widget.fieldColor ?? Colors.transparent,
+                // borderRadius: widget.borderRadius,
+                border:
+                    // widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                    //     ? Border.fromBorderSide(
+                    //         BorderSide(color: widget.outlineBorderColor ?? ControlOptions.instance.colorGreyLighter),
+                    //       )
+                    Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain)),
+              ),
+              child: Row(
+                children: [
+                  if (widget.disabled == true)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 3.0),
+                      child: Icon(Icons.lock, size: 12, color: ControlOptions.instance.colorMain),
                     ),
-                  ],
-                )),
+                  Expanded(
+                    child:
+                        // widget.lableWidget ??
+                        Text(
+                          "$hours:$minutesString",
+                          textAlign: widget.textAlign,
+                          style:
+                              // widget.textStyle ??
+                              TextStyle(fontSize: ControlOptions.instance.sizeM),
+                        ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -258,12 +259,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
           width: 120,
           child: TextFormField(
             inputFormatters: [
-              MaskTextInputFormatter(
-                mask: "##:##",
-                filter: {
-                  "#": RegExp(r'\d+|-|/'),
-                },
-              )
+              MaskTextInputFormatter(mask: "##:##", filter: {"#": RegExp(r'\d+|-|/')}),
             ],
             keyboardType: TextInputType.number,
             cursorColor: ControlOptions.instance.colorMainText,
@@ -301,26 +297,28 @@ class _TimePickerContentState extends State<TimePickerContent> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           NsgIconButton(
-              padding: const EdgeInsets.all(4),
-              backColor: ControlOptions.instance.colorMain,
-              color: ControlOptions.instance.colorMainText,
-              icon: Icons.add,
-              size: 24,
-              onPressed: () {
-                //     minutes = minutes + 1;
-                setState(() {});
-              }),
+            padding: const EdgeInsets.all(4),
+            backColor: ControlOptions.instance.colorMain,
+            color: ControlOptions.instance.colorMainText,
+            icon: Icons.add,
+            size: 24,
+            onPressed: () {
+              //     minutes = minutes + 1;
+              setState(() {});
+            },
+          ),
           const SizedBox(width: 8),
           NsgIconButton(
-              padding: const EdgeInsets.all(4),
-              backColor: ControlOptions.instance.colorMain,
-              color: ControlOptions.instance.colorMainText,
-              icon: Icons.add,
-              size: 24,
-              onPressed: () {
-                //  minutes = minutes + 1;
-                setState(() {});
-              }),
+            padding: const EdgeInsets.all(4),
+            backColor: ControlOptions.instance.colorMain,
+            color: ControlOptions.instance.colorMainText,
+            icon: Icons.add,
+            size: 24,
+            onPressed: () {
+              //  minutes = minutes + 1;
+              setState(() {});
+            },
+          ),
         ],
       ),
     );
@@ -335,20 +333,22 @@ class _TimePickerContentState extends State<TimePickerContent> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           NsgIconButton(
-              padding: const EdgeInsets.all(4),
-              backColor: ControlOptions.instance.colorMain,
-              color: ControlOptions.instance.colorMainText,
-              icon: Icons.remove,
-              size: 24,
-              onPressed: () {}),
+            padding: const EdgeInsets.all(4),
+            backColor: ControlOptions.instance.colorMain,
+            color: ControlOptions.instance.colorMainText,
+            icon: Icons.remove,
+            size: 24,
+            onPressed: () {},
+          ),
           const SizedBox(width: 8),
           NsgIconButton(
-              padding: const EdgeInsets.all(4),
-              backColor: ControlOptions.instance.colorMain,
-              color: ControlOptions.instance.colorMainText,
-              icon: Icons.remove,
-              size: 24,
-              onPressed: () {}),
+            padding: const EdgeInsets.all(4),
+            backColor: ControlOptions.instance.colorMain,
+            color: ControlOptions.instance.colorMainText,
+            icon: Icons.remove,
+            size: 24,
+            onPressed: () {},
+          ),
         ],
       ),
     );

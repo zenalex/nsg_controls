@@ -67,28 +67,30 @@ class NsgDatePicker extends StatefulWidget {
     }
 
     showDialog(
-        context: context,
-        builder: (BuildContext context) => NsgPopUp(
-              title: tranControls.select_date,
-              //height: 410,
-              onConfirm: () {
-                onClose(selectedDate);
-              },
-              onCancel: () {
-                Navigator.of(context).pop();
-                //Get.back();
-              },
-              getContent: () => [
-                DatePickerContent(
-                    textAlign: textAlign,
-                    firstDateTime: firstDateTime,
-                    lastDateTime: lastDateTime,
-                    initialTime: initialTime,
-                    onChange: (endDate) {
-                      selectedDate = endDate;
-                    })
-              ],
-            ));
+      context: context,
+      builder: (BuildContext context) => NsgPopUp(
+        title: tran.select_date,
+        //height: 410,
+        onConfirm: () {
+          onClose(selectedDate);
+        },
+        onCancel: () {
+          Navigator.of(context).pop();
+          //Get.back();
+        },
+        getContent: () => [
+          DatePickerContent(
+            textAlign: textAlign,
+            firstDateTime: firstDateTime,
+            lastDateTime: lastDateTime,
+            initialTime: initialTime,
+            onChange: (endDate) {
+              selectedDate = endDate;
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -113,16 +115,17 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
         return child;
       } else {
         return InkWell(
-            onTap: widget.disabled != true
-                ? () {
-                    NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
-                      widget.onClose(value);
-                      _initTime = value;
-                      setState(() {});
-                    });
-                  }
-                : null,
-            child: child);
+          onTap: widget.disabled != true
+              ? () {
+                  NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
+                    widget.onClose(value);
+                    _initTime = value;
+                    setState(() {});
+                  });
+                }
+              : null,
+          child: child,
+        );
       }
     }
 
@@ -144,40 +147,39 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                 ),
               ),
             Container(
-                padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
-                //  height: 24 * textScaleFactor - 1,
-                decoration: BoxDecoration(
-                    // color: widget.fieldColor ?? Colors.transparent,
-                    // borderRadius: widget.borderRadius,
-                    border:
-                        // widget.textFormFieldType == TextFormFieldType.outlineInputBorder
-                        //     ? Border.fromBorderSide(
-                        //         BorderSide(color: widget.outlineBorderColor ?? nsgtheme.colorGreyLighter),
-                        //       )
-                        Border(bottom: BorderSide(width: 1, color: nsgtheme.colorMain))),
-                child: Row(
-                  children: [
-                    if (widget.disabled == true)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 3.0),
-                        child: Icon(
-                          Icons.lock,
-                          size: 12,
-                          color: nsgtheme.colorMain,
-                        ),
-                      ),
-                    Expanded(
-                      child: widget.labelWidget ??
-                          Text(
-                            NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy', locale: Localizations.localeOf(context).languageCode),
-                            textAlign: widget.textAlign,
-                            style:
-                                // widget.textStyle ??
-                                TextStyle(fontSize: nsgtheme.sizeM),
-                          ),
+              padding: const EdgeInsets.fromLTRB(0, 4, 0, 2),
+              //  height: 24 * textScaleFactor - 1,
+              decoration: BoxDecoration(
+                // color: widget.fieldColor ?? Colors.transparent,
+                // borderRadius: widget.borderRadius,
+                border:
+                    // widget.textFormFieldType == TextFormFieldType.outlineInputBorder
+                    //     ? Border.fromBorderSide(
+                    //         BorderSide(color: widget.outlineBorderColor ?? nsgtheme.colorGreyLighter),
+                    //       )
+                    Border(bottom: BorderSide(width: 1, color: nsgtheme.colorMain)),
+              ),
+              child: Row(
+                children: [
+                  if (widget.disabled == true)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 3.0),
+                      child: Icon(Icons.lock, size: 12, color: nsgtheme.colorMain),
                     ),
-                  ],
-                )),
+                  Expanded(
+                    child:
+                        widget.labelWidget ??
+                        Text(
+                          NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy', locale: Localizations.localeOf(context).languageCode),
+                          textAlign: widget.textAlign,
+                          style:
+                              // widget.textStyle ??
+                              TextStyle(fontSize: nsgtheme.sizeM),
+                        ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -235,11 +237,11 @@ class _DatePickerContentState extends State<DatePickerContent> {
     } catch (e) {}
     if (initialTimeNew != null) {
       _initialTime2 = initialTimeNew;
-/* ---------------------------------------------------- только на мобильных обновляем Дейтпикер --------------------------------------------------- */
+      /* ---------------------------------------------------- только на мобильных обновляем Дейтпикер --------------------------------------------------- */
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
         datepicker!.setState(_initialTime2);
       } else {
-/* ----------------------------------------------------- на десктопе обновляем Календарьпикер ----------------------------------------------------- */
+        /* ----------------------------------------------------- на десктопе обновляем Календарьпикер ----------------------------------------------------- */
         calendarpicker!.setState(_initialTime2);
       }
       widget.onChange(_initialTime2);
@@ -278,12 +280,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
           height: 40,
           width: 150,
           child: TextFormField(
-            inputFormatters: [
-              MaskTextInputFormatter(
-                initialText: _initialTime,
-                mask: "##.##.####",
-              )
-            ],
+            inputFormatters: [MaskTextInputFormatter(initialText: _initialTime, mask: "##.##.####")],
             keyboardType: TextInputType.number,
             cursorColor: nsgtheme.colorBase.b100,
             textAlign: widget.textAlign,
@@ -310,16 +307,8 @@ class _DatePickerContentState extends State<DatePickerContent> {
           ),
         ),
         !kIsWeb && (Platform.isAndroid || Platform.isIOS)
-            ? SizedBox(
-                width: 300,
-                height: 280,
-                child: getCupertinoPicker(),
-              )
-            : SizedBox(
-                height: 250,
-                width: 300,
-                child: getCalendarPicker(),
-              )
+            ? SizedBox(width: 300, height: 280, child: getCupertinoPicker())
+            : SizedBox(height: 250, width: 300, child: getCalendarPicker()),
       ],
     );
   }
@@ -399,9 +388,7 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
   Widget build(BuildContext context) {
     return CupertinoTheme(
       data: CupertinoThemeData(
-        textTheme: CupertinoTextThemeData(
-          dateTimePickerTextStyle: TextStyle(fontSize: 16, color: nsgtheme.colorText),
-        ),
+        textTheme: CupertinoTextThemeData(dateTimePickerTextStyle: TextStyle(fontSize: 16, color: nsgtheme.colorText)),
       ),
       child: CupertinoDatePicker(
         maximumDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
@@ -459,14 +446,15 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
       padding: const EdgeInsets.only(top: 10, bottom: 15),
       child: Theme(
         data: Theme.of(context).copyWith(
-            inputDecorationTheme: InputDecorationTheme(fillColor: nsgtheme.colorPrimary),            
-            colorScheme: ColorScheme.light(
-              primary: nsgtheme.colorTertiary,
-              onPrimary: nsgtheme.colorText,
-              onSurface: nsgtheme.colorText.withAlpha(80),
-              secondary: nsgtheme.colorText,
-              tertiary: nsgtheme.colorText,
-            )),
+          inputDecorationTheme: InputDecorationTheme(fillColor: nsgtheme.colorPrimary),
+          colorScheme: ColorScheme.light(
+            primary: nsgtheme.colorTertiary,
+            onPrimary: nsgtheme.colorText,
+            onSurface: nsgtheme.colorText.withAlpha(80),
+            secondary: nsgtheme.colorText,
+            tertiary: nsgtheme.colorText,
+          ),
+        ),
         child: CalendarDatePicker(
           key: GlobalKey(),
           firstDate: widget.firstDateTime ?? DateTime(0),

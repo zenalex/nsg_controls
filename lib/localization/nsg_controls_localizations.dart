@@ -404,6 +404,12 @@ abstract class NsgControlsLocalizations {
   /// In ru, this message translates to:
   /// **'Есть еще {count} элементов. Воспользуйтесь поиском.'**
   String there_are_count_elements_more_use_search(Object count);
+
+  /// No description provided for @no_options_available.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет доступных опций'**
+  String get no_options_available;
 }
 
 class _NsgControlsLocalizationsDelegate

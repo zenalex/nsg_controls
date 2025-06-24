@@ -167,4 +167,7 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
   String there_are_count_elements_more_use_search(Object count) {
     return 'There are $count elements more. Use search';
   }
+
+  @override
+  String get no_options_available => 'No options available';
 }

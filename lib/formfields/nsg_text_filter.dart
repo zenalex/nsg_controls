@@ -12,17 +12,17 @@ import '../nsg_icon_button.dart';
 
 class NsgTextFilter extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables
-  NsgTextFilter(
-      {Key? key,
-      this.label,
-      this.margin = const EdgeInsets.fromLTRB(5, 5, 5, 5),
-      this.required = false,
-      required this.controller,
-      this.isOpen,
-      this.onSetFilter,
-      this.updateKey,
-      this.userSettingsId = ''})
-      : super(key: key);
+  NsgTextFilter({
+    Key? key,
+    this.label,
+    this.margin = const EdgeInsets.fromLTRB(5, 5, 5, 5),
+    this.required = false,
+    required this.controller,
+    this.isOpen,
+    this.onSetFilter,
+    this.updateKey,
+    this.userSettingsId = '',
+  }) : super(key: key);
 
   final NsgDataController controller;
   final bool? isOpen;
@@ -72,8 +72,8 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
   @override
   Widget build(BuildContext context) {
     textScaleFactor = MediaQuery.of(context).textScaleFactor;
-//    TextEditingController textController = TextEditingController();
-//    textController.text = widget.controller.controllerFilter.searchString;
+    //    TextEditingController textController = TextEditingController();
+    //    textController.text = widget.controller.controllerFilter.searchString;
     var isFilterOpen = widget.isOpen ?? widget.controller.controllerFilter.isOpen;
 
     void setFilter() {
@@ -84,7 +84,7 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
         widget.controller.refreshData(keys: widget.updateKey);
         if (widget.onSetFilter != null) widget.onSetFilter!();
       } else {
-        nsgSnackbar(text: tranControls.text_filter_unchanged, type: NsgSnarkBarType.warning);
+        nsgSnackbar(text: tran.text_filter_unchanged, type: NsgSnarkBarType.warning);
       }
     }
 
@@ -106,49 +106,52 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
                         child: Text(
                           focus.hasFocus || textController.text != ''
                               ? widget.required
-                                  ? '${widget.label ?? tranControls.text_filter} *'
-                                  : widget.label ?? tranControls.text_filter
+                                    ? '${widget.label ?? tran.text_filter} *'
+                                    : widget.label ?? tran.text_filter
                               : '',
                           style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorMainDark),
                         ),
                       ),
                       Container(
+                        alignment: Alignment.center,
+                        //height: 20 * textScaleFactor,
+                        decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain)),
+                        ),
+                        child: Stack(
                           alignment: Alignment.center,
-                          //height: 20 * textScaleFactor,
-                          decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: ControlOptions.instance.colorMain))),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              if (!focus.hasFocus && textController.text == '')
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    widget.label ?? tranControls.text_filter,
-                                    style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
-                                  ),
+                          children: [
+                            if (!focus.hasFocus && textController.text == '')
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  widget.label ?? tran.text_filter,
+                                  style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: ControlOptions.instance.colorGrey),
                                 ),
-                              TextFormField(
-                                controller: textController,
-                                focusNode: focus,
-                                autofocus: false,
-                                cursorColor: ControlOptions.instance.colorText,
-                                decoration: InputDecoration(
-                                  counterText: "",
-                                  contentPadding: const EdgeInsets.fromLTRB(0, 2, 25, 2),
-                                  isDense: true,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
-                                ),
-                                onEditingComplete: () {
-                                  setFilter();
-                                },
-                                onChanged: (value) {},
-                                style: TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
                               ),
-                              Align(alignment: Alignment.centerRight, child: _addClearIcon()),
-                            ],
-                          )),
+                            TextFormField(
+                              controller: textController,
+                              focusNode: focus,
+                              autofocus: false,
+                              cursorColor: ControlOptions.instance.colorText,
+                              decoration: InputDecoration(
+                                counterText: "",
+                                contentPadding: const EdgeInsets.fromLTRB(0, 2, 25, 2),
+                                isDense: true,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
+                              ),
+                              onEditingComplete: () {
+                                setFilter();
+                              },
+                              onChanged: (value) {},
+                              style: TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
+                            ),
+                            Align(alignment: Alignment.centerRight, child: _addClearIcon()),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -159,13 +162,9 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
                   onTap: () {
                     setFilter();
                   },
-                  child: Icon(
-                    Icons.search_outlined,
-                    size: 24,
-                    color: ControlOptions.instance.colorMain,
-                  ),
+                  child: Icon(Icons.search_outlined, size: 24, color: ControlOptions.instance.colorMain),
                 ),
-              )
+              ),
             ],
           );
   }
@@ -173,18 +172,19 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
   /// Оборачиваем Stack и добавляем иконку "очистить поле"
   Widget _addClearIcon() {
     return NsgIconButton(
-        onPressed: () {
-          textController.clear();
-          widget.controller.controllerFilter.searchString = '';
-          //widget.controller.refreshData();
-          Future.delayed(const Duration(milliseconds: 10), () {
-            if (context.mounted) {
-              // ignore: use_build_context_synchronously
-              FocusScope.of(context).requestFocus(focus);
-            }
-          });
-          setState(() {});
-        },
-        icon: Icons.close_outlined);
+      onPressed: () {
+        textController.clear();
+        widget.controller.controllerFilter.searchString = '';
+        //widget.controller.refreshData();
+        Future.delayed(const Duration(milliseconds: 10), () {
+          if (context.mounted) {
+            // ignore: use_build_context_synchronously
+            FocusScope.of(context).requestFocus(focus);
+          }
+        });
+        setState(() {});
+      },
+      icon: Icons.close_outlined,
+    );
   }
 }

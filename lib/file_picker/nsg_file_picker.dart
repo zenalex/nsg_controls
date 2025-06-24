@@ -33,19 +33,19 @@ class NsgFilePicker extends StatefulWidget {
   final bool needCrop;
   final bool fromGallery;
 
-  NsgFilePicker(
-      {Key? key,
-      this.filePicker = const NsgFilePickerProvider(),
-      this.needCrop = false,
-      this.showAsWidget = false,
-      this.useFilePicker = false,
-      this.maxFilesCount = 0,
-      required this.callback,
-      required this.objectsList,
-      this.textChooseFile,
-      this.oneFile = false,
-      this.fromGallery = true})
-      : super(key: key) {
+  NsgFilePicker({
+    Key? key,
+    this.filePicker = const NsgFilePickerProvider(),
+    this.needCrop = false,
+    this.showAsWidget = false,
+    this.useFilePicker = false,
+    this.maxFilesCount = 0,
+    required this.callback,
+    required this.objectsList,
+    this.textChooseFile,
+    this.oneFile = false,
+    this.fromGallery = true,
+  }) : super(key: key) {
     _resisterComponents();
   }
 
@@ -82,8 +82,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   Widget _appBar() {
     return NsgAppBar(
-      text: objectsList.isEmpty ? tranControls.add_photos.toUpperCase() : tranControls.save_photos.toUpperCase(),
-      text2: objectsList.isNotEmpty ? tranControls.photos_added(objectsList.length) : null,
+      text: objectsList.isEmpty ? tran.add_photos.toUpperCase() : tran.save_photos.toUpperCase(),
+      text2: objectsList.isNotEmpty ? tran.photos_added(objectsList.length) : null,
       icon: Icons.arrow_back_ios_new,
       color: ControlOptions.instance.colorInverted,
       colorsInverted: true,
@@ -101,12 +101,10 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   Widget _showFileType(NsgFilePickerObject element) {
     return Container(
-        height: 100,
-        decoration: BoxDecoration(
-          color: ControlOptions.instance.colorMain.withAlpha(51),
-        ),
-        child: Center(
-            child: Opacity(
+      height: 100,
+      decoration: BoxDecoration(color: ControlOptions.instance.colorMain.withAlpha(51)),
+      child: Center(
+        child: Opacity(
           opacity: 0.5,
           child: NsgText(
             extension(element.filePath).replaceAll('.', ''),
@@ -114,7 +112,9 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
             color: ControlOptions.instance.colorMain,
             type: NsgTextType(const TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
           ),
-        )));
+        ),
+      ),
+    );
   }
 
   /// Вывод галереи на экран
@@ -122,141 +122,138 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     List<Widget> list = [];
     for (var element in objectsList) {
       if (element.markToDelete) continue;
-      list.add(Container(
-        decoration: BoxDecoration(border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(color: ControlOptions.instance.colorMain.withAlpha(255)),
-                  padding: const EdgeInsets.fromLTRB(5, 0, 30, 0),
-                  alignment: Alignment.centerLeft,
-                  height: 40,
-                  child: Text(
-                    element.description,
-                    maxLines: 3,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: ControlOptions.instance.colorInverted,
+      list.add(
+        Container(
+          decoration: BoxDecoration(border: Border.all(width: 2, color: ControlOptions.instance.colorMain)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(color: ControlOptions.instance.colorMain.withAlpha(255)),
+                    padding: const EdgeInsets.fromLTRB(5, 0, 30, 0),
+                    alignment: Alignment.centerLeft,
+                    height: 40,
+                    child: Text(
+                      element.description,
+                      maxLines: 3,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(fontSize: 10, color: ControlOptions.instance.colorInverted),
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Material(
-                    color: ControlOptions.instance.colorMain.withAlpha(0),
-                    child: InkWell(
-                      hoverColor: ControlOptions.instance.colorMainDark,
-                      onTap: () {
-                        widget.filePicker.saveFile(element);
-                      },
-                      child: Container(
-                        height: 38,
-                        padding: const EdgeInsets.all(5),
-                        child: Icon(Icons.save_as, size: 18, color: ControlOptions.instance.colorInverted),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      color: ControlOptions.instance.colorMain.withAlpha(0),
+                      child: InkWell(
+                        hoverColor: ControlOptions.instance.colorMainDark,
+                        onTap: () {
+                          widget.filePicker.saveFile(element);
+                        },
+                        child: Container(
+                          height: 38,
+                          padding: const EdgeInsets.all(5),
+                          child: Icon(Icons.save_as, size: 18, color: ControlOptions.instance.colorInverted),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Material(
-                    color: ControlOptions.instance.colorMain.withAlpha(0),
-                    child: InkWell(
-                      hoverColor: ControlOptions.instance.colorMainDark,
-                      onTap: () {
-                        Get.dialog(NsgPopUp(
-                          title: tranControls.delete_photos,
-                          text: tranControls.delete_photo_warning,
-                          onConfirm: () {
-                            element.markToDelete = true;
-                            //objectsList.remove(element);
-                            setState(() {});
-                            //Get.back();
-                          },
-                        ));
-                      },
-                      child: Container(
-                        height: 38,
-                        padding: const EdgeInsets.all(5),
-                        child: Icon(Icons.close, size: 18, color: ControlOptions.instance.colorInverted),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Material(
+                      color: ControlOptions.instance.colorMain.withAlpha(0),
+                      child: InkWell(
+                        hoverColor: ControlOptions.instance.colorMainDark,
+                        onTap: () {
+                          Get.dialog(
+                            NsgPopUp(
+                              title: tran.delete_photos,
+                              text: tran.delete_photo_warning,
+                              onConfirm: () {
+                                element.markToDelete = true;
+                                //objectsList.remove(element);
+                                setState(() {});
+                                //Get.back();
+                              },
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 38,
+                          padding: const EdgeInsets.all(5),
+                          child: Icon(Icons.close, size: 18, color: ControlOptions.instance.colorInverted),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                //hoverColor: ControlOptions.instance.colorMain,
-                onTap: () {
-                  if (element.fileType != NsgFilePickerObjectType.other && element.fileType != NsgFilePickerObjectType.unknown) {
-                    List<NsgFilePickerObject> imagesList = [];
-                    for (var el in objectsList) {
-                      if (el.fileType != NsgFilePickerObjectType.other && el.fileType != NsgFilePickerObjectType.unknown) {
-                        imagesList.add(el);
+                ],
+              ),
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  //hoverColor: ControlOptions.instance.colorMain,
+                  onTap: () {
+                    if (element.fileType != NsgFilePickerObjectType.other && element.fileType != NsgFilePickerObjectType.unknown) {
+                      List<NsgFilePickerObject> imagesList = [];
+                      for (var el in objectsList) {
+                        if (el.fileType != NsgFilePickerObjectType.other && el.fileType != NsgFilePickerObjectType.unknown) {
+                          imagesList.add(el);
+                        }
                       }
-                    }
-                    int currentPage = imagesList.indexOf(element);
-                    Get.dialog(
+                      int currentPage = imagesList.indexOf(element);
+                      Get.dialog(
                         NsgPopUp(
-                            onCancel: () {
-                              Get.back();
-                            },
-                            onConfirm: () {
-                              Get.back();
-                            },
-                            margin: const EdgeInsets.all(15),
-                            title: tranControls.view_photo,
-                            width: Get.width,
-                            height: Get.height,
-                            getContent: () => [
-                                  NsgGallery(
-                                    imagesList: imagesList,
-                                    currentPage: currentPage,
-                                  )
-                                ]),
-                        barrierDismissible: true);
-                  } else {
-                    Get.snackbar(tranControls.error, tranControls.not_an_image_file,
+                          onCancel: () {
+                            Get.back();
+                          },
+                          onConfirm: () {
+                            Get.back();
+                          },
+                          margin: const EdgeInsets.all(15),
+                          title: tran.view_photo,
+                          width: Get.width,
+                          height: Get.height,
+                          getContent: () => [NsgGallery(imagesList: imagesList, currentPage: currentPage)],
+                        ),
+                        barrierDismissible: true,
+                      );
+                    } else {
+                      Get.snackbar(
+                        tran.error,
+                        tran.not_an_image_file,
                         duration: const Duration(seconds: 3),
                         maxWidth: 300,
                         snackPosition: SnackPosition.bottom,
                         barBlur: 0,
                         overlayBlur: 0,
                         colorText: ControlOptions.instance.colorMainText,
-                        backgroundColor: ControlOptions.instance.colorMainDark);
-                  }
-                },
-                child: Stack(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: element.image != null
-                              ? Image(
-                                  image: element.image!.image,
-                                  fit: BoxFit.cover,
-                                )
-                              : _showFileType(element),
-                        ),
-                      ],
-                    ),
-                  ],
+                        backgroundColor: ControlOptions.instance.colorMainDark,
+                      );
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: element.image != null ? Image(image: element.image!.image, fit: BoxFit.cover) : _showFileType(element),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ));
+      );
     }
     List<Widget> listWithPlus = list;
-    listWithPlus.add(NsgImagePickerButton(
-        textChooseFile: widget.textChooseFile ?? tranControls.add_photo,
+    listWithPlus.add(
+      NsgImagePickerButton(
+        textChooseFile: widget.textChooseFile ?? tran.add_photo,
         onPressed: () async {
           var ans = await widget.filePicker.autoSelectPicker();
           //widget.objectsList.clear();
@@ -267,42 +264,39 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
           var ans = await widget.filePicker.galleryImage();
           widget.objectsList.addAll(ans);
           setState(() {});
-        }));
+        },
+      ),
+    );
 
     return RawScrollbar(
-        minOverscrollLength: 100,
-        minThumbLength: 100,
-        thickness: 16,
-        trackBorderColor: ControlOptions.instance.colorMainDark,
-        trackColor: ControlOptions.instance.colorMainDark,
-        thumbColor: ControlOptions.instance.colorMain,
-        radius: const Radius.circular(0),
-        thumbVisibility: true,
-        trackVisibility: true,
+      minOverscrollLength: 100,
+      minThumbLength: 100,
+      thickness: 16,
+      trackBorderColor: ControlOptions.instance.colorMainDark,
+      trackColor: ControlOptions.instance.colorMainDark,
+      thumbColor: ControlOptions.instance.colorMain,
+      radius: const Radius.circular(0),
+      thumbVisibility: true,
+      trackVisibility: true,
+      controller: scrollController,
+      child: SingleChildScrollView(
         controller: scrollController,
-        child: SingleChildScrollView(
-            controller: scrollController,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: ResponsiveGridList(scroll: false, minSpacing: 10, desiredItemWidth: 100, children: listWithPlus),
-            )));
+        child: Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: ResponsiveGridList(scroll: false, minSpacing: 10, desiredItemWidth: 100, children: listWithPlus),
+        ),
+      ),
+    );
   }
 
   Widget body() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (error != '')
-          NsgText(
-            margin: const EdgeInsets.only(top: 10),
-            error,
-            backColor: ControlOptions.instance.colorError.withAlpha(51),
-          ),
+        if (error != '') NsgText(margin: const EdgeInsets.only(top: 10), error, backColor: ControlOptions.instance.colorError.withAlpha(51)),
         Flexible(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: _getImages(),
-        )),
+          child: Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: _getImages()),
+        ),
       ],
     );
   }
@@ -320,7 +314,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     super.initState();
   }
 
-/* --------------------------------------------------------------------- Build -------------------------------------------------------------------- */
+  /* --------------------------------------------------------------------- Build -------------------------------------------------------------------- */
   @override
   Widget build(BuildContext context) {
     return widget.showAsWidget == true
@@ -333,9 +327,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   _appBar(),
-                  Expanded(
-                    child: body(),
-                  ),
+                  Expanded(child: body()),
 
                   //SizedBox(height: MediaQuery.of(context).padding.bottom),
                 ],
@@ -358,9 +350,7 @@ class NsgImagePickerButton extends StatelessWidget {
             hoverColor: ControlOptions.instance.colorMain,
             onTap: onPressed,
             child: Container(
-              decoration: BoxDecoration(
-                color: ControlOptions.instance.colorMain,
-              ),
+              decoration: BoxDecoration(color: ControlOptions.instance.colorMain),
               width: 100,
               height: 100,
               child: Column(
@@ -369,8 +359,11 @@ class NsgImagePickerButton extends StatelessWidget {
                   Icon(Icons.add, size: 24, color: ControlOptions.instance.colorInverted),
                   Padding(
                     padding: const EdgeInsets.only(top: 10, left: 5, right: 5),
-                    child: Text(textChooseFile,
-                        textAlign: TextAlign.center, style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 12)),
+                    child: Text(
+                      textChooseFile,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
                   ),
                 ],
               ),
@@ -382,9 +375,7 @@ class NsgImagePickerButton extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    color: ControlOptions.instance.colorMainDark,
-                  ),
+                  decoration: BoxDecoration(color: ControlOptions.instance.colorMainDark),
                   width: 100,
                   height: 46,
                   child: Column(
@@ -392,9 +383,11 @@ class NsgImagePickerButton extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 4),
-                        child: Text(textChooseFile,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
+                        child: Text(
+                          textChooseFile,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10),
+                        ),
                       ),
                       Icon(Icons.arrow_downward, size: 16, color: ControlOptions.instance.colorInverted),
                     ],
@@ -408,9 +401,7 @@ class NsgImagePickerButton extends StatelessWidget {
                         hoverColor: ControlOptions.instance.colorMain,
                         onTap: onPressed,
                         child: Container(
-                          decoration: BoxDecoration(
-                            color: ControlOptions.instance.colorMain,
-                          ),
+                          decoration: BoxDecoration(color: ControlOptions.instance.colorMain),
                           height: 46,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -418,8 +409,10 @@ class NsgImagePickerButton extends StatelessWidget {
                               Icon(Icons.camera_alt_outlined, size: 24, color: ControlOptions.instance.colorInverted),
                               Padding(
                                 padding: const EdgeInsets.only(top: 0),
-                                child: Text(tranControls.camera,
-                                    style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
+                                child: Text(
+                                  tran.camera,
+                                  style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10),
+                                ),
                               ),
                             ],
                           ),
@@ -432,9 +425,7 @@ class NsgImagePickerButton extends StatelessWidget {
                         hoverColor: ControlOptions.instance.colorMain,
                         onTap: onPressed2,
                         child: Container(
-                          decoration: BoxDecoration(
-                            color: ControlOptions.instance.colorMain,
-                          ),
+                          decoration: BoxDecoration(color: ControlOptions.instance.colorMain),
                           height: 46,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -442,14 +433,16 @@ class NsgImagePickerButton extends StatelessWidget {
                               Icon(Icons.photo_library_outlined, size: 24, color: ControlOptions.instance.colorInverted),
                               Padding(
                                 padding: const EdgeInsets.only(top: 0),
-                                child: Text(tranControls.gallery,
-                                    style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10)),
+                                child: Text(
+                                  tran.gallery,
+                                  style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10),
+                                ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ],

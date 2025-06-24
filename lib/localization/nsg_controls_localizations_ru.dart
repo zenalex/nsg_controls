@@ -168,4 +168,7 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
   String there_are_count_elements_more_use_search(Object count) {
     return 'Есть еще $count элементов. Воспользуйтесь поиском.';
   }
+
+  @override
+  String get no_options_available => 'Нет доступных опций';
 }

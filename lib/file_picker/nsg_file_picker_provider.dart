@@ -70,18 +70,19 @@ class NsgFilePickerProvider {
 
   final bool ignoreMaxSize;
 
-  const NsgFilePickerProvider(
-      {this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
-      this.allowedVideoFormats = const ['mp4', 'mov'],
-      this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
-      this.imageMaxWidth = 1440.0,
-      this.imageMaxHeight = 1440.0,
-      this.imageQuality = 70,
-      this.fileMaxSize = 10000000.0,
-      this.ignoreMaxSize = false,
-      this.savePrefix = 'NsgFile',
-      this.maxFilesCount = 0,
-      this.mobileSelectionType = NsgFilePickerObjectType.image});
+  const NsgFilePickerProvider({
+    this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
+    this.allowedVideoFormats = const ['mp4', 'mov'],
+    this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
+    this.imageMaxWidth = 1440.0,
+    this.imageMaxHeight = 1440.0,
+    this.imageQuality = 70,
+    this.fileMaxSize = 10000000.0,
+    this.ignoreMaxSize = false,
+    this.savePrefix = 'NsgFile',
+    this.maxFilesCount = 0,
+    this.mobileSelectionType = NsgFilePickerObjectType.image,
+  });
 
   Future<List<NsgFilePickerObject>> autoSelectPicker({bool oneFile = false, ESourceType eSourceType = ESourceType.auto, BuildContext? mainContext}) async {
     if (kIsWeb) {
@@ -118,10 +119,15 @@ class NsgFilePickerProvider {
     if (kIsWeb) {
       /* ----------------------------------------------- Галерея в браузере ----------------------------------------------- */
       FilePickerResult? result;
-      await nsgFutureProgressAndException(func: () async {
-        result = await FilePicker.platform.pickFiles(
-            type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
-      });
+      await nsgFutureProgressAndException(
+        func: () async {
+          result = await FilePicker.platform.pickFiles(
+            type: FileType.custom,
+            allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats],
+            allowMultiple: !oneFile,
+          );
+        },
+      );
 
       if (result != null) {
         for (var element in result!.files) {
@@ -129,24 +135,30 @@ class NsgFilePickerProvider {
           String fileName = element.name;
           var fileType = getFileTypeByPath(fileName);
           if (fileType == NsgFilePickerObjectType.image) {
-            objectsList.add(NsgFilePickerObject(
+            objectsList.add(
+              NsgFilePickerObject(
                 isNew: true,
                 image: Image.memory(fileBytes!),
                 fileContent: fileBytes,
                 description: basenameWithoutExtension(fileName),
                 fileType: fileType,
-                filePath: fileName));
+                filePath: fileName,
+              ),
+            );
           } else if (fileType != NsgFilePickerObjectType.unknown) {
-            objectsList.add(NsgFilePickerObject(
+            objectsList.add(
+              NsgFilePickerObject(
                 isNew: true,
                 file: File(fileBytes.toString()),
                 fileContent: fileBytes,
                 image: null,
                 description: basenameWithoutExtension(fileName),
                 fileType: fileType,
-                filePath: fileName));
+                filePath: fileName,
+              ),
+            );
           } else {
-            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
           }
         }
       }
@@ -154,10 +166,15 @@ class NsgFilePickerProvider {
       /* --------------------------------------------- Галерея Windows и Linux -------------------------------------------- */
 
       FilePickerResult? result;
-      await nsgFutureProgressAndException(func: () async {
-        result = await FilePicker.platform.pickFiles(
-            type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
-      });
+      await nsgFutureProgressAndException(
+        func: () async {
+          result = await FilePicker.platform.pickFiles(
+            type: FileType.custom,
+            allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats],
+            allowMultiple: !oneFile,
+          );
+        },
+      );
 
       if (result != null) {
         for (var element in result!.files) {
@@ -169,46 +186,58 @@ class NsgFilePickerProvider {
 
           if (!GetPlatform.isLinux) {
             if (fileType == NsgFilePickerObjectType.image) {
-              objectsList.add(NsgFilePickerObject(
+              objectsList.add(
+                NsgFilePickerObject(
                   isNew: true,
                   image: Image.file(File(element.name.toString())),
                   description: basenameWithoutExtension(element.name.toString()),
                   fileType: fileType,
                   fileContent: fileContent,
-                  filePath: element.path ?? ''));
+                  filePath: element.path ?? '',
+                ),
+              );
             } else if (fileType != NsgFilePickerObjectType.unknown) {
-              objectsList.add(NsgFilePickerObject(
+              objectsList.add(
+                NsgFilePickerObject(
                   isNew: true,
                   file: File(element.name),
                   image: null,
                   fileContent: fileContent,
                   description: basenameWithoutExtension(element.name),
                   fileType: fileType,
-                  filePath: element.path ?? ''));
+                  filePath: element.path ?? '',
+                ),
+              );
             } else {
-              error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
+              error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
             }
           }
           if (GetPlatform.isLinux) {
             if (fileType == NsgFilePickerObjectType.image) {
-              objectsList.add(NsgFilePickerObject(
+              objectsList.add(
+                NsgFilePickerObject(
                   isNew: true,
                   image: Image.file(File(element.path.toString())),
                   description: basenameWithoutExtension(element.path.toString()),
                   fileType: fileType,
                   fileContent: fileContent,
-                  filePath: element.path.toString()));
+                  filePath: element.path.toString(),
+                ),
+              );
             } else if (fileType != NsgFilePickerObjectType.unknown) {
-              objectsList.add(NsgFilePickerObject(
+              objectsList.add(
+                NsgFilePickerObject(
                   isNew: true,
                   file: File(element.name),
                   image: null,
                   fileContent: fileContent,
                   description: basenameWithoutExtension(element.name),
                   fileType: fileType,
-                  filePath: element.path ?? ''));
+                  filePath: element.path ?? '',
+                ),
+              );
             } else {
-              error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
+              error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
             }
           }
         }
@@ -217,18 +246,9 @@ class NsgFilePickerProvider {
       /* ---------------------------------------------- Галерея на мобильных ---------------------------------------------- */
     } else if (GetPlatform.isMacOS) {
       /* ------------------------------------------- Галерея MacOS (файл пикер) ------------------------------------------- */
-      var jpgsTypeGroup = const file.XTypeGroup(
-        label: 'JPEGs',
-        extensions: <String>['jpg', 'jpeg'],
-      );
-      var pngTypeGroup = const file.XTypeGroup(
-        label: 'PNGs',
-        extensions: <String>['png'],
-      );
-      var pdfTypeGroup = const file.XTypeGroup(
-        label: 'PDFs',
-        extensions: <String>['pdf'],
-      );
+      var jpgsTypeGroup = const file.XTypeGroup(label: 'JPEGs', extensions: <String>['jpg', 'jpeg']);
+      var pngTypeGroup = const file.XTypeGroup(label: 'PNGs', extensions: <String>['png']);
+      var pdfTypeGroup = const file.XTypeGroup(label: 'PDFs', extensions: <String>['pdf']);
       List<XFile> result = await file.openFiles(acceptedTypeGroups: <file.XTypeGroup>[jpgsTypeGroup, pngTypeGroup, pdfTypeGroup]);
 
       if (result.isNotEmpty) {
@@ -241,24 +261,30 @@ class NsgFilePickerProvider {
           var fileType = getFileTypeByPath(element.path);
           var fileContent = await element.readAsBytes();
           if (fileType == NsgFilePickerObjectType.image) {
-            objectsList.add(NsgFilePickerObject(
+            objectsList.add(
+              NsgFilePickerObject(
                 isNew: true,
                 image: Image.file(File(element.path)),
                 description: basenameWithoutExtension(element.path),
                 fileType: fileType,
                 fileContent: fileContent,
-                filePath: element.path));
+                filePath: element.path,
+              ),
+            );
           } else if (fileType != NsgFilePickerObjectType.unknown) {
-            objectsList.add(NsgFilePickerObject(
+            objectsList.add(
+              NsgFilePickerObject(
                 isNew: true,
                 file: File(element.path),
                 image: null,
                 fileContent: fileContent,
                 description: basenameWithoutExtension(element.path),
                 fileType: fileType,
-                filePath: element.path));
+                filePath: element.path,
+              ),
+            );
           } else {
-            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
           }
         }
       }
@@ -278,11 +304,7 @@ class NsgFilePickerProvider {
             result = [image];
           }
         } else {
-          result = await ImagePicker().pickMultiImage(
-            imageQuality: imageQuality,
-            maxWidth: imageMaxWidth,
-            maxHeight: imageMaxHeight,
-          );
+          result = await ImagePicker().pickMultiImage(imageQuality: imageQuality, maxWidth: imageMaxWidth, maxHeight: imageMaxHeight);
         }
       } else if (mobileSelectionType == NsgFilePickerObjectType.video) {
         var video = await ImagePicker().pickVideo(source: ImageSource.gallery);
@@ -300,24 +322,30 @@ class NsgFilePickerProvider {
         var fileType = getFileTypeByExtension(extension(element.path).replaceAll('.', ''));
 
         if (fileType == NsgFilePickerObjectType.image) {
-          objectsList.add(NsgFilePickerObject(
+          objectsList.add(
+            NsgFilePickerObject(
               isNew: true,
               image: Image.file(File(element.path)),
               description: basenameWithoutExtension(element.path),
               fileType: fileType,
               fileContent: await element.readAsBytes(),
-              filePath: element.path));
+              filePath: element.path,
+            ),
+          );
         } else if (fileType != NsgFilePickerObjectType.unknown) {
-          objectsList.add(NsgFilePickerObject(
+          objectsList.add(
+            NsgFilePickerObject(
               isNew: true,
               file: File(element.path),
               image: null,
               fileContent: await element.readAsBytes(),
               description: basenameWithoutExtension(element.path),
               fileType: fileType,
-              filePath: element.path));
+              filePath: element.path,
+            ),
+          );
         } else {
-          error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
+          error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
         }
       }
     }
@@ -334,66 +362,83 @@ class NsgFilePickerProvider {
     String? error;
     List<NsgFilePickerObject> objectsList = [];
     FilePickerResult? result;
-    await nsgFutureProgressAndException(func: () async {
-      result = await FilePicker.platform.pickFiles(
-          type: FileType.custom, allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats], allowMultiple: !oneFile);
-    });
+    await nsgFutureProgressAndException(
+      func: () async {
+        result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats],
+          allowMultiple: !oneFile,
+        );
+      },
+    );
     if (result != null) {
       for (var element in result!.files) {
         var fileType = getFileTypeByPath(element.name);
         if (kIsWeb) {
           var file = File(element.bytes.toString());
           if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
-            error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
+            error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
           }
           if (fileType == NsgFilePickerObjectType.image) {
-            objectsList.add(NsgFilePickerObject(
+            objectsList.add(
+              NsgFilePickerObject(
                 isNew: true,
                 image: Image.network(element.path.toString()),
                 description: basenameWithoutExtension(element.name),
                 fileType: fileType,
-                filePath: ''));
+                filePath: '',
+              ),
+            );
           } else if (fileType != NsgFilePickerObjectType.unknown) {
-            objectsList.add(NsgFilePickerObject(
+            objectsList.add(
+              NsgFilePickerObject(
                 isNew: true,
                 file: File(element.bytes!.toString()),
                 image: null,
                 description: basenameWithoutExtension(element.bytes.toString()),
                 fileType: fileType,
-                filePath: ''));
+                filePath: '',
+              ),
+            );
           } else {
-            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
           }
         } else if (GetPlatform.isWindows) {
           if (element.path != null) {
             var file = File(element.path!);
 
             if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
-              error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
+              error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
             }
             if (fileType == NsgFilePickerObjectType.image) {
-              objectsList.add(NsgFilePickerObject(
+              objectsList.add(
+                NsgFilePickerObject(
                   isNew: true,
                   file: file,
                   fileContent: await file.readAsBytes(),
                   image: Image.file(file),
                   description: basenameWithoutExtension(element.name.toString()),
                   fileType: fileType,
-                  filePath: element.path ?? ''));
+                  filePath: element.path ?? '',
+                ),
+              );
             } else if (fileType != NsgFilePickerObjectType.unknown) {
-              objectsList.add(NsgFilePickerObject(
+              objectsList.add(
+                NsgFilePickerObject(
                   isNew: true,
                   file: file,
                   image: null,
                   description: basenameWithoutExtension(element.name),
                   fileType: fileType,
                   fileContent: await file.readAsBytes(),
-                  filePath: element.path ?? ''));
+                  filePath: element.path ?? '',
+                ),
+              );
             } else {
-              error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
+              error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
             }
           } else {
-            error = '${element.path} - ${tranControls.path_error}';
+            error = '${element.path} - ${tran.path_error}';
           }
         }
         if (GetPlatform.isLinux || GetPlatform.isMacOS || GetPlatform.isAndroid || GetPlatform.isIOS) {
@@ -402,24 +447,30 @@ class NsgFilePickerProvider {
             fileContent = await File(element.path!).readAsBytes();
           }
           if (fileType == NsgFilePickerObjectType.image) {
-            objectsList.add(NsgFilePickerObject(
+            objectsList.add(
+              NsgFilePickerObject(
                 isNew: true,
                 image: Image.file(File(element.path.toString())),
                 description: basenameWithoutExtension(element.name.toString()),
                 fileType: fileType,
                 fileContent: fileContent,
-                filePath: element.path ?? ''));
+                filePath: element.path ?? '',
+              ),
+            );
           } else if (fileType != NsgFilePickerObjectType.unknown) {
-            objectsList.add(NsgFilePickerObject(
+            objectsList.add(
+              NsgFilePickerObject(
                 isNew: true,
                 file: File(element.name),
                 image: null,
                 fileContent: fileContent,
                 description: basenameWithoutExtension(element.name),
                 fileType: fileType,
-                filePath: element.path ?? ''));
+                filePath: element.path ?? '',
+              ),
+            );
           } else {
-            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
           }
         }
       }
@@ -440,12 +491,7 @@ class NsgFilePickerProvider {
     List<XFile> result = [];
 
     if (mobileSelectionType == NsgFilePickerObjectType.image) {
-      var image = await ImagePicker().pickImage(
-        source: ImageSource.camera,
-        imageQuality: imageQuality,
-        maxWidth: imageMaxWidth,
-        maxHeight: imageMaxHeight,
-      );
+      var image = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: imageQuality, maxWidth: imageMaxWidth, maxHeight: imageMaxHeight);
       if (image != null) {
         result = [image];
       }
@@ -466,24 +512,30 @@ class NsgFilePickerProvider {
       var fileType = getFileTypeByExtension(extension(element.path).replaceAll('.', ''));
 
       if (fileType == NsgFilePickerObjectType.image) {
-        objectsList.add(NsgFilePickerObject(
+        objectsList.add(
+          NsgFilePickerObject(
             isNew: true,
             image: Image.file(File(element.path)),
             description: basenameWithoutExtension(element.path),
             fileType: fileType,
             fileContent: await element.readAsBytes(),
-            filePath: element.path));
+            filePath: element.path,
+          ),
+        );
       } else if (fileType != NsgFilePickerObjectType.unknown) {
-        objectsList.add(NsgFilePickerObject(
+        objectsList.add(
+          NsgFilePickerObject(
             isNew: true,
             file: File(element.path),
             image: null,
             fileContent: await element.readAsBytes(),
             description: basenameWithoutExtension(element.path),
             fileType: fileType,
-            filePath: element.path));
+            filePath: element.path,
+          ),
+        );
       } else {
-        error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
+        error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
       }
     }
 
@@ -511,8 +563,11 @@ class NsgFilePickerProvider {
     }
     if (!kIsWeb) {
       if (!GetPlatform.isAndroid && !GetPlatform.isIOS) {
-        var fileName = await FilePicker.platform
-            .saveFile(dialogTitle: tranControls.save_file, type: fileType, allowedExtensions: [extension(fileObject.filePath).replaceAll('.', '')]);
+        var fileName = await FilePicker.platform.saveFile(
+          dialogTitle: tran.save_file,
+          type: fileType,
+          allowedExtensions: [extension(fileObject.filePath).replaceAll('.', '')],
+        );
         if (fileName == null) return;
         var ext = extension(fileName);
         if (ext.isEmpty) {
@@ -553,10 +608,10 @@ class NsgFilePickerProvider {
 
           html.Url.revokeObjectUrl(url);
         } else {
-          Get.snackbar(tranControls.failed_download, tranControls.failed_download_try_again);
+          Get.snackbar(tran.failed_download, tran.failed_download_try_again);
         }
       } catch (e) {
-        Get.snackbar(tranControls.error, '${tranControls.error_file_download}: $e');
+        Get.snackbar(tran.error, '${tran.error_file_download}: $e');
       }
     }
   }
@@ -565,48 +620,53 @@ class NsgFilePickerProvider {
     ESourceType? eSourceType = ESourceType.gallery;
     if (GetPlatform.isMobile) {
       eSourceType = await showModalBottomSheet<ESourceType>(
-          context: context,
-          builder: (context) {
-            return Card(
-                color: nsgtheme.colorBase.c20,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context, ESourceType.gallery);
-                        },
-                        child: Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorBase),
-                            child: Icon(Icons.image_outlined, size: 50, color: ControlOptions.instance.colorPrimary)),
-                      ),
-                      const Padding(padding: EdgeInsets.only(right: 10)),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context, ESourceType.camera);
-                        },
-                        child: Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorBase),
-                            child: Icon(Icons.photo_camera, size: 50, color: ControlOptions.instance.colorPrimary)),
-                      ),
-                      const Padding(padding: EdgeInsets.only(right: 10)),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context, ESourceType.files);
-                        },
-                        child: Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorBase),
-                            child: Icon(Icons.file_open_rounded, size: 50, color: ControlOptions.instance.colorPrimary)),
-                      ),
-                    ],
+        context: context,
+        builder: (context) {
+          return Card(
+            color: nsgtheme.colorBase.c20,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context, ESourceType.gallery);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorBase),
+                      child: Icon(Icons.image_outlined, size: 50, color: ControlOptions.instance.colorPrimary),
+                    ),
                   ),
-                ));
-          });
+                  const Padding(padding: EdgeInsets.only(right: 10)),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context, ESourceType.camera);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorBase),
+                      child: Icon(Icons.photo_camera, size: 50, color: ControlOptions.instance.colorPrimary),
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.only(right: 10)),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context, ESourceType.files);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorBase),
+                      child: Icon(Icons.file_open_rounded, size: 50, color: ControlOptions.instance.colorPrimary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
     }
     return eSourceType;
   }
