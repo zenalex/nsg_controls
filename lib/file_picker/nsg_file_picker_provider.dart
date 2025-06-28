@@ -74,8 +74,8 @@ class NsgFilePickerProvider {
     this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
     this.allowedVideoFormats = const ['mp4', 'mov'],
     this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
-    this.imageMaxWidth = 1440.0,
-    this.imageMaxHeight = 1440.0,
+    this.imageMaxWidth = 1200.0,
+    this.imageMaxHeight = 1200.0,
     this.imageQuality = 70,
     this.fileMaxSize = 10000000.0,
     this.ignoreMaxSize = false,
@@ -135,6 +135,8 @@ class NsgFilePickerProvider {
           String fileName = element.name;
           var fileType = getFileTypeByPath(fileName);
           if (fileType == NsgFilePickerObjectType.image) {
+            var resizedBytes = Helper.imageResize(bytes: element.bytes!, maxHeight: imageMaxHeight.toInt());
+            fileBytes = resizedBytes;
             objectsList.add(
               NsgFilePickerObject(
                 isNew: true,
@@ -374,7 +376,11 @@ class NsgFilePickerProvider {
     if (result != null) {
       for (var element in result!.files) {
         var fileType = getFileTypeByPath(element.name);
+
+        /* ------------------------------------------------------------------- ЕСЛИ ВЕБ ------------------------------------------------------------------- */
         if (kIsWeb) {
+          element.bytes!.clear();
+          element.bytes!.addAll(Helper.imageResize(bytes: element.bytes!, maxHeight: imageMaxHeight.toInt(), maxWidth: imageMaxWidth.toInt()));
           var file = File(element.bytes.toString());
           if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
             error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
@@ -403,20 +409,28 @@ class NsgFilePickerProvider {
           } else {
             error = '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
           }
+          /* ----------------------------------------------------------------- Если WINDOWS ----------------------------------------------------------------- */
         } else if (GetPlatform.isWindows) {
           if (element.path != null) {
             var file = File(element.path!);
-
-            if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
-              error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
+            var asBytes = await file.readAsBytes();
+            if (fileType == NsgFilePickerObjectType.image) {
+              asBytes = Helper.imageResize(bytes: asBytes, maxHeight: imageMaxHeight.toInt());
+              if (!ignoreMaxSize && (asBytes.length) > fileMaxSize) {
+                error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
+              }
+            } else {
+              if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
+                error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
+              }
             }
             if (fileType == NsgFilePickerObjectType.image) {
               objectsList.add(
                 NsgFilePickerObject(
                   isNew: true,
                   file: file,
-                  fileContent: await file.readAsBytes(),
-                  image: Image.file(file),
+                  fileContent: asBytes,
+                  image: Image.memory(asBytes),
                   description: basenameWithoutExtension(element.name.toString()),
                   fileType: fileType,
                   filePath: element.path ?? '',
@@ -430,7 +444,7 @@ class NsgFilePickerProvider {
                   image: null,
                   description: basenameWithoutExtension(element.name),
                   fileType: fileType,
-                  fileContent: await file.readAsBytes(),
+                  fileContent: asBytes,
                   filePath: element.path ?? '',
                 ),
               );

@@ -1,9 +1,36 @@
+import 'dart:typed_data';
+
 import 'package:get/get.dart';
 import 'package:nsg_data/helpers/nsg_data_format.dart';
-
+import 'package:image/image.dart' as img;
 import 'localization/nsg_controls_localizations.dart';
 import 'nsg_control_options.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+class Helper {
+  static bool isPng(List<int> bytes) {
+    return bytes.length >= 8 &&
+        bytes[0] == 0x89 &&
+        bytes[1] == 0x50 &&
+        bytes[2] == 0x4E &&
+        bytes[3] == 0x47 &&
+        bytes[4] == 0x0D &&
+        bytes[5] == 0x0A &&
+        bytes[6] == 0x1A &&
+        bytes[7] == 0x0A;
+  }
+
+  static Uint8List imageResize({required Uint8List bytes, int? maxHeight, int? maxWidth}) {
+    var imageIsPng = isPng(bytes);
+    img.Image originalImage = img.decodeImage(bytes)!;
+    img.Image fixedImage = img.copyResize(interpolation: img.Interpolation.average, originalImage, height: maxHeight, width: maxWidth, maintainAspect: true);
+    if (imageIsPng) {
+      return img.encodePng(fixedImage);
+    } else {
+      return img.encodeJpg(quality: 75, fixedImage);
+    }
+  }
+}
 
 extension NsgDate on DateTime {
   bool get isEmpty {
