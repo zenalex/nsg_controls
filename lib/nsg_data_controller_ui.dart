@@ -7,14 +7,73 @@ import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 
 extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
   ///Виджет списка объектов
+  ///Если задать `grFieldName` - то сгруппирует элементы по заданному полю.
+  ///В случае `autoRequest = true` - автоматически добавит в начало сортировку по `grFieldName`
+  ///в направлении `sortDirection` (по умолчанию `NsgSortingDirection.ascending`).
+  ///После добавит `sorting`, а затем `getRequestFilter.sorting`.
+  ///В случае, если `grFieldName` - дата, будет считать объеты различными согласно `partOfDate`.
+  ///Для каждой группы будет выведен заголовок `dividerBuilder`, а если список пуст - `onEmptyList`.
+  ///
+  ///```
+  /// matchC.getListWidget(
+  ///             grFieldName: MatchItemGenerated.nameDate,
+  ///             (match) {
+  ///               return
+  ///                 child: MatchNewCard(
+  ///                   matchItem: match
+  ///                 );
+  ///             },
+  ///             dividerBuilder: (currentDate) {
+  ///               currentDate as DateTime;
+  ///               return Container(
+  ///                 margin: const EdgeInsets.only(bottom: 10, right: 20, left: 20),
+  ///                 padding: const EdgeInsets.all(5),
+  ///                 width: double.infinity,
+  ///                 decoration: BoxDecoration(color: nsgtheme.colorSecondary, borderRadius: BorderRadius.circular(6)),
+  ///                 child: Text(
+  ///                   '${NsgDateFormat.dateFormat(currentDate, format: (currentDate.year < DateTime.now().year)
+  ///                     ? 'dd MMMM yyyy, EE'
+  ///                     : 'dd MMMM, EE', locale: FutbolistaApp.defaultLocale.languageCode)}'.toUpperCase(),
+  ///                   textAlign: TextAlign.center,
+  ///                 ),
+  ///               );
+  ///             },
+  ///   ),
+  ///```
   Widget getListWidget(
     Widget? Function(T item) itemBuilder, {
+    bool autoRequest = false,
     Widget? onEmptyList,
     String? grFieldName,
+    NsgSorting? sorting,
+    NsgSortingDirection? sortDirection,
     Widget? Function(dynamic value)? dividerBuilder,
     PartOfDate partOfDate = PartOfDate.day,
     Key? key,
   }) {
+    if (autoRequest) {
+      var filter = getRequestFilter;
+      NsgSorting sort = NsgSorting();
+
+      if (grFieldName != null && grFieldName.isNotEmpty) {
+        NsgSortingParam sortingParam = NsgSortingParam(parameterName: grFieldName, direction: sortDirection ?? NsgSortingDirection.ascending);
+        sort.paramList.add(sortingParam);
+      }
+
+      if (sorting != null) {
+        for (var sortParam in sorting.paramList) {
+          sort.paramList.add(sortParam);
+        }
+      }
+
+      if (filter.sorting != null) {
+        filter.sorting = "${sort.toString()}, ${filter.sorting}";
+      } else {
+        filter.sorting = sort.toString();
+      }
+
+      refreshData(filter: filter);
+    }
     return obx((state) {
       DataGroupList dataGroups;
       if (grFieldName != null) {
