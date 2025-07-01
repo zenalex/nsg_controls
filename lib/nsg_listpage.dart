@@ -90,40 +90,40 @@ class NsgListPage extends StatelessWidget {
   final Widget? widgetBottom;
 
   final bool showLastAndFavourites;
-  const NsgListPage(
-      {Key? key,
-      this.contentPadding = EdgeInsets.zero,
-      this.userSettingsController,
-      this.userSettingsId = '',
-      this.widgetBottom,
-      this.showLastAndFavourites = false,
-      required this.controller,
-      required this.title,
-      this.subtitle,
-      this.showCount,
-      required this.textNoItems,
-      this.elementWidget,
-      required this.elementEditPage,
-      this.columns,
-      this.type = NsgListPageMode.list,
-      this.gridCellMinWidth = 160,
-      this.gridXSpacing = 10.0,
-      this.gridYSpacing = 10.0,
-      this.appBar,
-      this.appBarColor,
-      this.appBarBackColor,
-      this.appBarIcon = Icons.arrow_back_ios_new,
-      this.appBarIcon2 = Icons.add,
-      this.appBarIcon3,
-      this.getNotificationCount,
-      this.appBarOnPressed,
-      this.appBarOnPressed2,
-      this.appBarOnPressed3,
-      this.onElementTap,
-      this.notificationController,
-      this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
-      this.availableButtons})
-      : super(key: key);
+  const NsgListPage({
+    Key? key,
+    this.contentPadding = EdgeInsets.zero,
+    this.userSettingsController,
+    this.userSettingsId = '',
+    this.widgetBottom,
+    this.showLastAndFavourites = false,
+    required this.controller,
+    required this.title,
+    this.subtitle,
+    this.showCount,
+    required this.textNoItems,
+    this.elementWidget,
+    required this.elementEditPage,
+    this.columns,
+    this.type = NsgListPageMode.list,
+    this.gridCellMinWidth = 160,
+    this.gridXSpacing = 10.0,
+    this.gridYSpacing = 10.0,
+    this.appBar,
+    this.appBarColor,
+    this.appBarBackColor,
+    this.appBarIcon = Icons.arrow_back_ios_new,
+    this.appBarIcon2 = Icons.add,
+    this.appBarIcon3,
+    this.getNotificationCount,
+    this.appBarOnPressed,
+    this.appBarOnPressed2,
+    this.appBarOnPressed3,
+    this.onElementTap,
+    this.notificationController,
+    this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
+    this.availableButtons,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -133,71 +133,49 @@ class NsgListPage extends StatelessWidget {
 
     return BodyWrap(
       child: Scaffold(
-        backgroundColor: ControlOptions.instance.colorMainBack,
+        backgroundColor: nsgtheme.colorMainBack,
         body: Container(
           key: GlobalKey(),
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              controller.obx((state) => _getNsgAppBar(), onLoading: _getNsgAppBar(), onError: (error) {
-                return _getNsgAppBar(error: NsgErrorPage(text: error).title());
-              }),
+              controller.obx(
+                (state) => _getNsgAppBar(),
+                onLoading: _getNsgAppBar(),
+                onError: (error) {
+                  return _getNsgAppBar(error: NsgErrorPage(text: error).title());
+                },
+              ),
               if (type != NsgListPageMode.table)
                 controller.obx(
-                    (state) => NsgTextFilter(
-                          controller: controller,
-                        ),
-                    onLoading: NsgTextFilter(
-                      controller: controller,
-                    ),
-                    onError: (error) => const SizedBox()),
+                  (state) => NsgTextFilter(controller: controller),
+                  onLoading: NsgTextFilter(controller: controller),
+                  onError: (error) => const SizedBox(),
+                ),
               if (type != NsgListPageMode.table)
                 controller.controllerFilter.isAllowed && controller.controllerFilter.isPeriodAllowed
                     ? controller.obx(
-                        (state) => NsgPeriodFilter(
-                              label: 'Фильтр по датам',
-                              controller: controller,
-                            ),
-                        onLoading: NsgPeriodFilter(
-                          controller: controller,
-                        ),
-                        onError: (error) => const SizedBox())
+                        (state) => NsgPeriodFilter(label: 'Фильтр по датам', controller: controller),
+                        onLoading: NsgPeriodFilter(controller: controller),
+                        onError: (error) => const SizedBox(),
+                      )
                     : const SizedBox(),
               Expanded(
                 child: Column(
-                  children: [
-                    /* controller.obx((state) {
-                      if (controller.controllerFilter.isAllowed == true) {
-                        return AnimatedCrossFade(
-                            duration: const Duration(milliseconds: 500),
-                            crossFadeState: controller.controllerFilter.isOpen != true
-                                ? CrossFadeState.showSecond
-                                : CrossFadeState.showFirst,
-                            firstChild: const SizedBox(width: double.infinity),
-                            secondChild: Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                              child: SizedBox(
-                                  width: double.infinity,
-                                  child: controller.controllerFilter.isPeriodAllowed
-                                      ? Text(
-                                          'Фильтр по датам: ' + controller.controllerFilter.nsgPeriod.dateTextWithTime,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(fontWeight: FontWeight.bold),
-                                        )
-                                      : const SizedBox()),
-                            ));
-                      } else {
-                        return const SizedBox();
-                      }
-                    }, onLoading: const SizedBox(), onError: (error) => const SizedBox()),*/
+                  children: [                  
                     Expanded(
                       child: controller.obx(
-                          (state) => Container(key: GlobalKey(), padding: const EdgeInsets.fromLTRB(0, 2, 0, 0), child: _wrapTabs(child: _content())),
-                          onLoading: const NsgProgressBar(),
-                          onError: (text) => NsgErrorPage(text: text)),
+                        (state) => Container(
+                          key: GlobalKey(),
+                          padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
+                          child: _wrapTabs(child: _content()),
+                        ),
+                        onLoading: const NsgProgressBar(),
+                        onError: (text) => NsgErrorPage(text: text),
+                      ),
                     ),
-                    if (widgetBottom != null) widgetBottom!
+                    if (widgetBottom != null) widgetBottom!,
                   ],
                 ),
               ),
@@ -215,53 +193,49 @@ class NsgListPage extends StatelessWidget {
     return DefaultTabController(
       //  initialIndex: controller.contextMachinery,
       length: 3,
-      child: Builder(builder: (BuildContext contextMachinery) {
-        final TabController tabMachineryController = DefaultTabController.of(contextMachinery);
-        tabMachineryController.addListener(() {
-          if (!tabMachineryController.indexIsChanging) {
-            // controller.contextMachinery = tabMachineryController.index;
-          }
-        });
+      child: Builder(
+        builder: (BuildContext contextMachinery) {
+          final TabController tabMachineryController = DefaultTabController.of(contextMachinery);
+          tabMachineryController.addListener(() {
+            if (!tabMachineryController.indexIsChanging) {
+              // controller.contextMachinery = tabMachineryController.index;
+            }
+          });
 
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            height: 50,
-            child: TabBar(
-              indicatorColor: ControlOptions.instance.colorMain,
-              unselectedLabelColor: ControlOptions.instance.colorText.withAlpha(128),
-              labelColor: ControlOptions.instance.colorText,
-              labelPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              tabs: [
-                Tab(
-                    child: Text(
-                  "Все".toUpperCase(),
-                  textAlign: TextAlign.center,
-                )),
-                Tab(
-                    child: Text(
-                  "Последние".toUpperCase(),
-                  textAlign: TextAlign.center,
-                )),
-                Tab(child: Text("Избранные".toUpperCase(), textAlign: TextAlign.center)),
-              ],
-            ),
-          ),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TabBarView(children: [
-              Flexible(child: _content()),
-              ListView(
-                children: const [],
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                height: 50,
+                child: TabBar(
+                  indicatorColor: ControlOptions.instance.colorMain,
+                  unselectedLabelColor: ControlOptions.instance.colorText.withAlpha(128),
+                  labelColor: ControlOptions.instance.colorText,
+                  labelPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  tabs: [
+                    Tab(child: Text("Все".toUpperCase(), textAlign: TextAlign.center)),
+                    Tab(child: Text("Последние".toUpperCase(), textAlign: TextAlign.center)),
+                    Tab(child: Text("Избранные".toUpperCase(), textAlign: TextAlign.center)),
+                  ],
+                ),
               ),
-              ListView(
-                children: const [],
-              )
-            ]),
-          ))
-        ]);
-      }),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: TabBarView(
+                    children: [
+                      Flexible(child: _content()),
+                      ListView(children: const []),
+                      ListView(children: const []),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -330,7 +304,7 @@ class NsgListPage extends StatelessWidget {
       return const Text('Несуществующий тип отображения NsgListPage');
     }
   }
-/*
+  /*
   void _onRefresh() async {
     // monitor network fetch
     await Future.delayed(const Duration(milliseconds: 100));
@@ -341,14 +315,16 @@ class NsgListPage extends StatelessWidget {
   List<Widget> _showItems() {
     List<Widget> list = [];
     if (controller.items.isEmpty) {
-      list.add(Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-        child: Text(
-          textNoItems,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: ControlOptions.instance.colorText),
+      list.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+          child: Text(
+            textNoItems,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: ControlOptions.instance.colorText),
+          ),
         ),
-      ));
+      );
     } else {
       for (var element in controller.items) {
         list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
@@ -360,14 +336,16 @@ class NsgListPage extends StatelessWidget {
   List<Widget> _showTreeItems() {
     List<Widget> list = [];
     if (controller.items.isEmpty) {
-      list.add(Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-        child: Text(
-          textNoItems,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: ControlOptions.instance.colorText),
+      list.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+          child: Text(
+            textNoItems,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: ControlOptions.instance.colorText),
+          ),
         ),
-      ));
+      );
     } else {
       for (var element in controller.items) {
         list.add(InkWell(onTap: () => _elementTap(element), child: elementWidget == null ? Text(element.toString()) : elementWidget!(element)));
@@ -385,8 +363,8 @@ class NsgListPage extends StatelessWidget {
           text: error != null ? 'Ошибка: $error'.toUpperCase() : title,
           text2: showCount != null
               ? controller.totalCount != null
-                  ? '${showCount!} ${controller.totalCount}'
-                  : null
+                    ? '${showCount!} ${controller.totalCount}'
+                    : null
               : subtitle,
           colorsInverted: true,
           bottomCircular: true,
@@ -394,9 +372,9 @@ class NsgListPage extends StatelessWidget {
           onPressed: appBarIcon == null
               ? null
               : appBarOnPressed ??
-                  () {
-                    Get.back();
-                  },
+                    () {
+                      Get.back();
+                    },
           getNotificationCount: getNotificationCount,
           notificationController: notificationController,
           notificationPosition: notificationPosition,
@@ -406,21 +384,22 @@ class NsgListPage extends StatelessWidget {
           onPressed2: appBarIcon2 == null
               ? null
               : appBarOnPressed2 ??
-                  () {
-                    controller.newItemPageOpen(pageName: elementEditPage);
-                  },
+                    () {
+                      controller.newItemPageOpen(pageName: elementEditPage);
+                    },
 
           /// Фильтр
           icon3: appBarIcon3 != null
               ? appBarIcon3!
               : type != NsgListPageMode.table
-                  ? controller.controllerFilter.isAllowed == true
-                      ? controller.controllerFilter.isOpen == true
+              ? controller.controllerFilter.isAllowed == true
+                    ? controller.controllerFilter.isOpen == true
                           ? Icons.filter_alt_off
                           : Icons.filter_alt
-                      : null
-                  : null,
-          onPressed3: appBarOnPressed3 ??
+                    : null
+              : null,
+          onPressed3:
+              appBarOnPressed3 ??
               (controller.controllerFilter.isAllowed == true
                   ? () {
                       controller.controllerFilter.isOpen = !controller.controllerFilter.isOpen;

@@ -37,6 +37,12 @@ class NsgInput extends StatefulWidget {
   final int maxLines;
   final int minLines;
 
+  /// Дефолтный выбранный код страны, например: 'en'
+  final String? countryCodeInitial;
+
+  /// Список кодов стран при выборе кода телефонного номера страны, например: ['en','ru']
+  final List<String>? countryCodes;
+
   ///Для обработки нажатия на физические кнопки при нахождении в фокусе
   final KeyEventResult Function(FocusNode focus, KeyEvent event)? onKeyEvent;
 
@@ -181,74 +187,77 @@ class NsgInput extends StatefulWidget {
   ///Режим автозамены. Вкл/Выкл
   final bool autocorrect;
 
-  const NsgInput(
-      {super.key,
-      this.child,
-      this.dynamicList = const [],
-      this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
-      this.trackColor,
-      this.selectionWidgetType = NsgInputSelectionWidgetType.column,
-      this.activeColor,
-      this.thumbColor,
-      this.autofocus = false,
-      this.initialDateTime,
-      this.firstDateTime,
-      this.lastDateTime,
-      this.onKeyEvent,
-      this.maxLenght,
-      this.validateText = '',
-      this.textAlign = TextAlign.left,
-      required this.dataItem,
-      required this.fieldName,
-      this.showDeleteIcon = true,
-      this.showLabel,
-      this.controller,
-      this.selectionController,
-      this.updateController,
-      this.label = '',
-      this.labelColor,
-      this.imagesList,
-      this.disabled = false,
-      this.fontSize,
-      this.borderRadius = 15,
-      this.margin,
-      this.gesture,
-      this.hint,
-      this.onChanged,
-      this.onFocusChanged,
-      this.onPressed,
-      this.onEditingComplete,
-      this.onFieldSubmitted,
-      this.maxLines = 1,
-      this.minLines = 1,
-      //this.height = 50,
-      this.widget,
-      this.rowWidget,
-      this.inputType = NsgInputType.autoselect,
-      this.selectionForm = '',
-      this.keyboard = TextInputType.text,
-      this.mask,
-      this.maskType,
-      this.itemsToSelect,
-      this.required,
-      this.textFormFieldType,
-      this.borderColor,
-      this.filled,
-      this.filledColor,
-      this.isDense,
-      this.labelWidget,
-      this.showLock = true,
-      this.floatingLabelBehavior = FloatingLabelBehavior.never,
-      this.textStyle,
-      this.boolWidget,
-      this.boolBoxPosition = BoolBoxPosition.end,
-      this.contentPadding,
-      this.prefix,
-      this.suffixIcon,
-      this.formatDateTime,
-      this.getRequestFilter,
-      this.textCapitalization = TextCapitalization.none,
-      this.autocorrect = true});
+  const NsgInput({
+    super.key,
+    this.countryCodes,
+    this.countryCodeInitial,
+    this.child,
+    this.dynamicList = const [],
+    this.nsgSwitchHorizontalStyle = const NsgSwitchHorizontalStyle(),
+    this.trackColor,
+    this.selectionWidgetType = NsgInputSelectionWidgetType.column,
+    this.activeColor,
+    this.thumbColor,
+    this.autofocus = false,
+    this.initialDateTime,
+    this.firstDateTime,
+    this.lastDateTime,
+    this.onKeyEvent,
+    this.maxLenght,
+    this.validateText = '',
+    this.textAlign = TextAlign.left,
+    required this.dataItem,
+    required this.fieldName,
+    this.showDeleteIcon = true,
+    this.showLabel,
+    this.controller,
+    this.selectionController,
+    this.updateController,
+    this.label = '',
+    this.labelColor,
+    this.imagesList,
+    this.disabled = false,
+    this.fontSize,
+    this.borderRadius = 15,
+    this.margin,
+    this.gesture,
+    this.hint,
+    this.onChanged,
+    this.onFocusChanged,
+    this.onPressed,
+    this.onEditingComplete,
+    this.onFieldSubmitted,
+    this.maxLines = 1,
+    this.minLines = 1,
+    //this.height = 50,
+    this.widget,
+    this.rowWidget,
+    this.inputType = NsgInputType.autoselect,
+    this.selectionForm = '',
+    this.keyboard = TextInputType.text,
+    this.mask,
+    this.maskType,
+    this.itemsToSelect,
+    this.required,
+    this.textFormFieldType,
+    this.borderColor,
+    this.filled,
+    this.filledColor,
+    this.isDense,
+    this.labelWidget,
+    this.showLock = true,
+    this.floatingLabelBehavior = FloatingLabelBehavior.never,
+    this.textStyle,
+    this.boolWidget,
+    this.boolBoxPosition = BoolBoxPosition.end,
+    this.contentPadding,
+    this.prefix,
+    this.suffixIcon,
+    this.formatDateTime,
+    this.getRequestFilter,
+    this.textCapitalization = TextCapitalization.none,
+    this.autocorrect = true,
+  });
 
   @override
   State<NsgInput> createState() => _NsgInputState();
@@ -411,8 +420,9 @@ class _NsgInputState extends State<NsgInput> {
       if (sc == null) {
         assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
         sc = NsgDefaultController(
-            dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType,
-            controllerMode: NsgDataControllerMode(storageType: widget.dataItem.storageType));
+          dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType,
+          controllerMode: NsgDataControllerMode(storageType: widget.dataItem.storageType),
+        );
       }
       selectionController = sc;
     }
@@ -437,7 +447,7 @@ class _NsgInputState extends State<NsgInput> {
     super.dispose();
   }
 
-/* --------------------------------------------------------------------- BUILD -------------------------------------------------------------------- */
+  /* --------------------------------------------------------------------- BUILD -------------------------------------------------------------------- */
   @override
   Widget build(BuildContext context) {
     //textScaleFactor = MediaQuery.of(context).textScaleFactor;
@@ -488,168 +498,222 @@ class _NsgInputState extends State<NsgInput> {
     }
 
     return Container(
-        //key: widget.key ?? GlobalKey(),
-        margin: widget.margin ?? nsgtheme.nsgInputMargin,
-        child: widget.widget ??
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (widget.showLabel ?? nsgtheme.nsgInputShowLabel)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 2),
-                    child: Text(
-                      focus.hasFocus || textController.text != '' || nsgtheme.nsgInputHintAlwaysOnTop == true
-                          ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
+      //key: widget.key ?? GlobalKey(),
+      margin: widget.margin ?? nsgtheme.nsgInputMargin,
+      child:
+          widget.widget ??
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (widget.showLabel ?? nsgtheme.nsgInputShowLabel)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    focus.hasFocus || textController.text != '' || nsgtheme.nsgInputHintAlwaysOnTop == true
+                        ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
                               ? '${widget.label} *'
                               : widget.label
-                          : ' ',
-                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
-                    ),
+                        : ' ',
+                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
                   ),
-                _gestureWrap(
-                  clearIcon: fieldValue.toString() != '',
-                  interactiveWidget: Container(
-                    //padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                ),
+              _gestureWrap(
+                clearIcon: fieldValue.toString() != '',
+                interactiveWidget: Container(
+                  //padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  alignment: Alignment.center,
+                  child: Stack(
                     alignment: Alignment.center,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        TextFormField(
-                          textCapitalization: widget.textCapitalization,
-                          autocorrect: widget.autocorrect,
-                          controller: textController,
-                          inputFormatters: widget.maskType == NsgInputMaskType.phone
-                              ? [phoneFormatter]
-                              : widget.mask != null
-                                  ? [
-                                      MaskTextInputFormatter(
-                                        initialText: fieldValue.toString(),
-                                        mask: widget.mask,
-                                      )
-                                    ]
-                                  : null,
-                          maxLength: maxLength,
-                          autofocus: widget.autofocus,
-                          focusNode: focus,
-                          maxLines: widget.maxLines,
-                          minLines: widget.minLines,
-                          textInputAction: keyboard == TextInputType.multiline ? TextInputAction.newline : TextInputAction.next,
-                          keyboardType: keyboard,
-                          cursorColor: ControlOptions.instance.colorText,
-                          decoration: InputDecoration(
-                            suffixIcon: widget.suffixIcon,
-                            floatingLabelBehavior: widget.floatingLabelBehavior,
-                            //label: widget.labelWidget,
-                            prefix: prefix(),
-                            counterText: "",
-                            contentPadding: getContentPadding(),
-                            isDense: widget.isDense ?? true,
-                            filled: widget.filled ?? nsgtheme.nsgInputFilled,
-                            fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
-                            border: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
-                                : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                            focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
-                            enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
-                                : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                            errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
-                            disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
-                                : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                            focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
-                          ),
-                          onFieldSubmitted: (s) {
-                            if (widget.onFieldSubmitted != null) {
-                              widget.onFieldSubmitted!(widget.dataItem, widget.fieldName);
-                            }
-                          },
-                          // onFieldSubmitted: (value) {
-                          //   print("AAA");
-                          // },
-                          // onFieldSubmitted: (string) {
-                          //   if (widget.onEditingComplete != null) {
-                          //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                          //   }
-                          // },
-
-                          onEditingComplete: () {
-                            if (keyboard != TextInputType.multiline) {
-                              if (widget.onEditingComplete != null) {
-                                widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                              }
-
-                              Future.delayed(const Duration(milliseconds: 10), () {
-                                if (context.mounted) {
-                                  FocusScope.of(context).unfocus();
+                    children: [
+                      inputType == NsgInputType.phoneCode
+                          ? CountryDropdown(
+                              initialCountryData: widget.countryCodeInitial == null
+                                  ? null
+                                  : PhoneCodes.getPhoneCountryDataByCountryCode(widget.countryCodeInitial!),
+                              filter: getPhoneCountryDataByCountryCodes(),
+                              printCountryName: true,
+                              onCountrySelected: (PhoneCountryData countryData) {
+                                textController.text = countryData.countryCode.toString();
+                                widget.dataItem.setFieldValue(widget.fieldName, countryData.countryCode.toString());
+                                if (widget.onChanged != null) {
+                                  widget.onChanged!(widget.dataItem);
                                 }
-                              });
-                            }
-                            focus.unfocus();
-                            if (widget.onFocusChanged != null) {
-                              widget.onFocusChanged!(false);
-                            }
-                          },
-                          onChanged: (value) {
-                            if (widget.onChanged != null) {
-                              widget.onChanged!(widget.dataItem);
-                            }
-                          },
-                          textAlign: widget.textAlign,
-                          style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
-                          readOnly: _disabled,
-                        ),
-                        if (!nsgtheme.nsgInputHintHidden && (!focus.hasFocus && textController.text == ''))
-                          IgnorePointer(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: getHintPadding(),
-                                child: widget.hint != null
-                                    ? Text(
-                                        widget.hint!,
-                                        style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
-                                      )
-                                    : widget.labelWidget ??
+                                if (widget.onEditingComplete != null) {
+                                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                                }
+                                setState(() {});
+                              },
+                              dropdownColor: nsgtheme.colorModalBack,
+                              decoration: InputDecoration(
+                                suffixIcon: widget.suffixIcon,
+                                floatingLabelBehavior: widget.floatingLabelBehavior,
+                                contentPadding: getContentPaddingPhoneCode(),
+                                isDense: widget.isDense ?? true,
+                                filled: widget.filled ?? nsgtheme.nsgInputFilled,
+                                fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
+                                border: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                                enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                              ),
+                              style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
+                            )
+                          : TextFormField(
+                              textCapitalization: widget.textCapitalization,
+                              autocorrect: widget.autocorrect,
+                              controller: textController,
+                              inputFormatters: widget.maskType == NsgInputMaskType.phone
+                                  ? [phoneFormatter]
+                                  : widget.mask != null
+                                  ? [MaskTextInputFormatter(initialText: fieldValue.toString(), mask: widget.mask)]
+                                  : null,
+                              maxLength: maxLength,
+                              autofocus: widget.autofocus,
+                              focusNode: focus,
+                              maxLines: widget.maxLines,
+                              minLines: widget.minLines,
+                              textInputAction: keyboard == TextInputType.multiline ? TextInputAction.newline : TextInputAction.next,
+                              keyboardType: keyboard,
+                              cursorColor: ControlOptions.instance.colorText,
+                              decoration: InputDecoration(
+                                suffixIcon: widget.suffixIcon,
+                                floatingLabelBehavior: widget.floatingLabelBehavior,
+                                //label: widget.labelWidget,
+                                prefix: prefix(),
+                                counterText: "",
+                                contentPadding: getContentPadding(),
+                                isDense: widget.isDense ?? true,
+                                filled: widget.filled ?? nsgtheme.nsgInputFilled,
+                                fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
+                                border: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                                enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                              ),
+                              onFieldSubmitted: (s) {
+                                if (widget.onFieldSubmitted != null) {
+                                  widget.onFieldSubmitted!(widget.dataItem, widget.fieldName);
+                                }
+                              },
+
+                              // onFieldSubmitted: (value) {
+                              //   print("AAA");
+                              // },
+                              // onFieldSubmitted: (string) {
+                              //   if (widget.onEditingComplete != null) {
+                              //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                              //   }
+                              // },
+                              onEditingComplete: () {
+                                if (keyboard != TextInputType.multiline) {
+                                  if (widget.onEditingComplete != null) {
+                                    widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                                  }
+
+                                  Future.delayed(const Duration(milliseconds: 10), () {
+                                    if (context.mounted) {
+                                      FocusScope.of(context).unfocus();
+                                    }
+                                  });
+                                }
+                                focus.unfocus();
+                                if (widget.onFocusChanged != null) {
+                                  widget.onFocusChanged!(false);
+                                }
+                              },
+                              onChanged: (value) {
+                                if (widget.onChanged != null) {
+                                  widget.onChanged!(widget.dataItem);
+                                }
+                              },
+                              textAlign: widget.textAlign,
+                              style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
+                              readOnly: _disabled,
+                            ),
+                      if (!nsgtheme.nsgInputHintHidden && (!focus.hasFocus && textController.text == ''))
+                        IgnorePointer(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: getHintPadding(),
+                              child: widget.hint != null
+                                  ? Text(
+                                      widget.hint!,
+                                      style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
+                                    )
+                                  : widget.labelWidget ??
                                         Text(
                                           (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? '${widget.label} *' : widget.label,
                                           style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
                                         ),
-                              ),
                             ),
                           ),
-                        if (widget.hint != null && focus.hasFocus && textController.text == '')
-                          ValueListenableBuilder(
-                              valueListenable: _notifier,
-                              builder: (BuildContext context, bool val, Widget? child) {
-                                if (_notifier.value == true) {
-                                  return Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding: getHintPadding(),
-                                        child: Text(
-                                          widget.hint!,
-                                          style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
-                                        ),
-                                      ));
-                                } else {
-                                  return const SizedBox();
-                                }
-                              }),
-                      ],
-                    ),
+                        ),
+                      if (widget.hint != null && focus.hasFocus && textController.text == '')
+                        ValueListenableBuilder(
+                          valueListenable: _notifier,
+                          builder: (BuildContext context, bool val, Widget? child) {
+                            if (_notifier.value == true) {
+                              return Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: getHintPadding(),
+                                  child: Text(
+                                    widget.hint!,
+                                    style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
+                          },
+                        ),
+                    ],
                   ),
                 ),
-                if (getValidateText() != '')
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Text(
-                      getValidateText(),
-                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
-                    ),
+              ),
+              if (getValidateText() != '')
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(
+                    getValidateText(),
+                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
                   ),
-              ],
-            ));
+                ),
+            ],
+          ),
+    );
+  }
+
+  List<PhoneCountryData>? getPhoneCountryDataByCountryCodes() {
+    if (widget.countryCodes == null) {
+      return null;
+    } else {
+      List<PhoneCountryData> list = [];
+      for (var countryCode in widget.countryCodes!) {
+        if (PhoneCodes.getPhoneCountryDataByCountryCode(countryCode) != null) {
+          list.add(PhoneCodes.getPhoneCountryDataByCountryCode(countryCode)!);
+        }
+      }
+      return list;
+    }
   }
 
   Widget? prefix() {
@@ -659,16 +723,12 @@ class _NsgInputState extends State<NsgInput> {
     return !_disabled
         ? null
         : widget.showLock
-            ? widget.prefix ??
-                Padding(
-                  padding: const EdgeInsets.only(right: 3.0),
-                  child: Icon(
-                    Icons.lock,
-                    size: 12,
-                    color: ControlOptions.instance.colorMain,
-                  ),
-                )
-            : null;
+        ? widget.prefix ??
+              Padding(
+                padding: const EdgeInsets.only(right: 3.0),
+                child: Icon(Icons.lock, size: 12, color: ControlOptions.instance.colorMain),
+              )
+        : null;
   }
 
   String getValidateText() {
@@ -696,16 +756,28 @@ class _NsgInputState extends State<NsgInput> {
       return widget.contentPadding!;
     } else {
       EdgeInsets padding = nsgtheme.nsgInputContentPadding
-          .subtract(EdgeInsets.fromLTRB(
+          .subtract(
+            EdgeInsets.fromLTRB(
               0,
               4,
               !widget.showDeleteIcon
                   ? 0
                   : useSelectionController
-                      ? -15
-                      : -15,
-              4))
+                  ? -15
+                  : -15,
+              4,
+            ),
+          )
           .resolve(TextDirection.ltr);
+      return padding;
+    }
+  }
+
+  EdgeInsets getContentPaddingPhoneCode() {
+    if (widget.contentPadding != null) {
+      return widget.contentPadding!;
+    } else {
+      EdgeInsets padding = nsgtheme.nsgInputContentPadding.subtract(EdgeInsets.fromLTRB(0, 7, 10, 7)).resolve(TextDirection.ltr);
       return padding;
     }
   }
@@ -715,20 +787,33 @@ class _NsgInputState extends State<NsgInput> {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
       return clearIcon == true ? _addClearIcon(interactiveWidget) : interactiveWidget;
     } else {
+      if (inputType == NsgInputType.phoneCode) {
+        return interactiveWidget;
+      }
       return clearIcon == true
-          ? _addClearIcon(InkWell(onTap: _onPressed, child: AbsorbPointer(child: interactiveWidget)))
-          : InkWell(onTap: _onPressed, child: AbsorbPointer(child: interactiveWidget));
+          ? _addClearIcon(
+              InkWell(
+                onTap: _onPressed,
+                child: AbsorbPointer(child: interactiveWidget),
+              ),
+            )
+          : InkWell(
+              onTap: _onPressed,
+              child: AbsorbPointer(child: interactiveWidget),
+            );
     }
   }
 
   /// Оборачиваем Stack и добавляем иконку "очистить поле"
   Widget _addClearIcon(Widget child) {
-    return Stack(alignment: Alignment.centerRight, children: [
-      child,
-      if (!_disabled && widget.showDeleteIcon)
-        MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
+    return Stack(
+      alignment: Alignment.centerRight,
+      children: [
+        child,
+        if (!_disabled && widget.showDeleteIcon)
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
               onTap: () {
                 widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
                 textController.text = widget.dataItem[widget.fieldName].toString();
@@ -751,24 +836,18 @@ class _NsgInputState extends State<NsgInput> {
               child: HoverWidget(
                 hoverChild: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Icon(
-                    Icons.close_outlined,
-                    color: nsgtheme.nsginputCloseIconColor,
-                    size: 16,
-                  ),
+                  child: Icon(Icons.close_outlined, color: nsgtheme.nsginputCloseIconColor, size: 16),
                 ),
                 onHover: (PointerEnterEvent event) {},
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Icon(
-                    Icons.close_outlined,
-                    color: nsgtheme.nsginputCloseIconColorHover,
-                    size: 16,
-                  ),
+                  child: Icon(Icons.close_outlined, color: nsgtheme.nsginputCloseIconColorHover, size: 16),
                 ),
-              )),
-        )
-    ]);
+              ),
+            ),
+          ),
+      ],
+    );
   }
 
   void _onPressed() {
@@ -797,13 +876,15 @@ class _NsgInputState extends State<NsgInput> {
       var selectedElement = value;
       ScrollController scrollController = ScrollController();
       showDialog(
-          context: context,
-          builder: (_) {
-            Widget dynamicListWidget() {
-              return StatefulBuilder(builder: (context, setstate) {
+        context: context,
+        builder: (_) {
+          Widget dynamicListWidget() {
+            return StatefulBuilder(
+              builder: (context, setstate) {
                 List<Widget> list = [];
                 for (var element in widget.dynamicList) {
-                  list.add(InkWell(
+                  list.add(
+                    InkWell(
                       onTap: () {
                         selectedElement = element;
                         setstate(() {});
@@ -814,89 +895,101 @@ class _NsgInputState extends State<NsgInput> {
                         color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
                         height: 50,
                         child: Center(
-                            child: Text(element.toString(),
-                                style: TextStyle(
-                                  fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
-                                  color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor,
-                                ))),
-                      )));
+                          child: Text(
+                            element.toString(),
+                            style: TextStyle(
+                              fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
+                              color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
                 }
                 return Padding(
                   padding: const EdgeInsets.only(right: 20),
-                  child: Column(
-                    children: list,
-                  ),
+                  child: Column(children: list),
                 );
-              });
-            }
+              },
+            );
+          }
 
-            List<Widget> dynamicListWidgets() {
-              List<Widget> list = [];
-              for (var element in widget.dynamicList) {
-                // ignore: sized_box_for_whitespace
-                list.add(Container(
-                    width: 300,
-                    //color: element == selectedElement ? nsgtheme.colorPrimary : Colors.transparent,
-                    height: 50,
-                    child: Center(
-                        child: Text(
+          List<Widget> dynamicListWidgets() {
+            List<Widget> list = [];
+            for (var element in widget.dynamicList) {
+              // ignore: sized_box_for_whitespace
+              list.add(
+                Container(
+                  width: 300,
+                  //color: element == selectedElement ? nsgtheme.colorPrimary : Colors.transparent,
+                  height: 50,
+                  child: Center(
+                    child: Text(
                       element.toString(),
                       style: TextStyle(
-                          fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w200,
-                          //color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
-                          color: nsgtheme.nsgInputDynamicListTextColor),
-                    ))));
-              }
-              return list;
+                        fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w200,
+                        //color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
+                        color: nsgtheme.nsgInputDynamicListTextColor,
+                      ),
+                    ),
+                  ),
+                ),
+              );
             }
+            return list;
+          }
 
-            return nsgBackDrop(
-              child: kIsWeb || !(Platform.isAndroid || Platform.isIOS)
-                  // Если Веб и (не андроид и не иос)
-                  ? NsgPopUp(
-                      width: 300,
-                      onConfirm: () {
-                        countItem = widget.dynamicList.indexOf(selectedElement);
-                        textController.text = widget.dynamicList[countItem].toString();
-                        widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
-                        setState(() {});
-                        if (widget.onEditingComplete != null) {
-                          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                        }
-                      },
-                      title: widget.label,
-                      // ignore: sized_box_for_whitespace
-                      contentTop: Container(
-                          constraints: BoxConstraints(maxHeight: 300),
-                          child: RawScrollbar(
-                              minOverscrollLength: 100,
-                              minThumbLength: 100,
-                              thickness: 16,
-                              trackBorderColor: nsgtheme.colorSecondary,
-                              trackColor: nsgtheme.colorSecondary,
-                              thumbColor: nsgtheme.colorPrimary,
-                              radius: const Radius.circular(0),
-                              thumbVisibility: true,
-                              trackVisibility: true,
-                              controller: scrollController,
-                              child: SingleChildScrollView(controller: scrollController, child: dynamicListWidget()))),
-                    )
-                  : NsgPopUp(
-                      width: 300,
-                      onConfirm: () {
-                        countItem = widget.dynamicList.indexOf(selectedElement);
-                        textController.text = widget.dynamicList[countItem].toString();
-                        widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
-                        if (widget.onEditingComplete != null) {
-                          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                        }
-                        setState(() {});
-                      },
-                      title: widget.label,
-                      contentTop: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        constraints: BoxConstraints(maxHeight: 300),
-                        child: StatefulBuilder(builder: (context, setstate) {
+          return nsgBackDrop(
+            child: kIsWeb || !(Platform.isAndroid || Platform.isIOS)
+                // Если Веб и (не андроид и не иос)
+                ? NsgPopUp(
+                    width: 300,
+                    onConfirm: () {
+                      countItem = widget.dynamicList.indexOf(selectedElement);
+                      textController.text = widget.dynamicList[countItem].toString();
+                      widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
+                      setState(() {});
+                      if (widget.onEditingComplete != null) {
+                        widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                      }
+                    },
+                    title: widget.label,
+                    // ignore: sized_box_for_whitespace
+                    contentTop: Container(
+                      constraints: BoxConstraints(maxHeight: 300),
+                      child: RawScrollbar(
+                        minOverscrollLength: 100,
+                        minThumbLength: 100,
+                        thickness: 16,
+                        trackBorderColor: nsgtheme.colorSecondary,
+                        trackColor: nsgtheme.colorSecondary,
+                        thumbColor: nsgtheme.colorPrimary,
+                        radius: const Radius.circular(0),
+                        thumbVisibility: true,
+                        trackVisibility: true,
+                        controller: scrollController,
+                        child: SingleChildScrollView(controller: scrollController, child: dynamicListWidget()),
+                      ),
+                    ),
+                  )
+                : NsgPopUp(
+                    width: 300,
+                    onConfirm: () {
+                      countItem = widget.dynamicList.indexOf(selectedElement);
+                      textController.text = widget.dynamicList[countItem].toString();
+                      widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
+                      if (widget.onEditingComplete != null) {
+                        widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                      }
+                      setState(() {});
+                    },
+                    title: widget.label,
+                    contentTop: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      constraints: BoxConstraints(maxHeight: 300),
+                      child: StatefulBuilder(
+                        builder: (context, setstate) {
                           return CupertinoPicker(
                             // selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
                             //   background: nsgtheme.colorPrimary.withAlpha(50),
@@ -917,11 +1010,13 @@ class _NsgInputState extends State<NsgInput> {
                             ),
                             children: dynamicListWidgets(),
                           );
-                        }),
+                        },
                       ),
                     ),
-            );
-          });
+                  ),
+          );
+        },
+      );
     } else if (inputType == NsgInputType.reference) {
       selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       //Зенков 27.12.2022 Вызывается в form.selectFromArray
@@ -930,25 +1025,30 @@ class _NsgInputState extends State<NsgInput> {
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
         var form = NsgSelection(widgetType: widget.selectionWidgetType, inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
-        form.selectFromArray(widget.label, (item) {
-          widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
-          if (widget.onChanged != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
-          }
-          if (widget.onFocusChanged != null) {
-            widget.onFocusChanged!(false);
-          }
-          if (widget.onEditingComplete != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onEditingComplete!(widget.dataItem, widget.fieldName));
-          }
-          if (widget.controller != null) {
-            widget.controller!.sendNotify();
-          } else {
-            //Navigator.pop(context);
-            setState(() {});
-          }
-          return;
-        }, context: context, filter: filter);
+        form.selectFromArray(
+          widget.label,
+          (item) {
+            widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
+            if (widget.onChanged != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+            }
+            if (widget.onFocusChanged != null) {
+              widget.onFocusChanged!(false);
+            }
+            if (widget.onEditingComplete != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onEditingComplete!(widget.dataItem, widget.fieldName));
+            }
+            if (widget.controller != null) {
+              widget.controller!.sendNotify();
+            } else {
+              //Navigator.pop(context);
+              setState(() {});
+            }
+            return;
+          },
+          context: context,
+          filter: filter,
+        );
       } else {
         //Иначе - вызываем переданную форму для подбора
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
@@ -976,25 +1076,31 @@ class _NsgInputState extends State<NsgInput> {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
       var form = NsgSelection(
-          widgetType: widget.selectionWidgetType,
-          allValues: itemsArray,
-          selectedElement: enumItem,
-          rowWidget: widget.rowWidget,
-          inputType: NsgInputType.enumReference);
-      form.selectFromArray(widget.label, (item) {
-        widget.dataItem.setFieldValue(widget.fieldName, item);
-        if (widget.onChanged != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
-        }
-        if (widget.onFocusChanged != null) {
-          widget.onFocusChanged!(false);
-        }
-        if (widget.onEditingComplete != null) {
-          widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-        }
-        setState(() {});
-        return null;
-      }, context: context, filter: filter);
+        widgetType: widget.selectionWidgetType,
+        allValues: itemsArray,
+        selectedElement: enumItem,
+        rowWidget: widget.rowWidget,
+        inputType: NsgInputType.enumReference,
+      );
+      form.selectFromArray(
+        widget.label,
+        (item) {
+          widget.dataItem.setFieldValue(widget.fieldName, item);
+          if (widget.onChanged != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
+          }
+          if (widget.onFocusChanged != null) {
+            widget.onFocusChanged!(false);
+          }
+          if (widget.onEditingComplete != null) {
+            widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+          }
+          setState(() {});
+          return null;
+        },
+        context: context,
+        filter: filter,
+      );
     } else if (inputType == NsgInputType.referenceList) {
       var form = NsgMultiSelection(controller: selectionController!);
       form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
@@ -1019,7 +1125,9 @@ class _NsgInputState extends State<NsgInput> {
           ? NsgTimePicker(
               dateForTime: widget.dataItem[widget.fieldName],
               initialTime: Duration(
-                  hours: (widget.dataItem[widget.fieldName] ?? DateTime.now()).hour, minutes: (widget.dataItem[widget.fieldName] ?? DateTime.now()).minute),
+                hours: (widget.dataItem[widget.fieldName] ?? DateTime.now()).hour,
+                minutes: (widget.dataItem[widget.fieldName] ?? DateTime.now()).minute,
+              ),
               onClose: (Duration endDate) {},
             ).showPopup(context, widget.dataItem[widget.fieldName].hour, widget.dataItem[widget.fieldName].minute, (value) {
               widget.dataItem[widget.fieldName] = value;
@@ -1030,15 +1138,15 @@ class _NsgInputState extends State<NsgInput> {
               setState(() {});
             })
           : NsgDatePicker(
-                  firstDateTime: widget.firstDateTime,
-                  lastDateTime: widget.lastDateTime,
-                  // initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
-                  //         DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
-                  initialTime: (widget.dataItem[widget.fieldName] as DateTime).year < 1900
-                      ? widget.initialDateTime ?? NsgPeriod.beginOfDay(DateTime.now())
-                      : widget.dataItem[widget.fieldName],
-                  onClose: (value) {})
-              .showPopup(context, widget.dataItem[widget.fieldName], (value) {
+              firstDateTime: widget.firstDateTime,
+              lastDateTime: widget.lastDateTime,
+              // initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
+              //         DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
+              initialTime: (widget.dataItem[widget.fieldName] as DateTime).year < 1900
+                  ? widget.initialDateTime ?? NsgPeriod.beginOfDay(DateTime.now())
+                  : widget.dataItem[widget.fieldName],
+              onClose: (value) {},
+            ).showPopup(context, widget.dataItem[widget.fieldName], (value) {
               widget.dataItem[widget.fieldName] = value;
               if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
               if (widget.onEditingComplete != null) {
@@ -1052,27 +1160,29 @@ class _NsgInputState extends State<NsgInput> {
 
   Widget _buildBoolWidget(bool fieldValue) {
     var animKey = ValueKey(widget.fieldName);
-    Widget boolBox = widget.boolWidget ??
+    Widget boolBox =
+        widget.boolWidget ??
         StatefulBuilder(
           key: animKey,
-          builder: ((context, setState) => NsgSwitchHorizontal(
-                  style: widget.nsgSwitchHorizontalStyle,
-                  text: widget.label,
-                  isOn: fieldValue,
-                  onTap: () {
-                    fieldValue = !fieldValue;
-                    widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
-                    if (widget.onEditingComplete != null) {
-                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                    }
-                    if (widget.updateController != null) {
-                      widget.updateController!.update();
-                    } else {
-                      setState(() {});
-                    }
-                  },
-                  child: widget.child)
-
+          builder:
+              ((context, setState) => NsgSwitchHorizontal(
+                style: widget.nsgSwitchHorizontalStyle,
+                text: widget.label,
+                isOn: fieldValue,
+                onTap: () {
+                  fieldValue = !fieldValue;
+                  widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
+                  if (widget.onEditingComplete != null) {
+                    widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                  }
+                  if (widget.updateController != null) {
+                    widget.updateController!.update();
+                  } else {
+                    setState(() {});
+                  }
+                },
+                child: widget.child,
+              )
               //  CupertinoSwitch(
               //     trackColor: widget.trackColor ?? ControlOptions.instance.colorMainDarker,
               //     activeColor: widget.activeColor ?? ControlOptions.instance.colorMain,
@@ -1087,23 +1197,22 @@ class _NsgInputState extends State<NsgInput> {
               //         setState(() {});
               //       }
               //     })
-
               ),
         );
 
     return Container(
-        //key: widget.key ?? GlobalKey(),
-        margin: widget.margin ?? nsgtheme.nsgInputMargin,
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        decoration: BoxDecoration(
-          color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
-          //border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? nsgtheme.nsgInputBorderColor))
-        ),
-        child: boolBox
-        //  Row(
-        //   children: widget.boolBoxPosition == BoolBoxPosition.end ? [label, boolBox] : [boolBox, label],
-        // )
-        );
+      //key: widget.key ?? GlobalKey(),
+      margin: widget.margin ?? nsgtheme.nsgInputMargin,
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+      decoration: BoxDecoration(
+        color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
+        //border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? nsgtheme.nsgInputBorderColor))
+      ),
+      child: boolBox,
+      //  Row(
+      //   children: widget.boolBoxPosition == BoolBoxPosition.end ? [label, boolBox] : [boolBox, label],
+      // )
+    );
   }
 }
 
@@ -1127,19 +1236,16 @@ OutlineInputBorder focusedOutlineBorder = OutlineInputBorder(
 
 UnderlineInputBorder defaultUnderlineBorder({Color? color}) {
   return UnderlineInputBorder(
-      borderSide: BorderSide(
-        color: color ?? ControlOptions.instance.colorMain,
-      ),
-      borderRadius: BorderRadius.zero);
+    borderSide: BorderSide(color: color ?? ControlOptions.instance.colorMain),
+    borderRadius: BorderRadius.zero,
+  );
 }
 
 UnderlineInputBorder errorUnderlineBorder = UnderlineInputBorder(
-    borderSide: BorderSide(
-      color: ControlOptions.instance.colorError,
-    ),
-    borderRadius: BorderRadius.zero);
+  borderSide: BorderSide(color: ControlOptions.instance.colorError),
+  borderRadius: BorderRadius.zero,
+);
 UnderlineInputBorder focusedUnderlineBorder = UnderlineInputBorder(
-    borderSide: BorderSide(
-      color: ControlOptions.instance.colorMain,
-    ),
-    borderRadius: BorderRadius.zero);
+  borderSide: BorderSide(color: ControlOptions.instance.colorMain),
+  borderRadius: BorderRadius.zero,
+);

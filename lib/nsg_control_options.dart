@@ -65,27 +65,27 @@ extension MaterialColors on Color {
   Color get b95 => lighten(this, .45);
   Color get b100 => Colors.white;
 
-// C10: 0.0
-// C20: 0.07
-// C30: 0.15
-// C40: 0.3
-// C50: 0.5
-// C60: 0.7
-// C70: 0.85
-// C80: 0.9
-// C90: 0.95
-// C100: 1.0
+  // C10: 0.0
+  // C20: 0.07
+  // C30: 0.15
+  // C40: 0.3
+  // C50: 0.5
+  // C60: 0.7
+  // C70: 0.85
+  // C80: 0.9
+  // C90: 0.95
+  // C100: 1.0
 
-// C10: 0.04
-// C20: 0.06
-// C30: 0.08
-// C40: 0.12
-// C50: 0.5
-// C60: 0.7
-// C70: 0.85
-// C80: 0.9
-// C90: 0.95
-// C100: 0.98
+  // C10: 0.04
+  // C20: 0.06
+  // C30: 0.08
+  // C40: 0.12
+  // C50: 0.5
+  // C60: 0.7
+  // C70: 0.85
+  // C80: 0.9
+  // C90: 0.95
+  // C100: 0.98
 
   Color getMaterialColor(int index) {
     Map<int, Color> generate(Color base) {
@@ -99,9 +99,15 @@ extension MaterialColors on Color {
         40: ColorsCalc().tweak(base, 0.973, 0.7, 0.9, 0.97, lighter: lighter, darker: darker),
         50: ColorsCalc().tweak(base, 1, 1, 1, 1, lighter: lighter, darker: darker),
         60: ColorsCalc().tweak(base, 1, 0.97, 0.55, 0.97, lighter: lighter, darker: darker),
-        70: ColorsCalc().tweak(base, 1, 0.91, 0.1, 0.90, // blue 0.9
-            lighter: lighter,
-            darker: darker),
+        70: ColorsCalc().tweak(
+          base,
+          1,
+          0.91,
+          0.1,
+          0.90, // blue 0.9
+          lighter: lighter,
+          darker: darker,
+        ),
         80: ColorsCalc().tweak(base, 1, 0.97, 0.0, 0.7, lighter: lighter, darker: darker),
         90: ColorsCalc().tweak(base, 1, 0.95, 0.0, 0.4, lighter: lighter, darker: darker),
         100: Colors.white,
@@ -223,6 +229,7 @@ class ControlOptions {
   //NewColors
   ///////////////////////////////
   final Color colorPrimary;
+  final Color colorPrimaryText;
 
   final Color colorTertiary;
 
@@ -314,7 +321,7 @@ class ControlOptions {
     this.nsgButtonMargin = const EdgeInsets.all(5),
     this.borderRadius = 15.0,
     this.gradients = const {
-      'main': [Color.fromRGBO(233, 200, 45, 1), Color.fromARGB(255, 153, 128, 16)]
+      'main': [Color.fromRGBO(233, 200, 45, 1), Color.fromARGB(255, 153, 128, 16)],
     },
     //@Deprecated('Old variable. Use colorOverlay')
     this.colorModalBack = const Color.fromARGB(150, 0, 0, 0),
@@ -329,7 +336,7 @@ class ControlOptions {
     //@Deprecated('Old variable. Use colorBase[int]')
     this.colorInverted = const Color.fromRGBO(255, 255, 255, 1),
     this.colorMainOpacity = const Color.fromRGBO(242, 239, 253, 1),
-//    @Deprecated('Old variable. Use colorPrimary[int]')
+    //    @Deprecated('Old variable. Use colorPrimary[int]')
     this.colorMainDark = const Color.fromARGB(255, 192, 163, 34),
     this.tableHeaderColor = const Color.fromARGB(255, 192, 163, 34),
     this.tableCellBackColor = const Color.fromRGBO(255, 255, 255, 1),
@@ -361,6 +368,7 @@ class ControlOptions {
     this.colorGreyDark = const Color.fromARGB(255, 55, 55, 55),
     this.colorGreyDarker = const Color.fromARGB(255, 33, 33, 33),
     this.colorPrimary = const Color.fromRGBO(233, 200, 45, 1),
+    this.colorPrimaryText = const Color.fromARGB(255, 33, 33, 33),
     this.colorSecondary = const Color.fromRGBO(255, 255, 255, 1),
     this.colorTertiary = const Color.fromRGBO(255, 255, 255, 1),
     this.colorNeutral = const Color.fromRGBO(255, 255, 255, 1),
@@ -391,34 +399,35 @@ class ControlOptions {
     Color nsgInputColorFilled = Colors.transparent,
   }) {
     ControlOptions newinstance = ControlOptions(
-        colorMain: colorMain,
-        colorMainLight: lighten(colorMain),
-        colorMainLighter: lighten(lighten(lighten(colorMain))),
-        colorMainDark: darken(colorMain),
-        colorMainDarker: darken(darken(colorMain)),
-        colorMainBack: darken(darken(darken(colorMain))),
-        colorText: calculateTextColor(colorMain),
-        colorMainText: calculateTextColor(colorMain),
-        colorSecondary: colorSecondary,
-        colorSecondaryLight: lighten(colorSecondary),
-        colorSecondaryDark: darken(colorSecondary),
+      colorMain: colorMain,
+      colorMainLight: lighten(colorMain),
+      colorMainLighter: lighten(lighten(lighten(colorMain))),
+      colorMainDark: darken(colorMain),
+      colorMainDarker: darken(darken(colorMain)),
+      colorMainBack: darken(darken(darken(colorMain))),
+      colorText: calculateTextColor(colorMain),
+      colorMainText: calculateTextColor(colorMain),
+      colorSecondary: colorSecondary,
+      colorSecondaryLight: lighten(colorSecondary),
+      colorSecondaryDark: darken(colorSecondary),
 
-        ///
-        nsgInputMargin: nsgInputMargin,
-        nsgInputFilled: nsgInputFilled,
-        nsgInputHintAlwaysOnTop: nsgInputHintAlwaysOnTop,
-        nsgInputOutlineBorderType: nsgInputOutlineBorderType,
-        nsgInputContentPadding: nsgInputContentPadding,
-        nsgInputColorLabel: nsgInputColorLabel,
-        nsgInputColorFilled: nsgInputColorFilled,
+      ///
+      nsgInputMargin: nsgInputMargin,
+      nsgInputFilled: nsgInputFilled,
+      nsgInputHintAlwaysOnTop: nsgInputHintAlwaysOnTop,
+      nsgInputOutlineBorderType: nsgInputOutlineBorderType,
+      nsgInputContentPadding: nsgInputContentPadding,
+      nsgInputColorLabel: nsgInputColorLabel,
+      nsgInputColorFilled: nsgInputColorFilled,
 
-        ///
-        tableHeaderColor: darken(colorMain),
-        tableHeaderLinesColor: lighten(colorMain),
-        tableCellBackColor: darken(darken(darken(colorMain))),
-        borderRadius: borderRadius,
-        nsgButtonHeight: nsgButtonHeight,
-        nsgButtonMargin: nsgButtonMargin);
+      ///
+      tableHeaderColor: darken(colorMain),
+      tableHeaderLinesColor: lighten(colorMain),
+      tableCellBackColor: darken(darken(darken(colorMain))),
+      borderRadius: borderRadius,
+      nsgButtonHeight: nsgButtonHeight,
+      nsgButtonMargin: nsgButtonMargin,
+    );
 
     NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
     // Дефолтная функция с диалоговым окном при закрытии страницы на которой были сделаны изменения (например, в текстовой форме)
