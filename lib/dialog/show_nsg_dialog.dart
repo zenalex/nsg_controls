@@ -9,6 +9,7 @@ import '../nsg_grid.dart';
 Future<dynamic> showNsgDialog({
   required BuildContext context,
   bool showCancelButton = true,
+  bool showCloseButton = false,
   String? title,
   String? text,
   String? textConfirm,
@@ -43,11 +44,30 @@ Future<dynamic> showNsgDialog({
                       alignment: Alignment.center,
                       width: double.infinity,
                       decoration: BoxDecoration(color: titleBackColor ?? nsgtheme.colorMain),
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        title!,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: titleTextColor ?? nsgtheme.colorMainText, fontSize: nsgtheme.sizeL),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      constraints: BoxConstraints(minHeight: 50),
+                      child: Row(
+                        children: [
+                          if (showCloseButton) SizedBox(width: 50),
+                          Expanded(
+                            child: Text(
+                              title!,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: titleTextColor ?? nsgtheme.colorPrimaryText, fontSize: nsgtheme.sizeXL, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          if (showCloseButton)
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                              decoration: BoxDecoration(color: titleTextColor ?? nsgtheme.colorPrimaryText, borderRadius: BorderRadius.circular(10)),
+                              child: IconButton(
+                                icon: Icon(Icons.close, color: titleBackColor ?? nsgtheme.colorPrimary, size: 24), // set your color here
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                     Container(
