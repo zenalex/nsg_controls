@@ -47,7 +47,7 @@ class NsgListPage extends StatelessWidget {
   final Widget Function(NsgDataItem)? elementWidget;
 
   /// Контроллер, содержащий отображаемые данные
-  final NsgDataController controller;
+  final NsgDataUI controller;
 
   /// Реакция на нажатие на элемент. Если не задан, то будет вывана функция контроллера controller.itemPageOpen
   final void Function(NsgDataItem)? onElementTap;
@@ -90,46 +90,80 @@ class NsgListPage extends StatelessWidget {
   final Widget? widgetBottom;
 
   final bool showLastAndFavourites;
-  const NsgListPage({
-    Key? key,
-    this.contentPadding = EdgeInsets.zero,
-    this.userSettingsController,
-    this.userSettingsId = '',
-    this.widgetBottom,
-    this.showLastAndFavourites = false,
-    required this.controller,
-    required this.title,
-    this.subtitle,
-    this.showCount,
-    required this.textNoItems,
-    this.elementWidget,
-    required this.elementEditPage,
-    this.columns,
-    this.type = NsgListPageMode.list,
-    this.gridCellMinWidth = 160,
-    this.gridXSpacing = 10.0,
-    this.gridYSpacing = 10.0,
-    this.appBar,
-    this.appBarColor,
-    this.appBarBackColor,
-    this.appBarIcon = Icons.arrow_back_ios_new,
-    this.appBarIcon2 = Icons.add,
-    this.appBarIcon3,
-    this.getNotificationCount,
-    this.appBarOnPressed,
-    this.appBarOnPressed2,
-    this.appBarOnPressed3,
-    this.onElementTap,
-    this.notificationController,
-    this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
-    this.availableButtons,
-  }) : super(key: key);
+  const NsgListPage(
+      {Key? key,
+      this.contentPadding = EdgeInsets.zero,
+      this.userSettingsController,
+      this.userSettingsId = '',
+      this.widgetBottom,
+      this.showLastAndFavourites = false,
+      required this.controller,
+      required this.title,
+      this.subtitle,
+      this.showCount,
+      required this.textNoItems,
+      this.elementWidget,
+      required this.elementEditPage,
+      this.columns,
+      this.type = NsgListPageMode.list,
+      this.gridCellMinWidth = 160,
+      this.gridXSpacing = 10.0,
+      this.gridYSpacing = 10.0,
+      this.appBar,
+      this.appBarColor,
+      this.appBarBackColor,
+      this.appBarIcon = Icons.arrow_back_ios_new,
+      this.appBarIcon2 = Icons.add,
+      this.appBarIcon3,
+      this.getNotificationCount,
+      this.appBarOnPressed,
+      this.appBarOnPressed2,
+      this.appBarOnPressed3,
+      this.onElementTap,
+      this.notificationController,
+      this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
+      this.availableButtons})
+      : super(key: key);
+
+    const NsgListPage.list({
+      super.key,
+      this.contentPadding = EdgeInsets.zero,
+      this.userSettingsController,
+      this.userSettingsId = '',
+      this.widgetBottom,
+      this.showLastAndFavourites = false,
+      required this.controller,
+      required this.title,
+      this.subtitle,
+      this.showCount,
+      required this.textNoItems,
+      required this.elementWidget,
+      required this.elementEditPage,
+      this.columns,
+      this.gridCellMinWidth = 160,
+      this.gridXSpacing = 10.0,
+      this.gridYSpacing = 10.0,
+      this.appBar,
+      this.appBarColor,
+      this.appBarBackColor,
+      this.appBarIcon = Icons.arrow_back_ios_new,
+      this.appBarIcon2 = Icons.add,
+      this.appBarIcon3,
+      this.getNotificationCount,
+      this.appBarOnPressed,
+      this.appBarOnPressed2,
+      this.appBarOnPressed3,
+      this.onElementTap,
+      this.notificationController,
+      this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
+      this.availableButtons})
+      : type = NsgListPageMode.list;
 
   @override
   Widget build(BuildContext context) {
-    if (controller.lateInit) {
-      controller.requestItems();
-    }
+    // if (controller.lateInit) {
+    //   controller.requestItems();
+    // }
 
     return BodyWrap(
       child: Scaffold(
@@ -165,15 +199,11 @@ class NsgListPage extends StatelessWidget {
                 child: Column(
                   children: [                  
                     Expanded(
-                      child: controller.obx(
-                        (state) => Container(
-                          key: GlobalKey(),
-                          padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
-                          child: _wrapTabs(child: _content()),
-                        ),
-                        onLoading: const NsgProgressBar(),
-                        onError: (text) => NsgErrorPage(text: text),
-                      ),
+                      child: type == NsgListPageMode.list ? controller.getListWidget(elementWidget!, autoRequest: true) :
+                      controller.obx(
+                          (state) => Container(key: GlobalKey(), padding: const EdgeInsets.fromLTRB(0, 2, 0, 0), child: _wrapTabs(child: _content())),
+                          onLoading: const NsgProgressBar(),
+                          onError: (text) => NsgErrorPage(text: text)),
                     ),
                     if (widgetBottom != null) widgetBottom!,
                   ],
