@@ -72,7 +72,8 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
         filter.sorting = sort.toString();
       }
 
-      refreshData(filter: filter);
+      loadNext(filter: filter);
+      //refreshData(filter: filter);
     }
     return obx((state) {
       DataGroupList dataGroups;
