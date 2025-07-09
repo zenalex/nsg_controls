@@ -45,7 +45,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
     bool autoRequest = false,
     Widget? onEmptyList,
     String? grFieldName,
-    NsgSorting? sorting,
+    List<NsgSortingParam>? sorting,
     NsgSortingDirection? sortDirection,
     Widget? Function(dynamic value)? dividerBuilder,
     PartOfDate partOfDate = PartOfDate.day,
@@ -61,7 +61,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
       }
 
       if (sorting != null) {
-        for (var sortParam in sorting.paramList) {
+        for (var sortParam in sorting) {
           sort.paramList.add(sortParam);
         }
       }
