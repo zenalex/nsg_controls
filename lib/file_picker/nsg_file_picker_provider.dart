@@ -332,6 +332,7 @@ class NsgFilePickerProvider {
               fileType: fileType,
               fileContent: await element.readAsBytes(),
               filePath: element.path,
+              eSourceType: ESourceType.gallery,
             ),
           );
         } else if (fileType != NsgFilePickerObjectType.unknown) {
@@ -534,6 +535,7 @@ class NsgFilePickerProvider {
             fileType: fileType,
             fileContent: await element.readAsBytes(),
             filePath: element.path,
+            eSourceType: ESourceType.camera,
           ),
         );
       } else if (fileType != NsgFilePickerObjectType.unknown) {
