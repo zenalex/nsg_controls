@@ -46,7 +46,6 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
     PartOfDate partOfDate = PartOfDate.day,
     Key? key,
   }) => obx((state) {
-    String? grFieldName = null;
     DataGroupList dataGroups;
     if (grFieldName != null) {
       dataGroups = DataGroupList(_getGroupsByFieldName(grFieldName!, partOfDate), needDivider: true);
