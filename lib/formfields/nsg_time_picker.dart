@@ -36,12 +36,16 @@ class NsgTimePicker extends StatefulWidget {
   /// Убирает отступы сверху и снизу, убирает текст валидации
   final bool simple;
   final Function(Duration endDate) onClose;
+  final bool Function(Duration pickedTime)? validator;
+  final Function(Duration endDate)? onValidTime;
 
   const NsgTimePicker({
     Key? key,
     required this.initialTime,
     // this.textFormFieldType = TextFormFieldType.underlineInputBorder,
     required this.onClose,
+    this.validator,
+    this.onValidTime,
     this.label = '',
     this.textAlign = TextAlign.center,
     this.disabled = false,
@@ -111,17 +115,19 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
         return InkWell(
           onTap: widget.disabled != true
               ? () {
-                  NsgTimePicker(
-                    initialTime: _initialTime,
-                    onClose: (value) {
-                      _initialTime = value;
-                      setState(() {});
-                    },
-                  ).showPopup(context, hours, minutes, (endDate) {
+                  widget.showPopup(context, hours, minutes, (endDate) {
                     DateTime date = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
                     Duration duration = endDate.difference(date);
-                    widget.onClose(duration);
+                    if (widget.validator != null) {
+                      if (widget.validator!(duration)) {
+                        _initialTime = duration;
+                        if (widget.onValidTime != null) widget.onValidTime!(duration);
+                        setState(() {});
+                      }
+                      return;
+                    }
                     _initialTime = duration;
+                    widget.onClose(duration);
                     setState(() {});
                   });
                 }
@@ -223,8 +229,13 @@ class _TimePickerContentState extends State<TimePickerContent> {
     DateTime? initialTimeNew;
     var splitedTime = _initialTime.split(':');
     if (splitedTime.length > 1) {
-      var hour = int.tryParse(splitedTime[0]) ?? 0;
-      var minutes = int.tryParse(splitedTime[1]) ?? 0;
+      var hour = (int.tryParse(splitedTime[0]) ?? 0) % 24;
+      var minutes = (int.tryParse(splitedTime[1]) ?? 0) % 60;
+      var parsedTime = '$hour:$minutes';
+      if (textController.text != parsedTime) {
+        textController.text = parsedTime; 
+        textController.selection = TextSelection.collapsed(offset: parsedTime.length - 1);
+      }
       var now = widget.dateForTime ?? DateTime.now();
       initialTimeNew = DateTime(now.year, now.month, now.day, hour, minutes);
     }
