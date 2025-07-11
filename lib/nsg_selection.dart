@@ -17,7 +17,7 @@ class NsgSelection {
   //Контроллер для обновления данных, в случае отсутствия контроллера данных
   //В принципе, можно заменить на StatefullBuilder
   _SelectionController? selectionController;
-  Widget Function(NsgDataItem)? rowWidget;
+  Widget Function(NsgDataItem, bool)? rowWidget;
   Color? textColor;
   Color? colorInverted;
   NsgInputSelectionWidgetType widgetType;
@@ -92,13 +92,13 @@ class NsgSelection {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
       height: 50,
-      child: Center(child: _showRowWidget(element)),
+      child: Center(child: _showRowWidget(element, element == selectedElement)),
     );
   }
 
-  Widget _showRowWidget(NsgDataItem element) {
+  Widget _showRowWidget(NsgDataItem element, bool selected) {
     if (rowWidget != null) {
-      return rowWidget!(element);
+      return rowWidget!(element, selected);
     } else {
       return Text(
         element.toString(),

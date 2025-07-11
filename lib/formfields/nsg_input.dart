@@ -86,7 +86,7 @@ class NsgInput extends StatefulWidget {
   final NsgDataController? updateController;
 
   /// Функция прорисовки строки
-  final Widget Function(NsgDataItem)? rowWidget;
+  final Widget Function(NsgDataItem, bool)? rowWidget;
 
   /// Тип поля ввода. Если тип не задан (NsgInputType.autoselect), он будет выбран автоматически,
   /// исходя из типа данных поля объекта

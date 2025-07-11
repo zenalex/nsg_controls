@@ -140,7 +140,7 @@ class NsgFilePickerProvider {
             objectsList.add(
               NsgFilePickerObject(
                 isNew: true,
-                image: Image.memory(fileBytes!),
+                image: Image.memory(fileBytes),
                 fileContent: fileBytes,
                 description: basenameWithoutExtension(fileName),
                 fileType: fileType,
