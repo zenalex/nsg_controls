@@ -161,9 +161,10 @@ class NsgListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // if (controller.lateInit) {
-    //   controller.requestItems();
-    // }
+    //Раскомментировал, так как не работает в приложении техников, добавление номенклатуры
+    if (controller.lateInit) {
+      controller.requestItems();
+    }
 
     return BodyWrap(
       child: Scaffold(
