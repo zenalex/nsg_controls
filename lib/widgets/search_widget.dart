@@ -46,6 +46,12 @@ class SearchWidget extends StatefulWidget {
     hintText: tran.search,
     hintStyle: TextStyle(color: ControlOptions.instance.colorTertiary, fontWeight: FontWeight.w500),
   );
+
+  ///Для перекрытия в каждом проекте
+  TextAlignVertical get textAlignVertical => TextAlignVertical.bottom;
+
+  ///Для перекрытия в каждом проекте
+  TextStyle get textStyle => TextStyle(color: ControlOptions.instance.colorBase.c100);
 }
 
 class SearchWidgetState extends State<SearchWidget> {
@@ -75,8 +81,8 @@ class SearchWidgetState extends State<SearchWidget> {
           cursorColor: Theme.of(context).primaryColor,
           controller: textEditController,
           decoration: widget.decoration(this),
-          textAlignVertical: TextAlignVertical.bottom,
-          style: TextStyle(color: ControlOptions.instance.colorBase.c100),
+          textAlignVertical: widget.textAlignVertical,
+          style: widget.textStyle,
           onChanged: (val) {
             widget.controller.top = 0;
             widget.controller.controllerFilter.searchString = textEditController.text;
