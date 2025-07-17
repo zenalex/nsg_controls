@@ -57,7 +57,7 @@ class _NsgFilterChipsRowState extends State<NsgFilterChipsRow> {
                   padding: EdgeInsets.zero,
                 ),
               ),
-            const Padding(padding: EdgeInsets.only(left: 50)),
+            if (widget.listSelectedFilters.where((element) => element == true).length > 1) const Padding(padding: EdgeInsets.only(left: 50)),
           ],
         ),
       ),
