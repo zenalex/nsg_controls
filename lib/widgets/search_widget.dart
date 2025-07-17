@@ -71,32 +71,27 @@ class SearchWidgetState extends State<SearchWidget> {
       padding: widget.padding ?? EdgeInsets.all(0),
       child: SizedBox(
         height: 44,
-        child: ListenableBuilder(
-          listenable: textEditController,
-          builder: (context, w) {
-            return TextField(
-              cursorColor: Theme.of(context).primaryColor,
-              controller: textEditController,
-              decoration: widget.decoration(this),
-              textAlignVertical: TextAlignVertical.bottom,
-              style: TextStyle(color: ControlOptions.instance.colorBase.c100),
-              onChanged: (val) {
-                widget.controller.top = 0;
-                widget.controller.controllerFilter.searchString = textEditController.text;
-                var filter = widget.controller.getRequestFilter;
-                if (textEditController.text.isNotEmpty) {
-                  var params = <String, dynamic>{};
-                  params.addAll({'globalSearch': true});
-                  filter.params?.addAll(params);
+        child: TextField(
+          cursorColor: Theme.of(context).primaryColor,
+          controller: textEditController,
+          decoration: widget.decoration(this),
+          textAlignVertical: TextAlignVertical.bottom,
+          style: TextStyle(color: ControlOptions.instance.colorBase.c100),
+          onChanged: (val) {
+            widget.controller.top = 0;
+            widget.controller.controllerFilter.searchString = textEditController.text;
+            var filter = widget.controller.getRequestFilter;
+            if (textEditController.text.isNotEmpty) {
+              var params = <String, dynamic>{};
+              params.addAll({'globalSearch': true});
+              filter.params?.addAll(params);
 
-                  filter.params ??= params;
-                } else {
-                  filter = widget.controller.getRequestFilter;
-                }
-                widget.controller.controllerFilter.refreshControllerWithDelay(filter: filter);
-                widget.controller.sendNotify();
-              },
-            );
+              filter.params ??= params;
+            } else {
+              filter = widget.controller.getRequestFilter;
+            }
+            widget.controller.controllerFilter.refreshControllerWithDelay(filter: filter);
+            widget.controller.sendNotify();
           },
         ),
       ),
