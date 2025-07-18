@@ -85,8 +85,10 @@ class NsgFilePickerProvider {
   });
 
   Future<List<NsgFilePickerObject>> autoSelectPicker({bool oneFile = false, ESourceType eSourceType = ESourceType.auto, BuildContext? mainContext}) async {
+    /* ------------------------------------------------------------------- Если Веб ------------------------------------------------------------------- */
     if (kIsWeb) {
       return galleryImage(oneFile: oneFile);
+      /* ------------------------------------------------------------ Если Windows или MacOs ------------------------------------------------------------ */
     } else if (GetPlatform.isWindows || GetPlatform.isMacOS) {
       return pickFile(oneFile: oneFile);
     } else {
