@@ -57,7 +57,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
       //TODO: УДАЛЕНИЕ ФАЙЛОВ!!!!!
       var itemsToDelete = table.rows.where((se) => !ids.contains(se.id)).toList();
       for (var row in itemsToDelete) {
-        if (row.newTableLogic) {
+        if (row.remoteProvider.newTableLogic) {
           row.docState = NsgDataItemDocState.deleted;
         } else {
           table.rows.remove(row);
