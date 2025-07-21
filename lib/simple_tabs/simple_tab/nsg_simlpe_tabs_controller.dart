@@ -1,10 +1,19 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nsg_controls/simple_tabs/simple_tab/nsg_simple_tabs_tab.dart';
 
 class NsgSimpleTabsController extends ChangeNotifier {
-  NsgSimpleTabsController({int? initTab, required this.tabs}) {
+  ///Создание контроллера табов.
+  ///Если заполнено поле `initTabName` попытается найти нужный таб по имени и выставить при первоначальной загрузке виджета.
+  ///Если `initTabName == null` или такого таба нет, выставит таб с индексом `initTab`. Если `initTab == null` - выставит индекс `0`.
+  ///Если `initTab > tabs.length` - выставит индекс `tabs.length`.
+  NsgSimpleTabsController({int? initTab, String? initTabName, required this.tabs}) {
+    if (initTabName != null) {
+      _currentTab = tabs.firstWhereOrNull((i) => i.name == initTabName);
+      if (_currentTab != null) return;
+    }
     _currentTab = tabs[min(tabs.length, initTab ?? 0)];
   }
   NsgSimpleTabsTab? _currentTab;
