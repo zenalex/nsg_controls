@@ -229,15 +229,16 @@ class _TimePickerContentState extends State<TimePickerContent> {
     DateTime? initialTimeNew;
     var splitedTime = _initialTime.split(':');
     if (splitedTime.length > 1) {
-      var hour = (int.tryParse(splitedTime[0]) ?? 0) % 24;
+      var hours = (int.tryParse(splitedTime[0]) ?? 0) % 24;
       var minutes = (int.tryParse(splitedTime[1]) ?? 0) % 60;
-      var parsedTime = '$hour:$minutes';
+      var minutesString = minutes.toString().padLeft(2, '0');
+      var parsedTime = '$hours:$minutesString';
       if (textController.text != parsedTime) {
         textController.text = parsedTime; 
         textController.selection = TextSelection.collapsed(offset: parsedTime.length - 1);
       }
       var now = widget.dateForTime ?? DateTime.now();
-      initialTimeNew = DateTime(now.year, now.month, now.day, hour, minutes);
+      initialTimeNew = DateTime(now.year, now.month, now.day, hours, minutes);
     }
     if (initialTimeNew != null) {
       _initialTime2 = initialTimeNew;
