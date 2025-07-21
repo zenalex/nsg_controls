@@ -21,5 +21,22 @@ class NsgSimpleTabsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  ///Builder для отрисовки контента. Автоматически обновляет контент при смене таба. Возможна реализация сложной логики
+  Widget contentBuilder(Widget? Function(NsgSimpleTabsTab currentTab, BuildContext context, Widget? widget) builder) {
+    return ListenableBuilder(
+      listenable: this,
+      builder: (c, w) {
+        if (currentTab == null) {
+          return SizedBox();
+        } else {
+          return builder(currentTab!, c, w) ?? SizedBox();
+        }
+      },
+    );
+  }
+
+  ///Отрисовка контента для таба из поля `pageContent` самого таба. Автоматически обновляет контент при смене таба.
+  Widget getTabContent() => contentBuilder((tab, c, w) => (currentTab ?? NsgSimpleTabsTab(name: "")).pageContent);
+
   final List<NsgSimpleTabsTab> tabs;
 }

@@ -4,10 +4,11 @@ import 'package:nsg_controls/simple_tabs/simple_tab/nsg_simlpe_tabs_controller.d
 
 class NsgSimpleTabsTab {
   final String name;
+  final Widget? pageContent;
   final Widget? child;
   final Widget? childHover;
   final Function(NsgSimpleTabsTab tab)? onTap;
-  const NsgSimpleTabsTab({required this.name, this.child, this.childHover, this.onTap});
+  const NsgSimpleTabsTab({required this.name, this.child, this.childHover, this.onTap, this.pageContent});
 
   void onTabTap(NsgSimpleTabsController controller) {
     controller.currentTab = this;
