@@ -6,7 +6,7 @@ import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:nsg_controls/nsg_popup.dart';
 
 class NsgDialogSaveOrCancel {
-  static Future<bool?> saveOrCancel({BuildContext? context}) async {
+  static Future<bool?> saveOrCancel(BuildContext? context) async {
     bool? value;
     await Get.dialog(
       NsgPopUp(

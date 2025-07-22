@@ -380,6 +380,7 @@ class ControlOptions {
 
     // Дефолтная функция с диалоговым окном при закрытии страницы на которой были сделаны изменения (например, в текстовой форме)
     NsgBaseController.saveOrCancelDefaultDialog = NsgDialogSaveOrCancel.saveOrCancel;
+    NsgBaseController.showErrorByString = NsgErrorWidget.showErrorByString;
   }
 
   static ControlOptions instance = ControlOptions();
