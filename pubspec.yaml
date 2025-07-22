@@ -5,6 +5,7 @@ homepage: https://github.com/zenalex/nsg_controls.git
 repository: https://github.com/zenalex/nsg_controls.git
 issue_tracker: https://github.com/zenalex/nsg_controls/issues
 documentation: https://github.com/zenalex/nsg_controls#readme
+publish_to: 'none'
 
 environment:
   sdk: ">=3.8.1 <4.0.0"
@@ -18,9 +19,9 @@ dependencies:
   intl: ^0.20.2
   get: ^5.0.0-release-candidate-9.2.1
 
-  nsg_data: ^1.0.0
-  # nsg_data: #^0.2.0
-  #   path: ../nsg_data
+  # nsg_data: ^1.0.0
+  nsg_data: #^0.2.0
+    path: ../nsg_data
   flutter_fadein: ^2.0.0
   pull_to_refresh_flutter3: ^2.0.2
   # pull_to_refresh: #^2.0.0
