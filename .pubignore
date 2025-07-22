@@ -1,0 +1,43 @@
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Flutter/Dart generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+*.lock
+
+# Temporary files
+*.tmp
+*.temp
+
+# Logs
+*.log
+
+# Coverage reports
+coverage/
+
+# Test files (if not needed in published package)
+test/
+
+# Documentation drafts
+docs/drafts/
+
+# Development scripts
+scripts/
+tools/
+
+# Local configuration
+.env
+.env.local
+
+# Backup files
+*.bak
+*.backup 
