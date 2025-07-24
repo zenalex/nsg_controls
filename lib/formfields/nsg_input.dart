@@ -187,12 +187,6 @@ class NsgInput extends StatefulWidget {
   ///Режим автозамены. Вкл/Выкл
   final bool autocorrect;
 
-  final BoxDecoration? textFormFieldBoxDecoration;
-  final EdgeInsets? textFormFieldMargin;
-  final EdgeInsets? textFormFieldPadding;
-  final double? closeIconSize;
-  final Color? closeIconColor;
-
   const NsgInput({
     super.key,
     this.countryCodes,
@@ -263,11 +257,6 @@ class NsgInput extends StatefulWidget {
     this.getRequestFilter,
     this.textCapitalization = TextCapitalization.none,
     this.autocorrect = true,
-    this.textFormFieldBoxDecoration,
-    this.textFormFieldMargin,
-    this.textFormFieldPadding,
-    this.closeIconSize,
-    this.closeIconColor,
   });
 
   @override
@@ -518,7 +507,7 @@ class _NsgInputState extends State<NsgInput> {
             children: [
               if (widget.showLabel ?? nsgtheme.nsgInputShowLabel)
                 Padding(
-                  padding: widget.textFormFieldPadding != null ? EdgeInsets.only(left: widget.textFormFieldPadding!.left) : const EdgeInsets.only(bottom: 2),
+                  padding: const EdgeInsets.only(bottom: 2),
                   child: Text(
                     focus.hasFocus || textController.text != '' || nsgtheme.nsgInputHintAlwaysOnTop == true
                         ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
@@ -536,138 +525,133 @@ class _NsgInputState extends State<NsgInput> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Container(
-                        margin: widget.textFormFieldMargin,
-                        padding: widget.textFormFieldPadding,
-                        decoration: widget.textFormFieldBoxDecoration,
-                        child: inputType == NsgInputType.phoneCode
-                            ? CountryDropdown(
-                                initialCountryData: widget.countryCodeInitial == null
-                                    ? null
-                                    : PhoneCodes.getPhoneCountryDataByCountryCode(widget.countryCodeInitial!),
-                                filter: getPhoneCountryDataByCountryCodes(),
-                                printCountryName: true,
-                                onCountrySelected: (PhoneCountryData countryData) {
-                                  textController.text = countryData.countryCode.toString();
-                                  widget.dataItem.setFieldValue(widget.fieldName, countryData.countryCode.toString());
-                                  if (widget.onChanged != null) {
-                                    widget.onChanged!(widget.dataItem);
-                                  }
+                      inputType == NsgInputType.phoneCode
+                          ? CountryDropdown(
+                              initialCountryData: widget.countryCodeInitial == null
+                                  ? null
+                                  : PhoneCodes.getPhoneCountryDataByCountryCode(widget.countryCodeInitial!),
+                              filter: getPhoneCountryDataByCountryCodes(),
+                              printCountryName: true,
+                              onCountrySelected: (PhoneCountryData countryData) {
+                                textController.text = countryData.countryCode.toString();
+                                widget.dataItem.setFieldValue(widget.fieldName, countryData.countryCode.toString());
+                                if (widget.onChanged != null) {
+                                  widget.onChanged!(widget.dataItem);
+                                }
+                                if (widget.onEditingComplete != null) {
+                                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                                }
+                                setState(() {});
+                              },
+                              dropdownColor: nsgtheme.colorModalBack,
+                              decoration: InputDecoration(
+                                suffixIcon: widget.suffixIcon,
+                                floatingLabelBehavior: widget.floatingLabelBehavior,
+                                contentPadding: getContentPaddingPhoneCode(),
+                                isDense: widget.isDense ?? true,
+                                filled: widget.filled ?? nsgtheme.nsgInputFilled,
+                                fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
+                                border: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                                enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                              ),
+                              style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
+                            )
+                          : TextFormField(
+                              textCapitalization: widget.textCapitalization,
+                              autocorrect: widget.autocorrect,
+                              controller: textController,
+                              inputFormatters: widget.maskType == NsgInputMaskType.phone
+                                  ? [phoneFormatter]
+                                  : widget.mask != null
+                                  ? [MaskTextInputFormatter(initialText: fieldValue.toString(), mask: widget.mask)]
+                                  : null,
+                              maxLength: maxLength,
+                              autofocus: widget.autofocus,
+                              focusNode: focus,
+                              maxLines: widget.maxLines,
+                              minLines: widget.minLines,
+                              textInputAction: keyboard == TextInputType.multiline ? TextInputAction.newline : TextInputAction.next,
+                              keyboardType: keyboard,
+                              cursorColor: ControlOptions.instance.colorText,
+                              decoration: InputDecoration(
+                                suffixIcon: widget.suffixIcon,
+                                floatingLabelBehavior: widget.floatingLabelBehavior,
+                                //label: widget.labelWidget,
+                                prefix: prefix(),
+                                counterText: "",
+                                contentPadding: getContentPadding(),
+                                isDense: widget.isDense ?? true,
+                                filled: widget.filled ?? nsgtheme.nsgInputFilled,
+                                fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
+                                border: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                                enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                    ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                    : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                              ),
+                              onFieldSubmitted: (s) {
+                                if (widget.onFieldSubmitted != null) {
+                                  widget.onFieldSubmitted!(widget.dataItem, widget.fieldName);
+                                }
+                              },
+
+                              // onFieldSubmitted: (value) {
+                              //   print("AAA");
+                              // },
+                              // onFieldSubmitted: (string) {
+                              //   if (widget.onEditingComplete != null) {
+                              //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                              //   }
+                              // },
+                              onEditingComplete: () {
+                                if (keyboard != TextInputType.multiline) {
                                   if (widget.onEditingComplete != null) {
                                     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                                   }
-                                  setState(() {});
-                                },
-                                dropdownColor: nsgtheme.colorModalBack,
-                                decoration: InputDecoration(
-                                  suffixIcon: widget.suffixIcon,
-                                  floatingLabelBehavior: widget.floatingLabelBehavior,
-                                  contentPadding: getContentPaddingPhoneCode(),
-                                  isDense: widget.isDense ?? true,
-                                  filled: widget.filled ?? nsgtheme.nsgInputFilled,
-                                  fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
-                                  border: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                      ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
-                                      : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                  focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
-                                  enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                      ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
-                                      : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                  errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
-                                  disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                      ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
-                                      : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                  focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
-                                ),
-                                style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
-                              )
-                            : TextFormField(
-                                textCapitalization: widget.textCapitalization,
-                                autocorrect: widget.autocorrect,
-                                controller: textController,
-                                inputFormatters: widget.maskType == NsgInputMaskType.phone
-                                    ? [phoneFormatter]
-                                    : widget.mask != null
-                                    ? [MaskTextInputFormatter(initialText: fieldValue.toString(), mask: widget.mask)]
-                                    : null,
-                                maxLength: maxLength,
-                                autofocus: widget.autofocus,
-                                focusNode: focus,
-                                maxLines: widget.maxLines,
-                                minLines: widget.minLines,
-                                textInputAction: keyboard == TextInputType.multiline ? TextInputAction.newline : TextInputAction.next,
-                                keyboardType: keyboard,
-                                cursorColor: ControlOptions.instance.colorText,
-                                decoration: InputDecoration(
-                                  suffixIcon: widget.suffixIcon,
-                                  floatingLabelBehavior: widget.floatingLabelBehavior,
-                                  //label: widget.labelWidget,
-                                  prefix: prefix(),
-                                  counterText: "",
-                                  contentPadding: getContentPadding(),
-                                  isDense: widget.isDense ?? true,
-                                  filled: widget.filled ?? nsgtheme.nsgInputFilled,
-                                  fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
-                                  border: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                      ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
-                                      : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                  focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
-                                  enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                      ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
-                                      : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                  errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
-                                  disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                      ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
-                                      : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                  focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
-                                ),
-                                onFieldSubmitted: (s) {
-                                  if (widget.onFieldSubmitted != null) {
-                                    widget.onFieldSubmitted!(widget.dataItem, widget.fieldName);
-                                  }
-                                },
-                        
-                                // onFieldSubmitted: (value) {
-                                //   print("AAA");
-                                // },
-                                // onFieldSubmitted: (string) {
-                                //   if (widget.onEditingComplete != null) {
-                                //     widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                                //   }
-                                // },
-                                onEditingComplete: () {
-                                  if (keyboard != TextInputType.multiline) {
-                                    if (widget.onEditingComplete != null) {
-                                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+
+                                  Future.delayed(const Duration(milliseconds: 10), () {
+                                    if (context.mounted) {
+                                      FocusScope.of(context).unfocus();
                                     }
-                        
-                                    Future.delayed(const Duration(milliseconds: 10), () {
-                                      if (context.mounted) {
-                                        FocusScope.of(context).unfocus();
-                                      }
-                                    });
-                                  }
-                                  focus.unfocus();
-                                  if (widget.onFocusChanged != null) {
-                                    widget.onFocusChanged!(false);
-                                  }
-                                },
-                                onChanged: (value) {
-                                  if (widget.onChanged != null) {
-                                    widget.onChanged!(widget.dataItem);
-                                  }
-                                },
-                                textAlign: widget.textAlign,
-                                style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
-                                readOnly: _disabled,
-                              ),
-                      ),
+                                  });
+                                }
+                                focus.unfocus();
+                                if (widget.onFocusChanged != null) {
+                                  widget.onFocusChanged!(false);
+                                }
+                              },
+                              onChanged: (value) {
+                                if (widget.onChanged != null) {
+                                  widget.onChanged!(widget.dataItem);
+                                }
+                              },
+                              textAlign: widget.textAlign,
+                              style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
+                              readOnly: _disabled,
+                            ),
                       if (!nsgtheme.nsgInputHintHidden && (!focus.hasFocus && textController.text == ''))
                         IgnorePointer(
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
-                              padding:  widget.textFormFieldPadding != null ? EdgeInsets.only(left: widget.textFormFieldPadding!.left) : getHintPadding(),
+                              padding: getHintPadding(),
                               child: widget.hint != null
                                   ? Text(
                                       widget.hint!,
@@ -851,13 +835,13 @@ class _NsgInputState extends State<NsgInput> {
               },
               child: HoverWidget(
                 hoverChild: Padding(
-                  padding: const EdgeInsets.all(5.0) + (widget.textFormFieldPadding != null ? EdgeInsets.only(right: widget.textFormFieldPadding!.left) : EdgeInsets.zero),
-                  child: Icon(Icons.close_outlined, color: widget.closeIconColor ?? nsgtheme.nsginputCloseIconColor, size: widget.closeIconSize ?? 16),
+                  padding: const EdgeInsets.all(5.0),
+                  child: Icon(Icons.close_outlined, color: nsgtheme.nsginputCloseIconColor, size: 16),
                 ),
                 onHover: (PointerEnterEvent event) {},
                 child: Padding(
-                  padding: const EdgeInsets.all(5.0) + (widget.textFormFieldPadding != null ? EdgeInsets.only(right: widget.textFormFieldPadding!.left) : EdgeInsets.zero),
-                  child: Icon(Icons.close_outlined, color: widget.closeIconColor ?? nsgtheme.nsginputCloseIconColorHover, size: widget.closeIconSize ?? 16),
+                  padding: const EdgeInsets.all(5.0),
+                  child: Icon(Icons.close_outlined, color: nsgtheme.nsginputCloseIconColorHover, size: 16),
                 ),
               ),
             ),
