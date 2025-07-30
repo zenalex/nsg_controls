@@ -114,10 +114,10 @@ Future<dynamic> showNsgDialog({
                                 NsgButton(
                                   onPressed: () {
                                     if (onConfirm != null) {
-                                      onConfirm();
                                       if (goBack) {
                                         Navigator.of(context).pop();
                                       }
+                                      onConfirm();
                                     } else {
                                       Navigator.of(context).pop();
                                     }
