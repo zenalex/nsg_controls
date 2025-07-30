@@ -20,6 +20,7 @@ Future<dynamic> showNsgDialog({
   List<Widget>? buttons,
   VoidCallback? onConfirm,
   VoidCallback? onCancel,
+  bool goBack = true,
 }) {
   return showDialog(
     context: context,
@@ -97,7 +98,9 @@ Future<dynamic> showNsgDialog({
                                     onPressed: () {
                                       if (onCancel != null) {
                                         onCancel();
-                                        Navigator.of(context).pop();
+                                        if (goBack) {
+                                          Navigator.of(context).pop();
+                                        }
                                       } else {
                                         Navigator.of(context).pop();
                                       }
@@ -110,8 +113,14 @@ Future<dynamic> showNsgDialog({
                                   ),
                                 NsgButton(
                                   onPressed: () {
-                                    Navigator.of(context).pop();
-                                    if (onConfirm != null) onConfirm();
+                                    if (onConfirm != null) {
+                                      onConfirm();
+                                      if (goBack) {
+                                        Navigator.of(context).pop();
+                                      }
+                                    } else {
+                                      Navigator.of(context).pop();
+                                    }
                                   },
                                   width: 150,
                                   height: 40,

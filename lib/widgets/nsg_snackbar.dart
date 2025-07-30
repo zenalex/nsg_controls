@@ -14,24 +14,19 @@ enum NsgSnarkBarType {
   const NsgSnarkBarType(this.title, this.icon);
 }
 
-void nsgSnackbar(
-    {void Function(Flushbar<dynamic>)? onTap,
-    String? title,
-    required String text,
-    NsgSnarkBarType? type,
-    Duration? duration,
-    double? fontSize,
-    TextAlign? textAlign}) {
+void nsgSnackbar({
+  void Function(Flushbar<dynamic>)? onTap,
+  String? title,
+  BuildContext? context,
+  required String text,
+  NsgSnarkBarType? type,
+  Duration? duration,
+  double? fontSize,
+  TextAlign? textAlign,
+}) {
   Flushbar(
     onTap: onTap,
-    boxShadows: [
-      BoxShadow(
-        color: Colors.black.withAlpha(128),
-        spreadRadius: 5,
-        blurRadius: 15,
-        offset: const Offset(0, -5),
-      )
-    ],
+    boxShadows: [BoxShadow(color: Colors.black.withAlpha(128), spreadRadius: 5, blurRadius: 15, offset: const Offset(0, -5))],
     backgroundColor: ControlOptions.instance.colorMain,
     messageColor: ControlOptions.instance.colorMainText,
     titleText: title == null
@@ -49,9 +44,9 @@ void nsgSnackbar(
     duration: duration ?? const Duration(seconds: 3),
     maxWidth: 640,
     icon: type == null ? null : Icon(type.icon, color: ControlOptions.instance.colorMainText),
-  ).show(Get.context!);
+  ).show(context ?? Get.context!);
 
-/* Get.snackbar(title ?? (type == null ? '' : type.title), text,
+  /* Get.snackbar(title ?? (type == null ? '' : type.title), text,
       icon: type == null ? null : Icon(type.icon, color: ControlOptions.instance.colorMainText),
       duration: duration ?? const Duration(seconds: 3),
       maxWidth: 300,
