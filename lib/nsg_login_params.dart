@@ -24,6 +24,9 @@ class NsgLoginParams implements NsgLoginParamsInterface {
   ///Разрешить авторизацию по email
   bool useEmailLogin;
 
+  ///Разрешить авторизацию через соцсети
+  bool useSocialLogin;
+
   ///Разрешить сохранять токен на устройстве для автоматической авторизации при следующем входе
   double cardSize;
   double iconSize;
@@ -97,6 +100,7 @@ class NsgLoginParams implements NsgLoginParamsInterface {
     this.usePasswordLogin = false,
     this.usePhoneLogin = true,
     this.useEmailLogin = false,
+    this.useSocialLogin = false,
     this.cardSize = 345.0,
     this.iconSize = 28.0,
     this.buttonSize = 42.0,
