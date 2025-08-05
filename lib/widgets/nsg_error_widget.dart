@@ -43,21 +43,21 @@ class NsgErrorWidget {
     for (final line in lines) {
       // Пропускаем строки, похожие на stacktrace и url
       if (line.contains('://') || line.contains('->') || RegExp(r'^\d+').hasMatch(line)) continue;
-      // Берём первую строку с кириллицей или буквой
-      if (RegExp(r'[А-Яа-яA-Za-z]').hasMatch(line)) {
-        message = line;
-        break;
-      }
+      // // Берём первую строку с кириллицей или буквой
+      // if (RegExp(r'[А-Яа-яA-Za-z]').hasMatch(line)) {
+      //   message = line;
+      //   break;
+      // }
     }
 
-    // Собираем результат
-    if (code != null && code.isNotEmpty && message != null) {
-      return '$code. $message';
-    } else if (code != null && code.isNotEmpty) {
-      return code;
-    } else if (message != null) {
-      return message;
-    }
+    // // Собираем результат
+    // if (code != null && code.isNotEmpty && message != null) {
+    //   return '$code. $message';
+    // } else if (code != null && code.isNotEmpty) {
+    //   return code;
+    // } else if (message != null) {
+    //   return message;
+    // }
     return error;
   }
 
