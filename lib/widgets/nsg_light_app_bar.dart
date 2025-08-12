@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart';
 
 class NsgLightAppBar extends StatelessWidget {
   const NsgLightAppBar({
@@ -13,6 +14,21 @@ class NsgLightAppBar extends StatelessWidget {
     this.onTap,
     this.padding,
     this.centerIconPadding = const EdgeInsets.only(right: 0, left: 0),
+  }) : listen = null,
+       useObx = false;
+
+  const NsgLightAppBar.listenable({
+    super.key,
+    this.title = 'Заголовок',
+    this.leftIcons = const [],
+    this.rightIcons = const [],
+    this.centerIcons = const [],
+    this.style = const NsgLigthAppBarStyle(),
+    this.onTap,
+    this.padding,
+    this.centerIconPadding = const EdgeInsets.only(right: 0, left: 0),
+    required this.listen,
+    this.useObx = false,
   });
 
   final String title;
@@ -23,74 +39,71 @@ class NsgLightAppBar extends StatelessWidget {
   final void Function()? onTap;
   final EdgeInsets? padding;
   final EdgeInsets centerIconPadding;
+  final Listenable? listen;
+  final bool useObx;
 
   @override
   Widget build(BuildContext context) {
     var buildStyle = style.style();
     return Container(
       padding: getPaddings(),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Flexible(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              ...leftIcons,
-              Flexible(
-                child: InkWell(
-                  onTap: onTap,
-                  child: Container(
-                    constraints: const BoxConstraints(minHeight: 50),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      title,
-                      textAlign: TextAlign.left,
-                      style: buildStyle.titleStyle,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+      child: _listenableWrapper(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ...leftIcons,
+                  Flexible(
+                    child: InkWell(
+                      onTap: onTap,
+                      child: Container(
+                        constraints: const BoxConstraints(minHeight: 50),
+                        alignment: Alignment.centerLeft,
+                        child: _listenableWrapper(
+                          Text(title, textAlign: TextAlign.left, style: buildStyle.titleStyle, maxLines: 3, overflow: TextOverflow.ellipsis),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: centerIconPadding,
+                    child: Row(children: centerIcons),
+                  ),
+                ],
               ),
-              Padding(
-                padding: centerIconPadding,
-                child: Row(
-                  children: getCenterIcons(),
-                ),
-              ),
-            ],
-          ),
+            ),
+            Row(children: rightIcons),
+          ],
         ),
-        Row(
-          children: getRightIcons(),
-        )
-      ]),
+        useObxForce: false,
+      ),
     );
+  }
+
+  Widget _listenableWrapper(Widget child, {bool? useObxForce}) {
+    useObxForce ??= useObx;
+    if (listen != null) {
+      if (listen is NsgBaseController && useObxForce) {
+        return (listen! as NsgBaseController).obx(
+          (state) => child,
+          onLoading: Row(mainAxisAlignment: MainAxisAlignment.start, children: [NsgBaseController.getDefaultProgressIndicator()]),
+        );
+      } else {
+        return ListenableBuilder(listenable: listen!, builder: (c, w) => child);
+      }
+    } else {
+      return child;
+    }
   }
 
   List<NsgLigthAppBarIcon> getRightIcons() {
     List<NsgLigthAppBarIcon> list = [];
     for (var element in rightIcons) {
-      list.add(NsgLigthAppBarIcon(
-        padding: element.padding,
-        icon: element.icon,
-        onTap: element.onTap,
-        nott: element.nott,
-        onTapCallback: element.onTapCallback,
-        color: element.color,
-        backColor: element.backColor,
-        borderColor: element.borderColor,
-        rotateAngle: element.rotateAngle,
-        customBuild: element.customBuild,
-        // padding: const EdgeInsets.symmetric(horizontal: 12),
-      ));
-    }
-    return list;
-  }
-
-  List<NsgLigthAppBarIcon> getCenterIcons() {
-    List<NsgLigthAppBarIcon> list = [];
-    for (var element in centerIcons) {
-      list.add(NsgLigthAppBarIcon(
+      list.add(
+        NsgLigthAppBarIcon(
           padding: element.padding,
           icon: element.icon,
           onTap: element.onTap,
@@ -100,9 +113,32 @@ class NsgLightAppBar extends StatelessWidget {
           backColor: element.backColor,
           borderColor: element.borderColor,
           rotateAngle: element.rotateAngle,
-          customBuild: element.customBuild
+          customBuild: element.customBuild,
           // padding: const EdgeInsets.symmetric(horizontal: 12),
-          ));
+        ),
+      );
+    }
+    return list;
+  }
+
+  List<NsgLigthAppBarIcon> getCenterIcons() {
+    List<NsgLigthAppBarIcon> list = [];
+    for (var element in centerIcons) {
+      list.add(
+        NsgLigthAppBarIcon(
+          padding: element.padding,
+          icon: element.icon,
+          onTap: element.onTap,
+          nott: element.nott,
+          onTapCallback: element.onTapCallback,
+          color: element.color,
+          backColor: element.backColor,
+          borderColor: element.borderColor,
+          rotateAngle: element.rotateAngle,
+          customBuild: element.customBuild,
+          //listen: const EdgeInsets.symmetric(horizontal: 12),
+        ),
+      );
     }
     return list;
   }
@@ -126,21 +162,42 @@ class NsgLightAppBar extends StatelessWidget {
 }
 
 class NsgLigthAppBarIcon extends StatelessWidget {
-  const NsgLigthAppBarIcon(
-      {super.key,
-      this.icon,
-      this.svg,
-      this.height = 40,
-      this.width = 40,
-      this.onTap,
-      this.onTapCallback,
-      this.nott,
-      this.color,
-      this.backColor,
-      this.borderColor,
-      this.rotateAngle,
-      this.padding,
-      this.customBuild});
+  const NsgLigthAppBarIcon({
+    super.key,
+    this.icon,
+    this.svg,
+    this.height = 40,
+    this.width = 40,
+    this.onTap,
+    this.onTapCallback,
+    this.nott,
+    this.color,
+    this.backColor,
+    this.borderColor,
+    this.rotateAngle,
+    this.padding,
+    this.customBuild,
+  }) : listen = null,
+       useObx = false;
+
+  const NsgLigthAppBarIcon.listenable({
+    super.key,
+    this.icon,
+    this.svg,
+    this.height = 40,
+    this.width = 40,
+    this.onTap,
+    this.onTapCallback,
+    this.nott,
+    this.color,
+    this.backColor,
+    this.borderColor,
+    this.rotateAngle,
+    this.padding,
+    this.customBuild,
+    required this.listen,
+    this.useObx = false,
+  });
 
   final String? svg;
   final IconData? icon;
@@ -156,6 +213,8 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   final EdgeInsets? padding;
   final double height, width;
   final Widget Function(BuildContext context)? customBuild;
+  final Listenable? listen;
+  final bool useObx;
 
   @override
   Widget build(BuildContext context) {
@@ -163,46 +222,68 @@ class NsgLigthAppBarIcon extends StatelessWidget {
         ? customBuild!(context)
         : Padding(
             padding: padding ?? EdgeInsets.zero,
-            child: Stack(alignment: Alignment.topRight, children: [
-              NsgLightAppBarOnTap(
-                  onTapDown: onTapCallback,
-                  onTap: onTap,
-                  child: SizedBox(
-                    width: width,
-                    height: height,
-                    child: Container(
-                      decoration: BoxDecoration(
+            child: _listenableWrapper(
+              Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  NsgLightAppBarOnTap(
+                    onTapDown: onTapCallback,
+                    onTap: onTap,
+                    child: SizedBox(
+                      width: width,
+                      height: height,
+                      child: Container(
+                        decoration: BoxDecoration(
                           border: borderColor != null ? Border.all(width: 1, color: borderColor!) : null,
                           color: backColor ?? Colors.transparent,
-                          borderRadius: BorderRadius.circular(15)),
-                      child: Transform.rotate(
-                        angle: rotateAngle ?? 0,
-                        child: icon != null
-                            ? Icon(
-                                icon,
-                                size: 20,
-                                color: color ?? ControlOptions.instance.colorTertiary.c70,
-                              )
-                            : svg != null
-                                ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
-                                : const SizedBox(),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Transform.rotate(
+                          angle: rotateAngle ?? 0,
+                          child: icon != null
+                              ? Icon(icon, size: 20, color: color ?? ControlOptions.instance.colorTertiary.c70)
+                              : svg != null
+                              ? SvgPicture.asset(svg!, colorFilter: ColorFilter.mode(color ?? ControlOptions.instance.colorPrimary, BlendMode.srcIn))
+                              : const SizedBox(),
+                        ),
                       ),
                     ),
-                  )),
-              if (nott != null && nott! > 0)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    width: 11,
-                    height: 11,
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        color: ControlOptions.instance.colorError, border: Border.all(width: 1, color: nsgtheme.colorSecondary), shape: BoxShape.circle),
                   ),
-                )
-            ]),
+                  if (nott != null && nott! > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        width: 11,
+                        height: 11,
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: ControlOptions.instance.colorError,
+                          border: Border.all(width: 1, color: nsgtheme.colorSecondary),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
           );
+  }
+
+  Widget _listenableWrapper(Widget child, {bool? useObxForce}) {
+    useObxForce ??= useObx;
+    if (listen != null) {
+      if (listen is NsgBaseController && useObxForce) {
+        return (listen! as NsgBaseController).obx(
+          (state) => child,
+          onLoading: SizedBox(width: width, height: height, child: NsgBaseController.getDefaultProgressIndicator()),
+        );
+      } else {
+        return ListenableBuilder(listenable: listen!, builder: (c, w) => child);
+      }
+    } else {
+      return child;
+    }
   }
 }
 
@@ -215,17 +296,15 @@ class NsgLightAppBarOnTap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTapDown: (details) {
-          Offset position = (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
-          if (onTapDown != null) {
-            onTapDown!(position, details, context.size);
-          }
-        },
-        onTap: onTap,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: child ?? const SizedBox(),
-        ));
+      onTapDown: (details) {
+        Offset position = (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+        if (onTapDown != null) {
+          onTapDown!(position, details, context.size);
+        }
+      },
+      onTap: onTap,
+      child: MouseRegion(cursor: SystemMouseCursors.click, child: child ?? const SizedBox()),
+    );
   }
 }
 
@@ -236,8 +315,9 @@ class NsgLigthAppBarStyle {
 
   NsgLigthAppBarStyleMain style() {
     return NsgLigthAppBarStyleMain(
-        mainButtonsColor: mainButtonsColor ?? ControlOptions.instance.colorMainLight,
-        titleStyle: titleStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.w500, fontFamily: 'Inter'));
+      mainButtonsColor: mainButtonsColor ?? ControlOptions.instance.colorMainLight,
+      titleStyle: titleStyle ?? TextStyle(fontSize: ControlOptions.instance.sizeL, fontWeight: FontWeight.w500, fontFamily: 'Inter'),
+    );
   }
 }
 
