@@ -405,7 +405,9 @@ class _NsgInputState extends State<NsgInput> {
             _ignoreChange = false;
           }
         }
-        widget.dataItem.setFieldValue(widget.fieldName, textController.value.text);
+        // Заменяем в текстовом поле все символы переноса строки на унифицированные, иначе, в Windows текст может отрисовываться очень долго
+        var newTextValue = textController.value.text.replaceAll('\r\n', '\n');
+        widget.dataItem.setFieldValue(widget.fieldName, newTextValue);
       }
     });
 
