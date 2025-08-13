@@ -11,6 +11,7 @@ class NsgSimpleTabs extends StatelessWidget {
   final EdgeInsets? margin;
   final NsgSimpleTabsStyle style;
   final NsgSimpleTabsController controller;
+  final void Function()? onTabChange;
 
   NsgSimpleTabs({
     super.key,
@@ -21,6 +22,7 @@ class NsgSimpleTabs extends StatelessWidget {
     this.borderWidth = 2,
     this.borderRadius = 10,
     this.style = const NsgSimpleTabsStyle(),
+    this.onTabChange,
   }) : margin = null,
        controller = tabController ?? NsgSimpleTabsController(tabs: tabs ?? []);
 
@@ -30,6 +32,7 @@ class NsgSimpleTabs extends StatelessWidget {
     NsgSimpleTabsController? tabController,
     this.style = const NsgSimpleTabsStyle(),
     double radius = 4,
+    this.onTabChange,
   }) : height = 32,
        borderWidth = 0,
        borderColor = Colors.transparent,
@@ -52,6 +55,9 @@ class NsgSimpleTabs extends StatelessWidget {
       child: ListenableBuilder(
         listenable: controller,
         builder: (context, widget) {
+          if (onTabChange != null) {
+            onTabChange!();
+          }
           return Row(
             children: controller.tabs.map((tab) => tab.builder(buildStyle: buildStyle, controller: controller)).toList(),
           );
