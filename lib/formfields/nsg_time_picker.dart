@@ -242,7 +242,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
     }
     if (initialTimeNew != null) {
       _initialTime2 = initialTimeNew;
-      if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) datepicker!.setState(_initialTime2);
+      if (!kIsWeb && (Platform.isIOS || Platform.isAndroid) && datepicker != null) datepicker!.setState(_initialTime2);
       widget.onChange(_initialTime2);
     }
     if (textController.text != _initialTime) {
