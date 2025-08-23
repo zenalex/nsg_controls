@@ -21,8 +21,10 @@
 
 ```yaml
 dependencies:
-  nsg_controls: ^1.0.0-beta.1
-  nsg_data: ^1.0.0
+  nsg_controls:
+    path: ../path/to/nsg_controls
+  nsg_data:
+    path: ../path/to/nsg_data
 ```
 
 Затем выполните:
