@@ -39,8 +39,6 @@ class NsgTimePicker extends StatefulWidget {
   final bool Function(Duration pickedTime)? validator;
   final Function(Duration endDate)? onValidTime;
 
-  final CupertinoThemeData? customPickerTheme;
-
   const NsgTimePicker({
     Key? key,
     required this.initialTime,
@@ -59,7 +57,6 @@ class NsgTimePicker extends StatefulWidget {
     // this.fieldColor,
     // this.lableWidget,
     // this.textStyle,
-    this.customPickerTheme,
   }) : super(key: key);
 
   void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
@@ -84,7 +81,6 @@ class NsgTimePicker extends StatefulWidget {
               selectedDate = endDate;
             }),
             //  onClose,
-            customPickerTheme: customPickerTheme,
           ),
         ],
       ),
@@ -203,8 +199,7 @@ class TimePickerContent extends StatefulWidget {
   final DateTime initialTime;
   final DateTime? dateForTime;
   final Function(DateTime endDate) onChange;
-  final CupertinoThemeData? customPickerTheme;
-  const TimePickerContent({Key? key, required this.initialTime, required this.onChange, this.dateForTime, this.customPickerTheme}) : super(key: key);
+  const TimePickerContent({Key? key, required this.initialTime, required this.onChange, this.dateForTime}) : super(key: key);
 
   @override
   State<TimePickerContent> createState() => _TimePickerContentState();
@@ -374,7 +369,6 @@ class _TimePickerContentState extends State<TimePickerContent> {
   NsgCupertinoTimePicker? datepicker;
   Widget getCupertinoPicker() {
     datepicker = NsgCupertinoTimePicker(
-      customTheme: widget.customPickerTheme,
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         //widget.onChange(value);
@@ -395,9 +389,8 @@ class _TimePickerContentState extends State<TimePickerContent> {
 class NsgCupertinoTimePicker extends StatefulWidget {
   DateTime initialDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
-  final CupertinoThemeData? customTheme;
 
-  NsgCupertinoTimePicker({Key? key, required this.initialDateTime, required this.onDateTimeChanged, this.customTheme}) : super(key: key);
+  NsgCupertinoTimePicker({Key? key, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
 
   @override
   State<NsgCupertinoTimePicker> createState() => NsgCupertinoTimeState();
@@ -425,28 +418,19 @@ class NsgCupertinoTimeState extends State<NsgCupertinoTimePicker> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.customTheme == null) {
-      return CupertinoDatePicker(
+    return CupertinoTheme(
+      data: CupertinoThemeData(
+        textTheme: CupertinoTextThemeData(dateTimePickerTextStyle: TextStyle(fontSize: 16, color: nsgtheme.colorText)),
+      ),
+      child: CupertinoDatePicker(
         //key: GlobalKey(),
         mode: CupertinoDatePickerMode.time,
         initialDateTime: widget.initialDateTime,
         onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
         use24hFormat: true,
         minuteInterval: 1,
-      );
-    } else {
-      return CupertinoTheme(
-        data: widget.customTheme!,
-        child: CupertinoDatePicker(
-          //key: GlobalKey(),
-          mode: CupertinoDatePickerMode.time,
-          initialDateTime: widget.initialDateTime,
-          onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
-          use24hFormat: true,
-          minuteInterval: 1,
-        ),
-      );
-    }
+      ),
+    );
   }
 
   // DateTime parseTime(String value, DateTime initialDate) {
