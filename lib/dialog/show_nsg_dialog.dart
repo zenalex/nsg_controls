@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
+import 'package:nsg_controls/nsg_row_to_column.dart';
 
 import '../helpers.dart';
 import '../nsg_grid.dart';
@@ -86,10 +87,9 @@ Future<dynamic> showNsgDialog({
                         alignment: Alignment.center,
                         decoration: BoxDecoration(color: nsgtheme.colorMainBack.withAlpha(230)),
                         padding: const EdgeInsets.all(15),
-                        child: NsgGrid(
-                          vGap: 10,
-                          hGap: 10,
-                          width: 300,
+                        child: NsgRowToColumn(
+                          addExpanded: true,
+                          switchWidth: 300,
                           children:
                               buttons ??
                               [
@@ -105,7 +105,6 @@ Future<dynamic> showNsgDialog({
                                         Navigator.of(context).pop();
                                       }
                                     },
-                                    width: 150,
                                     height: 40,
                                     text: textCancel,
                                     color: Colors.black,
@@ -122,7 +121,6 @@ Future<dynamic> showNsgDialog({
                                       Navigator.of(context).pop();
                                     }
                                   },
-                                  width: 150,
                                   height: 40,
                                   text: textConfirm,
                                 ),
