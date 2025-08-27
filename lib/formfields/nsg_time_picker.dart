@@ -234,7 +234,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
       var minutesString = minutes.toString().padLeft(2, '0');
       var parsedTime = '$hours:$minutesString';
       if (textController.text != parsedTime) {
-        textController.text = parsedTime; 
+        textController.text = parsedTime;
         textController.selection = TextSelection.collapsed(offset: parsedTime.length - 1);
       }
       var now = widget.dateForTime ?? DateTime.now();
@@ -418,13 +418,18 @@ class NsgCupertinoTimeState extends State<NsgCupertinoTimePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoDatePicker(
-      //key: GlobalKey(),
-      mode: CupertinoDatePickerMode.time,
-      initialDateTime: widget.initialDateTime,
-      onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
-      use24hFormat: true,
-      minuteInterval: 1,
+    return CupertinoTheme(
+      data: CupertinoThemeData(
+        textTheme: CupertinoTextThemeData(dateTimePickerTextStyle: TextStyle(fontSize: 16, color: nsgtheme.colorText)),
+      ),
+      child: CupertinoDatePicker(
+        //key: GlobalKey(),
+        mode: CupertinoDatePickerMode.time,
+        initialDateTime: widget.initialDateTime,
+        onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
+        use24hFormat: true,
+        minuteInterval: 1,
+      ),
     );
   }
 
