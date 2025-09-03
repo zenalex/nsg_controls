@@ -56,7 +56,12 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
     //scrollController.heightMap.clear();
     scrollController.dataGroups = dataGroups;
 
-    Future.delayed(Duration(seconds: 0), () => scrollController.jumpTo(scrollController.lastOffset));
+    // Defer scroll restoration to avoid RenderSliverList mutation during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients && scrollController.lastOffset != 0.0) {
+        scrollController.jumpTo(scrollController.lastOffset);
+      }
+    });
 
     return ListView.builder(
       controller: scrollController,
