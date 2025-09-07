@@ -11,7 +11,7 @@ class NsgTableColumnsReorder extends StatefulWidget {
 
   /// Контроллер данных
   final NsgDataController controller;
-  const NsgTableColumnsReorder({Key? key, required this.columns, required this.controller}) : super(key: key);
+  const NsgTableColumnsReorder({super.key, required this.columns, required this.controller});
 
   @override
   State<NsgTableColumnsReorder> createState() => _NsgTableColumnsReorderState();
@@ -24,23 +24,24 @@ class _NsgTableColumnsReorderState extends State<NsgTableColumnsReorder> {
     for (var value in widget.columns) {
       //assert(widget.fieldNameDict[value.name] != null);
 
-      list.add(SizedBox(
+      list.add(
+        SizedBox(
           width: 280,
           height: 30,
           child: NsgCheckBox(
-              simple: true,
-              label: value.presentation ?? NsgDataClient.client.getFieldList(widget.controller.dataType).fields[value.name]?.presentation ?? '',
-              value: value.visible,
-              onPressed: (currentValue) {
-                setState(() {
-                  value.visible = !value.visible;
-                });
-              })));
+            simple: true,
+            label: value.presentation ?? NsgDataClient.client.getFieldList(widget.controller.dataType).fields[value.name]?.presentation ?? '',
+            value: value.visible,
+            onPressed: (currentValue) {
+              setState(() {
+                value.visible = !value.visible;
+              });
+            },
+          ),
+        ),
+      );
     }
-    return NsgReorderable(
-      widgets: list,
-      onReorder: _reorder,
-    );
+    return NsgReorderable(widgets: list, onReorder: _reorder);
   }
 
   void _reorder(int oldIndex, int newIndex) {

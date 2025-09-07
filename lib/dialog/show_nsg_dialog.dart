@@ -5,7 +5,6 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_row_to_column.dart';
 
 import '../helpers.dart';
-import '../nsg_grid.dart';
 
 Future<dynamic> showNsgDialog({
   required BuildContext context,

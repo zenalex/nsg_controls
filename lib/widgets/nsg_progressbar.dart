@@ -13,7 +13,7 @@ class NsgProgressBar extends StatefulWidget {
   final NsgProgressDialog? dialogWidget;
   final String text;
   final Duration delay;
-  const NsgProgressBar({Key? key, this.dialogWidget, this.text = '', this.delay = const Duration(seconds: 1)}) : super(key: key);
+  const NsgProgressBar({super.key, this.dialogWidget, this.text = '', this.delay = const Duration(seconds: 1)});
 
   @override
   _NsgProgressBarState createState() => _NsgProgressBarState();
@@ -31,17 +31,9 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(
-        milliseconds: 10000,
-      ),
-    );
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 10000));
 
-    _animation = Tween<double>(
-      begin: 0,
-      end: 101,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut))
+    _animation = Tween<double>(begin: 0, end: 101).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut))
       ..addListener(() {
         setState(() {
           arc3 += .5;
@@ -113,29 +105,25 @@ class _NsgProgressBarState extends State<NsgProgressBar> with SingleTickerProvid
               //       )
               //     :
               Stack(
-            children: <Widget>[
-              Center(
-                child: CustomPaint(
-                  painter: OpenPainter(
-                      value: widget.dialogWidget == null ? _animation.value : widget.dialogWidget!.percent,
-                      arc1: arc1,
-                      arc2: arc2,
-                      percent: widget.dialogWidget == null ? false : true),
-                ),
-              ),
-              Center(
-                child: Text(
-                  widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.2,
-                    color: ControlOptions.instance.colorText,
+                children: <Widget>[
+                  Center(
+                    child: CustomPaint(
+                      painter: OpenPainter(
+                        value: widget.dialogWidget == null ? _animation.value : widget.dialogWidget!.percent,
+                        arc1: arc1,
+                        arc2: arc2,
+                        percent: widget.dialogWidget == null ? false : true,
+                      ),
+                    ),
                   ),
-                ),
+                  Center(
+                    child: Text(
+                      widget.dialogWidget == null ? widget.text : '${widget.text} ${widget.dialogWidget!.percent}%',
+                      style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, letterSpacing: 1.2, color: ControlOptions.instance.colorText),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
         ),
       ),
     );
@@ -200,35 +188,38 @@ class OpenPainter extends CustomPainter {
     //       ..strokeWidth = 10
     //       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5.0));
     canvas.drawArc(
-        Rect.fromCenter(center: center, width: 170, height: 170),
-        vmath.radians(percent == true ? 0 : arc1),
-        vmath.radians(percent == true ? val : arc2 - arc1),
-        false,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round
-          ..shader = gradient.createShader(rect)
-          ..strokeWidth = 5);
+      Rect.fromCenter(center: center, width: 170, height: 170),
+      vmath.radians(percent == true ? 0 : arc1),
+      vmath.radians(percent == true ? val : arc2 - arc1),
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..shader = gradient.createShader(rect)
+        ..strokeWidth = 5,
+    );
     canvas.drawArc(
-        Rect.fromCenter(center: center, width: 150, height: 150),
-        vmath.radians(arc1),
-        vmath.radians(arc2 - arc1),
-        false,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round
-          ..color = ControlOptions.instance.colorPrimary.withAlpha(120)
-          ..strokeWidth = 1);
+      Rect.fromCenter(center: center, width: 150, height: 150),
+      vmath.radians(arc1),
+      vmath.radians(arc2 - arc1),
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..color = ControlOptions.instance.colorPrimary.withAlpha(120)
+        ..strokeWidth = 1,
+    );
     canvas.drawArc(
-        Rect.fromCenter(center: center, width: 190, height: 190),
-        vmath.radians(-arc1),
-        vmath.radians(-arc2 + arc1),
-        false,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round
-          ..color = ControlOptions.instance.colorPrimary.withAlpha(120)
-          ..strokeWidth = 1);
+      Rect.fromCenter(center: center, width: 190, height: 190),
+      vmath.radians(-arc1),
+      vmath.radians(-arc2 + arc1),
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..color = ControlOptions.instance.colorPrimary.withAlpha(120)
+        ..strokeWidth = 1,
+    );
 
     canvas.restore();
   }

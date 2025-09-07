@@ -13,7 +13,7 @@ import '../nsg_icon_button.dart';
 class NsgTextFilter extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables
   NsgTextFilter({
-    Key? key,
+    super.key,
     this.label,
     this.margin = const EdgeInsets.fromLTRB(5, 5, 5, 5),
     this.required = false,
@@ -22,7 +22,7 @@ class NsgTextFilter extends StatefulWidget {
     this.onSetFilter,
     this.updateKey,
     this.userSettingsId = '',
-  }) : super(key: key);
+  });
 
   final NsgDataController controller;
   final bool? isOpen;

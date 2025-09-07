@@ -22,7 +22,7 @@ class NsgPeriodFilter extends StatefulWidget {
   final bool showCompact;
   final NsgPeriod? period;
   const NsgPeriodFilter({
-    Key? key,
+    super.key,
     required this.controller,
     this.label = '',
     this.disabled = false,
@@ -34,7 +34,7 @@ class NsgPeriodFilter extends StatefulWidget {
     this.showCompact = false,
     this.isOpen,
     this.period,
-  }) : super(key: key);
+  });
   @override
   State<NsgPeriodFilter> createState() => _NsgPeriodFilterState();
 }
@@ -161,7 +161,7 @@ class NsgPeriodFilterContent extends StatefulWidget {
   final bool periodTimeEnabled;
   final Function(NsgPeriod)? onSelect;
   final NsgPeriod? period;
-  const NsgPeriodFilterContent({Key? key, this.onSelect, this.periodTimeEnabled = false, required this.controller, this.period}) : super(key: key);
+  const NsgPeriodFilterContent({super.key, this.onSelect, this.periodTimeEnabled = false, required this.controller, this.period});
 
   @override
   State<NsgPeriodFilterContent> createState() => NsgPeriodFilterContentState();

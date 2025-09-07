@@ -48,14 +48,14 @@ class NsgCrop {
 // ignore: must_be_immutable
 class NsgCropPage extends StatefulWidget {
   NsgCropPage({
-    Key? key,
+    super.key,
     required this.imageDataList,
     //required this.img,
     this.isCircle = false,
     this.isFree = true,
     this.aspectRatio = 16 / 9,
     this.interactive = true,
-  }) : super(key: key);
+  });
 
   final bool isCircle;
   //final Uint8List img;

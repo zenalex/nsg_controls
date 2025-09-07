@@ -5,7 +5,7 @@ import '../nsg_text.dart';
 
 class NsgErrorPage extends StatelessWidget {
   final String? text;
-  const NsgErrorPage({Key? key, this.text = ''}) : super(key: key);
+  const NsgErrorPage({super.key, this.text = ''});
 
   title() {
     List<String> list = (text ?? 'Неизвестная ошибка|||').split('|||');
@@ -23,10 +23,7 @@ class NsgErrorPage extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 15),
-              child: NsgText(
-                "Ошибка ${list[0]}",
-                type: NsgTextType.h1,
-              ),
+              child: NsgText("Ошибка ${list[0]}", type: NsgTextType.h1),
             ),
             if (list.length > 1) Flexible(child: SingleChildScrollView(child: NsgText(list[1]))),
           ],

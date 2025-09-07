@@ -53,7 +53,7 @@ enum NsgSimpleTableColumnSort { nosort, forward, backward }
 // ignore: must_be_immutable
 class NsgSimpleTable extends StatefulWidget {
   NsgSimpleTable(
-      {Key? key,
+      {super.key,
       this.selectCellOnHover = false,
       this.headerBackColor,
       this.headerColor,

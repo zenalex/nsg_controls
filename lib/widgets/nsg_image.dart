@@ -128,26 +128,26 @@ class NsgImage extends StatelessWidget {
   /// Виджет, если картинка не задана
   final Widget? noImage;
 
-  NsgImage(
-      {Key? key,
-      this.masterSlaveMode = false,
-      this.masterFieldName = '',
-      this.slaveFieldName = '',
-      required this.item,
-      required this.fieldName,
-      required this.controller,
-      this.width,
-      this.height,
-      this.color,
-      this.fit,
-      this.alignment = Alignment.center,
-      this.repeat = ImageRepeat.noRepeat,
-      this.centerSlice,
-      this.isAntiAlias = false,
-      this.filterQuality = FilterQuality.low,
-      this.child,
-      this.noImage})
-      : super(key: key) {
+  NsgImage({
+    super.key,
+    this.masterSlaveMode = false,
+    this.masterFieldName = '',
+    this.slaveFieldName = '',
+    required this.item,
+    required this.fieldName,
+    required this.controller,
+    this.width,
+    this.height,
+    this.color,
+    this.fit,
+    this.alignment = Alignment.center,
+    this.repeat = ImageRepeat.noRepeat,
+    this.centerSlice,
+    this.isAntiAlias = false,
+    this.filterQuality = FilterQuality.low,
+    this.child,
+    this.noImage,
+  }) {
     if (masterSlaveMode) {
       assert(masterFieldName.isNotEmpty, 'Если задан режим master-slave, masterFieldName не может быть пустым');
     } else {
@@ -184,19 +184,11 @@ class NsgImage extends StatelessWidget {
       }
 
       if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
-        return noImage ??
-            SizedBox(
-              width: width,
-              height: height,
-            );
+        return noImage ?? SizedBox(width: width, height: height);
       }
       var data = imageItem[fieldName] as Uint8List;
       if (data.isEmpty) {
-        return noImage ??
-            SizedBox(
-              width: width,
-              height: height,
-            );
+        return noImage ?? SizedBox(width: width, height: height);
       } else {
         return FadeIn(
           duration: const Duration(milliseconds: 500),
@@ -220,69 +212,60 @@ class NsgImage extends StatelessWidget {
 
   ///Режим отложенной загрузки картинок
   Widget lateRegime() {
-    return controller.obx(
-      (c) {
+    return controller.obx((c) {
+      if (controller.status.isLoading) {
+        return child ?? const CircularProgressIndicator();
+      }
+      NsgDataItem? imageItem = item;
+      if (masterSlaveMode) {
+        var slaveName = slaveFieldName;
+        if (slaveName.isEmpty) {
+          slaveName = NsgDataClient.client.getNewObject(controller.dataType).primaryKeyField;
+        }
         if (controller.status.isLoading) {
-          return child ?? const CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
-        NsgDataItem? imageItem = item;
-        if (masterSlaveMode) {
-          var slaveName = slaveFieldName;
-          if (slaveName.isEmpty) {
-            slaveName = NsgDataClient.client.getNewObject(controller.dataType).primaryKeyField;
-          }
-          if (controller.status.isLoading) {
-            return const CircularProgressIndicator();
-          }
-          imageItem = controller.items.firstWhereOrNull((e) => e[slaveName] == item[masterFieldName] || e[slaveName] == (item[masterFieldName] + '.'));
-        }
+        imageItem = controller.items.firstWhereOrNull((e) => e[slaveName] == item[masterFieldName] || e[slaveName] == (item[masterFieldName] + '.'));
+      }
 
-        if (controller.lateImageRead && imageItem != null && (imageItem[fieldName] as Uint8List).isEmpty) {
-          controller.addImageToQueue(ImageQueueParam(imageItem.id.toString(), fieldName));
-        }
-        var builderId = imageItem == null ? '' : imageItem.id.toString();
-        return GetBuilder(
-            id: NsgUpdateKey(id: builderId, type: NsgUpdateKeyType.element),
-            init: controller,
-            global: false,
-            //autoRemove: true,
-            //assignId: true,
-            builder: (c) {
-              if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
-                return noImage ??
-                    SizedBox(
-                      width: width,
-                      height: height,
-                    );
-              }
-              var data = imageItem[fieldName] as Uint8List;
-              if (data.isEmpty) {
-                return noImage ??
-                    SizedBox(
-                      width: width,
-                      height: height,
-                    );
-              } else {
-                return FadeIn(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeIn,
-                  child: Image.memory(
-                    data,
-                    width: width,
-                    height: height,
-                    color: color,
-                    fit: fit,
-                    alignment: alignment,
-                    repeat: repeat,
-                    centerSlice: centerSlice,
-                    isAntiAlias: isAntiAlias,
-                    filterQuality: filterQuality,
-                  ),
-                );
-              }
-            });
-      },
-    );
+      if (controller.lateImageRead && imageItem != null && (imageItem[fieldName] as Uint8List).isEmpty) {
+        controller.addImageToQueue(ImageQueueParam(imageItem.id.toString(), fieldName));
+      }
+      var builderId = imageItem == null ? '' : imageItem.id.toString();
+      return GetBuilder(
+        id: NsgUpdateKey(id: builderId, type: NsgUpdateKeyType.element),
+        init: controller,
+        global: false,
+        //autoRemove: true,
+        //assignId: true,
+        builder: (c) {
+          if (imageItem == null || (imageItem[fieldName] as Uint8List).isEmpty) {
+            return noImage ?? SizedBox(width: width, height: height);
+          }
+          var data = imageItem[fieldName] as Uint8List;
+          if (data.isEmpty) {
+            return noImage ?? SizedBox(width: width, height: height);
+          } else {
+            return FadeIn(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              child: Image.memory(
+                data,
+                width: width,
+                height: height,
+                color: color,
+                fit: fit,
+                alignment: alignment,
+                repeat: repeat,
+                centerSlice: centerSlice,
+                isAntiAlias: isAntiAlias,
+                filterQuality: filterQuality,
+              ),
+            );
+          }
+        },
+      );
+    });
   }
 
   // void vrem(){

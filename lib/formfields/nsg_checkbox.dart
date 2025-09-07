@@ -21,21 +21,21 @@ class NsgCheckBox extends StatefulWidget {
 
   /// Красный текст валидации под текстовым полем
   final String validateText;
-  const NsgCheckBox(
-      {Key? key,
-      this.toggleInside = false,
-      this.validateText = '',
-      required this.label,
-      this.disabled = false,
-      this.radio = false,
-      required this.value,
-      this.height = 44,
-      this.width,
-      required this.onPressed,
-      this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 10),
-      this.simple = false,
-      this.checkColor})
-      : super(key: key);
+  const NsgCheckBox({
+    super.key,
+    this.toggleInside = false,
+    this.validateText = '',
+    required this.label,
+    this.disabled = false,
+    this.radio = false,
+    required this.value,
+    this.height = 44,
+    this.width,
+    required this.onPressed,
+    this.margin = const EdgeInsets.fromLTRB(0, 0, 0, 10),
+    this.simple = false,
+    this.checkColor,
+  });
 
   @override
   _NsgCheckBoxState createState() => _NsgCheckBoxState();
@@ -65,13 +65,14 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
             children: [
               if (widget.validateText != '' && widget.simple != true)
                 Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Text(
-                      widget.validateText,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
-                    )),
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    widget.validateText,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
+                  ),
+                ),
               InkWell(
                 onTap: () {
                   if (widget.disabled == false) {
@@ -93,15 +94,19 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                   child: Row(
                     children: [
                       if (widget.radio == true)
-                        Icon(_boxValue == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
-                            color: _boxValue == true
-                                ? widget.checkColor ?? ControlOptions.instance.colorMainDark
-                                : widget.checkColor ?? ControlOptions.instance.colorMainDark)
+                        Icon(
+                          _boxValue == true ? Icons.radio_button_checked : Icons.radio_button_unchecked_outlined,
+                          color: _boxValue == true
+                              ? widget.checkColor ?? ControlOptions.instance.colorMainDark
+                              : widget.checkColor ?? ControlOptions.instance.colorMainDark,
+                        )
                       else
-                        Icon(_boxValue == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                            color: _boxValue == true
-                                ? widget.checkColor ?? ControlOptions.instance.colorMainDark
-                                : widget.checkColor ?? ControlOptions.instance.colorMainDark),
+                        Icon(
+                          _boxValue == true ? Icons.check_box_outlined : Icons.check_box_outline_blank,
+                          color: _boxValue == true
+                              ? widget.checkColor ?? ControlOptions.instance.colorMainDark
+                              : widget.checkColor ?? ControlOptions.instance.colorMainDark,
+                        ),
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
@@ -110,11 +115,11 @@ class _NsgCheckBoxState extends State<NsgCheckBox> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(height: 1, color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeM),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

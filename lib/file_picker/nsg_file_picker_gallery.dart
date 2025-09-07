@@ -13,7 +13,7 @@ import 'nsg_file_picker_object.dart';
 class NsgGallery extends StatefulWidget {
   final List<NsgFilePickerObject> imagesList;
   final int currentPage;
-  const NsgGallery({Key? key, required this.imagesList, required this.currentPage}) : super(key: key);
+  const NsgGallery({super.key, required this.imagesList, required this.currentPage});
 
   @override
   State<NsgGallery> createState() => NsgGalleryState();
@@ -38,10 +38,7 @@ class NsgGalleryState extends State<NsgGallery> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          '${_indx + 1} / ${widget.imagesList.length}',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
+        Text('${_indx + 1} / ${widget.imagesList.length}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
         Stack(
           alignment: Alignment.center,
           children: [
@@ -80,41 +77,36 @@ class NsgGalleryState extends State<NsgGallery> {
               ),
             ),
             Align(
-                alignment: Alignment.centerLeft,
-                child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _indx--;
-                        if (_indx < 0) {
-                          _indx = widget.imagesList.length - 1;
-                        }
-                      });
-                    },
-                    child: const Icon(
-                      Icons.arrow_left_outlined,
-                      size: 48,
-                    ))),
+              alignment: Alignment.centerLeft,
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _indx--;
+                    if (_indx < 0) {
+                      _indx = widget.imagesList.length - 1;
+                    }
+                  });
+                },
+                child: const Icon(Icons.arrow_left_outlined, size: 48),
+              ),
+            ),
             Align(
-                alignment: Alignment.centerRight,
-                child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _indx++;
-                        if (_indx > widget.imagesList.length - 1) {
-                          _indx = 0;
-                        }
-                      });
-                    },
-                    child: const Icon(
-                      Icons.arrow_right_outlined,
-                      size: 48,
-                    ))),
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _indx++;
+                    if (_indx > widget.imagesList.length - 1) {
+                      _indx = 0;
+                    }
+                  });
+                },
+                child: const Icon(Icons.arrow_right_outlined, size: 48),
+              ),
+            ),
           ],
         ),
-        Text(
-          _desc,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
+        Text(_desc, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
       ],
     );
   }

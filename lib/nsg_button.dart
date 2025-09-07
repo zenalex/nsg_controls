@@ -39,34 +39,34 @@ class NsgButton extends StatelessWidget {
   final FontWeight? fontWeight;
   final Widget? widget;
   final BoxShadow? shadow;
-  const NsgButton(
-      {Key? key,
-      this.autoWidth = false,
-      this.style,
-      this.text = '',
-      this.margin,
-      this.iconMargin = const EdgeInsets.fromLTRB(0, 0, 5, 0),
-      this.icon,
-      this.iconColor,
-      this.onPressed,
-      this.onTap,
-      this.onTapAsync,
-      this.onAfterTapAsync,
-      this.onDisabledPressed,
-      this.disabled,
-      this.borderRadius,
-      this.width,
-      this.height,
-      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-      this.color,
-      this.borderColor,
-      this.backColor,
-      this.backHoverColor,
-      this.fontSize,
-      this.fontWeight,
-      this.widget,
-      this.shadow})
-      : super(key: key);
+  const NsgButton({
+    super.key,
+    this.autoWidth = false,
+    this.style,
+    this.text = '',
+    this.margin,
+    this.iconMargin = const EdgeInsets.fromLTRB(0, 0, 5, 0),
+    this.icon,
+    this.iconColor,
+    this.onPressed,
+    this.onTap,
+    this.onTapAsync,
+    this.onAfterTapAsync,
+    this.onDisabledPressed,
+    this.disabled,
+    this.borderRadius,
+    this.width,
+    this.height,
+    this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+    this.color,
+    this.borderColor,
+    this.backColor,
+    this.backHoverColor,
+    this.fontSize,
+    this.fontWeight,
+    this.widget,
+    this.shadow,
+  });
 
   // NsgButton.styled(
   //     {super.key,
@@ -106,15 +106,15 @@ class NsgButton extends StatelessWidget {
     /* ----------------------------------------------------------- // Кнопка с плюсом слева ----------------------------------------------------------- */
     if (style == 'plus') {
       return Padding(
-          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-          child: Stack(
-            children: [
-              Container(
-                  height: height ?? ControlOptions.instance.nsgButtonHeight,
-                  width: width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-                    /*boxShadow: shadow != null
+        padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+        child: Stack(
+          children: [
+            Container(
+              height: height ?? ControlOptions.instance.nsgButtonHeight,
+              width: width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
+                /*boxShadow: shadow != null
                         ? <BoxShadow>[
                             BoxShadow(
                               color: ControlOptions.instance.colorMain.withOpacity(0.5),
@@ -123,103 +123,105 @@ class NsgButton extends StatelessWidget {
                             )
                           ]
                         : null,*/
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-                        ),
-                        backgroundColor: _backColor,
-                        padding: padding,
-                        textStyle: TextStyle(fontSize: _fontSize, fontWeight: _fontWeight)),
-                    onPressed: () async {
-                      await onTapFunction();
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (icon != null) Padding(padding: iconMargin, child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
-                        Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-                          child: Text('$text',
-                              maxLines: 1,
-                              overflow: TextOverflow.clip,
-                              softWrap: false,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: ControlOptions.instance.colorMainText)),
-                        )),
-                      ],
-                    ),
-                  )),
-              Container(
-                width: 50,
-                height: height ?? ControlOptions.instance.nsgButtonHeight,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: <Color>[ControlOptions.instance.colorMainText.withAlpha(0), ControlOptions.instance.colorMainText.withAlpha(77)],
-                  ),
-                  borderRadius: BorderRadius.circular(25),
+              ),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius)),
+                  backgroundColor: _backColor,
+                  padding: padding,
+                  textStyle: TextStyle(fontSize: _fontSize, fontWeight: _fontWeight),
                 ),
-                child: Icon(Icons.add, size: 32, color: ControlOptions.instance.colorMainText),
-              )
-            ],
-          ));
+                onPressed: () async {
+                  await onTapFunction();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (icon != null)
+                      Padding(
+                        padding: iconMargin,
+                        child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText),
+                      ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+                        child: Text(
+                          '$text',
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          softWrap: false,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: ControlOptions.instance.colorMainText),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: 50,
+              height: height ?? ControlOptions.instance.nsgButtonHeight,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: <Color>[ControlOptions.instance.colorMainText.withAlpha(0), ControlOptions.instance.colorMainText.withAlpha(77)],
+                ),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Icon(Icons.add, size: 32, color: ControlOptions.instance.colorMainText),
+            ),
+          ],
+        ),
+      );
     } else
     /* -------------------------------------------------------------- // Маленькая кнопка ------------------------------------------------------------- */
     if (style == 'small') {
       return Padding(
-          padding: margin ?? ControlOptions.instance.nsgButtonMargin,
-          child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    side: BorderSide(width: 2.0, color: ControlOptions.instance.colorMain),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    backgroundColor: ControlOptions.instance.colorMain,
-                    padding: padding,
-                    textStyle: TextStyle(fontSize: _fontSize, fontWeight: _fontWeight)),
-                onPressed: () async {
-                  await onTapFunction();
-                },
-                child: Text('$text', style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 14)),
-              )));
+        padding: margin ?? ControlOptions.instance.nsgButtonMargin,
+        child: Container(
+          height: 40,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 0,
+              side: BorderSide(width: 2.0, color: ControlOptions.instance.colorMain),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              backgroundColor: ControlOptions.instance.colorMain,
+              padding: padding,
+              textStyle: TextStyle(fontSize: _fontSize, fontWeight: _fontWeight),
+            ),
+            onPressed: () async {
+              await onTapFunction();
+            },
+            child: Text('$text', style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: 14)),
+          ),
+        ),
+      );
     } else
     /* ---------------------------------------------------------- // Кнопка с виджетом внутри --------------------------------------------------------- */
     if (style == 'widget') {
       return Container(
-          margin: margin ?? ControlOptions.instance.nsgButtonMargin,
-          height: height ?? ControlOptions.instance.nsgButtonHeight,
-          width: width,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
+        margin: margin ?? ControlOptions.instance.nsgButtonMargin,
+        height: height ?? ControlOptions.instance.nsgButtonHeight,
+        width: width,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius)),
+        child: Material(
+          borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
+          color: _backColor,
+          child: InkWell(
+            customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius)),
+            //focusColor: _backHoverColor,
+            //hoverColor: _backHoverColor,
+            onTap: () async {
+              await onTapFunction();
+            },
+            child: Padding(padding: padding, child: widget),
           ),
-          child: Material(
-            borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-            color: _backColor,
-            child: InkWell(
-                customBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
-                ),
-                //focusColor: _backHoverColor,
-                //hoverColor: _backHoverColor,
-                onTap: () async {
-                  await onTapFunction();
-                },
-                child: Padding(
-                  padding: padding,
-                  child: widget,
-                )),
-          ));
+        ),
+      );
     } else {
       /* --------------------------------------------------------------- // Кнопка обычная -------------------------------------------------------------- */
       return Container(
@@ -246,24 +248,31 @@ class NsgButton extends StatelessWidget {
               }
             },
             child: Padding(
-                padding: padding,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (icon != null) Padding(padding: iconMargin, child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText)),
-                    if (text != '')
-                      Flexible(
-                        child: Text('$text',
-                            maxLines: 2,
-                            overflow: TextOverflow.clip,
-                            softWrap: true,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: _fontSize, fontWeight: _fontWeight, color: color ?? ControlOptions.instance.colorMainText)),
+              padding: padding,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (icon != null)
+                    Padding(
+                      padding: iconMargin,
+                      child: Icon(icon, color: iconColor ?? color ?? ControlOptions.instance.colorMainText),
+                    ),
+                  if (text != '')
+                    Flexible(
+                      child: Text(
+                        '$text',
+                        maxLines: 2,
+                        overflow: TextOverflow.clip,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: _fontSize, fontWeight: _fontWeight, color: color ?? ControlOptions.instance.colorMainText),
                       ),
-                  ],
-                )),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       );
@@ -279,9 +288,11 @@ class NsgButton extends StatelessWidget {
     }
     bool result = false;
     if (onTapAsync != null) {
-      await nsgFutureProgressAndException(func: () async {
-        result = await onTapAsync!();
-      });
+      await nsgFutureProgressAndException(
+        func: () async {
+          result = await onTapAsync!();
+        },
+      );
     }
 
     if (result && onAfterTapAsync != null) {

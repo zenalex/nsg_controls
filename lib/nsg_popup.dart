@@ -36,35 +36,35 @@ class NsgPopUp extends StatefulWidget {
   final NsgBaseController? editPageController;
   Color? colorText;
   Color? colorTitleText;
-  NsgPopUp(
-      {Key? key,
-      this.title = '',
-      this.title2 = '',
-      this.text,
-      this.hint,
-      this.cancelText,
-      this.margin = const EdgeInsets.all(10),
-      this.confirmText,
-      this.onCancel,
-      this.popOnConfirm = true,
-      this.onConfirm,
-      this.getContent,
-      this.height,
-      this.maxheight,
-      this.width,
-      this.contentSecondary,
-      this.contentTop,
-      this.contentBottom,
-      this.dataController,
-      this.colorText,
-      this.colorTitleText,
-      this.disableScroll = false,
-      this.hideBackButton = false,
-      this.hideCheckButton = false,
-      this.showCloseButton = false,
-      this.editPageController,
-      this.elementEditPageName})
-      : super(key: key);
+  NsgPopUp({
+    super.key,
+    this.title = '',
+    this.title2 = '',
+    this.text,
+    this.hint,
+    this.cancelText,
+    this.margin = const EdgeInsets.all(10),
+    this.confirmText,
+    this.onCancel,
+    this.popOnConfirm = true,
+    this.onConfirm,
+    this.getContent,
+    this.height,
+    this.maxheight,
+    this.width,
+    this.contentSecondary,
+    this.contentTop,
+    this.contentBottom,
+    this.dataController,
+    this.colorText,
+    this.colorTitleText,
+    this.disableScroll = false,
+    this.hideBackButton = false,
+    this.hideCheckButton = false,
+    this.showCloseButton = false,
+    this.editPageController,
+    this.elementEditPageName,
+  });
 
   @override
   State<NsgPopUp> createState() => _NsgPopUpState();
@@ -124,28 +124,23 @@ class _NsgPopUpState extends State<NsgPopUp> {
   Widget _widgetData() {
     //var mediaQuery = MediaQuery.of(context);
     return Container(
-        padding: EdgeInsets.zero,
-        margin: EdgeInsets.zero,
-        //margin: MediaQuery.of(context).viewInsets,
-        width: widget.width,
-        height: widget.height,
-        constraints: BoxConstraints(
-          maxWidth: widget.width ?? 640,
-          maxHeight: widget.height ?? widget.maxheight ?? 400,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(nsgtheme.borderRadius),
-          color: ControlOptions.instance.colorMainBack,
-        ),
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+      padding: EdgeInsets.zero,
+      margin: EdgeInsets.zero,
+      //margin: MediaQuery.of(context).viewInsets,
+      width: widget.width,
+      height: widget.height,
+      constraints: BoxConstraints(maxWidth: widget.width ?? 640, maxHeight: widget.height ?? widget.maxheight ?? 400),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(nsgtheme.borderRadius), color: ControlOptions.instance.colorMainBack),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
           Container(
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.symmetric(horizontal: 3),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(nsgtheme.borderRadius),
-                topLeft: Radius.circular(nsgtheme.borderRadius),
-              ),
+              borderRadius: BorderRadius.only(topRight: Radius.circular(nsgtheme.borderRadius), topLeft: Radius.circular(nsgtheme.borderRadius)),
               color: ControlOptions.instance.colorMain,
             ),
             child: Row(
@@ -153,50 +148,56 @@ class _NsgPopUpState extends State<NsgPopUp> {
                 if (widget.hideBackButton == false)
                   Center(
                     child: IconButton(
-                        iconSize: 32,
-                        icon: Icon(Icons.arrow_back_ios_new, color: widget.colorTitleText, size: 32), // set your color here
-                        onPressed: () {
-                          if (widget.onCancel != null) {
-                            widget.onCancel!();
-                          } else {
-                            Navigator.pop(context, false);
-                          }
-                        }),
+                      iconSize: 32,
+                      icon: Icon(Icons.arrow_back_ios_new, color: widget.colorTitleText, size: 32), // set your color here
+                      onPressed: () {
+                        if (widget.onCancel != null) {
+                          widget.onCancel!();
+                        } else {
+                          Navigator.pop(context, false);
+                        }
+                      },
+                    ),
                   )
                 else
                   const SizedBox(width: 40),
                 Expanded(
-                  child: Text(widget.title,
-                      textAlign: TextAlign.center, style: TextStyle(color: widget.colorTitleText, fontWeight: FontWeight.bold, fontSize: 18)),
+                  child: Text(
+                    widget.title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: widget.colorTitleText, fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                 ),
                 if (widget.editPageController != null && widget.elementEditPageName != null)
                   IconButton(
-                      icon: Icon(Icons.add, color: widget.colorText, size: 24),
-                      onPressed: () {
-                        if (widget.editPageController != null && widget.elementEditPageName != null) {
-                          (widget.editPageController! as NsgDataController).itemNewPageOpen(widget.elementEditPageName!);
-                        }
-                      }),
+                    icon: Icon(Icons.add, color: widget.colorText, size: 24),
+                    onPressed: () {
+                      if (widget.editPageController != null && widget.elementEditPageName != null) {
+                        (widget.editPageController! as NsgDataController).itemNewPageOpen(widget.elementEditPageName!);
+                      }
+                    },
+                  ),
                 if (!widget.hideCheckButton)
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                     decoration: BoxDecoration(color: widget.colorTitleText, borderRadius: BorderRadius.circular(10)),
                     child: IconButton(
-                        icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: nsgtheme.colorPrimary, size: 24), // set your color here
-                        onPressed: () async {
-                          if (widget.onConfirm != null && widget.showCloseButton == false) {
-                            if (widget.popOnConfirm) Navigator.of(context).pop();
-                            widget.onConfirm!();
+                      icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: nsgtheme.colorPrimary, size: 24), // set your color here
+                      onPressed: () async {
+                        if (widget.onConfirm != null && widget.showCloseButton == false) {
+                          if (widget.popOnConfirm) Navigator.of(context).pop();
+                          widget.onConfirm!();
+                        }
+                        if (widget.showCloseButton == true) {
+                          if (widget.onCancel != null) {
+                            widget.onCancel!();
+                            Navigator.of(context).pop();
+                          } else {
+                            Navigator.of(context).pop();
                           }
-                          if (widget.showCloseButton == true) {
-                            if (widget.onCancel != null) {
-                              widget.onCancel!();
-                              Navigator.of(context).pop();
-                            } else {
-                              Navigator.of(context).pop();
-                            }
-                          }
-                        }),
+                        }
+                      },
+                    ),
                   )
                 else
                   SizedBox(width: 40),
@@ -210,19 +211,18 @@ class _NsgPopUpState extends State<NsgPopUp> {
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                 child: widget.disableScroll
                     ? widget.dataController == null
-                        ? widget.contentTop ?? _getContent()
-                        : widget.dataController!.obx(
-                            (state) => widget.contentTop ?? _getContent(),
-                          )
+                          ? widget.contentTop ?? _getContent()
+                          : widget.dataController!.obx((state) => widget.contentTop ?? _getContent())
                     : Scrollbar(
                         controller: controller1,
                         thickness: 5,
                         thumbVisibility: true,
                         child: SingleChildScrollView(
-                            controller: controller1,
-                            child: widget.dataController == null
-                                ? widget.contentTop ?? _getContent()
-                                : widget.dataController!.obx((state) => widget.contentTop ?? _getContent())),
+                          controller: controller1,
+                          child: widget.dataController == null
+                              ? widget.contentTop ?? _getContent()
+                              : widget.dataController!.obx((state) => widget.contentTop ?? _getContent()),
+                        ),
                       ),
               ),
             ),
@@ -246,7 +246,10 @@ class _NsgPopUpState extends State<NsgPopUp> {
                         controller: controller2,
                         thickness: 5,
                         thumbVisibility: true,
-                        child: SingleChildScrollView(controller: controller2, child: Wrap(children: widget.contentSecondary!)),
+                        child: SingleChildScrollView(
+                          controller: controller2,
+                          child: Wrap(children: widget.contentSecondary!),
+                        ),
                       ),
                     ),
                   ],
@@ -265,30 +268,34 @@ class _NsgPopUpState extends State<NsgPopUp> {
           if (widget.hint != null)
             Container(
               padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
-              child: Text('${widget.hint}', textAlign: TextAlign.center, style: TextStyle(color: widget.colorText?.withAlpha(128))),
+              child: Text(
+                '${widget.hint}',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: widget.colorText?.withAlpha(128)),
+              ),
             ),
           if (widget.contentBottom != null)
             Container(
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(nsgtheme.borderRadius),
-                  bottomLeft: Radius.circular(nsgtheme.borderRadius),
-                ),
+                borderRadius: BorderRadius.only(bottomRight: Radius.circular(nsgtheme.borderRadius), bottomLeft: Radius.circular(nsgtheme.borderRadius)),
                 color: ControlOptions.instance.colorText.withAlpha(13),
               ),
               child: widget.contentBottom!,
             ),
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget _getContent() {
     return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: widget.getContent!());
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: widget.getContent!(),
+    );
   }
 }
 

@@ -10,9 +10,16 @@ class NsgIconButton extends StatefulWidget {
   final Color? color;
   final Color? backColor;
   final String? svg;
-  const NsgIconButton(
-      {Key? key, this.icon, required this.onPressed, this.color, this.backColor, this.size = 24, this.padding = const EdgeInsets.all(10), this.svg})
-      : super(key: key);
+  const NsgIconButton({
+    super.key,
+    this.icon,
+    required this.onPressed,
+    this.color,
+    this.backColor,
+    this.size = 24,
+    this.padding = const EdgeInsets.all(10),
+    this.svg,
+  });
 
   @override
   State<NsgIconButton> createState() => _NsgIconButtonState();
@@ -53,11 +60,7 @@ class _NsgIconButtonState extends State<NsgIconButton> {
                     width: widget.size,
                     colorFilter: ColorFilter.mode(widget.color ?? ControlOptions.instance.colorMain, BlendMode.srcIn),
                   )
-                : Icon(
-                    widget.icon,
-                    size: widget.size,
-                    color: widget.color ?? ControlOptions.instance.colorMain,
-                  ),
+                : Icon(widget.icon, size: widget.size, color: widget.color ?? ControlOptions.instance.colorMain),
           ),
         ),
       ),

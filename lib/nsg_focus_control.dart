@@ -43,12 +43,7 @@ class _NsgFocusItemState extends State<NsgFocusItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      onFocusChange: (hasFocus) {},
-      focusNode: _focusNode,
-      skipTraversal: widget.tabIndex == null,
-      child: widget.child,
-    );
+    return Focus(onFocusChange: (hasFocus) {}, focusNode: _focusNode, skipTraversal: widget.tabIndex == null, child: widget.child);
   }
 }
 
@@ -144,7 +139,9 @@ class NsgFocusManager extends StatelessWidget {
           }
         }
       },
-      child: FocusScope(child: NsgFocusScope(registerNode: controller.registerNode, unregisterNode: controller.unregisterNode, child: child)),
+      child: FocusScope(
+        child: NsgFocusScope(registerNode: controller.registerNode, unregisterNode: controller.unregisterNode, child: child),
+      ),
     );
   }
 }
@@ -153,12 +150,7 @@ class NsgFocusScope extends InheritedWidget {
   final void Function(FocusNode, int? index) registerNode;
   final void Function(FocusNode) unregisterNode;
 
-  const NsgFocusScope({
-    Key? key,
-    required Widget child,
-    required this.registerNode,
-    required this.unregisterNode,
-  }) : super(key: key, child: child);
+  const NsgFocusScope({super.key, required super.child, required this.registerNode, required this.unregisterNode});
 
   static NsgFocusScope? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<NsgFocusScope>();

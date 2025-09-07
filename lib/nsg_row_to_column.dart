@@ -8,13 +8,13 @@ class NsgRowToColumn extends StatefulWidget {
   final CrossAxisAlignment crossAxisAlignment;
 
   const NsgRowToColumn({
-    Key? key,
+    super.key,
     required this.children,
     this.addExpanded = false,
     this.switchWidth = 400,
     this.gap = 0,
     this.crossAxisAlignment = CrossAxisAlignment.center,
-  }) : super(key: key);
+  });
 
   @override
   State<NsgRowToColumn> createState() => _NsgRowToColumnState();

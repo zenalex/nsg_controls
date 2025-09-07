@@ -24,7 +24,7 @@ class NsgAppBar extends StatelessWidget {
   final Color? color;
   final Color? backColor;
   const NsgAppBar({
-    Key? key,
+    super.key,
     this.text = '',
     this.text2,
     this.icon,
@@ -40,7 +40,7 @@ class NsgAppBar extends StatelessWidget {
     this.bottomCircular,
     this.color,
     this.backColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

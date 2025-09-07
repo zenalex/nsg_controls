@@ -40,7 +40,7 @@ class NsgTimePicker extends StatefulWidget {
   final Function(Duration endDate)? onValidTime;
 
   const NsgTimePicker({
-    Key? key,
+    super.key,
     required this.initialTime,
     // this.textFormFieldType = TextFormFieldType.underlineInputBorder,
     required this.onClose,
@@ -57,7 +57,7 @@ class NsgTimePicker extends StatefulWidget {
     // this.fieldColor,
     // this.lableWidget,
     // this.textStyle,
-  }) : super(key: key);
+  });
 
   void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
     DateTime today = DateTime.now();
@@ -199,7 +199,7 @@ class TimePickerContent extends StatefulWidget {
   final DateTime initialTime;
   final DateTime? dateForTime;
   final Function(DateTime endDate) onChange;
-  const TimePickerContent({Key? key, required this.initialTime, required this.onChange, this.dateForTime}) : super(key: key);
+  const TimePickerContent({super.key, required this.initialTime, required this.onChange, this.dateForTime});
 
   @override
   State<TimePickerContent> createState() => _TimePickerContentState();
@@ -390,7 +390,7 @@ class NsgCupertinoTimePicker extends StatefulWidget {
   DateTime initialDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  NsgCupertinoTimePicker({Key? key, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
+  NsgCupertinoTimePicker({super.key, required this.initialDateTime, required this.onDateTimeChanged});
 
   @override
   State<NsgCupertinoTimePicker> createState() => NsgCupertinoTimeState();

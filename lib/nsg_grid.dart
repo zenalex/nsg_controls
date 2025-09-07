@@ -19,62 +19,67 @@ class NsgGrid extends StatelessWidget {
 
   /// Количество виджетов по горизонтали
   final int crossAxisCount;
-  const NsgGrid(
-      {Key? key, required this.children, this.crossAxisCount = 3, this.centered = true, this.vGap = 0, this.hGap = 0, this.needExpanded = true, this.width})
-      : super(key: key);
+  const NsgGrid({
+    super.key,
+    required this.children,
+    this.crossAxisCount = 3,
+    this.centered = true,
+    this.vGap = 0,
+    this.hGap = 0,
+    this.needExpanded = true,
+    this.width,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      var axisCount = crossAxisCount;
-      if (width != null) {
-        axisCount = (constraints.maxWidth / width!).floor();
-      }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        var axisCount = crossAxisCount;
+        if (width != null) {
+          axisCount = (constraints.maxWidth / width!).floor();
+        }
 
-      int count = 0;
-      List<Widget> list = [];
-      List<Widget> row = [];
+        int count = 0;
+        List<Widget> list = [];
+        List<Widget> row = [];
 
-      for (var element in children) {
-        row.add(Expanded(child: element));
+        for (var element in children) {
+          row.add(Expanded(child: element));
 
-        count++;
-        if (count >= axisCount) {
+          count++;
+          if (count >= axisCount) {
+            // Создаем строку с отступами
+            list.add(
+              IntrinsicHeight(
+                child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addHorizontalGaps(row)),
+              ),
+            );
+
+            // Сбрасываем счетчики
+            count = 0;
+            row = [];
+          }
+        }
+
+        // Обрабатываем оставшиеся элементы, если они есть
+        if (row.isNotEmpty) {
+          // Добавляем пустые элементы для заполнения строки
+          while (row.length < axisCount) {
+            row.add(const Expanded(child: SizedBox()));
+          }
+
           // Создаем строку с отступами
-          list.add(IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: _addHorizontalGaps(row),
+          list.add(
+            IntrinsicHeight(
+              child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addHorizontalGaps(row)),
             ),
-          ));
-
-          // Сбрасываем счетчики
-          count = 0;
-          row = [];
-        }
-      }
-
-      // Обрабатываем оставшиеся элементы, если они есть
-      if (row.isNotEmpty) {
-        // Добавляем пустые элементы для заполнения строки
-        while (row.length < axisCount) {
-          row.add(const Expanded(child: SizedBox()));
+          );
         }
 
-        // Создаем строку с отступами
-        list.add(IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: _addHorizontalGaps(row),
-          ),
-        ));
-      }
-
-      // Добавляем вертикальные отступы между строками
-      return Column(
-        children: _addVerticalGaps(list),
-      );
-    });
+        // Добавляем вертикальные отступы между строками
+        return Column(children: _addVerticalGaps(list));
+      },
+    );
   }
 
   /// Добавляет горизонтальные отступы между элементами строки

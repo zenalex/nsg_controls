@@ -34,7 +34,7 @@ class NsgFilePicker extends StatefulWidget {
   final bool fromGallery;
 
   NsgFilePicker({
-    Key? key,
+    super.key,
     this.filePicker = const NsgFilePickerProvider(),
     this.needCrop = false,
     this.showAsWidget = false,
@@ -45,7 +45,7 @@ class NsgFilePicker extends StatefulWidget {
     this.textChooseFile,
     this.oneFile = false,
     this.fromGallery = true,
-  }) : super(key: key) {
+  }) {
     _resisterComponents();
   }
 
@@ -341,7 +341,7 @@ class NsgImagePickerButton extends StatelessWidget {
   final void Function() onPressed;
   final void Function() onPressed2;
   final String textChooseFile;
-  const NsgImagePickerButton({Key? key, required this.onPressed, required this.onPressed2, required this.textChooseFile}) : super(key: key);
+  const NsgImagePickerButton({super.key, required this.onPressed, required this.onPressed2, required this.textChooseFile});
 
   @override
   Widget build(BuildContext context) {

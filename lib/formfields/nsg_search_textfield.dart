@@ -8,7 +8,7 @@ class NsgSearchTextfield extends StatefulWidget {
   final NsgBaseController? controller;
   final double borderRadius;
   final Function(String text)? onChanged;
-  const NsgSearchTextfield({Key? key, required this.controller, this.borderRadius = 20, required this.onChanged}) : super(key: key);
+  const NsgSearchTextfield({super.key, required this.controller, this.borderRadius = 20, required this.onChanged});
 
   @override
   State<NsgSearchTextfield> createState() => _NsgSearchTextfieldState();

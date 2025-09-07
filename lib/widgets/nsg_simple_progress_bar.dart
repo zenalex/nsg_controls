@@ -8,9 +8,15 @@ class NsgSimpleProgressBar extends StatelessWidget {
   final double? width;
   final Duration delay;
   final bool disableAnimation;
-  const NsgSimpleProgressBar(
-      {Key? key, this.disableAnimation = false, this.colorPrimary, this.colorSecondary, this.size, this.width, this.delay = const Duration(seconds: 1)})
-      : super(key: key);
+  const NsgSimpleProgressBar({
+    super.key,
+    this.disableAnimation = false,
+    this.colorPrimary,
+    this.colorSecondary,
+    this.size,
+    this.width,
+    this.delay = const Duration(seconds: 1),
+  });
 
   @override
   Widget build(BuildContext context) {

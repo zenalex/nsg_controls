@@ -91,7 +91,7 @@ class NsgListPage extends StatelessWidget {
 
   final bool showLastAndFavourites;
   const NsgListPage({
-    Key? key,
+    super.key,
     this.contentPadding = EdgeInsets.zero,
     this.userSettingsController,
     this.userSettingsId = '',
@@ -123,7 +123,7 @@ class NsgListPage extends StatelessWidget {
     this.notificationController,
     this.notificationPosition = NsgAppBarNotificationPosition.leftIcon,
     this.availableButtons,
-  }) : super(key: key);
+  });
 
   const NsgListPage.list({
     super.key,

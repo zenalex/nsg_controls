@@ -16,17 +16,17 @@ class NsgTableRow extends StatefulWidget {
   final Color? backgroundColor;
   final Function(NsgTableRowState) rowStateCloseOthers;
 
-  const NsgTableRow(
-      {Key? key,
-      this.slideEnable = false,
-      this.rowFixedHeight,
-      this.backgroundColor,
-      required this.tableRow,
-      required this.dataItem,
-      required this.controller,
-      required this.rowStateList,
-      required this.rowStateCloseOthers})
-      : super(key: key);
+  const NsgTableRow({
+    super.key,
+    this.slideEnable = false,
+    this.rowFixedHeight,
+    this.backgroundColor,
+    required this.tableRow,
+    required this.dataItem,
+    required this.controller,
+    required this.rowStateList,
+    required this.rowStateCloseOthers,
+  });
 
   @override
   State<NsgTableRow> createState() => NsgTableRowState();
@@ -70,38 +70,40 @@ class NsgTableRowState extends State<NsgTableRow> {
       return intrinsicHeight(child: block());
     } else {
       return intrinsicHeight(
-          child: GestureDetector(
-              onHorizontalDragEnd: (a) {
-                if (_opened) {
-                  _translateX = 40;
-                } else {
-                  if (_translateX > 20) {
-                    _translateX = 40;
-                  } else {
-                    _translateX = 0;
-                  }
-                }
-                setState(() {});
-              },
-              onHorizontalDragUpdate: (details) {
-                widget.rowStateCloseOthers(this);
-                _translateX += details.delta.dx;
-                setState(() {});
-                if (_translateX < 40 && _opened) {
-                  _opened = false;
-                }
-                if (_translateX > 39) {
-                  // widget.element.seen = true;
-                  //techNotificationController.markAsRead(widget.element);
-                  _translateX = 40;
-                  _opened = true;
-                  setState(() {});
-                }
-                if (_translateX < 0) {
-                  _translateX = 0;
-                }
-              },
-              child: block()));
+        child: GestureDetector(
+          onHorizontalDragEnd: (a) {
+            if (_opened) {
+              _translateX = 40;
+            } else {
+              if (_translateX > 20) {
+                _translateX = 40;
+              } else {
+                _translateX = 0;
+              }
+            }
+            setState(() {});
+          },
+          onHorizontalDragUpdate: (details) {
+            widget.rowStateCloseOthers(this);
+            _translateX += details.delta.dx;
+            setState(() {});
+            if (_translateX < 40 && _opened) {
+              _opened = false;
+            }
+            if (_translateX > 39) {
+              // widget.element.seen = true;
+              //techNotificationController.markAsRead(widget.element);
+              _translateX = 40;
+              _opened = true;
+              setState(() {});
+            }
+            if (_translateX < 0) {
+              _translateX = 0;
+            }
+          },
+          child: block(),
+        ),
+      );
     }
   }
 
@@ -114,25 +116,29 @@ class NsgTableRowState extends State<NsgTableRow> {
             : Container(
                 width: 40,
                 decoration: BoxDecoration(
-                    border: Border(
-                  top: BorderSide(width: 1, color: ControlOptions.instance.colorMain),
-                )),
+                  border: Border(top: BorderSide(width: 1, color: ControlOptions.instance.colorMain)),
+                ),
                 child: Center(
-                    child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            widget.controller.toggleFavorite(widget.dataItem);
-                          });
-                        },
-                        child: Icon(isFavorite ? Icons.star : Icons.star_outline, color: ControlOptions.instance.colorMain)))),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        widget.controller.toggleFavorite(widget.dataItem);
+                      });
+                    },
+                    child: Icon(isFavorite ? Icons.star : Icons.star_outline, color: ControlOptions.instance.colorMain),
+                  ),
+                ),
+              ),
         AnimatedContainer(
-            decoration: BoxDecoration(color: widget.backgroundColor),
-            transform: Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, _translateX, 0, 0, 1),
-            duration: const Duration(milliseconds: 100),
-            child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
-                children: widget.tableRow)),
+          decoration: BoxDecoration(color: widget.backgroundColor),
+          transform: Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, _translateX, 0, 0, 1),
+          duration: const Duration(milliseconds: 100),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
+            children: widget.tableRow,
+          ),
+        ),
       ],
     );
   }

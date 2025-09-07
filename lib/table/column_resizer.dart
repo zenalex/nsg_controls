@@ -16,18 +16,18 @@ class ColumnLineResizer extends StatelessWidget {
   final Function(DragUpdateDetails, int) onDrag;
   final Function(int) onDragEnd;
   final Function(int) onHover;
-  const ColumnLineResizer(
-      {Key? key,
-      required this.number,
-      this.isExpanded = false,
-      this.touchY = 0,
-      this.isSelected,
-      this.showIcon,
-      this.color,
-      required this.onDrag,
-      required this.onDragEnd,
-      required this.onHover})
-      : super(key: key);
+  const ColumnLineResizer({
+    super.key,
+    required this.number,
+    this.isExpanded = false,
+    this.touchY = 0,
+    this.isSelected,
+    this.showIcon,
+    this.color,
+    required this.onDrag,
+    required this.onDragEnd,
+    required this.onHover,
+  });
 
   Color getColor() {
     return color ?? ControlOptions.instance.colorMainLight;
@@ -77,7 +77,10 @@ class ColumnLineResizer extends StatelessWidget {
                     ? Transform.translate(
                         offset: Offset(6, touchY - 5),
                         child: Transform.rotate(
-                            angle: -pi / 2, child: SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: ControlOptions.instance.colorMain))))
+                          angle: -pi / 2,
+                          child: SizedBox(width: 17, child: Icon(Icons.unfold_more_outlined, color: ControlOptions.instance.colorMain)),
+                        ),
+                      )
                     : const SizedBox(),
               ],
             ),
@@ -100,14 +103,14 @@ class ResizeLines extends StatefulWidget {
   /// Параметры колонок
   final List<NsgTableColumn> columns;
   final bool columnsEditMode;
-  const ResizeLines(
-      {Key? key,
-      required this.expandedColumnsCount,
-      required this.columns,
-      required this.columnsOnResize,
-      required this.columnsEditMode,
-      required this.onColumnsChange})
-      : super(key: key);
+  const ResizeLines({
+    super.key,
+    required this.expandedColumnsCount,
+    required this.columns,
+    required this.columnsOnResize,
+    required this.columnsEditMode,
+    required this.onColumnsChange,
+  });
 
   @override
   State<ResizeLines> createState() => _ResizeLinesState();
@@ -130,12 +133,11 @@ class _ResizeLinesState extends State<ResizeLines> {
     widget.columns.asMap().forEach((index, column) {
       //print("INDEX $index showIcon $showIcon");
       //print("selectedColumn $selectedColumn");
-      list.add(Row(
-        children: [
-          SizedBox(
-            width: widget.columns[index].width! - 32,
-          ),
-          ColumnLineResizer(
+      list.add(
+        Row(
+          children: [
+            SizedBox(width: widget.columns[index].width! - 32),
+            ColumnLineResizer(
               isExpanded: setLinesAroundExpanded(index),
               isSelected: selectedColumn == index ? true : false,
               touchY: touchY,
@@ -170,9 +172,11 @@ class _ResizeLinesState extends State<ResizeLines> {
                 }
               },
               showIcon: showIcon == index ? true : false,
-              number: index),
-        ],
-      ));
+              number: index,
+            ),
+          ],
+        ),
+      );
     });
     if (widget.columnsEditMode == true) {
       list.add(

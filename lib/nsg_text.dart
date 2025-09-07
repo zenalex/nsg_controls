@@ -40,18 +40,19 @@ class NsgText extends StatelessWidget {
   final NsgTextType? type;
   final NsgTextStyle? style;
   final TextAlign? textAlign;
-  const NsgText(this.text,
-      {Key? key,
-      this.margin = EdgeInsets.zero,
-      this.padding = const EdgeInsets.all(2),
-      this.overflow,
-      this.maxLines,
-      this.color,
-      this.backColor,
-      this.type,
-      this.style,
-      this.textAlign})
-      : super(key: key);
+  const NsgText(
+    this.text, {
+    super.key,
+    this.margin = EdgeInsets.zero,
+    this.padding = const EdgeInsets.all(2),
+    this.overflow,
+    this.maxLines,
+    this.color,
+    this.backColor,
+    this.type,
+    this.style,
+    this.textAlign,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +63,12 @@ class NsgText extends StatelessWidget {
     if (style != null) mergedStyle = mergedStyle.merge(style!.style);
     mergedStyle = mergedStyle.merge(TextStyle(color: color));
 
-    mergedStyle = mergedStyle.merge(const TextStyle(
-      overflow: TextOverflow.ellipsis,
-    ));
+    mergedStyle = mergedStyle.merge(const TextStyle(overflow: TextOverflow.ellipsis));
     return GestureDetector(
-        onLongPress: () {
-          Clipboard.setData(ClipboardData(text: text));
-          nsgSnackbar(text: 'Данные ячейки скопированы в буфер');
-          /*Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
+      onLongPress: () {
+        Clipboard.setData(ClipboardData(text: text));
+        nsgSnackbar(text: 'Данные ячейки скопированы в буфер');
+        /*Get.snackbar('Скопировано', 'Данные ячейки скопированы в буфер',
               icon: Icon(Icons.info, size: 32, color: ControlOptions.instance.colorMainText),
               titleText: null,
               duration: const Duration(seconds: 3),
@@ -79,32 +78,21 @@ class NsgText extends StatelessWidget {
               overlayBlur: 0,
               colorText: ControlOptions.instance.colorMainText,
               backgroundColor: ControlOptions.instance.colorMainDark);*/
-        },
-        child: backColor == null
-            ? Padding(
-                padding: margin,
-                child: Theme(
-                  data: ThemeData(
-                      textSelectionTheme: TextSelectionThemeData(
-                    selectionColor: ControlOptions.instance.colorMain.withAlpha(77),
-                  )),
-                  child: SelectableText(
-                    text,
-                    textAlign: textAlign,
-                    style: mergedStyle,
-                    maxLines: maxLines,
-                  ),
-                ),
-              )
-            : Container(
-                margin: margin,
-                padding: padding,
-                decoration: BoxDecoration(color: backColor),
-                child: SelectableText(
-                  text,
-                  textAlign: textAlign,
-                  maxLines: maxLines,
-                  style: mergedStyle,
-                )));
+      },
+      child: backColor == null
+          ? Padding(
+              padding: margin,
+              child: Theme(
+                data: ThemeData(textSelectionTheme: TextSelectionThemeData(selectionColor: ControlOptions.instance.colorMain.withAlpha(77))),
+                child: SelectableText(text, textAlign: textAlign, style: mergedStyle, maxLines: maxLines),
+              ),
+            )
+          : Container(
+              margin: margin,
+              padding: padding,
+              decoration: BoxDecoration(color: backColor),
+              child: SelectableText(text, textAlign: textAlign, maxLines: maxLines, style: mergedStyle),
+            ),
+    );
   }
 }

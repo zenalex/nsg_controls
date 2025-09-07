@@ -922,6 +922,7 @@ class _NsgInputState extends State<NsgInput> {
             for (var element in widget.dynamicList) {
               // ignore: sized_box_for_whitespace
               list.add(
+                // ignore: sized_box_for_whitespace
                 Container(
                   width: 300,
                   //color: element == selectedElement ? nsgtheme.colorPrimary : Colors.transparent,

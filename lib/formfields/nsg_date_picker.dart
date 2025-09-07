@@ -39,7 +39,7 @@ class NsgDatePicker extends StatefulWidget {
   final Function(DateTime endDate) onClose;
 
   const NsgDatePicker({
-    Key? key,
+    super.key,
     required this.initialTime,
     // this.textFormFieldType = TextFormFieldType.underlineInputBorder,
     required this.onClose,
@@ -56,7 +56,7 @@ class NsgDatePicker extends StatefulWidget {
     // this.fieldColor,
     // this.lableWidget,
     // this.textStyle,
-  }) : super(key: key);
+  });
 
   void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
     DateTime selectedDate = date;
@@ -358,7 +358,7 @@ class NsgCupertinoDatePicker extends StatefulWidget {
   final DateTime? firstDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  NsgCupertinoDatePicker({Key? key, this.firstDateTime, this.lastDateTime, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
+  NsgCupertinoDatePicker({super.key, this.firstDateTime, this.lastDateTime, required this.initialDateTime, required this.onDateTimeChanged});
 
   @override
   State<NsgCupertinoDatePicker> createState() => NsgCupertinoDateState();
@@ -411,7 +411,7 @@ class NsgCalendarDatePicker extends StatefulWidget {
   final DateTime? firstDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  NsgCalendarDatePicker({Key? key, this.lastDateTime, this.firstDateTime, required this.initialDateTime, required this.onDateTimeChanged}) : super(key: key);
+  NsgCalendarDatePicker({super.key, this.lastDateTime, this.firstDateTime, required this.initialDateTime, required this.onDateTimeChanged});
 
   @override
   State<NsgCalendarDatePicker> createState() => NsgCalendarDatePickerState();
