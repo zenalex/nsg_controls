@@ -150,7 +150,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
       }
     }
     for (var key in groupsMap.keys) {
-      groupsList.add(DataGroup(data: groupsMap[key]!.toList(), groupFieldName: fieldName));
+      groupsList.add(DataGroup(data: groupsMap[key]!.toList(), groupFieldName: fieldName, partOfDate: partOfDate));
     }
     return groupsList;
   }
@@ -167,34 +167,6 @@ extension DataGroupUi on DataGroup {
         decoration: BoxDecoration(color: nsgtheme.colorSecondary, borderRadius: BorderRadius.circular(10)),
         child: Row(children: [Center(child: Text(groupName))]),
       );
-    }
-  }
-}
-
-enum PartOfDate {
-  second,
-  minute,
-  hour,
-  day,
-  month,
-  year;
-
-  const PartOfDate();
-
-  String get formatTime {
-    switch (this) {
-      case second:
-        return "HH:mm:ss dd.MM.yyyy";
-      case minute:
-        return "HH:mm dd.MM.yyyy";
-      case hour:
-        return "HH dd.MM.yyyy";
-      case day:
-        return "dd.MM.yyyy";
-      case month:
-        return "MM.yyyy";
-      case year:
-        return "yyyy";
     }
   }
 }
