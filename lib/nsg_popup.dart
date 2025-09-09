@@ -301,7 +301,8 @@ class _NsgPopUpState extends State<NsgPopUp> {
 
 Widget nsgBackDrop({required Widget child}) {
   if (!kIsWeb) {
-    return BackdropFilter(filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0), child: child);
+    //  return BackdropFilter(filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0), child: child);
+    return child;
   } else {
     return child;
   }

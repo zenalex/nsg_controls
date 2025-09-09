@@ -87,6 +87,7 @@ Future<dynamic> showNsgDialog({
                         decoration: BoxDecoration(color: nsgtheme.colorMainBack.withAlpha(230)),
                         padding: const EdgeInsets.all(15),
                         child: NsgRowToColumn(
+                          gap: 10,
                           addExpanded: true,
                           switchWidth: 300,
                           children:
