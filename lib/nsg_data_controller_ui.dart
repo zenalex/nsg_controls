@@ -70,7 +70,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
         if (items.isEmpty) {
           return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tran.empty_list));
         } else {
-          if (i > scrollController.dataGroups.length) {
+          if (i >= scrollController.dataGroups.length) {
             if (scrollController.status == NsgLoadingScrollStatus.loading) {
               return NsgBaseController.getDefaultProgressIndicator();
             } else {
