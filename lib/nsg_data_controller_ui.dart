@@ -65,7 +65,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
 
     return ListView.builder(
       controller: scrollController,
-      itemCount: scrollController.dataGroups.length + (items.isEmpty ? 1 : 2),
+      itemCount: scrollController.dataGroups.length + 1,
       itemBuilder: (context, i) {
         if (items.isEmpty) {
           return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tran.empty_list));
