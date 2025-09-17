@@ -181,7 +181,9 @@ Widget widgetOverlay({
       padding: const EdgeInsets.all(5),
       child: IntrinsicWidth(
         child: listController == null
-            ? Column(mainAxisSize: MainAxisSize.min, children: list())
+            ? SingleChildScrollView(
+                child: Column(mainAxisSize: MainAxisSize.min, children: list()),
+              )
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
