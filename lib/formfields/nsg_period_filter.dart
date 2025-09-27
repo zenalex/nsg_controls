@@ -161,6 +161,7 @@ class NsgPeriodFilterContent extends StatefulWidget {
   final bool periodTimeEnabled;
   final Function(NsgPeriod)? onSelect;
   final NsgPeriod? period;
+
   const NsgPeriodFilterContent({super.key, this.onSelect, this.periodTimeEnabled = false, required this.controller, this.period});
 
   @override
@@ -174,14 +175,17 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
   DateTime time2 = DateTime(0).add(const Duration(hours: 23, minutes: 59));
   NsgPeriod date = NsgPeriod();
   late NsgPeriod period;
+  int customPeriodsIndex = 0;
 
   @override
   void initState() {
     super.initState();
     period = widget.period ?? widget.controller.controllerFilter.nsgPeriod;
+    date = period;
     date.beginDate = period.beginDate;
     date.endDate = period.endDate;
     _selected = period.type;
+    date.selectedType = _selected;
     _timeselected = widget.periodTimeEnabled;
   }
 
@@ -208,6 +212,9 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
       case NsgPeriodType.periodWidthTime:
         date.setToPeriodWithTime(date);
         break;
+      case NsgPeriodType.custom:
+        date.setToCustom(date);
+        break;
     }
   }
 
@@ -228,6 +235,30 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
     _setToSelected(_selected);
     widget.onSelect!(date);
     //print(_selected);
+
+    custom() {
+      return Row(
+        children: [
+          Expanded(
+            child: NsgCheckBox(
+              key: GlobalKey(),
+              simple: true,
+              margin: const EdgeInsets.only(top: 5),
+              radio: true,
+              label: (widget.period ?? widget.controller.controllerFilter.nsgPeriod).customPeriodsTitle,
+              value: _selected == NsgPeriodType.custom ? true : false,
+              onPressed: (value) {
+                _selected = NsgPeriodType.custom;
+                date.selectedType = _selected;
+                date.setToCustom(date);
+                setState(() {});
+              },
+            ),
+          ),
+        ],
+      );
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -257,7 +288,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 style: "widget",
                                 widget: Center(child: Icon(Icons.remove, color: nsgtheme.colorMainText)),
                                 onPressed: () {
-                                  date.minus();
+                                  date.minus(_selected);
                                   setState(() {});
                                 },
                               ),
@@ -274,17 +305,22 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                     });
                                   },
                                   child: Container(
+                                    height: 44,
                                     decoration: BoxDecoration(
                                       color: nsgtheme.colorSecondary,
                                       borderRadius: BorderRadius.circular(nsgtheme.borderRadius),
                                       border: Border.all(width: 2, color: nsgtheme.colorMain),
                                     ),
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                    child: Center(
-                                      child: Text(
-                                        date.dateTextWithoutTime(Localizations.localeOf(context).languageCode),
-                                        style: TextStyle(color: nsgtheme.colorBase.b100),
-                                      ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        if (_selected == NsgPeriodType.custom)
+                                          Text(date.customPeriods[date.customPeriodsIndex].name, style: TextStyle(color: nsgtheme.colorTertiary)),
+                                        Text(
+                                          date.dateTextWithoutTime(Localizations.localeOf(context).languageCode),
+                                          style: TextStyle(color: nsgtheme.colorBase.b100),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -299,7 +335,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 style: "widget",
                                 widget: Center(child: Icon(Icons.add, color: nsgtheme.colorMainText)),
                                 onPressed: () {
-                                  date.plus();
+                                  date.plus(_selected);
                                   setState(() {});
                                 },
                               ),
@@ -307,6 +343,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                           ],
                         ),
                       ),
+                      if (date.customPeriods.isNotEmpty) custom(),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -327,6 +364,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         value: _selected == NsgPeriodType.year ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.year;
+                                          date.selectedType = _selected;
                                           date.setToYear(date.beginDate);
                                           setState(() {});
                                         },
@@ -342,6 +380,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         value: _selected == NsgPeriodType.quarter ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.quarter;
+                                          date.selectedType = _selected;
                                           date.setToQuarter(date.beginDate);
                                           setState(() {});
                                         },
@@ -362,6 +401,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         value: _selected == NsgPeriodType.month ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.month;
+                                          date.selectedType = _selected;
                                           date.setToMonth(date.beginDate);
                                           setState(() {});
                                         },
@@ -377,6 +417,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         value: _selected == NsgPeriodType.week ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.week;
+                                          date.selectedType = _selected;
                                           date.setToWeek(date.beginDate);
                                           setState(() {});
                                         },
@@ -397,6 +438,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         value: _selected == NsgPeriodType.day ? true : false,
                                         onPressed: (value) {
                                           _selected = NsgPeriodType.day;
+                                          date.selectedType = _selected;
                                           date.setToDay(date.beginDate);
                                           setState(() {});
                                         },
@@ -444,6 +486,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         onPressed: (value) {
                                           if (_timeselected) {
                                             _selected = NsgPeriodType.periodWidthTime;
+                                            date.selectedType = _selected;
                                             date.beginDate = Jiffy.parseFromDateTime(
                                               date.beginDate,
                                             ).startOf(Unit.day).add(hours: time1.hour, minutes: time1.minute).dateTime;
@@ -453,6 +496,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                             date.setToPeriodWithTime(date);
                                           } else {
                                             _selected = NsgPeriodType.period;
+                                            date.selectedType = _selected;
                                             date.setToPeriod(date);
                                           }
 
@@ -520,10 +564,12 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                                     date.endDate,
                                                   ).startOf(Unit.day).add(hours: time2.hour, minutes: time2.minute).dateTime;
                                                   _selected = NsgPeriodType.periodWidthTime;
+                                                  date.selectedType = _selected;
                                                 } else {
                                                   date.beginDate = Jiffy.parseFromDateTime(date.beginDate).startOf(Unit.day).dateTime;
                                                   date.endDate = Jiffy.parseFromDateTime(date.endDate).startOf(Unit.day).dateTime;
                                                   _selected = NsgPeriodType.period;
+                                                  date.selectedType = _selected;
                                                 }
                                                 date.setToPeriodWithTime(date);
                                                 _timeselected = !_timeselected;
