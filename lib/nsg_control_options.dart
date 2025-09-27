@@ -475,6 +475,12 @@ Color stringToColor(String color) {
   return otherColor;
 }
 
+String colorToHex(Color color) {
+  var res = color.toARGB32().toRadixString(16).padLeft(8, '0');
+  print(res);
+  return res;
+}
+
 class ColorsCalc {
   Color dark(Color c) => Color.fromARGB(-1, (c.red * c.red) ~/ 255, (c.green * c.green) ~/ 255, (c.blue * c.blue) ~/ 255);
 
