@@ -7,7 +7,8 @@ import 'package:nsg_data/password/nsg_login_password_strength.dart';
 
 class NsgLoginParams implements NsgLoginParamsInterface {
   /// При добавлении этой функции появляется крестик закрытия окна логина/регистрации
-  VoidCallback? onClose;
+  VoidCallback? get onClose => null;
+  VoidCallback? get onLogin => null;
 
   ///Введенный пользователем телефон для авторизации
   String phoneNumber;
@@ -91,7 +92,6 @@ class NsgLoginParams implements NsgLoginParamsInterface {
   bool? headerMessageVisible;
 
   NsgLoginParams({
-    this.onClose,
     this.loginType,
     this.email = '',
     this.textEnter = 'Войти',
