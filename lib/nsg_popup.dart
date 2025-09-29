@@ -103,6 +103,8 @@ class _NsgPopUpState extends State<NsgPopUp> {
 
     return nsgBackDrop(
       child: Container(
+        width: widget.width,
+        height: widget.height,
         decoration: BoxDecoration(color: nsgtheme.colorModalBack),
         child: SimpleDialog(
           backgroundColor: Colors.transparent,
@@ -129,7 +131,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
       //margin: MediaQuery.of(context).viewInsets,
       width: widget.width,
       height: widget.height,
-      constraints: BoxConstraints(maxWidth: widget.width ?? 640, maxHeight: widget.height ?? widget.maxheight ?? 400),
+      constraints: BoxConstraints(maxWidth: widget.width ?? 640, maxHeight: widget.height ?? widget.maxheight ?? double.infinity),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(nsgtheme.borderRadius), color: ControlOptions.instance.colorMainBack),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
