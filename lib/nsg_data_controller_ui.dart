@@ -109,6 +109,162 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
     );
   });
 
+  Widget getGridWidget(
+    Widget? Function(T item) itemBuilder, {
+    Widget? onEmptyList,
+    Widget? Function(dynamic value)? dividerBuilder,
+    PartOfDate partOfDate = PartOfDate.day,
+    double spacing = 10,
+    double runSpacing = 10,
+    Key? key,
+  }) => obx((state) {
+    DataGroupList dataGroups;
+    if (groupFieldName != null) {
+      dataGroups = DataGroupList(_getGroupsByFieldName(groupFieldName!, partOfDate), needDivider: true);
+    } else {
+      dataGroups = DataGroupList([DataGroup(data: items, groupFieldName: "")]);
+    }
+
+    scrollController.dataGroups = dataGroups;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients && scrollController.lastOffset != 0.0) {
+        scrollController.jumpTo(scrollController.lastOffset);
+      }
+    });
+
+    if (items.isEmpty) {
+      return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20, right: 20), child: Text(tran.empty_list));
+    }
+
+    // Собираем все виджеты с учетом разделителей и группировки по 3 элемента
+    final List<Widget> widgetList = [];
+    final List<T> currentRowItems = [];
+
+    for (int i = 0; i < dataGroups.length; i++) {
+      final elem = dataGroups.getElemet(i);
+
+      if (elem.isDivider) {
+        // Если есть накопленные элементы, сначала добавляем их строкой
+        if (currentRowItems.isNotEmpty) {
+          _addRowToWidgetList(currentRowItems, widgetList, itemBuilder, spacing, runSpacing);
+          currentRowItems.clear();
+        }
+
+        // Добавляем разделитель
+        final dividerWidget = dividerBuilder?.call(elem.value) ?? elem.group.goupDividerWidget ?? SizedBox();
+        widgetList.add(Container(key: elem.key, child: dividerWidget));
+      } else {
+        // Добавляем элемент в текущую строку
+        currentRowItems.add(elem.value as T);
+
+        // Если набралось 3 элемента, создаем строку
+        if (currentRowItems.length == 3) {
+          _addRowToWidgetList(currentRowItems, widgetList, itemBuilder, spacing, runSpacing);
+          currentRowItems.clear();
+        }
+      }
+    }
+
+    // Добавляем оставшиеся элементы (меньше 3)
+    if (currentRowItems.isNotEmpty) {
+      _addRowToWidgetList(currentRowItems, widgetList, itemBuilder, spacing, runSpacing);
+    }
+
+    // Добавляем индикатор загрузки
+    if (scrollController.status == NsgLoadingScrollStatus.loading) {
+      widgetList.add(Center(child: NsgBaseController.getDefaultProgressIndicator()));
+    }
+
+    return SingleChildScrollView(
+      controller: scrollController,
+      child: Column(children: widgetList),
+    );
+  });
+
+  // Вспомогательный метод для добавления строки с 3 элементами
+  void _addRowToWidgetList(List<T> items, List<Widget> widgetList, Widget? Function(T item) itemBuilder, double spacing, double runSpacing) {
+    final List<Widget> rowChildren = [];
+
+    for (final item in items) {
+      final widget = itemBuilder(item) ?? SizedBox();
+      rowChildren.add(Expanded(child: widget));
+    }
+
+    // Добавляем пустые контейнеры если элементов меньше 3
+    while (rowChildren.length < 3) {
+      rowChildren.add(Expanded(child: SizedBox()));
+    }
+
+    widgetList.add(
+      Container(
+        margin: EdgeInsets.only(bottom: runSpacing),
+        key: Key('row_${widgetList.length}'),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, spacing: spacing, children: rowChildren),
+      ),
+    );
+  }
+
+  // Widget getGridWidget(
+  //   Widget? Function(T item) itemBuilder, {
+  //   Widget? onEmptyList,
+  //   Widget? Function(dynamic value)? dividerBuilder,
+  //   PartOfDate partOfDate = PartOfDate.day,
+  //   double aspectRatio = 1,
+  //   double mainAxisSpacing = 10,
+  //   double crossAxisSpacing = 10,
+  //   Key? key,
+  // }) => obx((state) {
+  //   DataGroupList dataGroups;
+  //   if (groupFieldName != null) {
+  //     dataGroups = DataGroupList(_getGroupsByFieldName(groupFieldName!, partOfDate), needDivider: true);
+  //   } else {
+  //     dataGroups = DataGroupList([DataGroup(data: items, groupFieldName: "")]);
+  //   }
+
+  //   scrollController.dataGroups = dataGroups;
+
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (scrollController.hasClients && scrollController.lastOffset != 0.0) {
+  //       scrollController.jumpTo(scrollController.lastOffset);
+  //     }
+  //   });
+  //   return GridView.builder(
+  //     controller: scrollController,
+  //     itemCount: scrollController.dataGroups.length + 1,
+  //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //       crossAxisCount: 3,
+  //       childAspectRatio: aspectRatio,
+  //       mainAxisSpacing: mainAxisSpacing,
+  //       crossAxisSpacing: crossAxisSpacing,
+  //     ),
+  //     itemBuilder: (context, i) {
+  //       if (items.isEmpty) {
+  //         return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tran.empty_list));
+  //       } else {
+  //         if (i >= scrollController.dataGroups.length) {
+  //           if (scrollController.status == NsgLoadingScrollStatus.loading) {
+  //             return NsgBaseController.getDefaultProgressIndicator();
+  //           } else {
+  //             return const SizedBox();
+  //           }
+  //         } else {
+  //           var elem = scrollController.dataGroups.getElemet(i);
+  //           if (elem.isDivider) {
+  //             if (dividerBuilder != null) {
+  //               return Container(key: elem.key, child: dividerBuilder(elem.value) ?? SizedBox());
+  //             } else {
+  //               return Container(key: elem.key, child: elem.group.goupDividerWidget);
+  //             }
+  //           } else {
+  //             return Container(key: elem.key, child: itemBuilder(elem.value as T) ?? SizedBox());
+  //           }
+  //         }
+  //       }
+  //     },
+  //   );
+  // });
+
   List<DataGroup> _getGroupsByFieldName(String fieldName, PartOfDate partOfDate) {
     List<DataGroup> groupsList = [];
     Map<dynamic, List<NsgDataItem>> groupsMap = {};
