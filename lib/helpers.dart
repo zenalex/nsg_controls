@@ -27,7 +27,7 @@ class Helper {
     if (imageIsPng) {
       return img.encodePng(fixedImage);
     } else {
-      return img.encodeJpg(quality: 75, fixedImage);
+      return img.encodeJpg(quality: 85, fixedImage);
     }
   }
 }

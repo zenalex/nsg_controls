@@ -47,8 +47,8 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
     Key? key,
   }) => obx((state) {
     DataGroupList dataGroups;
-    if (grFieldName != null) {
-      dataGroups = DataGroupList(_getGroupsByFieldName(grFieldName!, partOfDate), needDivider: true);
+    if (groupFieldName != null) {
+      dataGroups = DataGroupList(_getGroupsByFieldName(groupFieldName!, partOfDate), needDivider: true);
     } else {
       dataGroups = DataGroupList([DataGroup(data: items, groupFieldName: "")]);
     }
