@@ -116,6 +116,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
     PartOfDate partOfDate = PartOfDate.day,
     double spacing = 10,
     double runSpacing = 10,
+    int axisCount = 3,
     Key? key,
   }) => obx((state) {
     DataGroupList dataGroups;
@@ -147,7 +148,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
       if (elem.isDivider) {
         // Если есть накопленные элементы, сначала добавляем их строкой
         if (currentRowItems.isNotEmpty) {
-          _addRowToWidgetList(currentRowItems, widgetList, itemBuilder, spacing, runSpacing);
+          _addRowToWidgetList(currentRowItems, widgetList, itemBuilder, spacing, runSpacing, axisCount);
           currentRowItems.clear();
         }
 
@@ -159,8 +160,8 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
         currentRowItems.add(elem.value as T);
 
         // Если набралось 3 элемента, создаем строку
-        if (currentRowItems.length == 3) {
-          _addRowToWidgetList(currentRowItems, widgetList, itemBuilder, spacing, runSpacing);
+        if (currentRowItems.length == axisCount) {
+          _addRowToWidgetList(currentRowItems, widgetList, itemBuilder, spacing, runSpacing, axisCount);
           currentRowItems.clear();
         }
       }
@@ -168,7 +169,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
 
     // Добавляем оставшиеся элементы (меньше 3)
     if (currentRowItems.isNotEmpty) {
-      _addRowToWidgetList(currentRowItems, widgetList, itemBuilder, spacing, runSpacing);
+      _addRowToWidgetList(currentRowItems, widgetList, itemBuilder, spacing, runSpacing, axisCount);
     }
 
     // Добавляем индикатор загрузки
@@ -183,7 +184,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
   });
 
   // Вспомогательный метод для добавления строки с 3 элементами
-  void _addRowToWidgetList(List<T> items, List<Widget> widgetList, Widget? Function(T item) itemBuilder, double spacing, double runSpacing) {
+  void _addRowToWidgetList(List<T> items, List<Widget> widgetList, Widget? Function(T item) itemBuilder, double spacing, double runSpacing, int axisCount) {
     final List<Widget> rowChildren = [];
 
     for (final item in items) {
@@ -192,7 +193,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
     }
 
     // Добавляем пустые контейнеры если элементов меньше 3
-    while (rowChildren.length < 3) {
+    while (rowChildren.length < axisCount) {
       rowChildren.add(Expanded(child: SizedBox()));
     }
 
