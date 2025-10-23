@@ -33,27 +33,16 @@ class _NsgRowToColumnState extends State<NsgRowToColumn> {
               children[i] = Expanded(child: children[i]);
             }
           }
-          if (widget.gap > 0) {
-            var length = children.length - 1;
-            for (var i = 0; i < length; i++) {
-              children.insert(i * 2 + 1, SizedBox(width: widget.gap));
-            }
-          }
-          return Row(crossAxisAlignment: widget.crossAxisAlignment, children: children);
+          return Row(crossAxisAlignment: widget.crossAxisAlignment, spacing: widget.gap, children: children);
         } else {
           List<Widget> children = [];
           children.addAll(widget.children);
-          if (widget.gap > 0) {
-            var length = children.length;
-            for (var i = 0; i < length - 1; i++) {
-              children.insert(i * 2 + 1, SizedBox(height: widget.gap));
-            }
-          }
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: children,
+            spacing: widget.gap,
+            children: widget.addExpanded ? children.map((child) => Row(children: [Expanded(child: child)])).toList() : children,
           );
         }
       },
