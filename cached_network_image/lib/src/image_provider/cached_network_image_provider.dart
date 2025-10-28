@@ -1,4 +1,5 @@
 import 'dart:async' show Future, StreamController;
+import 'dart:developer' as dev;
 import 'dart:ui' as ui show Codec;
 
 import 'package:cached_network_image/src/image_provider/multi_image_stream_completer.dart';
@@ -47,7 +48,7 @@ class CachedNetworkImageProvider extends ImageProvider<CachedNetworkImageProvide
     NsgImageCacheManager? manager,
     this.cacheKey,
     this.imageRenderMethodForWeb = ImageRenderMethodForWeb.HtmlImage,
-  })  : url = null,
+  })  : url = imageItem!.globalFilePath(size ?? ImageSize.medium),
         cacheManager = manager ?? NsgImageCacheManager();
 
   /// CacheManager from which the image files are loaded.
@@ -98,6 +99,9 @@ class CachedNetworkImageProvider extends ImageProvider<CachedNetworkImageProvide
   @override
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, CachedNetworkImageProvider key, ImageErrorListener handleError) {
     super.resolveStreamForKey(configuration, stream, key, handleError);
+    if (PaintingBinding.instance.imageCache.containsKey(key)) {
+      dev.log("imageInMemory!");
+    }
     stream.completer?.addListener(
       ImageStreamListener(
         (image, synchronousCall) {
