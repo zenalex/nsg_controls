@@ -191,7 +191,7 @@ class CachedNetworkImage extends StatelessWidget {
 
   final void Function(double? progress, bool isDone)? onLoadingProgress;
 
-  final double? maxImageWidth;
+  final ImageSize size;
 
   /// CachedNetworkImage shows a network image using a caching mechanism. It also
   /// provides support for a placeholder, showing an error and fading into the
@@ -204,7 +204,7 @@ class CachedNetworkImage extends StatelessWidget {
     this.httpHeaders,
     this.imageBuilder,
     this.placeholder,
-    this.maxImageWidth,
+    this.size = ImageSize.medium,
     this.onLoadingProgress,
     this.progressIndicatorBuilder,
     this.errorWidget,
@@ -242,7 +242,7 @@ class CachedNetworkImage extends StatelessWidget {
                 maxHeight: maxHeightDiskCache,
                 errorListener: errorListener,
                 scale: scale,
-                delayedDone: fadeOutDuration != null ? (fadeOutDuration + const Duration(milliseconds: 100)) : null,
+                delayedDone: fadeInDuration,
                 onLoadingProgress: onLoadingProgress)
             : CachedNetworkImageProvider.item(nsgImage as NsgImageItem?,
                 headers: httpHeaders,
@@ -253,9 +253,9 @@ class CachedNetworkImage extends StatelessWidget {
                 maxHeight: maxHeightDiskCache,
                 errorListener: errorListener,
                 scale: scale,
-                delayedDone: fadeOutDuration != null ? (fadeOutDuration + const Duration(milliseconds: 100)) : null,
+                delayedDone: fadeInDuration,
                 onLoadingProgress: onLoadingProgress,
-                maxImageWidth: maxImageWidth);
+                size: size);
 
   @override
   Widget build(BuildContext context) {

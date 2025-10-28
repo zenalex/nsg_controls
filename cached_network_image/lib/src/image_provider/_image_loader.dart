@@ -5,8 +5,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/src/image_provider/nsg_image_cache_manager.dart';
 import 'package:cached_network_image_platform_interface'
-        '/cached_network_image_platform_interface.dart' as platform
-    show ImageLoader;
+    '/cached_network_image_platform_interface.dart' as platform show ImageLoader;
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:cached_network_image_platform_interface/nsg_image_item.dart';
 
@@ -90,28 +89,19 @@ class ImageLoader implements platform.ImageLoader {
   ) async* {
     try {
       assert(
-        cacheManager is ImageCacheManager ||
-            (maxWidth == null && maxHeight == null),
+        cacheManager is ImageCacheManager || (maxWidth == null && maxHeight == null),
         'To resize the image with a CacheManager the '
         'CacheManager needs to be an ImageCacheManager. maxWidth and '
         'maxHeight will be ignored when a normal CacheManager is used.',
       );
 
       final Stream<FileResponse> stream = cacheManager is ImageCacheManager
-          ? cacheManager.getImageFile(url,
-              maxHeight: maxHeight,
-              maxWidth: maxWidth,
-              withProgress: true,
-              headers: headers,
-              key: cacheKey)
-          : cacheManager.getFileStream(url,
-              withProgress: true, headers: headers, key: cacheKey);
+          ? cacheManager.getImageFile(url, maxHeight: maxHeight, maxWidth: maxWidth, withProgress: true, headers: headers, key: cacheKey)
+          : cacheManager.getFileStream(url, withProgress: true, headers: headers, key: cacheKey);
 
       await for (final result in stream) {
         if (result is DownloadProgress) {
-          chunkEvents.add(ImageChunkEvent(
-              cumulativeBytesLoaded: result.downloaded,
-              expectedTotalBytes: result.totalSize));
+          chunkEvents.add(ImageChunkEvent(cumulativeBytesLoaded: result.downloaded, expectedTotalBytes: result.totalSize));
         }
         if (result is FileInfo) {
           final file = result.file;
@@ -145,13 +135,11 @@ class ImageLoader implements platform.ImageLoader {
       Map<String, String>? headers,
       ImageRenderMethodForWeb imageRenderMethodForWeb,
       ui.VoidCallback evictImage,
-      {double? maxImageWidth}) {
+      ImageSize size) {
     return _loadFromNsgImage(item, cacheKey, chunkEvents, (bytes) async {
       final buffer = await ImmutableBuffer.fromUint8List(bytes);
       return decode(buffer);
-    }, cacheManager, maxHeight, maxWidth, headers, imageRenderMethodForWeb,
-        evictImage,
-        maxImageWidth: maxImageWidth);
+    }, cacheManager, maxHeight, maxWidth, headers, imageRenderMethodForWeb, evictImage, size);
   }
 
   // ignore: unused_element
@@ -166,35 +154,29 @@ class ImageLoader implements platform.ImageLoader {
       Map<String, String>? headers,
       ImageRenderMethodForWeb imageRenderMethodForWeb,
       VoidCallback evictImage,
-      {double? maxImageWidth}) async* {
+      ImageSize size) async* {
     try {
       assert(
-        cacheManager is ImageCacheManager ||
-            (maxWidth == null && maxHeight == null),
+        cacheManager is ImageCacheManager || (maxWidth == null && maxHeight == null),
         'To resize the image with a CacheManager the '
         'CacheManager needs to be an ImageCacheManager. maxWidth and '
         'maxHeight will be ignored when a normal CacheManager is used.',
       );
-      assert(
-          cacheManager is NsgImageCacheManager ||
-              (maxWidth == null && maxHeight == null),
-          'cacheManager должен быть NsgImageCacheManager');
+      assert(cacheManager is NsgImageCacheManager || (maxWidth == null && maxHeight == null), 'cacheManager должен быть NsgImageCacheManager');
 
       final Stream<FileResponse> stream = cacheManager is ImageCacheManager
           ? (cacheManager as NsgImageCacheManager).getImageFileUsingDataItem(
               item,
-              maxWidth: maxImageWidth,
+              size: size,
             )
           : (cacheManager as NsgImageCacheManager).getFileStreamUsingDataItem(
               item,
-              maxWidth: maxImageWidth,
+              size: size,
             );
 
       await for (final result in stream) {
         if (result is DownloadProgress) {
-          chunkEvents.add(ImageChunkEvent(
-              cumulativeBytesLoaded: result.downloaded,
-              expectedTotalBytes: result.totalSize));
+          chunkEvents.add(ImageChunkEvent(cumulativeBytesLoaded: result.downloaded, expectedTotalBytes: result.totalSize));
         }
         if (result is FileInfo) {
           final file = result.file;

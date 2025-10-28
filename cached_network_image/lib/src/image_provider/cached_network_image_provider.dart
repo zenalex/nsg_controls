@@ -32,13 +32,13 @@ class CachedNetworkImageProvider extends ImageProvider<CachedNetworkImageProvide
     this.cacheKey,
     this.imageRenderMethodForWeb = ImageRenderMethodForWeb.HtmlImage,
   })  : imageItem = null,
-        maxImageWidth = null;
+        size = null;
 
   CachedNetworkImageProvider.item(
     this.imageItem, {
     this.maxHeight,
     this.maxWidth,
-    this.maxImageWidth,
+    this.size,
     this.scale = 1.0,
     this.errorListener,
     this.delayedDone,
@@ -88,7 +88,7 @@ class CachedNetworkImageProvider extends ImageProvider<CachedNetworkImageProvide
 
   final Duration? delayedDone;
 
-  final double? maxImageWidth;
+  final ImageSize? size;
 
   @override
   Future<CachedNetworkImageProvider> obtainKey(ImageConfiguration configuration) {
@@ -210,7 +210,7 @@ class CachedNetworkImageProvider extends ImageProvider<CachedNetworkImageProvide
       return ImageLoader().loadImageFromNsgItemAsync(
           imageItem!, cacheKey, chunkEvents, decode, cacheManager ?? defaultCacheManager, maxHeight, maxWidth, headers, imageRenderMethodForWeb, () {
         PaintingBinding.instance.imageCache.evict(key);
-      }, maxImageWidth: maxImageWidth);
+      }, size!);
     } else {
       return ImageLoader().loadImageAsync(
         loadUrl,

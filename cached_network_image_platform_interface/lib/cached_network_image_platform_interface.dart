@@ -70,7 +70,7 @@ class ImageLoader {
       Map<String, String>? headers,
       ImageRenderMethodForWeb imageRenderMethodForWeb,
       VoidCallback evictImage,
-      {double? maxImageWidth}) {
+      ImageSize size) {
     throw UnimplementedError();
   }
 }
