@@ -212,6 +212,7 @@ class ImageLoader implements platform.ImageLoader {
       platform.ImageRenderMethodForWeb imageRenderMethodForWeb,
       ui.VoidCallback evictImage,
       {double? maxImageWidth}) {
+    //TODO: Сейчас всегда грузится большая картинка в вебе!
     return _load(item.globalFilePath(ImageSize.large), cacheKey, chunkEvents, (bytes) async {
       final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
       return decode(buffer);
