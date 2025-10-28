@@ -5,10 +5,8 @@ import 'package:cached_network_image/src/image_provider/multi_image_stream_compl
 import 'package:cached_network_image/src/image_provider/nsg_image_cache_manager.dart';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart'
     if (dart.library.io) '_image_loader.dart'
-    if (dart.library.js_interop) 'package:cached_network_image_web/cached_network_image_web.dart'
-    show ImageLoader;
-import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart'
-    show ErrorListener, ImageRenderMethodForWeb;
+    if (dart.library.js_interop) 'package:cached_network_image_web/cached_network_image_web.dart' show ImageLoader;
+import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart' show ErrorListener, ImageRenderMethodForWeb;
 import 'package:cached_network_image_platform_interface/nsg_image_item.dart';
 
 import 'package:flutter/foundation.dart';
@@ -18,8 +16,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 /// IO implementation of the CachedNetworkImageProvider; the ImageProvider to
 /// load network images using a cache.
 @immutable
-class CachedNetworkImageProvider
-    extends ImageProvider<CachedNetworkImageProvider> {
+class CachedNetworkImageProvider extends ImageProvider<CachedNetworkImageProvider> {
   /// Creates an ImageProvider which loads an image from the [url], using the [scale].
   /// When the image fails to load [errorListener] is called.
   const CachedNetworkImageProvider(
@@ -94,9 +91,41 @@ class CachedNetworkImageProvider
   final double? maxImageWidth;
 
   @override
-  Future<CachedNetworkImageProvider> obtainKey(
-      ImageConfiguration configuration) {
+  Future<CachedNetworkImageProvider> obtainKey(ImageConfiguration configuration) {
     return SynchronousFuture<CachedNetworkImageProvider>(this);
+  }
+
+  @override
+  void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, CachedNetworkImageProvider key, ImageErrorListener handleError) {
+    super.resolveStreamForKey(configuration, stream, key, handleError);
+    stream.completer?.addListener(
+      ImageStreamListener(
+        (image, synchronousCall) {
+          if (delayedDone != null) {
+            Future.delayed(delayedDone!, () {
+              onLoadingProgress!(100, true);
+            });
+          } else {
+            onLoadingProgress!(100, true);
+          }
+        },
+        onChunk: (event) {
+          var totalSize = event.expectedTotalBytes;
+          var downloaded = event.cumulativeBytesLoaded;
+
+          if (onLoadingProgress != null) {
+            if (totalSize != null) {
+              onLoadingProgress!((downloaded / totalSize) * 100, false);
+            } else {
+              onLoadingProgress!(null, false);
+            }
+          }
+        },
+        onError: (Object error, StackTrace? trace) {
+          errorListener?.call(error);
+        },
+      ),
+    );
   }
 
   // @Deprecated('loadBuffer is deprecated, use loadImage instead')
@@ -160,35 +189,6 @@ class CachedNetworkImageProvider
       ],
     );
 
-    imageStreamCompleter.addListener(
-      ImageStreamListener(
-        (image, synchronousCall) {
-          if (delayedDone != null) {
-            Future.delayed(delayedDone!, () {
-              onLoadingProgress!(100, true);
-            });
-          } else {
-            onLoadingProgress!(100, true);
-          }
-        },
-        onChunk: (event) {
-          var totalSize = event.expectedTotalBytes;
-          var downloaded = event.cumulativeBytesLoaded;
-
-          if (onLoadingProgress != null) {
-            if (totalSize != null) {
-              onLoadingProgress!((downloaded / totalSize) * 100, false);
-            } else {
-              onLoadingProgress!(null, false);
-            }
-          }
-        },
-        onError: (Object error, StackTrace? trace) {
-          errorListener?.call(error);
-        },
-      ),
-    );
-
     if (errorListener != null) {
       imageStreamCompleter.addListener(
         ImageStreamListener(
@@ -203,23 +203,12 @@ class CachedNetworkImageProvider
     return imageStreamCompleter;
   }
 
-  Stream<ui.Codec> _loadImageAsync(
-      CachedNetworkImageProvider key,
-      StreamController<ImageChunkEvent> chunkEvents,
-      ImageDecoderCallback decode) {
+  Stream<ui.Codec> _loadImageAsync(CachedNetworkImageProvider key, StreamController<ImageChunkEvent> chunkEvents, ImageDecoderCallback decode) {
     assert(key == this);
     String loadUrl = url ?? "";
     if (cacheManager is NsgImageCacheManager && imageItem != null) {
       return ImageLoader().loadImageFromNsgItemAsync(
-          imageItem!,
-          cacheKey,
-          chunkEvents,
-          decode,
-          cacheManager ?? defaultCacheManager,
-          maxHeight,
-          maxWidth,
-          headers,
-          imageRenderMethodForWeb, () {
+          imageItem!, cacheKey, chunkEvents, decode, cacheManager ?? defaultCacheManager, maxHeight, maxWidth, headers, imageRenderMethodForWeb, () {
         PaintingBinding.instance.imageCache.evict(key);
       }, maxImageWidth: maxImageWidth);
     } else {
@@ -243,10 +232,7 @@ class CachedNetworkImageProvider
   @override
   bool operator ==(Object other) {
     if (other is CachedNetworkImageProvider) {
-      return ((cacheKey ?? url) == (other.cacheKey ?? other.url)) &&
-          scale == other.scale &&
-          maxHeight == other.maxHeight &&
-          maxWidth == other.maxWidth;
+      return ((cacheKey ?? url) == (other.cacheKey ?? other.url)) && scale == other.scale && maxHeight == other.maxHeight && maxWidth == other.maxWidth;
     }
     return false;
   }
