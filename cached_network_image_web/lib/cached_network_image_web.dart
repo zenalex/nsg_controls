@@ -7,8 +7,7 @@ import 'dart:ui' as ui;
 import 'dart:ui_web';
 
 import 'package:cached_network_image_platform_interface'
-        '/cached_network_image_platform_interface.dart' as platform
-    show ImageLoader, ImageRenderMethodForWeb;
+    '/cached_network_image_platform_interface.dart' as platform show ImageLoader, ImageRenderMethodForWeb;
 import 'package:cached_network_image_platform_interface/nsg_image_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -146,10 +145,7 @@ class ImageLoader implements platform.ImageLoader {
               state = _State.waitingForData;
             }
 
-            event.file
-                .readAsBytes()
-                .then((value) => decode(value))
-                .then((data) {
+            event.file.readAsBytes().then((value) => decode(value)).then((data) {
               streamController.add(data);
               if (state == _State.closing) {
                 streamController.close();
@@ -216,7 +212,10 @@ class ImageLoader implements platform.ImageLoader {
       platform.ImageRenderMethodForWeb imageRenderMethodForWeb,
       ui.VoidCallback evictImage,
       {double? maxImageWidth}) {
-    throw UnimplementedError();
+    return _load(item.globalFilePath(ImageSize.large), cacheKey, chunkEvents, (bytes) async {
+      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+      return decode(buffer);
+    }, cacheManager, maxHeight, maxWidth, headers, imageRenderMethodForWeb, evictImage);
   }
 }
 
