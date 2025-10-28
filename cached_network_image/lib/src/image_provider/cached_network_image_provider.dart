@@ -107,10 +107,10 @@ class CachedNetworkImageProvider extends ImageProvider<CachedNetworkImageProvide
         (image, synchronousCall) {
           if (delayedDone != null) {
             Future.delayed(delayedDone!, () {
-              onLoadingProgress!(100, true);
+              onLoadingProgress?.call(100, true);
             });
           } else {
-            onLoadingProgress!(100, true);
+            onLoadingProgress?.call(100, true);
           }
         },
         onChunk: (event) {
