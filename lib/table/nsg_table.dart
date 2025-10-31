@@ -57,6 +57,7 @@ class NsgTable extends StatefulWidget {
     this.userSettingsId = '',
     this.externaltableKey,
     this.forbidDeleting,
+    this.avoidExpandedInScroll = false,
   });
 
   /// Спрятать все линии
@@ -176,6 +177,10 @@ class NsgTable extends StatefulWidget {
   ///Идетнификатор данной таблицы в настройках пользователя
   final String userSettingsId;
 
+  /// Избегать использования Expanded внутри горизонтальных/неограниченных по ширине контейнеров
+  /// При true виджет не будет оборачивать ячейки в Expanded даже если колонка помечена как expanded
+  final bool avoidExpandedInScroll;
+
   final List<NsgTableRowState> rowStateList = [];
 
   closeAllSlided(List<NsgTableRow> tableRowList) {
@@ -226,10 +231,16 @@ class _NsgTableState extends State<NsgTable> {
 
   //Значения стилей для заголовков и строк по умолчанию
   AlignmentGeometry defaultHeaderAlign = Alignment.center;
-  TextStyle defaultHeaderTextStyle = TextStyle(color: ControlOptions.instance.colorMainText, fontSize: ControlOptions.instance.sizeM);
+  TextStyle defaultHeaderTextStyle = TextStyle(
+    color: ControlOptions.instance.colorMainText,
+    fontSize: ControlOptions.instance.sizeM,
+  );
   TextAlign defaultHeaderTextAlign = TextAlign.center;
   AlignmentGeometry defaultRowAlign = Alignment.center;
-  TextStyle defaultRowTextStyle = TextStyle(color: ControlOptions.instance.colorText, fontSize: ControlOptions.instance.sizeS);
+  TextStyle defaultRowTextStyle = TextStyle(
+    color: ControlOptions.instance.colorText,
+    fontSize: ControlOptions.instance.sizeS,
+  );
 
   //Выделенная строка и колонка
   NsgDataItem? _selectedRow;
@@ -249,7 +260,9 @@ class _NsgTableState extends State<NsgTable> {
 
   /// Оборачивание виджета в Expanded
   Widget wrapExpanded({required Widget child, bool? expanded, int? flex}) {
-    if (expanded == true && editMode != NsgTableEditMode.columnsWidth) {
+    if (expanded == true &&
+        editMode != NsgTableEditMode.columnsWidth &&
+        widget.avoidExpandedInScroll == false) {
       horizontalScrollEnabled = false;
       return Expanded(flex: flex ?? 1, child: child);
     } else {
@@ -289,9 +302,18 @@ class _NsgTableState extends State<NsgTable> {
           border: widget.hideLines
               ? null
               : Border(
-                  left: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
-                  top: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
-                  bottom: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
+                  left: BorderSide(
+                    width: 1,
+                    color: borderColor ?? ControlOptions.instance.colorMain,
+                  ),
+                  top: BorderSide(
+                    width: 1,
+                    color: borderColor ?? ControlOptions.instance.colorMain,
+                  ),
+                  bottom: BorderSide(
+                    width: 1,
+                    color: borderColor ?? ControlOptions.instance.colorMain,
+                  ),
                 ),
         ),
 
@@ -315,8 +337,14 @@ class _NsgTableState extends State<NsgTable> {
           border: widget.hideLines
               ? null
               : Border(
-                  left: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
-                  top: BorderSide(width: 1, color: borderColor ?? ControlOptions.instance.colorMain),
+                  left: BorderSide(
+                    width: 1,
+                    color: borderColor ?? ControlOptions.instance.colorMain,
+                  ),
+                  top: BorderSide(
+                    width: 1,
+                    color: borderColor ?? ControlOptions.instance.colorMain,
+                  ),
                 ),
         ),
 
@@ -329,12 +357,19 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   checkScrollbarIsVisible() {
-    if (containerKey.currentContext != null && wrapperKey.currentContext != null) {
+    if (containerKey.currentContext != null &&
+        wrapperKey.currentContext != null) {
       tableAlreadyBuilt = true;
       // double height = (containerKey.currentContext!.findRenderObject() as RenderBox).size.height;
       // double height2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.height;
-      double width = (containerKey.currentContext!.findRenderObject() as RenderBox).size.width;
-      double width2 = (wrapperKey.currentContext!.findRenderObject() as RenderBox).size.width;
+      double width =
+          (containerKey.currentContext!.findRenderObject() as RenderBox)
+              .size
+              .width;
+      double width2 =
+          (wrapperKey.currentContext!.findRenderObject() as RenderBox)
+              .size
+              .width;
       if (width <= width2 && width > 0) {
         horizontalScrollEnabled = false;
       }
@@ -354,7 +389,12 @@ class _NsgTableState extends State<NsgTable> {
   void initState() {
     super.initState();
     buildStyle = widget.style.style();
-    _updatetableKey = widget.externaltableKey ?? widget.controller.getUpdateKey('nsg_table ${Guid.newGuid()}', NsgUpdateKeyType.list);
+    _updatetableKey =
+        widget.externaltableKey ??
+        widget.controller.getUpdateKey(
+          'nsg_table ${Guid.newGuid()}',
+          NsgUpdateKeyType.list,
+        );
     widget.controller.registerUpdateKey(_updatetableKey);
     editModeLast = NsgTableEditMode.view;
     isMobile = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
@@ -370,19 +410,29 @@ class _NsgTableState extends State<NsgTable> {
 
     tableColumns = List.from(widget.columns);
     if (widget.userSettingsController != null) {
-      if (widget.userSettingsController!.settingsMap.containsKey(widget.userSettingsId)) {
-        fromJson(widget.userSettingsController!.settingsMap[widget.userSettingsId]);
+      if (widget.userSettingsController!.settingsMap.containsKey(
+        widget.userSettingsId,
+      )) {
+        fromJson(
+          widget.userSettingsController!.settingsMap[widget.userSettingsId],
+        );
       }
     }
-    isPeriodFilterOpen = widget.initialIsPeriodFilterOpen || widget.controller.controllerFilter.isPeriodAllowed;
+    isPeriodFilterOpen =
+        widget.initialIsPeriodFilterOpen ||
+        widget.controller.controllerFilter.isPeriodAllowed;
     if (widget.controller.controllerFilter.isSearchStringFilterOpen != null) {
-      isSearchStringFilterOpen = widget.controller.controllerFilter.isSearchStringFilterOpen!;
+      isSearchStringFilterOpen =
+          widget.controller.controllerFilter.isSearchStringFilterOpen!;
     } else {
-      isSearchStringFilterOpen = widget.initialIsSearchStringOpen || widget.controller.controllerFilter.searchString.isNotEmpty;
+      isSearchStringFilterOpen =
+          widget.initialIsSearchStringOpen ||
+          widget.controller.controllerFilter.searchString.isNotEmpty;
     }
 
     /// Выставляем режим просмотра таблицы в "Избранное" или "Просмотр"
-    if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) && widget.controller.recent.isNotEmpty) {
+    if (widget.availableButtons.contains(NsgTableMenuButtonType.recent) &&
+        widget.controller.recent.isNotEmpty) {
       editMode = NsgTableEditMode.recent;
       isSearchStringFilterOpen = true;
       widget.controller.controllerFilter.isOpen = true;
@@ -413,8 +463,12 @@ class _NsgTableState extends State<NsgTable> {
       var fieldName = param.parameterName;
       var directrion = param.direction;
 
-      for (var column in tableColumns.where((column) => column.name == fieldName)) {
-        column.sort = directrion == NsgSortingDirection.descending ? NsgTableColumnSort.backward : NsgTableColumnSort.forward;
+      for (var column in tableColumns.where(
+        (column) => column.name == fieldName,
+      )) {
+        column.sort = directrion == NsgSortingDirection.descending
+            ? NsgTableColumnSort.backward
+            : NsgTableColumnSort.forward;
       }
     }
   }
@@ -463,11 +517,18 @@ class _NsgTableState extends State<NsgTable> {
     /* ------------------------------------------- /// На Android и Ios убираем постоянно видимые скроллбары ------------------------------------------ */
     if (isMobile) {
       if (!horizontalScrollEnabled) {
-        return SingleChildScrollView(controller: scrollVert, key: UniqueKey(), scrollDirection: Axis.vertical, child: child);
+        return SingleChildScrollView(
+          controller: scrollVert,
+          key: UniqueKey(),
+          scrollDirection: Axis.vertical,
+          child: child,
+        );
       } else {
         return singleChildScrollViewCross(
           child: SingleChildScrollView(
-            padding: isMobile ? const EdgeInsets.only(bottom: 0) : const EdgeInsets.only(bottom: 16),
+            padding: isMobile
+                ? const EdgeInsets.only(bottom: 0)
+                : const EdgeInsets.only(bottom: 16),
             controller: scrollHor,
             key: UniqueKey(),
             scrollDirection: Axis.horizontal,
@@ -490,7 +551,12 @@ class _NsgTableState extends State<NsgTable> {
           key: UniqueKey(),
           thumbVisibility: true,
           trackVisibility: true,
-          child: SingleChildScrollView(controller: scrollVert, key: UniqueKey(), scrollDirection: Axis.vertical, child: child),
+          child: SingleChildScrollView(
+            controller: scrollVert,
+            key: UniqueKey(),
+            scrollDirection: Axis.vertical,
+            child: child,
+          ),
         );
       } else {
         return rawScrollBarVertCross(
@@ -506,14 +572,21 @@ class _NsgTableState extends State<NsgTable> {
             key: UniqueKey(),
             thumbVisibility: true,
             trackVisibility: true,
-            notificationPredicate: !hasVerticalScrollbar ? defaultScrollNotificationPredicate : (notif) => notif.depth == 1,
+            notificationPredicate: !hasVerticalScrollbar
+                ? defaultScrollNotificationPredicate
+                : (notif) => notif.depth == 1,
             child: singleChildScrollViewCross(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 0), // отступ снизу под скроллбар
+                padding: const EdgeInsets.only(
+                  bottom: 0,
+                ), // отступ снизу под скроллбар
                 controller: scrollHor,
                 key: UniqueKey(),
                 scrollDirection: Axis.horizontal,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [child]),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [child],
+                ),
               ),
             ),
           ),
@@ -551,7 +624,8 @@ class _NsgTableState extends State<NsgTable> {
 
   double getHeight() {
     if (containerKey.currentContext != null) {
-      RenderBox box = containerKey.currentContext!.findRenderObject() as RenderBox;
+      RenderBox box =
+          containerKey.currentContext!.findRenderObject() as RenderBox;
       //Offset position = box.localToGlobal(Offset.zero); //this is global position
       double height = box.size.height;
       //double y = position.dy; //this is y - I think it's what you want
@@ -578,11 +652,23 @@ class _NsgTableState extends State<NsgTable> {
               thumbVisibility: true,
               trackVisibility: true,
               child: Padding(
-                padding: EdgeInsets.only(bottom: widget.controller.currentStatus.isLoading ? 0 : 16), // TODO был отступ 16 пикселей. Мешает прогрессбару
-                child: SingleChildScrollView(controller: scrollHorHeader, key: UniqueKey(), scrollDirection: Axis.horizontal, child: child),
+                padding: EdgeInsets.only(
+                  bottom: widget.controller.currentStatus.isLoading ? 0 : 16,
+                ), // TODO был отступ 16 пикселей. Мешает прогрессбару
+                child: SingleChildScrollView(
+                  controller: scrollHorHeader,
+                  key: UniqueKey(),
+                  scrollDirection: Axis.horizontal,
+                  child: child,
+                ),
               ),
             )
-          : SingleChildScrollView(controller: scrollHorHeader, key: UniqueKey(), scrollDirection: Axis.horizontal, child: child);
+          : SingleChildScrollView(
+              controller: scrollHorHeader,
+              key: UniqueKey(),
+              scrollDirection: Axis.horizontal,
+              child: child,
+            );
     } else {
       return child;
     }
@@ -590,7 +676,10 @@ class _NsgTableState extends State<NsgTable> {
 
   Widget _rowcolumn({required List<Widget> children}) {
     if (Get.width > 400) {
-      return Row(crossAxisAlignment: CrossAxisAlignment.end, children: children);
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: children,
+      );
     } else {
       return Column(children: children);
     }
@@ -598,7 +687,9 @@ class _NsgTableState extends State<NsgTable> {
 
   Widget _expanded({required Widget child}) {
     if (Get.width > 400) {
-      return Expanded(child: child);
+      return widget.avoidExpandedInScroll
+          ? Flexible(fit: FlexFit.loose, child: child)
+          : Expanded(child: child);
     } else {
       return child;
     }
@@ -609,7 +700,9 @@ class _NsgTableState extends State<NsgTable> {
     for (var column in tableColumns.where((element) => element.visible)) {
       column.sort = NsgTableColumnSort.nosort;
       if (column.columns != null) {
-        for (var subcolumn in column.columns!.where((element) => element.visible)) {
+        for (var subcolumn in column.columns!.where(
+          (element) => element.visible,
+        )) {
           subcolumn.sort = NsgTableColumnSort.nosort;
         }
       }
@@ -644,7 +737,11 @@ class _NsgTableState extends State<NsgTable> {
   /// Копирование строки
   void rowCopy(NsgDataItem row) {
     if (widget.elementEditPageName != null) {
-      widget.controller.itemCopyPageOpen(row, widget.elementEditPageName!, needRefreshSelectedItem: true);
+      widget.controller.itemCopyPageOpen(
+        row,
+        widget.elementEditPageName!,
+        needRefreshSelectedItem: true,
+      );
       setState(() {
         editMode = NsgTableEditMode.view;
       });
@@ -663,9 +760,11 @@ class _NsgTableState extends State<NsgTable> {
       global: false,
       builder: (c) {
         /// Если выбран режим "Избранное", вместо массива объектов, подставляем массив избранных объектов favorites
-        if (editMode == NsgTableEditMode.favorites || editModeLast == NsgTableEditMode.favorites) {
+        if (editMode == NsgTableEditMode.favorites ||
+            editModeLast == NsgTableEditMode.favorites) {
           items = widget.controller.favorites;
-        } else if (editMode == NsgTableEditMode.recent || editModeLast == NsgTableEditMode.recent) {
+        } else if (editMode == NsgTableEditMode.recent ||
+            editModeLast == NsgTableEditMode.recent) {
           items = widget.controller.recent;
         } else {
           items = widget.controller.items;
@@ -706,7 +805,8 @@ class _NsgTableState extends State<NsgTable> {
         }
         screenWidth = screenWidth - 0;
 
-        double expandedColumnWidth = (screenWidth - notExpandedColumnsWidth) / expandedColumnsFlexCount;
+        double expandedColumnWidth =
+            (screenWidth - notExpandedColumnsWidth) / expandedColumnsFlexCount;
         widget.columns.asMap().forEach((index, column) {
           if (column.expanded) {
             column.width = expandedColumnWidth * column.flex;
@@ -737,19 +837,42 @@ class _NsgTableState extends State<NsgTable> {
             if (sortElement != NsgTableColumnSort.nosort) {
               subchild = Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: Align(
-                      alignment: column.headerAlign ?? defaultHeaderAlign,
-                      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: _headerWidget(column)),
-                    ),
-                  ),
+                  widget.avoidExpandedInScroll
+                      ? Flexible(
+                          fit: FlexFit.loose,
+                          child: Align(
+                            alignment: column.headerAlign ?? defaultHeaderAlign,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 10,
+                              ),
+                              child: _headerWidget(column),
+                            ),
+                          ),
+                        )
+                      : Expanded(
+                          child: Align(
+                            alignment: column.headerAlign ?? defaultHeaderAlign,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 10,
+                              ),
+                              child: _headerWidget(column),
+                            ),
+                          ),
+                        ),
                   Align(
                     alignment: column.headerAlign ?? defaultHeaderAlign,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Icon(
-                        sortElement == NsgTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
+                        sortElement == NsgTableColumnSort.forward
+                            ? Icons.arrow_downward_outlined
+                            : Icons.arrow_upward_outlined,
                         size: 16,
                         color: buildStyle.arrowsColor,
                       ),
@@ -759,17 +882,40 @@ class _NsgTableState extends State<NsgTable> {
               );
             } else {
               subchild = Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: Align(
-                      alignment: column.headerAlign ?? defaultHeaderAlign,
-                      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: _headerWidget(column)),
-                    ),
-                  ),
+                  widget.avoidExpandedInScroll
+                      ? Flexible(
+                          fit: FlexFit.loose,
+                          child: Align(
+                            alignment: column.headerAlign ?? defaultHeaderAlign,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 10,
+                              ),
+                              child: _headerWidget(column),
+                            ),
+                          ),
+                        )
+                      : Expanded(
+                          child: Align(
+                            alignment: column.headerAlign ?? defaultHeaderAlign,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 10,
+                              ),
+                              child: _headerWidget(column),
+                            ),
+                          ),
+                        ),
                 ],
               );
             }
-            if (widget.sortingClickEnabled == true && column.columns == null && editMode == NsgTableEditMode.view) {
+            if (widget.sortingClickEnabled == true &&
+                column.columns == null &&
+                editMode == NsgTableEditMode.view) {
               child = InkWell(
                 /// Переключение сортировки
                 onTap: () {
@@ -793,7 +939,9 @@ class _NsgTableState extends State<NsgTable> {
                     if (column.sort != NsgTableColumnSort.nosort) {
                       widget.controller.sorting.add(
                         name: column.name,
-                        direction: (column.sort == NsgTableColumnSort.forward ? NsgSortingDirection.ascending : NsgSortingDirection.descending),
+                        direction: (column.sort == NsgTableColumnSort.forward
+                            ? NsgSortingDirection.ascending
+                            : NsgSortingDirection.descending),
                       );
                     }
                     widget.controller.refreshData(keys: [_updatetableKey]);
@@ -835,7 +983,9 @@ class _NsgTableState extends State<NsgTable> {
               List<Widget> list = [];
 
               /// Цикл по sub колонкам
-              for (var subcolumn in column.columns!.where((element) => element.visible)) {
+              for (var subcolumn in column.columns!.where(
+                (element) => element.visible,
+              )) {
                 /// Добавляем sub колонку в список видимых колонок
                 visibleColumns.add(subcolumn);
                 Widget child;
@@ -844,19 +994,44 @@ class _NsgTableState extends State<NsgTable> {
                 if (sortElement != NsgTableColumnSort.nosort) {
                   subchild = Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Align(
-                          alignment: subcolumn.headerAlign ?? defaultHeaderAlign,
-                          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: _headerWidget(subcolumn)),
-                        ),
-                      ),
+                      widget.avoidExpandedInScroll
+                          ? Flexible(
+                              fit: FlexFit.loose,
+                              child: Align(
+                                alignment:
+                                    subcolumn.headerAlign ?? defaultHeaderAlign,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 5,
+                                    vertical: 10,
+                                  ),
+                                  child: _headerWidget(subcolumn),
+                                ),
+                              ),
+                            )
+                          : Expanded(
+                              child: Align(
+                                alignment:
+                                    subcolumn.headerAlign ?? defaultHeaderAlign,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 5,
+                                    vertical: 10,
+                                  ),
+                                  child: _headerWidget(subcolumn),
+                                ),
+                              ),
+                            ),
                       Align(
                         alignment: subcolumn.headerAlign ?? defaultHeaderAlign,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Icon(
-                            sortElement == NsgTableColumnSort.forward ? Icons.arrow_downward_outlined : Icons.arrow_upward_outlined,
+                            sortElement == NsgTableColumnSort.forward
+                                ? Icons.arrow_downward_outlined
+                                : Icons.arrow_upward_outlined,
                             size: 16,
                             color: buildStyle.arrowsColor,
                           ),
@@ -866,17 +1041,41 @@ class _NsgTableState extends State<NsgTable> {
                   );
                 } else {
                   subchild = Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Align(
-                          alignment: subcolumn.headerAlign ?? defaultHeaderAlign,
-                          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10), child: _headerWidget(subcolumn)),
-                        ),
-                      ),
+                      widget.avoidExpandedInScroll
+                          ? Flexible(
+                              fit: FlexFit.loose,
+                              child: Align(
+                                alignment:
+                                    subcolumn.headerAlign ?? defaultHeaderAlign,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 5,
+                                    vertical: 10,
+                                  ),
+                                  child: _headerWidget(subcolumn),
+                                ),
+                              ),
+                            )
+                          : Expanded(
+                              child: Align(
+                                alignment:
+                                    subcolumn.headerAlign ?? defaultHeaderAlign,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 5,
+                                    vertical: 10,
+                                  ),
+                                  child: _headerWidget(subcolumn),
+                                ),
+                              ),
+                            ),
                     ],
                   );
                 }
-                if (widget.sortingClickEnabled == true && editMode == NsgTableEditMode.view) {
+                if (widget.sortingClickEnabled == true &&
+                    editMode == NsgTableEditMode.view) {
                   child = InkWell(
                     /// Переключение сортировки
                     onTap: () {
@@ -899,7 +1098,10 @@ class _NsgTableState extends State<NsgTable> {
                         if (subcolumn.sort != NsgTableColumnSort.nosort) {
                           widget.controller.sorting.add(
                             name: subcolumn.name,
-                            direction: (subcolumn.sort == NsgTableColumnSort.forward ? NsgSortingDirection.ascending : NsgSortingDirection.descending),
+                            direction:
+                                (subcolumn.sort == NsgTableColumnSort.forward
+                                ? NsgSortingDirection.ascending
+                                : NsgSortingDirection.descending),
                           );
                         }
                         widget.controller.refreshData(keys: [_updatetableKey]);
@@ -932,13 +1134,27 @@ class _NsgTableState extends State<NsgTable> {
                 Column(
                   children: [
                     cell,
-                    Expanded(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
-                        children: list,
+                    if (widget.avoidExpandedInScroll)
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: widget.rowFixedHeight == null
+                              ? CrossAxisAlignment.stretch
+                              : CrossAxisAlignment.start,
+                          children: list,
+                        ),
+                      )
+                    else
+                      Expanded(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: widget.rowFixedHeight == null
+                              ? CrossAxisAlignment.stretch
+                              : CrossAxisAlignment.start,
+                          children: list,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               );
@@ -964,7 +1180,9 @@ class _NsgTableState extends State<NsgTable> {
             if (listRowsToDelete.contains(row)) {
               isSelected = true;
             }
-            if (editMode == NsgTableEditMode.rowDelete && (widget.forbidDeleting == null || !widget.forbidDeleting!(row))) {
+            if (editMode == NsgTableEditMode.rowDelete &&
+                (widget.forbidDeleting == null ||
+                    !widget.forbidDeleting!(row))) {
               tableRow.add(
                 InkWell(
                   onTap: () {
@@ -975,12 +1193,16 @@ class _NsgTableState extends State<NsgTable> {
                     isFinal: row == items.last,
                     height: widget.rowFixedHeight,
                     padding: const EdgeInsets.all(0),
-                    backColor: isSelected ? buildStyle.bodyCellBackSelColor : buildStyle.bodyCellBackColor,
+                    backColor: isSelected
+                        ? buildStyle.bodyCellBackSelColor
+                        : buildStyle.bodyCellBackColor,
                     borderColor: buildStyle.bodyCellBackColor,
                     width: 40,
                     child: Icon(
                       Icons.delete_forever_outlined,
-                      color: isSelected ? ControlOptions.instance.colorError : ControlOptions.instance.colorMain,
+                      color: isSelected
+                          ? ControlOptions.instance.colorError
+                          : ControlOptions.instance.colorMain,
                       size: 24,
                     ),
                   ),
@@ -997,10 +1219,16 @@ class _NsgTableState extends State<NsgTable> {
                     isFinal: row == items.last,
                     height: widget.rowFixedHeight,
                     padding: const EdgeInsets.all(0),
-                    borderColor: widget.headerBackColor ?? buildStyle.bodyCellBorderColor,
+                    borderColor:
+                        widget.headerBackColor ??
+                        buildStyle.bodyCellBorderColor,
                     backColor: buildStyle.bodyCellBackColor,
                     width: 40,
-                    child: Icon(Icons.edit, color: ControlOptions.instance.colorMain, size: 24),
+                    child: Icon(
+                      Icons.edit,
+                      color: ControlOptions.instance.colorMain,
+                      size: 24,
+                    ),
                   ),
                 ),
               );
@@ -1015,10 +1243,16 @@ class _NsgTableState extends State<NsgTable> {
                     isFinal: row == items.last,
                     height: widget.rowFixedHeight,
                     padding: const EdgeInsets.all(0),
-                    borderColor: widget.headerBackColor ?? ControlOptions.instance.tableHeaderColor,
+                    borderColor:
+                        widget.headerBackColor ??
+                        ControlOptions.instance.tableHeaderColor,
                     backColor: buildStyle.bodyCellBackColor,
                     width: 40,
-                    child: Icon(Icons.copy, color: ControlOptions.instance.colorMain, size: 24),
+                    child: Icon(
+                      Icons.copy,
+                      color: ControlOptions.instance.colorMain,
+                      size: 24,
+                    ),
                   ),
                 ),
               );
@@ -1030,7 +1264,8 @@ class _NsgTableState extends State<NsgTable> {
                 if (widget.showTotals) {
                   if (column.totalType == NsgTableColumnTotalType.sum) {
                     column.totalSum += row[column.name];
-                  } else if (column.totalType == NsgTableColumnTotalType.count) {
+                  } else if (column.totalType ==
+                      NsgTableColumnTotalType.count) {
                     column.totalSum += 1;
                   }
                 }
@@ -1044,7 +1279,9 @@ class _NsgTableState extends State<NsgTable> {
                           child: InkWell(
                             onTap: () {
                               //Обработка события нажатия на строку
-                              if (editMode == NsgTableEditMode.view || editMode == NsgTableEditMode.recent || editMode == NsgTableEditMode.favorites) {
+                              if (editMode == NsgTableEditMode.view ||
+                                  editMode == NsgTableEditMode.recent ||
+                                  editMode == NsgTableEditMode.favorites) {
                                 if (widget.rowOnTap != null) {
                                   widget.rowOnTap!(row, column.name);
                                 } else {
@@ -1053,10 +1290,13 @@ class _NsgTableState extends State<NsgTable> {
                                   }
                                 }
                                 // Добаввляем в последнее
-                                if (widget.availableButtons.contains(NsgTableMenuButtonType.recent)) {
+                                if (widget.availableButtons.contains(
+                                  NsgTableMenuButtonType.recent,
+                                )) {
                                   widget.controller.addRecent(row);
                                 }
-                              } else if (editMode == NsgTableEditMode.rowDelete) {
+                              } else if (editMode ==
+                                  NsgTableEditMode.rowDelete) {
                                 rowDelete(row);
                               } else if (editMode == NsgTableEditMode.rowEdit) {
                                 rowEdit(row);
@@ -1069,7 +1309,12 @@ class _NsgTableState extends State<NsgTable> {
                                   NsgDataClient.client
                                       .getFieldList(widget.controller.dataType)
                                       .fields[column.name]
-                                      ?.formattedValue(row, Localizations.localeOf(context).languageCode) ??
+                                      ?.formattedValue(
+                                        row,
+                                        Localizations.localeOf(
+                                          context,
+                                        ).languageCode,
+                                      ) ??
                                   '';
 
                               Get.dialog(
@@ -1078,7 +1323,10 @@ class _NsgTableState extends State<NsgTable> {
                                   title: 'Данные ячейки',
                                   contentTop: Padding(
                                     padding: const EdgeInsets.all(15),
-                                    child: NsgText(textValue, type: NsgTextType.textL),
+                                    child: NsgText(
+                                      textValue,
+                                      type: NsgTextType.textL,
+                                    ),
                                   ),
                                   contentBottom: Center(
                                     child: NsgButton(
@@ -1086,8 +1334,13 @@ class _NsgTableState extends State<NsgTable> {
                                       icon: Icons.copy,
                                       text: 'Скопировать в буфер',
                                       onPressed: () {
-                                        Clipboard.setData(ClipboardData(text: textValue));
-                                        nsgSnackbar(text: 'Данные ячейки скопированы в буфер');
+                                        Clipboard.setData(
+                                          ClipboardData(text: textValue),
+                                        );
+                                        nsgSnackbar(
+                                          text:
+                                              'Данные ячейки скопированы в буфер',
+                                        );
                                       },
                                     ),
                                   ),
@@ -1122,10 +1375,14 @@ class _NsgTableState extends State<NsgTable> {
                                   ? column.getBackColor!(row, column)
                                   : isSelected
                                   ? buildStyle.bodyCellBackSelColor
-                                  : column.rowBackColor ?? buildStyle.bodyCellBackColor,
+                                  : column.rowBackColor ??
+                                        buildStyle.bodyCellBackColor,
                               width: column.width,
                               child: _rowWidget(row, column),
-                              isSelected: row == _selectedRow && (_selectedColumn == null || _selectedColumn == column),
+                              isSelected:
+                                  row == _selectedRow &&
+                                  (_selectedColumn == null ||
+                                      _selectedColumn == column),
                             ),
                           ),
                           expanded: column.expanded,
@@ -1140,7 +1397,8 @@ class _NsgTableState extends State<NsgTable> {
                                 ? column.getBackColor!(row, column)
                                 : isSelected
                                 ? buildStyle.bodyCellBackSelColor
-                                : column.rowBackColor ?? buildStyle.bodyCellBackColor,
+                                : column.rowBackColor ??
+                                      buildStyle.bodyCellBackColor,
                             width: column.width,
                             child: _rowWidget(row, column),
                           ),
@@ -1154,10 +1412,14 @@ class _NsgTableState extends State<NsgTable> {
               var currentRow = NsgTableRow(
                 //TODO: Андрей
                 //slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites) && !horizontalScrollEnabled,
-                slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites),
+                slideEnable: widget.availableButtons.contains(
+                  NsgTableMenuButtonType.favorites,
+                ),
                 rowFixedHeight: widget.rowFixedHeight,
                 controller: widget.controller,
-                backgroundColor: (count++).isEven ? buildStyle.bodyRowEvenBackColor : buildStyle.bodyRowOddBackColor,
+                backgroundColor: (count++).isEven
+                    ? buildStyle.bodyRowEvenBackColor
+                    : buildStyle.bodyRowOddBackColor,
                 dataItem: row,
                 tableRow: tableRow,
                 rowStateList: widget.rowStateList,
@@ -1173,59 +1435,84 @@ class _NsgTableState extends State<NsgTable> {
         }
 
         /// Верхнее меню управления таблицей-------------------------------------------------------------------------------------------->
-        if (editMode == NsgTableEditMode.view || editMode == NsgTableEditMode.recent || editMode == NsgTableEditMode.favorites) {
+        if (editMode == NsgTableEditMode.view ||
+            editMode == NsgTableEditMode.recent ||
+            editMode == NsgTableEditMode.favorites) {
           table.add(
             Container(
               decoration: BoxDecoration(color: buildStyle.menuBackColor),
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
               child: Row(
                 children: [
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.createNewElement))
+                  if (widget.availableButtons.contains(
+                    NsgTableMenuButtonType.createNewElement,
+                  ))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
                       tooltip: 'Добавить строку',
                       icon: NsgTableMenuButtonType.createNewElement.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.createNewElement.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.createNewElement.toString(),
+                        );
                         if (widget.elementEditPageName != null) {
-                          widget.controller.itemNewPageOpen(widget.elementEditPageName!);
+                          widget.controller.itemNewPageOpen(
+                            widget.elementEditPageName!,
+                          );
                         }
                       },
                     ),
 
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement) && widget.elementEditPageName != null)
+                  if (widget.availableButtons.contains(
+                        NsgTableMenuButtonType.editElement,
+                      ) &&
+                      widget.elementEditPageName != null)
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
                       tooltip: 'Редактировать строку',
                       icon: NsgTableMenuButtonType.editElement.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.editElement.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.editElement.toString(),
+                        );
                         setState(() {
                           editModeLast = editMode;
                           editMode = NsgTableEditMode.rowEdit;
                         });
                       },
                     ),
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.copyElement))
+                  if (widget.availableButtons.contains(
+                    NsgTableMenuButtonType.copyElement,
+                  ))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
                       tooltip: 'Копировать строку',
                       icon: NsgTableMenuButtonType.copyElement.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.copyElement.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.copyElement.toString(),
+                        );
                         setState(() {
                           editModeLast = editMode;
                           editMode = NsgTableEditMode.rowCopy;
                         });
                       },
                     ),
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.removeElement))
+                  if (widget.availableButtons.contains(
+                    NsgTableMenuButtonType.removeElement,
+                  ))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
                       tooltip: 'Удалить строку',
                       icon: NsgTableMenuButtonType.removeElement.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.removeElement.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.removeElement.toString(),
+                        );
                         // Обнуляем массив строк на удаление
                         listRowsToDelete = [];
                         setState(() {
@@ -1234,35 +1521,58 @@ class _NsgTableState extends State<NsgTable> {
                         // removeItem()
                       },
                     ),
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.refreshTable))
+                  if (widget.availableButtons.contains(
+                    NsgTableMenuButtonType.refreshTable,
+                  ))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: Get.locale!.languageCode == 'en' ? 'Refresh Table' : 'Обновить таблицу',
+                      tooltip: Get.locale!.languageCode == 'en'
+                          ? 'Refresh Table'
+                          : 'Обновить таблицу',
                       icon: NsgTableMenuButtonType.refreshTable.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.refreshTable.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.refreshTable.toString(),
+                        );
                         widget.controller.refreshData(keys: [_updatetableKey]);
                       },
                     ),
 
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSelect))
+                  if (widget.availableButtons.contains(
+                    NsgTableMenuButtonType.columnsSelect,
+                  ))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
                       tooltip: 'Отображение колонок',
                       icon: NsgTableMenuButtonType.columnsSelect.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.columnsSelect.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.columnsSelect.toString(),
+                        );
                         if (widget.userSettingsController != null) {
                           Get.dialog(
                             NsgPopUp(
                               title: 'Порядок и отключение колонок',
                               width: 300,
-                              getContent: () => [NsgTableColumnsReorder(controller: widget.controller, columns: widget.columns)],
-                              hint: 'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
+                              getContent: () => [
+                                NsgTableColumnsReorder(
+                                  controller: widget.controller,
+                                  columns: widget.columns,
+                                ),
+                              ],
+                              hint:
+                                  'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок',
                               onConfirm: () {
                                 if (widget.userSettingsController != null) {
-                                  widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
-                                  widget.userSettingsController!.itemPagePost(goBack: false);
+                                  widget
+                                          .userSettingsController!
+                                          .settingsMap[widget.userSettingsId] =
+                                      toJson();
+                                  widget.userSettingsController!.itemPagePost(
+                                    goBack: false,
+                                  );
                                 }
                                 setState(() {});
                                 Get.back();
@@ -1271,18 +1581,27 @@ class _NsgTableState extends State<NsgTable> {
                             barrierDismissible: false,
                           );
                         } else {
-                          NsgErrorWidget.showErrorByString('Не заданы настройки пользователя');
+                          NsgErrorWidget.showErrorByString(
+                            'Не заданы настройки пользователя',
+                          );
                         }
                       },
                     ),
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSize) &&
-                      !(visibleColumns.length == 1 && visibleColumns.first.expanded == true)) //&& horizontalScrollEnabled)
+                  if (widget.availableButtons.contains(
+                        NsgTableMenuButtonType.columnsSize,
+                      ) &&
+                      !(visibleColumns.length == 1 &&
+                          visibleColumns.first.expanded ==
+                              true)) //&& horizontalScrollEnabled)
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
                       tooltip: 'Ширина колонок',
                       icon: NsgTableMenuButtonType.columnsSize.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.columnsSize.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.columnsSize.toString(),
+                        );
                         horizontalScrollEnabled = true;
                         editModeLast = editMode;
                         editMode = NsgTableEditMode.columnsWidth;
@@ -1307,47 +1626,86 @@ class _NsgTableState extends State<NsgTable> {
                   //     icon: Icons.print_outlined,
                   //     onPressed: () {},
                   //   ),
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+                  if (widget.availableButtons.contains(
+                    NsgTableMenuButtonType.filterText,
+                  ))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: Get.locale!.languageCode == 'en' ? 'Filter by text' : 'Фильтр по тексту',
-                      backColor: isSearchStringFilterOpen ? ControlOptions.instance.colorMainDark : null,
-                      icon: isSearchStringFilterOpen ? Icons.filter_alt : NsgTableMenuButtonType.filterText.icon,
+                      tooltip: Get.locale!.languageCode == 'en'
+                          ? 'Filter by text'
+                          : 'Фильтр по тексту',
+                      backColor: isSearchStringFilterOpen
+                          ? ControlOptions.instance.colorMainDark
+                          : null,
+                      icon: isSearchStringFilterOpen
+                          ? Icons.filter_alt
+                          : NsgTableMenuButtonType.filterText.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.filterText.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.filterText.toString(),
+                        );
                         isSearchStringFilterOpen = !isSearchStringFilterOpen;
-                        widget.controller.controllerFilter.isSearchStringFilterOpen = isSearchStringFilterOpen;
-                        widget.controller.controllerFilter.isOpen = isSearchStringFilterOpen;
-                        if (widget.controller.controllerFilter.searchString.isNotEmpty) {
-                          widget.controller.refreshData(keys: [_updatetableKey]);
+                        widget
+                                .controller
+                                .controllerFilter
+                                .isSearchStringFilterOpen =
+                            isSearchStringFilterOpen;
+                        widget.controller.controllerFilter.isOpen =
+                            isSearchStringFilterOpen;
+                        if (widget
+                            .controller
+                            .controllerFilter
+                            .searchString
+                            .isNotEmpty) {
+                          widget.controller.refreshData(
+                            keys: [_updatetableKey],
+                          );
                         }
                         setState(() {});
                       },
                     ),
 
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+                  if (widget.availableButtons.contains(
+                    NsgTableMenuButtonType.filterPeriod,
+                  ))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
                       tooltip: 'Фильтр по периоду',
-                      backColor: isPeriodFilterOpen ? ControlOptions.instance.colorMainDark : null,
-                      icon: isPeriodFilterOpen ? Icons.date_range : NsgTableMenuButtonType.filterPeriod.icon,
+                      backColor: isPeriodFilterOpen
+                          ? ControlOptions.instance.colorMainDark
+                          : null,
+                      icon: isPeriodFilterOpen
+                          ? Icons.date_range
+                          : NsgTableMenuButtonType.filterPeriod.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.filterPeriod.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.filterPeriod.toString(),
+                        );
                         isPeriodFilterOpen = !isPeriodFilterOpen;
                         setState(() {});
                       },
                     ),
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.recent))
+                  if (widget.availableButtons.contains(
+                    NsgTableMenuButtonType.recent,
+                  ))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
                       tooltip: 'Последние',
-                      backColor: editMode == NsgTableEditMode.recent ? ControlOptions.instance.colorMainDark : null,
-                      icon: editMode == NsgTableEditMode.recent ? Icons.history : NsgTableMenuButtonType.recent.icon,
+                      backColor: editMode == NsgTableEditMode.recent
+                          ? ControlOptions.instance.colorMainDark
+                          : null,
+                      icon: editMode == NsgTableEditMode.recent
+                          ? Icons.history
+                          : NsgTableMenuButtonType.recent.icon,
                       onPressed: () {
                         NsgMetrica.reportTableButtonTap(
                           widget.userSettingsId,
                           NsgTableMenuButtonType.recent.toString(),
-                          state: editMode != NsgTableEditMode.recent ? 'pressed' : 'released',
+                          state: editMode != NsgTableEditMode.recent
+                              ? 'pressed'
+                              : 'released',
                         );
                         setState(() {
                           if (editMode != NsgTableEditMode.recent) {
@@ -1360,14 +1718,23 @@ class _NsgTableState extends State<NsgTable> {
                         });
                       },
                     ),
-                  if (widget.availableButtons.contains(NsgTableMenuButtonType.favorites))
+                  if (widget.availableButtons.contains(
+                    NsgTableMenuButtonType.favorites,
+                  ))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
                       tooltip: 'Избранное',
-                      backColor: editMode == NsgTableEditMode.favorites ? ControlOptions.instance.colorMainDark : null,
-                      icon: editMode == NsgTableEditMode.favorites ? Icons.star : NsgTableMenuButtonType.favorites.icon,
+                      backColor: editMode == NsgTableEditMode.favorites
+                          ? ControlOptions.instance.colorMainDark
+                          : null,
+                      icon: editMode == NsgTableEditMode.favorites
+                          ? Icons.star
+                          : NsgTableMenuButtonType.favorites.icon,
                       onPressed: () {
-                        NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.favorites.toString());
+                        NsgMetrica.reportTableButtonTap(
+                          widget.userSettingsId,
+                          NsgTableMenuButtonType.favorites.toString(),
+                        );
                         setState(() {
                           widget.closeAllSlided(tableRowList);
                           if (editMode != NsgTableEditMode.favorites) {
@@ -1389,7 +1756,10 @@ class _NsgTableState extends State<NsgTable> {
             Container(
               decoration: BoxDecoration(
                 color: ControlOptions.instance.colorMain,
-                border: Border.all(width: 0, color: ControlOptions.instance.colorMain),
+                border: Border.all(
+                  width: 0,
+                  color: ControlOptions.instance.colorMain,
+                ),
               ),
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
               child: Row(
@@ -1401,23 +1771,36 @@ class _NsgTableState extends State<NsgTable> {
                     icon: Icons.close,
                     onPressed: () {
                       if (widget.userSettingsController != null) {
-                        if (widget.userSettingsController!.settingsMap.containsKey(widget.userSettingsId)) {
-                          fromJson(widget.userSettingsController!.settingsMap[widget.userSettingsId]);
+                        if (widget.userSettingsController!.settingsMap
+                            .containsKey(widget.userSettingsId)) {
+                          fromJson(
+                            widget.userSettingsController!.settingsMap[widget
+                                .userSettingsId],
+                          );
                         }
                       }
                       editMode = editModeLast;
                       setState(() {});
                     },
                   ),
-                  Text('Ширина колонок', style: TextStyle(color: ControlOptions.instance.colorMainText)),
+                  Text(
+                    'Ширина колонок',
+                    style: TextStyle(
+                      color: ControlOptions.instance.colorMainText,
+                    ),
+                  ),
                   NsgTableMenuButton(
                     color: buildStyle.menuIconColor,
                     tooltip: 'Применить',
                     icon: Icons.check,
                     onPressed: () {
                       if (widget.userSettingsController != null) {
-                        widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
-                        widget.userSettingsController!.itemPagePost(goBack: false);
+                        widget.userSettingsController!.settingsMap[widget
+                                .userSettingsId] =
+                            toJson();
+                        widget.userSettingsController!.itemPagePost(
+                          goBack: false,
+                        );
                       }
                       editMode = editModeLast;
                       setState(() {});
@@ -1432,7 +1815,10 @@ class _NsgTableState extends State<NsgTable> {
             Container(
               decoration: BoxDecoration(
                 color: ControlOptions.instance.colorMain,
-                border: Border.all(width: 0, color: ControlOptions.instance.colorMain),
+                border: Border.all(
+                  width: 0,
+                  color: ControlOptions.instance.colorMain,
+                ),
               ),
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
               child: Row(
@@ -1450,7 +1836,12 @@ class _NsgTableState extends State<NsgTable> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text('Удаление строк (${listRowsToDelete.length})', style: TextStyle(color: ControlOptions.instance.colorMainText)),
+                    child: Text(
+                      'Удаление строк (${listRowsToDelete.length})',
+                      style: TextStyle(
+                        color: ControlOptions.instance.colorMainText,
+                      ),
+                    ),
                   ),
                   NsgTableMenuButton(
                     color: buildStyle.menuIconColor,
@@ -1472,7 +1863,10 @@ class _NsgTableState extends State<NsgTable> {
             Container(
               decoration: BoxDecoration(
                 color: ControlOptions.instance.colorMain,
-                border: Border.all(width: 0, color: ControlOptions.instance.colorMain),
+                border: Border.all(
+                  width: 0,
+                  color: ControlOptions.instance.colorMain,
+                ),
               ),
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
               child: Row(
@@ -1491,7 +1885,12 @@ class _NsgTableState extends State<NsgTable> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text('Скопировать строку', style: TextStyle(color: ControlOptions.instance.colorMainText)),
+                    child: Text(
+                      'Скопировать строку',
+                      style: TextStyle(
+                        color: ControlOptions.instance.colorMainText,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -1502,7 +1901,10 @@ class _NsgTableState extends State<NsgTable> {
             Container(
               decoration: BoxDecoration(
                 color: ControlOptions.instance.colorMain,
-                border: Border.all(width: 0, color: ControlOptions.instance.colorMain),
+                border: Border.all(
+                  width: 0,
+                  color: ControlOptions.instance.colorMain,
+                ),
               ),
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
               child: Row(
@@ -1521,7 +1923,12 @@ class _NsgTableState extends State<NsgTable> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text('Редактирование строк', style: TextStyle(color: ControlOptions.instance.colorMainText)),
+                    child: Text(
+                      'Редактирование строк',
+                      style: TextStyle(
+                        color: ControlOptions.instance.colorMainText,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -1538,16 +1945,27 @@ class _NsgTableState extends State<NsgTable> {
               border: widget.hideLines
                   ? null
                   : Border(
-                      left: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor),
-                      right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor),
+                      left: BorderSide(
+                        width: 1,
+                        color: ControlOptions.instance.tableHeaderLinesColor,
+                      ),
+                      right: BorderSide(
+                        width: 1,
+                        color: ControlOptions.instance.tableHeaderLinesColor,
+                      ),
                     ),
             ),
             child: _rowcolumn(
               children: [
-                if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
+                if (isSearchStringFilterOpen &&
+                    widget.availableButtons.contains(
+                      NsgTableMenuButtonType.filterText,
+                    ))
                   _expanded(
                     child: NsgTextFilter(
-                      label: Get.locale!.languageCode == 'en' ? 'Filter by text' : 'Фильтр по тексту',
+                      label: Get.locale!.languageCode == 'en'
+                          ? 'Filter by text'
+                          : 'Фильтр по тексту',
                       onSetFilter: () {
                         setState(() {
                           editModeLast = NsgTableEditMode.view;
@@ -1559,7 +1977,10 @@ class _NsgTableState extends State<NsgTable> {
                       updateKey: [_updatetableKey],
                     ),
                   ),
-                if (isPeriodFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
+                if (isPeriodFilterOpen &&
+                    widget.availableButtons.contains(
+                      NsgTableMenuButtonType.filterPeriod,
+                    ))
                   _expanded(
                     child: NsgPeriodFilter(
                       //showCompact: isPeriodFilterOpen,
@@ -1577,7 +1998,9 @@ class _NsgTableState extends State<NsgTable> {
 
         /// Если showHeader, то показываем Header
         if (widget.showHeader) {
-          if (editMode == NsgTableEditMode.view && hasVerticalScrollbar && !isMobile) {
+          if (editMode == NsgTableEditMode.view &&
+              hasVerticalScrollbar &&
+              !isMobile) {
             tableHeader.add(
               showCell(
                 height: widget.rowFixedHeight,
@@ -1591,14 +2014,18 @@ class _NsgTableState extends State<NsgTable> {
           }
 
           // Рисуем квадратик слева от хедера
-          if (editMode == NsgTableEditMode.rowDelete || editMode == NsgTableEditMode.rowCopy || editMode == NsgTableEditMode.rowEdit) {
+          if (editMode == NsgTableEditMode.rowDelete ||
+              editMode == NsgTableEditMode.rowCopy ||
+              editMode == NsgTableEditMode.rowEdit) {
             tableHeader.insert(
               0,
               showCell(
                 height: widget.rowFixedHeight,
                 padding: const EdgeInsets.all(0),
                 backColor: buildStyle.headerCellBackColor,
-                borderColor: widget.headerColor ?? ControlOptions.instance.tableHeaderLinesColor,
+                borderColor:
+                    widget.headerColor ??
+                    ControlOptions.instance.tableHeaderLinesColor,
                 width: 40,
                 child: const SizedBox(),
               ),
@@ -1613,13 +2040,26 @@ class _NsgTableState extends State<NsgTable> {
                   decoration: hasVerticalScrollbar
                       ? null
                       : BoxDecoration(
-                          border: widget.hideLines ? null : Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor)),
+                          border: widget.hideLines
+                              ? null
+                              : Border(
+                                  right: BorderSide(
+                                    width: 1,
+                                    color: ControlOptions
+                                        .instance
+                                        .tableHeaderLinesColor,
+                                  ),
+                                ),
                         ),
-                  padding: editMode == NsgTableEditMode.columnsWidth ? const EdgeInsets.only(right: 510) : null,
+                  padding: editMode == NsgTableEditMode.columnsWidth
+                      ? const EdgeInsets.only(right: 510)
+                      : null,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
+                    crossAxisAlignment: widget.rowFixedHeight == null
+                        ? CrossAxisAlignment.stretch
+                        : CrossAxisAlignment.start,
                     children: tableHeader,
                   ),
                 ),
@@ -1649,7 +2089,9 @@ class _NsgTableState extends State<NsgTable> {
               String text = '';
               if (column.totalSum is double && field is NsgDataDoubleField) {
                 if (column.totalSum != 0.0) {
-                  text = column.totalSum.toStringAsFixed(field.maxDecimalPlaces);
+                  text = column.totalSum.toStringAsFixed(
+                    field.maxDecimalPlaces,
+                  );
                 }
               } else if (column.totalSum is int) {
                 if (column.totalSum != 0) text = column.totalSum.toString();
@@ -1679,7 +2121,8 @@ class _NsgTableState extends State<NsgTable> {
                                 Text(
                                   column.totalSum.toString(),
                                   style: TextStyle(
-                                    color: ControlOptions.instance.colorMainBack,
+                                    color:
+                                        ControlOptions.instance.colorMainBack,
                                     fontSize: ControlOptions.instance.sizeM,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -1709,7 +2152,9 @@ class _NsgTableState extends State<NsgTable> {
               intrinsicHeight(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start,
+                  crossAxisAlignment: widget.rowFixedHeight == null
+                      ? CrossAxisAlignment.stretch
+                      : CrossAxisAlignment.start,
                   children: totalsRow,
                 ),
               ),
@@ -1730,7 +2175,16 @@ class _NsgTableState extends State<NsgTable> {
                   decoration: hasVerticalScrollbar
                       ? null
                       : BoxDecoration(
-                          border: widget.hideLines ? null : Border(right: BorderSide(width: 1, color: ControlOptions.instance.tableHeaderLinesColor)),
+                          border: widget.hideLines
+                              ? null
+                              : Border(
+                                  right: BorderSide(
+                                    width: 1,
+                                    color: ControlOptions
+                                        .instance
+                                        .tableHeaderLinesColor,
+                                  ),
+                                ),
                         ),
                   padding: editMode == NsgTableEditMode.columnsWidth
                       ? const EdgeInsets.only(right: 500, bottom: 0)
@@ -1751,7 +2205,11 @@ class _NsgTableState extends State<NsgTable> {
                         ),
                   //margin: EdgeInsets.only(bottom: 10, right: 10),
                   //decoration: BoxDecoration(border: Border.all(width: 1, color: ControlOptions.instance.colorMain)),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: tableBody),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: tableBody,
+                  ),
                 ),
               ),
             ),
@@ -1821,14 +2279,20 @@ class _NsgTableState extends State<NsgTable> {
                       height: 100,
                       decoration: BoxDecoration(
                         color: buildStyle.bodyCellBackColor,
-                        border: widget.hideLines ? null : Border.all(width: 1, color: buildStyle.tableBorderColor),
+                        border: widget.hideLines
+                            ? null
+                            : Border.all(
+                                width: 1,
+                                color: buildStyle.tableBorderColor,
+                              ),
                       ),
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 30, bottom: 30),
                           child: NsgSimpleProgressBar(
                             colorPrimary: buildStyle.progressbarColorPrimary,
-                            colorSecondary: buildStyle.progressbarColorSecondary,
+                            colorSecondary:
+                                buildStyle.progressbarColorSecondary,
                             delay: Duration.zero,
                           ),
                         ),
@@ -1841,7 +2305,9 @@ class _NsgTableState extends State<NsgTable> {
           );
         } else {
           if (!tableAlreadyBuilt) {
-            WidgetsBinding.instance.addPostFrameCallback((_) => checkScrollbarIsVisible());
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) => checkScrollbarIsVisible(),
+            );
           }
         }
 
@@ -1874,17 +2340,28 @@ class _NsgTableState extends State<NsgTable> {
               ? Stack(
                   alignment: Alignment.topLeft,
                   children: [
-                    Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: table),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: table,
+                    ),
                     Container(
-                      margin: const EdgeInsets.only(top: 44, right: 10, bottom: 16),
+                      margin: const EdgeInsets.only(
+                        top: 44,
+                        right: 10,
+                        bottom: 16,
+                      ),
                       child: SingleChildScrollView(
                         controller: scrollHorResizers,
                         key: UniqueKey(),
                         scrollDirection: Axis.horizontal,
                         child: ResizeLines(
                           expandedColumnsCount: expandedColumnsCount,
-                          onColumnsChange: widget.onColumnsChange != null ? widget.onColumnsChange!(tableColumns) : null,
-                          columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
+                          onColumnsChange: widget.onColumnsChange != null
+                              ? widget.onColumnsChange!(tableColumns)
+                              : null,
+                          columnsEditMode:
+                              editMode == NsgTableEditMode.columnsWidth,
                           columnsOnResize: (resizedColumns) {
                             tableColumns = resizedColumns;
                             //setState(() {}); // FIXME это обновление экрана при изменении ширины колонок, падает linkedScroll
@@ -1897,7 +2374,12 @@ class _NsgTableState extends State<NsgTable> {
                 )
               : IntrinsicWidth(
                   child: Container(
-                    decoration: BoxDecoration(border: Border.all(width: 1, color: buildStyle.tableBorderColor)),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: buildStyle.tableBorderColor,
+                      ),
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -1944,14 +2426,25 @@ class _NsgTableState extends State<NsgTable> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
-                        child: Icon(Icons.error_outline, size: 38, color: ControlOptions.instance.colorMain),
+                        child: Icon(
+                          Icons.error_outline,
+                          size: 38,
+                          color: ControlOptions.instance.colorMain,
+                        ),
                       ),
-                      const Flexible(child: Text('Подтвердите, что хотите удалить следующие строки:')),
+                      const Flexible(
+                        child: Text(
+                          'Подтвердите, что хотите удалить следующие строки:',
+                        ),
+                      ),
                     ],
                   ),
                   Flexible(
                     child: SingleChildScrollView(
-                      child: Column(mainAxisSize: MainAxisSize.min, children: list),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: list,
+                      ),
                     ),
                   ),
                 ],
@@ -1970,13 +2463,29 @@ class _NsgTableState extends State<NsgTable> {
   }
 
   Widget _headerWidget(NsgTableColumn column) {
-    var textHeader = column.presentation ?? NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.presentation ?? '';
-    return Text(textHeader, style: column.headerTextStyle ?? buildStyle.headerCellTextStyle, textAlign: column.headerTextAlign ?? defaultHeaderTextAlign);
+    var textHeader =
+        column.presentation ??
+        NsgDataClient.client
+            .getFieldList(widget.controller.dataType)
+            .fields[column.name]
+            ?.presentation ??
+        '';
+    return Text(
+      textHeader,
+      style: column.headerTextStyle ?? buildStyle.headerCellTextStyle,
+      textAlign: column.headerTextAlign ?? defaultHeaderTextAlign,
+    );
   }
 
   Widget _rowWidget(NsgDataItem item, NsgTableColumn column) {
     var textValue =
-        NsgDataClient.client.getFieldList(widget.controller.dataType).fields[column.name]?.formattedValue(item, Localizations.localeOf(context).languageCode) ??
+        NsgDataClient.client
+            .getFieldList(widget.controller.dataType)
+            .fields[column.name]
+            ?.formattedValue(
+              item,
+              Localizations.localeOf(context).languageCode,
+            ) ??
         '';
     String text = textValue;
     TextStyle style = column.rowTextStyle ?? buildStyle.bodyCellTextStyle;
@@ -2007,7 +2516,8 @@ class _NsgTableState extends State<NsgTable> {
         if (column.format.isNotEmpty) {
           format = column.format;
         }
-        text = '${NsgDateFormat.dateFormat(fieldkey, format: format, locale: Localizations.localeOf(context).languageCode)}';
+        text =
+            '${NsgDateFormat.dateFormat(fieldkey, format: format, locale: Localizations.localeOf(context).languageCode)}';
       } else {
         text = '';
       }
@@ -2015,7 +2525,8 @@ class _NsgTableState extends State<NsgTable> {
 
       /// Если Double
     } else if (field is NsgDataDoubleField) {
-      text = '${fieldkey == 0.0 ? '' : fieldkey.toStringAsFixed(field.maxDecimalPlaces)}';
+      text =
+          '${fieldkey == 0.0 ? '' : fieldkey.toStringAsFixed(field.maxDecimalPlaces)}';
       textAlign = TextAlign.right;
 
       /// Если Int
@@ -2035,7 +2546,9 @@ class _NsgTableState extends State<NsgTable> {
             ? const SizedBox()
             : Icon(
                 widget.iconTrue,
-                color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorConfirmed,
+                color: widget.showBoolIconsWithMonochromeColors == true
+                    ? ControlOptions.instance.colorText
+                    : ControlOptions.instance.colorConfirmed,
                 size: 24,
               );
       } else if (fieldkey == false) {
@@ -2043,7 +2556,9 @@ class _NsgTableState extends State<NsgTable> {
             ? const SizedBox()
             : Icon(
                 widget.iconFalse,
-                color: widget.showBoolIconsWithMonochromeColors == true ? ControlOptions.instance.colorText : ControlOptions.instance.colorError,
+                color: widget.showBoolIconsWithMonochromeColors == true
+                    ? ControlOptions.instance.colorText
+                    : ControlOptions.instance.colorError,
                 size: 24,
               );
       }
@@ -2087,7 +2602,10 @@ class _NsgTableState extends State<NsgTable> {
           width: double.infinity,
           child: Text(
             addLines(text, widget.cellFixedLines),
-            overflow: widget.cellMaxLines != null || widget.cellFixedLines != null ? TextOverflow.ellipsis : TextOverflow.visible,
+            overflow:
+                widget.cellMaxLines != null || widget.cellFixedLines != null
+                ? TextOverflow.ellipsis
+                : TextOverflow.visible,
             maxLines: widget.cellMaxLines ?? widget.cellFixedLines,
             style: style,
             textAlign: textAlign,

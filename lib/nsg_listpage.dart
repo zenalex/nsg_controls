@@ -90,6 +90,8 @@ class NsgListPage extends StatelessWidget {
   final Widget? widgetBottom;
 
   final bool showLastAndFavourites;
+  /// Прокидывает флаг в NsgTable, чтобы избегать Expanded в небounded ширине
+  final bool avoidExpandedInScroll;
   const NsgListPage({
     super.key,
     this.contentPadding = EdgeInsets.zero,
@@ -97,6 +99,7 @@ class NsgListPage extends StatelessWidget {
     this.userSettingsId = '',
     this.widgetBottom,
     this.showLastAndFavourites = false,
+    this.avoidExpandedInScroll = false,
     required this.controller,
     required this.title,
     this.subtitle,
@@ -132,6 +135,7 @@ class NsgListPage extends StatelessWidget {
     this.userSettingsId = '',
     this.widgetBottom,
     this.showLastAndFavourites = false,
+    this.avoidExpandedInScroll = false,
     required this.controller,
     required this.title,
     this.subtitle,
@@ -328,6 +332,7 @@ class NsgListPage extends StatelessWidget {
           headerColor: ControlOptions.instance.colorMain,
           columns: columns!,
           controller: controller,
+          avoidExpandedInScroll: true,
           availableButtons: availableButtons ?? NsgTableMenuButtonType.allValues,
           rowOnTap: (item, name) {
             if (item != null) {
