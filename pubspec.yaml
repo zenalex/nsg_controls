@@ -28,7 +28,7 @@ dependencies:
   #   git: https://github.com/ymback/flutter_pulltorefresh.git
   jiffy: ^6.0.0
   flutter_svg: ^2.0.1
-  share_plus: ^10.0.0
+  share_plus: ^12.0.1
 
   flutter_slidable: ^4.0.0
   another_flushbar: ^1.12.30
