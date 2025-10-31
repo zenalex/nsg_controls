@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=C:\flutter_sdk\flutter
-FLUTTER_APPLICATION_PATH=C:\Projects2\flutter_get\nsg_controls\example\controls_examples
+FLUTTER_APPLICATION_PATH=C:\Projects2\flutter_get\nsg_controls\cached_network_image\example
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=1.0.0
