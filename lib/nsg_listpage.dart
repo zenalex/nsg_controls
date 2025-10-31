@@ -7,6 +7,7 @@ import 'package:nsg_data/nsg_data.dart';
 //import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'formfields/nsg_period_filter.dart';
 import 'formfields/nsg_text_filter.dart';
+import 'helpers.dart';
 import 'widgets/nsg_errorpage.dart';
 
 enum NsgListPageMode { list, grid, table, tree }
@@ -90,8 +91,15 @@ class NsgListPage extends StatelessWidget {
   final Widget? widgetBottom;
 
   final bool showLastAndFavourites;
+
+  /// Управляет шириной BodyWrap вокруг страницы. По умолчанию false для обратной совместимости
+  final bool fullWidth;
+
   /// Прокидывает флаг в NsgTable, чтобы избегать Expanded в небounded ширине
   final bool avoidExpandedInScroll;
+
+  /// Управляет горизонтальным скроллом таблицы
+  final bool horizontalScrollEnabled;
   const NsgListPage({
     super.key,
     this.contentPadding = EdgeInsets.zero,
@@ -99,7 +107,9 @@ class NsgListPage extends StatelessWidget {
     this.userSettingsId = '',
     this.widgetBottom,
     this.showLastAndFavourites = false,
+    this.fullWidth = false,
     this.avoidExpandedInScroll = false,
+    this.horizontalScrollEnabled = true,
     required this.controller,
     required this.title,
     this.subtitle,
@@ -135,7 +145,9 @@ class NsgListPage extends StatelessWidget {
     this.userSettingsId = '',
     this.widgetBottom,
     this.showLastAndFavourites = false,
+    this.fullWidth = false,
     this.avoidExpandedInScroll = false,
+    this.horizontalScrollEnabled = true,
     required this.controller,
     required this.title,
     this.subtitle,
@@ -171,6 +183,7 @@ class NsgListPage extends StatelessWidget {
     }
 
     return BodyWrap(
+      fullWidth: fullWidth,
       child: Scaffold(
         backgroundColor: nsgtheme.colorMainBack,
         body: Container(
@@ -195,7 +208,7 @@ class NsgListPage extends StatelessWidget {
               if (type != NsgListPageMode.table)
                 controller.controllerFilter.isAllowed && controller.controllerFilter.isPeriodAllowed
                     ? controller.obx(
-                        (state) => NsgPeriodFilter(label: 'Фильтр по датам', controller: controller),
+                        (state) => NsgPeriodFilter(label: tran.date_filter, controller: controller),
                         onLoading: NsgPeriodFilter(controller: controller),
                         onError: (error) => const SizedBox(),
                       )
@@ -255,9 +268,9 @@ class NsgListPage extends StatelessWidget {
                   labelColor: ControlOptions.instance.colorText,
                   labelPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   tabs: [
-                    Tab(child: Text("Все".toUpperCase(), textAlign: TextAlign.center)),
-                    Tab(child: Text("Последние".toUpperCase(), textAlign: TextAlign.center)),
-                    Tab(child: Text("Избранные".toUpperCase(), textAlign: TextAlign.center)),
+                    Tab(child: Text(tran.all.toUpperCase(), textAlign: TextAlign.center)),
+                    Tab(child: Text(tran.recent.toUpperCase(), textAlign: TextAlign.center)),
+                    Tab(child: Text(tran.favorites.toUpperCase(), textAlign: TextAlign.center)),
                   ],
                 ),
               ),
@@ -322,7 +335,7 @@ class NsgListPage extends StatelessWidget {
         ),
       );
     } else if (type == NsgListPageMode.table) {
-      assert(columns != null, 'Колонки (columns) не заданы для таблицы');
+      assert(columns != null, tran.columns_not_set);
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: NsgTable(
@@ -332,7 +345,8 @@ class NsgListPage extends StatelessWidget {
           headerColor: ControlOptions.instance.colorMain,
           columns: columns!,
           controller: controller,
-          avoidExpandedInScroll: true,
+          avoidExpandedInScroll: avoidExpandedInScroll,
+          horizontalScrollEnabled: horizontalScrollEnabled,
           availableButtons: availableButtons ?? NsgTableMenuButtonType.allValues,
           rowOnTap: (item, name) {
             if (item != null) {
@@ -343,7 +357,7 @@ class NsgListPage extends StatelessWidget {
         ),
       );
     } else {
-      return const Text('Несуществующий тип отображения NsgListPage');
+      return Text(tran.unknown_display_type);
     }
   }
   /*
@@ -402,7 +416,7 @@ class NsgListPage extends StatelessWidget {
           color: appBarColor,
           backColor: appBarBackColor,
           key: GlobalKey(),
-          text: error != null ? 'Ошибка: $error'.toUpperCase() : title,
+          text: error != null ? tran.error_colon(error).toUpperCase() : title,
           text2: showCount != null
               ? controller.totalCount != null
                     ? '${showCount!} ${controller.totalCount}'

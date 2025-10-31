@@ -22,12 +22,14 @@ class BodyWrap extends StatelessWidget {
             decoration: BoxDecoration(
               color: transparentBody ? Colors.transparent : ControlOptions.instance.colorMainBack,
             ),
-            child: Center(
-                child: Container(
-                    constraints:
-                        fullWidth ? null : BoxConstraints(minWidth: ControlOptions.instance.appMinWidth, maxWidth: ControlOptions.instance.appMaxWidth),
-                    //padding: EdgeInsets.fromLTRB(10, 0, 10, 15),
-                    child: child))),
+            child: fullWidth
+                ? child
+                : Center(
+                    child: Container(
+                        constraints: BoxConstraints(
+                            minWidth: ControlOptions.instance.appMinWidth, maxWidth: ControlOptions.instance.appMaxWidth),
+                        //padding: EdgeInsets.fromLTRB(10, 0, 10, 15),
+                        child: child))),
       ),
     );
   }
