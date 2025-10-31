@@ -102,34 +102,36 @@ class CachedNetworkImageProvider extends ImageProvider<CachedNetworkImageProvide
     if (PaintingBinding.instance.imageCache.containsKey(key)) {
       dev.log("imageInMemory!");
     }
-    stream.completer?.addListener(
-      ImageStreamListener(
-        (image, synchronousCall) {
-          if (delayedDone != null) {
-            Future.delayed(delayedDone!, () {
-              onLoadingProgress?.call(100, true);
-            });
-          } else {
-            onLoadingProgress?.call(100, true);
-          }
-        },
-        onChunk: (event) {
-          var totalSize = event.expectedTotalBytes;
-          var downloaded = event.cumulativeBytesLoaded;
-
-          if (onLoadingProgress != null) {
-            if (totalSize != null) {
-              onLoadingProgress!((downloaded / totalSize) * 100, false);
+    if (onLoadingProgress != null) {
+      stream.completer?.addListener(
+        ImageStreamListener(
+          (image, synchronousCall) {
+            if (delayedDone != null) {
+              Future.delayed(delayedDone!, () {
+                onLoadingProgress?.call(100, true);
+              });
             } else {
-              onLoadingProgress!(null, false);
+              onLoadingProgress?.call(100, true);
             }
-          }
-        },
-        onError: (Object error, StackTrace? trace) {
-          errorListener?.call(error);
-        },
-      ),
-    );
+          },
+          onChunk: (event) {
+            var totalSize = event.expectedTotalBytes;
+            var downloaded = event.cumulativeBytesLoaded;
+
+            if (onLoadingProgress != null) {
+              if (totalSize != null) {
+                onLoadingProgress!((downloaded / totalSize) * 100, false);
+              } else {
+                onLoadingProgress!(null, false);
+              }
+            }
+          },
+          onError: (Object error, StackTrace? trace) {
+            errorListener?.call(error);
+          },
+        ),
+      );
+    }
   }
 
   // @Deprecated('loadBuffer is deprecated, use loadImage instead')
