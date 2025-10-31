@@ -242,7 +242,7 @@ class CachedNetworkImage extends StatelessWidget {
                 maxHeight: maxHeightDiskCache,
                 errorListener: errorListener,
                 scale: scale,
-                delayedDone: fadeInDuration,
+                delayedDone: fadeInDuration + const Duration(milliseconds: 5),
                 onLoadingProgress: onLoadingProgress)
             : CachedNetworkImageProvider.item(nsgImage as NsgImageItem?,
                 headers: httpHeaders,
@@ -253,7 +253,7 @@ class CachedNetworkImage extends StatelessWidget {
                 maxHeight: maxHeightDiskCache,
                 errorListener: errorListener,
                 scale: scale,
-                delayedDone: fadeInDuration,
+                delayedDone: fadeInDuration + const Duration(milliseconds: 5),
                 onLoadingProgress: onLoadingProgress,
                 size: size);
 
