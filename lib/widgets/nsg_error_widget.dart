@@ -34,12 +34,12 @@ class NsgErrorWidget {
 
   static String extractErrorMessage(String error) {
     // Ищем код ошибки (например, 500)
-    final codeMatch = RegExp(r'^\d+').firstMatch(error);
-    final code = codeMatch != null ? codeMatch.group(0) : '';
+    //final codeMatch = RegExp(r'^\d+').firstMatch(error);
+    //final code = codeMatch != null ? codeMatch.group(0) : '';
 
     // Ищем первую строку с русским текстом (например, "Хет-триков")
     final lines = error.split('\n').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
-    String? message;
+    //String? message;
     for (final line in lines) {
       // Пропускаем строки, похожие на stacktrace и url
       if (line.contains('://') || line.contains('->') || RegExp(r'^\d+').hasMatch(line)) continue;

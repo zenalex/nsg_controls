@@ -153,7 +153,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
         }
 
         // Добавляем разделитель
-        final dividerWidget = dividerBuilder?.call(elem.value) ?? elem.group.goupDividerWidget ?? SizedBox();
+        final dividerWidget = dividerBuilder?.call(elem.value) ?? elem.group.goupDividerWidget;
         widgetList.add(Container(key: elem.key, child: dividerWidget));
       } else {
         // Добавляем элемент в текущую строку
