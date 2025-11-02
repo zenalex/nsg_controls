@@ -369,11 +369,9 @@ packages:
   nsg_data:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "06278426a60fcf6353957ff3bca9904556a23c0e"
-      url: "https://github.com/zenalex/nsg_data.git"
-    source: git
+      path: "../../nsg_data"
+      relative: true
+    source: path
     version: "1.0.0"
   package_info_plus:
     dependency: transitive

@@ -171,4 +171,95 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
 
   @override
   String get no_options_available => 'Нет доступных опций';
+
+  @override
+  String get date_filter => 'Фильтр по датам';
+
+  @override
+  String get all => 'Все';
+
+  @override
+  String get recent => 'Последние';
+
+  @override
+  String get favorites => 'Избранные';
+
+  @override
+  String get columns_not_set => 'Колонки (columns) не заданы для таблицы';
+
+  @override
+  String get unknown_display_type =>
+      'Несуществующий тип отображения NsgListPage';
+
+  @override
+  String error_colon(Object error) {
+    return 'Ошибка: $error';
+  }
+
+  @override
+  String get period_filter => 'Фильтр по периоду';
+
+  @override
+  String get total => 'Итого';
+
+  @override
+  String get cell_data => 'Данные ячейки';
+
+  @override
+  String get copy_to_clipboard => 'Скопировать в буфер';
+
+  @override
+  String get cell_data_copied => 'Данные ячейки скопированы в буфер';
+
+  @override
+  String get add_row => 'Добавить строку';
+
+  @override
+  String get edit_row => 'Редактировать строку';
+
+  @override
+  String get copy_row => 'Копировать строку';
+
+  @override
+  String get delete_row => 'Удалить строку';
+
+  @override
+  String get refresh_table => 'Обновить таблицу';
+
+  @override
+  String get column_display => 'Отображение колонок';
+
+  @override
+  String get column_order_and_disable => 'Порядок и отключение колонок';
+
+  @override
+  String get drag_columns_to_reorder =>
+      'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок';
+
+  @override
+  String get user_settings_not_set => 'Не заданы настройки пользователя';
+
+  @override
+  String get column_width => 'Ширина колонок';
+
+  @override
+  String get apply => 'Применить';
+
+  @override
+  String delete_rows(Object count) {
+    return 'Удаление строк ($count)';
+  }
+
+  @override
+  String get delete => 'Удалить';
+
+  @override
+  String get copy_row_dialog => 'Скопировать строку';
+
+  @override
+  String get edit_rows => 'Редактирование строк';
+
+  @override
+  String get confirm_delete_rows =>
+      'Подтвердите, что хотите удалить следующие строки:';
 }

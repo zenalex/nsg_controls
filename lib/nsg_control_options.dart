@@ -477,7 +477,7 @@ Color stringToColor(String color) {
 
 String colorToHex(Color color) {
   var res = color.toARGB32().toRadixString(16).padLeft(8, '0');
-  print(res);
+  // print(res);
   return res;
 }
 

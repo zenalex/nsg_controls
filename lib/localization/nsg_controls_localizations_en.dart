@@ -170,4 +170,94 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
 
   @override
   String get no_options_available => 'No options available';
+
+  @override
+  String get date_filter => 'Date Filter';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get recent => 'Recent';
+
+  @override
+  String get favorites => 'Favorites';
+
+  @override
+  String get columns_not_set => 'Columns (columns) are not set for the table';
+
+  @override
+  String get unknown_display_type => 'Unknown NsgListPage display type';
+
+  @override
+  String error_colon(Object error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get period_filter => 'Period Filter';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get cell_data => 'Cell Data';
+
+  @override
+  String get copy_to_clipboard => 'Copy to Clipboard';
+
+  @override
+  String get cell_data_copied => 'Cell data copied to clipboard';
+
+  @override
+  String get add_row => 'Add Row';
+
+  @override
+  String get edit_row => 'Edit Row';
+
+  @override
+  String get copy_row => 'Copy Row';
+
+  @override
+  String get delete_row => 'Delete Row';
+
+  @override
+  String get refresh_table => 'Refresh Table';
+
+  @override
+  String get column_display => 'Column Display';
+
+  @override
+  String get column_order_and_disable => 'Column Order and Disable';
+
+  @override
+  String get drag_columns_to_reorder =>
+      'Drag columns while holding the left mouse button to change the column sequence';
+
+  @override
+  String get user_settings_not_set => 'User settings are not set';
+
+  @override
+  String get column_width => 'Column Width';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String delete_rows(Object count) {
+    return 'Delete Rows ($count)';
+  }
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get copy_row_dialog => 'Copy Row';
+
+  @override
+  String get edit_rows => 'Edit Rows';
+
+  @override
+  String get confirm_delete_rows =>
+      'Please confirm that you want to delete the following rows:';
 }

@@ -412,6 +412,174 @@ abstract class NsgControlsLocalizations {
   /// In ru, this message translates to:
   /// **'Нет доступных опций'**
   String get no_options_available;
+
+  /// No description provided for @date_filter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Фильтр по датам'**
+  String get date_filter;
+
+  /// No description provided for @all.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get all;
+
+  /// No description provided for @recent.
+  ///
+  /// In ru, this message translates to:
+  /// **'Последние'**
+  String get recent;
+
+  /// No description provided for @favorites.
+  ///
+  /// In ru, this message translates to:
+  /// **'Избранные'**
+  String get favorites;
+
+  /// No description provided for @columns_not_set.
+  ///
+  /// In ru, this message translates to:
+  /// **'Колонки (columns) не заданы для таблицы'**
+  String get columns_not_set;
+
+  /// No description provided for @unknown_display_type.
+  ///
+  /// In ru, this message translates to:
+  /// **'Несуществующий тип отображения NsgListPage'**
+  String get unknown_display_type;
+
+  /// No description provided for @error_colon.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ошибка: {error}'**
+  String error_colon(Object error);
+
+  /// No description provided for @period_filter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Фильтр по периоду'**
+  String get period_filter;
+
+  /// No description provided for @total.
+  ///
+  /// In ru, this message translates to:
+  /// **'Итого'**
+  String get total;
+
+  /// No description provided for @cell_data.
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные ячейки'**
+  String get cell_data;
+
+  /// No description provided for @copy_to_clipboard.
+  ///
+  /// In ru, this message translates to:
+  /// **'Скопировать в буфер'**
+  String get copy_to_clipboard;
+
+  /// No description provided for @cell_data_copied.
+  ///
+  /// In ru, this message translates to:
+  /// **'Данные ячейки скопированы в буфер'**
+  String get cell_data_copied;
+
+  /// No description provided for @add_row.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить строку'**
+  String get add_row;
+
+  /// No description provided for @edit_row.
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактировать строку'**
+  String get edit_row;
+
+  /// No description provided for @copy_row.
+  ///
+  /// In ru, this message translates to:
+  /// **'Копировать строку'**
+  String get copy_row;
+
+  /// No description provided for @delete_row.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить строку'**
+  String get delete_row;
+
+  /// No description provided for @refresh_table.
+  ///
+  /// In ru, this message translates to:
+  /// **'Обновить таблицу'**
+  String get refresh_table;
+
+  /// No description provided for @column_display.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отображение колонок'**
+  String get column_display;
+
+  /// No description provided for @column_order_and_disable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Порядок и отключение колонок'**
+  String get column_order_and_disable;
+
+  /// No description provided for @drag_columns_to_reorder.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перетягивайте колонки, зажимая левую кнопку мыши, чтобы поменять последовательность колонок'**
+  String get drag_columns_to_reorder;
+
+  /// No description provided for @user_settings_not_set.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не заданы настройки пользователя'**
+  String get user_settings_not_set;
+
+  /// No description provided for @column_width.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ширина колонок'**
+  String get column_width;
+
+  /// No description provided for @apply.
+  ///
+  /// In ru, this message translates to:
+  /// **'Применить'**
+  String get apply;
+
+  /// No description provided for @delete_rows.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удаление строк ({count})'**
+  String delete_rows(Object count);
+
+  /// No description provided for @delete.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get delete;
+
+  /// No description provided for @copy_row_dialog.
+  ///
+  /// In ru, this message translates to:
+  /// **'Скопировать строку'**
+  String get copy_row_dialog;
+
+  /// No description provided for @edit_rows.
+  ///
+  /// In ru, this message translates to:
+  /// **'Редактирование строк'**
+  String get edit_rows;
+
+  /// No description provided for @confirm_delete_rows.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подтвердите, что хотите удалить следующие строки:'**
+  String get confirm_delete_rows;
 }
 
 class _NsgControlsLocalizationsDelegate
