@@ -100,7 +100,7 @@ class CachedNetworkImageProvider extends ImageProvider<CachedNetworkImageProvide
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, CachedNetworkImageProvider key, ImageErrorListener handleError) {
     super.resolveStreamForKey(configuration, stream, key, handleError);
     if (PaintingBinding.instance.imageCache.containsKey(key)) {
-      dev.log("imageInMemory!");
+      //dev.log("imageInMemory!");
     }
     if (onLoadingProgress != null) {
       stream.completer?.addListener(
