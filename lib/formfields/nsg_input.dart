@@ -887,14 +887,14 @@ class _NsgInputState extends State<NsgInput> {
         builder: (_) {
           Widget dynamicListWidget() {
             return StatefulBuilder(
-              builder: (context, setstate) {
+              builder: (context, update) {
                 List<Widget> list = [];
                 for (var element in widget.dynamicList) {
                   list.add(
                     InkWell(
                       onTap: () {
                         selectedElement = element;
-                        _notifierAll.value++;
+                        update(() {});
                       },
                       child: Container(
                         //key: GlobalKey(),
