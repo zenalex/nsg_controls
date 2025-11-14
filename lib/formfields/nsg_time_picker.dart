@@ -106,6 +106,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
     textScaleFactor = MediaQuery.of(context).textScaleFactor;
     int hours = _initialTime.inHours;
     int minutes = _initialTime.inMinutes - hours * 60;
+    String hoursString = hours.toString().padLeft(2, '0');
     String minutesString = minutes.toString().padLeft(2, '0');
 
     inkWellWrapper({required Widget child}) {
@@ -178,7 +179,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
                     child:
                         // widget.lableWidget ??
                         Text(
-                          "$hours:$minutesString",
+                          "$hoursString:$minutesString",
                           textAlign: widget.textAlign,
                           style:
                               // widget.textStyle ??
@@ -231,8 +232,9 @@ class _TimePickerContentState extends State<TimePickerContent> {
     if (splitedTime.length > 1) {
       var hours = (int.tryParse(splitedTime[0]) ?? 0) % 24;
       var minutes = (int.tryParse(splitedTime[1]) ?? 0) % 60;
+      var hoursString = hours.toString().padLeft(2, '0');
       var minutesString = minutes.toString().padLeft(2, '0');
-      var parsedTime = '$hours:$minutesString';
+      var parsedTime = '$hoursString:$minutesString';
       if (textController.text != parsedTime) {
         textController.text = parsedTime;
         textController.selection = TextSelection.collapsed(offset: parsedTime.length - 1);
