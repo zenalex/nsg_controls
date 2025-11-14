@@ -89,12 +89,17 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
             if (widget.offset.dy < constraints.maxHeight - height) {
               offsetY = widget.offset.dy;
             } else {
-              double difY = constraints.maxHeight - height - widget.offset.dy - 32;
-              double cutHeight = height;
-              if (difY < height) {
-                cutHeight = difY;
+              offsetY = widget.offset.dy;
+              //double difY = constraints.maxHeight - height - offsetY;
+              if (height > constraints.maxHeight - offsetY - 10) {
+                height = constraints.maxHeight - offsetY - 10;
               }
-              offsetY = widget.offset.dy + cutHeight + 16;
+
+              // double cutHeight = height;
+              // if (difY < height) {
+              //   cutHeight = difY;
+              // }
+              //offsetY = widget.offset.dy + cutHeight + 16;
             }
           }
           return Material(
@@ -111,12 +116,15 @@ class _NsgDropdownMenuOverlayState extends State<NsgDropdownMenuOverlay> {
                 alignment: Alignment.topLeft,
                 child: Transform.translate(
                   offset: Offset(offsetX, offsetY),
-                  child: widgetOverlay(
-                    key: objectKey,
-                    onSelect: widget.onSelect,
-                    widgetList: widget.widgetList,
-                    child: widget.child,
-                    listController: widget.listController,
+                  child: SizedBox(
+                    height: height == 0 ? null : height,
+                    child: widgetOverlay(
+                      key: objectKey,
+                      onSelect: widget.onSelect,
+                      widgetList: widget.widgetList,
+                      child: widget.child,
+                      listController: widget.listController,
+                    ),
                   ),
                 ),
               ),
