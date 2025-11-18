@@ -21,7 +21,7 @@ import '../helpers.dart';
 class NsgFilePickerProvider {
   static List<String> globalAllowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'];
   static List<String> globalAllowedVideoFormats = const ['mp4', 'mov'];
-  static List<String> globalAllowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv', 'svg'];
+  static List<String> globalAllowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv', 'svg', 'json'];
 
   static NsgFilePickerObjectType getFileTypeByExtension(String ext) {
     ext = ext.toLowerCase();
@@ -73,7 +73,7 @@ class NsgFilePickerProvider {
   const NsgFilePickerProvider({
     this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
     this.allowedVideoFormats = const ['mp4', 'mov'],
-    this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf'],
+    this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv', 'svg', 'json'],
     this.imageMaxWidth = 1920.0,
     this.imageMaxHeight = 1080.0,
     this.imageQuality = 85,
