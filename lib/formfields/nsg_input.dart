@@ -29,11 +29,11 @@ class NsgInput extends StatefulWidget {
   final String? hint;
   final Widget? widget;
   final double borderRadius;
-  final Function(NsgDataItem)? onChanged;
+  final Function(NsgDataItem item)? onChanged;
   final Function(bool value)? onFocusChanged;
   final VoidCallback? onPressed;
-  final Function(NsgDataItem, String)? onEditingComplete;
-  final Function(NsgDataItem, String)? onFieldSubmitted;
+  final Function(NsgDataItem item, String fieldName)? onEditingComplete;
+  final Function(NsgDataItem item, String fieldName)? onFieldSubmitted;
   final int maxLines;
   final int minLines;
 
