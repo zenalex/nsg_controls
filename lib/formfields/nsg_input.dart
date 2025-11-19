@@ -1026,6 +1026,23 @@ class _NsgInputState extends State<NsgInput> {
         },
       );
     } else if (inputType == NsgInputType.reference) {
+      if (selectionController == null) {
+        var sc = widget.selectionController;
+        if (sc == null) {
+          var di = widget.dataItem.getReferentOrNull(widget.fieldName);
+          if (di != null) {
+            sc = di.defaultController;
+          }
+        }
+        if (sc == null) {
+          assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
+          sc = NsgDefaultController(
+            dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType,
+            controllerMode: NsgDataControllerMode(storageType: widget.dataItem.storageType),
+          );
+        }
+        selectionController = sc;
+      }
       selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       //Зенков 27.12.2022 Вызывается в form.selectFromArray
       //Перенес вызов ниже в случае передачи пользовательской формы
