@@ -534,7 +534,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                             } else {
                                               date.endDate = value;
                                             }
-                                            date.setToPeriodWithTime(date);
+                                            date.setToPeriod(date);
                                             setState(() {});
                                           },
                                         ),
