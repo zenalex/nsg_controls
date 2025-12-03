@@ -1231,6 +1231,7 @@ class _NsgInputState extends State<NsgInput> {
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       decoration: BoxDecoration(
         color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
+        borderRadius: BorderRadius.circular(widget.borderRadius),
         //border: Border(bottom: BorderSide(width: 1, color: widget.borderColor ?? nsgtheme.nsgInputBorderColor))
       ),
       child: boolBox,

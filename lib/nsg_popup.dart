@@ -32,6 +32,8 @@ class NsgPopUp extends StatefulWidget {
   final bool hideCheckButton;
   final bool showCloseButton;
   final bool disableScroll;
+  final Widget? customIcon;
+  final VoidCallback? customIconOnTap;
   final String? elementEditPageName;
   final NsgBaseController? editPageController;
   Color? colorText;
@@ -64,6 +66,8 @@ class NsgPopUp extends StatefulWidget {
     this.showCloseButton = false,
     this.editPageController,
     this.elementEditPageName,
+    this.customIcon,
+    this.customIconOnTap,
   });
 
   @override
@@ -179,7 +183,17 @@ class _NsgPopUpState extends State<NsgPopUp> {
                       }
                     },
                   ),
-                if (!widget.hideCheckButton)
+
+                if (widget.customIconOnTap != null && widget.customIcon != null)
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                    decoration: BoxDecoration(color: widget.colorTitleText, borderRadius: BorderRadius.circular(10)),
+                    child: IconButton(
+                      icon: widget.customIcon!, // set your color here
+                      onPressed: widget.customIconOnTap,
+                    ),
+                  )
+                else if (!widget.hideCheckButton)
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                     decoration: BoxDecoration(color: widget.colorTitleText, borderRadius: BorderRadius.circular(10)),
