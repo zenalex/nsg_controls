@@ -885,6 +885,20 @@ class _NsgInputState extends State<NsgInput> {
       showDialog(
         context: context,
         builder: (_) {
+          // Для Desktop/Web ветки список рисуется в SingleChildScrollView и не позиционируется автоматически.
+          // Поэтому после построения прокручиваем к текущему значению (если оно есть в списке).
+          if (initItem >= 0) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!scrollController.hasClients) return;
+              // Высота элемента в dynamicListWidget() = 50.
+              final double target = initItem * 50.0;
+              final double clamped = target.clamp(0.0, scrollController.position.maxScrollExtent);
+              if ((scrollController.offset - clamped).abs() > 0.5) {
+                scrollController.jumpTo(clamped);
+              }
+            });
+          }
+
           Widget dynamicListWidget() {
             return StatefulBuilder(
               builder: (context, update) {
