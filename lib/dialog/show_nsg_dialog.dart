@@ -20,6 +20,7 @@ Future<dynamic> showNsgDialog({
   List<Widget>? buttons,
   VoidCallback? onConfirm,
   VoidCallback? onCancel,
+  Future Function()? onConfirmAsync,
   bool goBack = true,
 }) {
   return showDialog(
@@ -111,13 +112,16 @@ Future<dynamic> showNsgDialog({
                                     backColor: nsgtheme.colorGrey,
                                   ),
                                 NsgButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (onConfirm != null) {
                                       if (goBack) {
                                         Navigator.of(context).pop();
                                       }
                                       onConfirm();
-                                    } else {
+                                    } else if (onConfirmAsync != null) {
+                                      await onConfirmAsync();
+                                    }
+                                    {
                                       Navigator.of(context).pop();
                                     }
                                   },
