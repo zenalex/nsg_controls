@@ -120,8 +120,10 @@ Future<dynamic> showNsgDialog({
                                       onConfirm();
                                     } else if (onConfirmAsync != null) {
                                       await onConfirmAsync();
-                                    }
-                                    {
+                                      if (goBack) {
+                                        Navigator.of(context).pop();
+                                      }
+                                    } else {
                                       Navigator.of(context).pop();
                                     }
                                   },
