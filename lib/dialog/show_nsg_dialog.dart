@@ -10,6 +10,8 @@ Future<dynamic> showNsgDialog({
   required BuildContext context,
   bool showCancelButton = true,
   bool showCloseButton = false,
+  EdgeInsets? padding,
+  EdgeInsets? contentPadding,
   String? title,
   String? text,
   String? textConfirm,
@@ -34,7 +36,7 @@ Future<dynamic> showNsgDialog({
         child: Material(
           color: Colors.transparent,
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: padding ?? const EdgeInsets.all(20),
             decoration: BoxDecoration(color: nsgtheme.colorModalBack, borderRadius: BorderRadius.circular(10)),
             child: Center(
               child: Container(
@@ -76,7 +78,7 @@ Future<dynamic> showNsgDialog({
                       width: double.infinity,
                       decoration: BoxDecoration(color: nsgtheme.colorMainBack),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                        padding: contentPadding ?? const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
                         child: child ?? Text(text!, textAlign: TextAlign.center),
                       ),
                     ),
