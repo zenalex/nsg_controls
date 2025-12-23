@@ -13,7 +13,9 @@ class NsgSelection {
   final NsgInputType inputType;
   final NsgBaseController? controller;
   final List<NsgDataItem>? allValues;
+  final List<String>? allStringValues;
   NsgDataItem? selectedElement;
+  String? selectedString;
   //Контроллер для обновления данных, в случае отсутствия контроллера данных
   //В принципе, можно заменить на StatefullBuilder
   _SelectionController? selectionController;
@@ -28,7 +30,9 @@ class NsgSelection {
     this.controller,
     this.rowWidget,
     this.allValues,
+    this.allStringValues,
     this.selectedElement,
+    this.selectedString,
     this.textColor,
     this.colorInverted,
     this.widgetType = NsgInputSelectionWidgetType.column,
@@ -129,6 +133,61 @@ class NsgSelection {
               onSelected(selectedElement!);
             }
             Navigator.pop(cont);
+          },
+        );
+      },
+      barrierDismissible: false,
+    );
+  }
+
+  void selectFromStringArray({required String title, required Function(String item) onSelected, NsgDataRequestParams? filter, required BuildContext context}) {
+    showDialog(
+      context: context,
+      builder: (cont) {
+        return StatefulBuilder(
+          builder: (context, update) {
+            List<Widget> listStringArray() {
+              List<Widget> list = [];
+              for (var item in allStringValues!) {
+                list.add(
+                  InkWell(
+                    onTap: () {
+                      selectedString = item;
+                      update(() {});
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      color: item == selectedString ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          item,
+                          style: TextStyle(
+                            color: item == selectedString ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return list;
+            }
+
+            return SelectionNsgPopUp(
+              widgetType: widgetType,
+              title: title,
+              getContent: listStringArray,
+              dataController: controller,
+              textEditController: textEditingController,
+              confirmText: 'Подтвердить',
+              onConfirm: () {
+                if (selectedString != null) {
+                  onSelected(selectedString!);
+                }
+                Navigator.pop(cont);
+              },
+            );
           },
         );
       },
