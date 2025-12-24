@@ -17,6 +17,7 @@ class NsgDropdownMenuItem extends StatelessWidget {
     this.svgLeft,
     this.textAlign,
     this.mainAxisAlignment,
+    this.onSelectItem,
   });
   final TextStyle textStyle;
   final String text;
@@ -30,6 +31,13 @@ class NsgDropdownMenuItem extends StatelessWidget {
   final int? value;
   final TextAlign? textAlign;
   final MainAxisAlignment? mainAxisAlignment;
+  final void Function()? onSelectItem;
+
+  void onSelect() {
+    if (onSelectItem != null) {
+      onSelectItem!();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -21,13 +21,23 @@ class NsgSimpleTabsController extends ChangeNotifier {
   NsgSimpleTabsTab? get currentTab => _currentTab;
 
   set currentTab(NsgSimpleTabsTab? tab) {
-    _currentTab = tab;
-    notifyListeners();
+    if (_currentTab != tab) {
+      _currentTab = tab;
+      notifyListeners();
+    }
   }
 
   set currentTabName(String name) {
-    _currentTab = tabs.first;
-    notifyListeners();
+    var newTab = tabs.firstWhereOrNull((i) => i.name == name);
+    if (newTab == null && _currentTab != tabs.first) {
+      _currentTab = tabs.first;
+      notifyListeners();
+      return;
+    }
+    if (_currentTab != newTab) {
+      _currentTab = newTab;
+      notifyListeners();
+    }
   }
 
   ///Builder для отрисовки контента. Автоматически обновляет контент при смене таба. Возможна реализация сложной логики
@@ -48,4 +58,8 @@ class NsgSimpleTabsController extends ChangeNotifier {
   Widget getTabContent() => contentBuilder((tab, c, w) => (currentTab ?? NsgSimpleTabsTab(name: "")).pageContent);
 
   final List<NsgSimpleTabsTab> tabs;
+
+  void sendNotify() {
+    notifyListeners();
+  }
 }
