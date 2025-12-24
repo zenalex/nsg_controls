@@ -71,7 +71,7 @@ class NsgGalleryState extends State<NsgGallery> {
                 },
                 itemCount: widget.imagesList.length,
                 loadingBuilder: (context, event) => const NsgProgressBar(),
-                backgroundDecoration: BoxDecoration(color: ControlOptions.instance.colorInverted),
+                backgroundDecoration: BoxDecoration(color: nsgtheme.colorModalBack),
                 /*pageController: widget.pageController,
                         onPageChanged: onPageChanged,*/
               ),
@@ -87,7 +87,7 @@ class NsgGalleryState extends State<NsgGallery> {
                     }
                   });
                 },
-                child: const Icon(Icons.arrow_left_outlined, size: 48),
+                child: Icon(Icons.arrow_left_outlined, size: 48, color: nsgtheme.colorPrimary),
               ),
             ),
             Align(
@@ -101,7 +101,7 @@ class NsgGalleryState extends State<NsgGallery> {
                     }
                   });
                 },
-                child: const Icon(Icons.arrow_right_outlined, size: 48),
+                child: Icon(Icons.arrow_right_outlined, size: 48, color: nsgtheme.colorPrimary),
               ),
             ),
           ],
