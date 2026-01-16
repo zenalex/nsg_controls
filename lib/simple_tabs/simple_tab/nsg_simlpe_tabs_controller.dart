@@ -21,6 +21,9 @@ class NsgSimpleTabsController extends ChangeNotifier {
   NsgSimpleTabsTab? get currentTab => _currentTab;
 
   set currentTab(NsgSimpleTabsTab? tab) {
+    if (tab == null) {
+      tab = tabs.first;
+    }
     if (_currentTab != tab) {
       _currentTab = tab;
       notifyListeners();
