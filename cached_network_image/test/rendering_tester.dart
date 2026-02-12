@@ -15,13 +15,7 @@ export 'package:flutter/foundation.dart' show FlutterError, FlutterErrorDetails;
 export 'package:flutter_test/flutter_test.dart' show EnginePhase;
 
 class TestRenderingFlutterBinding extends BindingBase
-    with
-        SchedulerBinding,
-        ServicesBinding,
-        GestureBinding,
-        PaintingBinding,
-        SemanticsBinding,
-        RendererBinding {
+    with SchedulerBinding, ServicesBinding, GestureBinding, PaintingBinding, SemanticsBinding, RendererBinding {
   /// Creates a binding for testing rendering library functionality.
   ///
   /// If [onErrors] is not null, it is called if [FlutterError] caught any errors
@@ -34,8 +28,7 @@ class TestRenderingFlutterBinding extends BindingBase
   TestRenderingFlutterBinding({this.onErrors}) {
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.dumpErrorToConsole(details);
-      Zone.current.parent!
-          .handleUncaughtError(details.exception, details.stack!);
+      Zone.current.parent!.handleUncaughtError(details.exception, details.stack!);
     };
   }
 
@@ -114,8 +107,7 @@ class TestRenderingFlutterBinding extends BindingBase
       rootPipelineOwner.flushSemantics();
       if (phase == EnginePhase.flushSemantics) return;
       assert(
-        phase == EnginePhase.flushSemantics ||
-            phase == EnginePhase.sendSemanticsUpdate,
+        phase == EnginePhase.flushSemantics || phase == EnginePhase.sendSemanticsUpdate,
       );
     } finally {
       FlutterError.onError = oldErrorHandler;
@@ -257,61 +249,63 @@ class RenderSizedBox extends RenderBox {
 class FakeTickerProvider implements TickerProvider {
   @override
   Ticker createTicker(TickerCallback onTick, [bool disableAnimations = false]) {
-    return FakeTicker();
-  }
-}
-
-class FakeTicker implements Ticker {
-  @override
-  bool muted = false;
-
-  @override
-  void absorbTicker(Ticker originalTicker) {}
-
-  @override
-  String? get debugLabel => null;
-
-  @override
-  bool get isActive => throw UnimplementedError();
-
-  @override
-  bool get isTicking => throw UnimplementedError();
-
-  @override
-  bool get scheduled => throw UnimplementedError();
-
-  @override
-  bool get shouldScheduleTick => throw UnimplementedError();
-
-  @override
-  void dispose() {}
-
-  @override
-  void scheduleTick({bool rescheduling = false}) {}
-
-  @override
-  TickerFuture start() {
+    // return FakeTicker();
+    //Заменил, чтобы
     throw UnimplementedError();
   }
-
-  @override
-  void stop({bool canceled = false}) {}
-
-  @override
-  void unscheduleTick() {}
-
-  @override
-  String toString({bool debugIncludeStack = false}) => super.toString();
-
-  @override
-  DiagnosticsNode describeForError(String name) {
-    return DiagnosticsProperty<Ticker>(
-      name,
-      this,
-      style: DiagnosticsTreeStyle.errorProperty,
-    );
-  }
 }
+
+// class FakeTicker implements Ticker {
+//   @override
+//   bool muted = false;
+
+//   @override
+//   void absorbTicker(Ticker originalTicker) {}
+
+//   @override
+//   String? get debugLabel => null;
+
+//   @override
+//   bool get isActive => throw UnimplementedError();
+
+//   @override
+//   bool get isTicking => throw UnimplementedError();
+
+//   @override
+//   bool get scheduled => throw UnimplementedError();
+
+//   @override
+//   bool get shouldScheduleTick => throw UnimplementedError();
+
+//   @override
+//   void dispose() {}
+
+//   @override
+//   void scheduleTick({bool rescheduling = false}) {}
+
+//   @override
+//   TickerFuture start() {
+//     throw UnimplementedError();
+//   }
+
+//   @override
+//   void stop({bool canceled = false}) {}
+
+//   @override
+//   void unscheduleTick() {}
+
+//   @override
+//   String toString({bool debugIncludeStack = false}) => super.toString();
+
+//   @override
+//   DiagnosticsNode describeForError(String name) {
+//     return DiagnosticsProperty<Ticker>(
+//       name,
+//       this,
+//       style: DiagnosticsTreeStyle.errorProperty,
+//     );
+//   }
+// }
 
 class TestClipPaintingContext extends PaintingContext {
   TestClipPaintingContext() : super(ContainerLayer(), Rect.zero);
@@ -341,6 +335,5 @@ void expectOverflowedErrors() {
 }
 
 RenderConstrainedBox get box200x200 => RenderConstrainedBox(
-      additionalConstraints:
-          const BoxConstraints.tightFor(height: 200.0, width: 200.0),
+      additionalConstraints: const BoxConstraints.tightFor(height: 200.0, width: 200.0),
     );
