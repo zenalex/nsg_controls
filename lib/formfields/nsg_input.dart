@@ -792,7 +792,32 @@ class _NsgInputState extends State<NsgInput> {
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
   Widget _gestureWrap({required Widget interactiveWidget, required bool clearIcon}) {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
-      return clearIcon == true ? _addClearIcon(interactiveWidget) : interactiveWidget;
+      // Оборачиваем в GestureDetector для активации фокуса при клике на любую область
+      return clearIcon == true 
+          ? _addClearIcon(
+              GestureDetector(
+                onTap: () {
+                  if (!_disabled) {
+                    focus.requestFocus();
+                  }
+                },
+                child: AbsorbPointer(
+                  absorbing: false,
+                  child: interactiveWidget,
+                ),
+              ),
+            )
+          : GestureDetector(
+              onTap: () {
+                if (!_disabled) {
+                  focus.requestFocus();
+                }
+              },
+              child: AbsorbPointer(
+                absorbing: false,
+                child: interactiveWidget,
+              ),
+            );
     } else {
       if (inputType == NsgInputType.phoneCode) {
         return interactiveWidget;
