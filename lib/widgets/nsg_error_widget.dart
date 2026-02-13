@@ -20,7 +20,7 @@ class NsgErrorWidget {
     await _showError(errorMessage, title);
   }
 
-  static Future showError(Exception ex) async {
+  static Future showError(Exception ex, {bool showFullError = true}) async {
     String message = ex.toString();
 
     String title = 'ERROR ';
@@ -29,7 +29,12 @@ class NsgErrorWidget {
       title += ex.error.code?.toString() ?? '';
     }
     message = extractErrorMessage(message);
-    await _showError(message, title);
+    if (showFullError) {
+      await _showError(message, title);
+    } else {
+      var split = splitErrorMessage(message);
+      await _showError(split.message ?? "Empty message", title);
+    }
   }
 
   static String extractErrorMessage(String error) {
@@ -59,6 +64,27 @@ class NsgErrorWidget {
     //   return message;
     // }
     return error;
+  }
+
+  static ({String? error, String? message, String? code}) splitErrorMessage(String error) {
+    // Ищем код ошибки (например, 500)
+    final codeMatch = RegExp(r'^\d+').firstMatch(error);
+    final code = codeMatch != null ? codeMatch.group(0) : '';
+
+    // Ищем первую строку с русским текстом (например, "Хет-триков")
+    final lines = error.split('\n').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    String? message;
+    for (final line in lines) {
+      // Пропускаем строки, похожие на stacktrace и url
+      if (line.contains('://') || line.contains('->') || RegExp(r'^\d+').hasMatch(line)) continue;
+      // Берём первую строку с кириллицей или буквой
+      if (RegExp(r'[А-Яа-яA-Za-z]').hasMatch(line)) {
+        message = line;
+        break;
+      }
+    }
+
+    return (error: error, message: message, code: code);
   }
 
   static Future _showError(String errorMessage, String title) async {

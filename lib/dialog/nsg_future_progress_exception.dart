@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/widgets/nsg_error_widget.dart';
@@ -12,6 +13,7 @@ Future nsgFutureProgressAndException({
   bool showProgress = true,
   int? delay,
   List<ExceptionHandler>? exceptionHandlers,
+  bool? showFullError,
 }) async {
   var progress = NsgProgressDialog(textDialog: text ?? '', context: context, delay: delay);
   try {
@@ -42,7 +44,8 @@ Future nsgFutureProgressAndException({
     }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (ex is Exception) {
-        await NsgErrorWidget.showError(ex);
+        showFullError ??= kDebugMode ? true : false;
+        await NsgErrorWidget.showError(ex, showFullError: showFullError!);
       } else {
         await NsgErrorWidget.showErrorByString(ex.toString());
       }
