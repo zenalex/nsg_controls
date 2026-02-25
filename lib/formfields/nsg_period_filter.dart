@@ -506,6 +506,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       Opacity(
                                         opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
                                         child: NsgDatePicker(
+                                          key: GlobalKey(),
                                           simple: true,
                                           margin: const EdgeInsets.only(top: 5),
                                           initialTime: date.beginDate,
@@ -524,6 +525,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                       Opacity(
                                         opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
                                         child: NsgDatePicker(
+                                          key: GlobalKey(),
                                           simple: true,
                                           margin: const EdgeInsets.only(top: 5),
                                           initialTime: date.endDate,
