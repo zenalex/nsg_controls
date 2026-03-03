@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -376,7 +377,7 @@ class ControlOptions {
     this.colorBase = const Color.fromRGBO(255, 255, 255, 1),
     this.colorOverlay = const Color.fromARGB(150, 0, 0, 0),
   }) {
-    NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
+    NsgApiException.showExceptionDefault = (ex) => NsgErrorWidget.showError(ex, showFullError: kDebugMode);
 
     // Дефолтная функция с диалоговым окном при закрытии страницы на которой были сделаны изменения (например, в текстовой форме)
     NsgBaseController.saveOrCancelDefaultDialog = NsgDialogSaveOrCancel.saveOrCancel;
