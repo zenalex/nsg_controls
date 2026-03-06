@@ -44,7 +44,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
       for (var img in files) {
         ids.add(img.id);
         if (img.isNew && img.id.isNotEmpty && (img.fileContent != null || img.filePath.isNotEmpty)) {
-          //TODO: убрать imageFile
+          //TODO_FUTURE: убрать imageFile
           File? imageFile = kIsWeb || img.filePath.isEmpty ? null : File(img.filePath);
 
           var pic = await fileObjectToDataItem(img, imageFile);
@@ -54,7 +54,7 @@ class NsgFilePickerTableController<T extends NsgDataItem> extends NsgDataTableCo
         }
       }
       //Удаляем "лишние" картинки
-      //TODO: УДАЛЕНИЕ ФАЙЛОВ!!!!!
+      //TODO_FUTURE: УДАЛЕНИЕ ФАЙЛОВ!!!!!
       var itemsToDelete = table.rows.where((se) => !ids.contains(se.id)).toList();
       for (var row in itemsToDelete) {
         if (row.remoteProvider.newTableLogic) {

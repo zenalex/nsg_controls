@@ -122,7 +122,7 @@ Future<dynamic> showNsgDialog({
                                       onConfirm();
                                     } else if (onConfirmAsync != null) {
                                       await onConfirmAsync();
-                                      if (goBack) {
+                                      if (goBack && context.mounted) {
                                         Navigator.of(context).pop();
                                       }
                                     } else {

@@ -346,7 +346,7 @@ class _NsgTableState extends State<NsgTable> {
       }
       setState(() {});
       // if (height <= height2 && height > 0) {
-      //   // TODO определение высоты работает неверно
+      //   // TODO_FUTURE определение высоты работает неверно
       //   setState(() {
       //     hasScrollbar = false;
       //   });
@@ -584,7 +584,7 @@ class _NsgTableState extends State<NsgTable> {
               thumbVisibility: true,
               trackVisibility: true,
               child: Padding(
-                padding: EdgeInsets.only(bottom: widget.controller.currentStatus.isLoading ? 0 : 16), // TODO был отступ 16 пикселей. Мешает прогрессбару
+                padding: EdgeInsets.only(bottom: widget.controller.currentStatus.isLoading ? 0 : 16), // TODO_FUTURE был отступ 16 пикселей. Мешает прогрессбару
                 child: SingleChildScrollView(controller: scrollHorHeader, key: UniqueKey(), scrollDirection: Axis.horizontal, child: child),
               ),
             )
@@ -1204,7 +1204,7 @@ class _NsgTableState extends State<NsgTable> {
 
               /* --------------------------- Добавлени виджета строки в тело таблицы ------------------------------------------------------------------- */
               var currentRow = NsgTableRow(
-                //TODO: Андрей
+                //TODO_FUTURE: Андрей
                 //slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites) && !horizontalScrollEnabled,
                 slideEnable: widget.availableButtons.contains(NsgTableMenuButtonType.favorites),
                 rowFixedHeight: widget.rowFixedHeight,
@@ -1583,9 +1583,8 @@ class _NsgTableState extends State<NsgTable> {
 
         /* -------------------------------- Фильтры по Тексту и Периоду // ------------------------------- */
 
-        // ignore: avoid_unnecessary_containers
         table.add(
-          Container(
+          DecoratedBox(
             decoration: BoxDecoration(
               border: widget.hideLines
                   ? null
@@ -1807,7 +1806,7 @@ class _NsgTableState extends State<NsgTable> {
           );
         } /* else {
           // Если высота строк фиксированная
-          // FIXME проблема с бесконечной шириной - тут
+          // FIXME_FUTURE проблема с бесконечной шириной - тут
           table.add(Flexible(
             child: Container(
               padding: editMode == NsgTableEditMode.columnsWidth
@@ -1898,7 +1897,7 @@ class _NsgTableState extends State<NsgTable> {
         //return LayoutBuilder(builder: (context, constraints) {
         //print("LAYOUT BUILD ${DateTime.now()} ${constraints.constrainHeight()} > ${getHeight()} hasScrollbar $hasScrollbar");
         //if (widget.removeVerticalScrollIfNotNeeded) {
-        /* TODO переделать расчёт высоты с фиксированной высотой ячеек, чтобы убирать по необходимости вертикальный скрлол
+        /* TODO_FUTURE переделать расчёт высоты с фиксированной высотой ячеек, чтобы убирать по необходимости вертикальный скрлол
         
           Future.delayed(Duration.zero, () async {
             if (constraints.constrainHeight() > getHeight()) {
@@ -1936,7 +1935,7 @@ class _NsgTableState extends State<NsgTable> {
                           columnsEditMode: editMode == NsgTableEditMode.columnsWidth,
                           columnsOnResize: (resizedColumns) {
                             tableColumns = resizedColumns;
-                            //setState(() {}); // FIXME это обновление экрана при изменении ширины колонок, падает linkedScroll
+                            //setState(() {}); // FIXME_FUTURE это обновление экрана при изменении ширины колонок, падает linkedScroll
                           },
                           columns: visibleColumns,
                         ),
@@ -1951,7 +1950,7 @@ class _NsgTableState extends State<NsgTable> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      //  crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start, // FIXME что это такое?
+                      //  crossAxisAlignment: widget.rowFixedHeight == null ? CrossAxisAlignment.stretch : CrossAxisAlignment.start, // FIXME_FUTURE что это такое?
                       children: table,
                     ),
                   ),

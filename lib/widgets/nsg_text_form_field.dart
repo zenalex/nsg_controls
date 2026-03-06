@@ -353,7 +353,7 @@ class _NsgTextFormFieldState extends State<NsgTextFormField> {
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
               onTap: () {
-                //TODO: Если только числа, и нет значения по умолчанию - 0
+                //TODO_FUTURE: Если только числа, и нет значения по умолчанию - 0
                 textController.text = widget.defaultValue ?? "";
                 textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
                 Future.delayed(const Duration(milliseconds: 10), () {

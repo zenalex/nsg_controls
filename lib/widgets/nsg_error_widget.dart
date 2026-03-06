@@ -122,7 +122,12 @@ class NsgErrorWidget {
                       icon: Icons.share,
                       text: 'Переслать',
                       onPressed: () {
-                        Share.share(errorMessage, subject: 'Отправить текст ошибки');
+                        SharePlus.instance.share(
+                          ShareParams(
+                            text: errorMessage,
+                            subject: 'Отправить текст ошибки',
+                          ),
+                        );
                       },
                     ),
                   ),

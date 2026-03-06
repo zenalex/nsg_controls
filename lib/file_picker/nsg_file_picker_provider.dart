@@ -514,7 +514,7 @@ class NsgFilePickerProvider {
       }
     } else if (mobileSelectionType == NsgFilePickerObjectType.video) {
       var video = await ImagePicker().pickVideo(source: ImageSource.camera);
-      //TODO: Не работает пикер видео!
+      //TODO_FUTURE: Не работает пикер видео!
       if (video != null) {
         result = [video];
       }
