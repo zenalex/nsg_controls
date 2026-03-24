@@ -262,4 +262,19 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
   @override
   String get confirm_delete_rows =>
       'Подтвердите, что хотите удалить следующие строки:';
+
+  @override
+  String get authorization => 'Авторизация';
+
+  @override
+  String get enter_your_phone_number => 'Введите номер телефона';
+
+  @override
+  String get period_with_time => 'Период со временем';
+
+  @override
+  String get quick_selection => 'Быстрый выбор';
+
+  @override
+  String get custom_period => 'Другой период';
 }

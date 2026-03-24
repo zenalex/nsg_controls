@@ -580,6 +580,36 @@ abstract class NsgControlsLocalizations {
   /// In ru, this message translates to:
   /// **'Подтвердите, что хотите удалить следующие строки:'**
   String get confirm_delete_rows;
+
+  /// No description provided for @authorization.
+  ///
+  /// In ru, this message translates to:
+  /// **'Авторизация'**
+  String get authorization;
+
+  /// No description provided for @enter_your_phone_number.
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите номер телефона'**
+  String get enter_your_phone_number;
+
+  /// No description provided for @period_with_time.
+  ///
+  /// In ru, this message translates to:
+  /// **'Период со временем'**
+  String get period_with_time;
+
+  /// No description provided for @quick_selection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Быстрый выбор'**
+  String get quick_selection;
+
+  /// No description provided for @custom_period.
+  ///
+  /// In ru, this message translates to:
+  /// **'Другой период'**
+  String get custom_period;
 }
 
 class _NsgControlsLocalizationsDelegate

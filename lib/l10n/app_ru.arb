@@ -78,5 +78,10 @@
   "delete": "Удалить",
   "copy_row_dialog": "Скопировать строку",
   "edit_rows": "Редактирование строк",
-  "confirm_delete_rows": "Подтвердите, что хотите удалить следующие строки:"
+  "confirm_delete_rows": "Подтвердите, что хотите удалить следующие строки:",
+  "authorization": "Авторизация",
+  "enter_your_phone_number": "Введите номер телефона",
+  "period_with_time": "Период со временем",
+  "quick_selection": "Быстрый выбор",
+  "custom_period": "Другой период"
 }

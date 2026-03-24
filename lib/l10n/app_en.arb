@@ -78,5 +78,10 @@
   "delete": "Delete",
   "copy_row_dialog": "Copy Row",
   "edit_rows": "Edit Rows",
-  "confirm_delete_rows": "Please confirm that you want to delete the following rows:"
+  "confirm_delete_rows": "Please confirm that you want to delete the following rows:",
+  "authorization": "Authorization",
+  "enter_your_phone_number": "Enter your phone number",
+  "period_with_time": "Period over time",
+  "quick_selection": "Quick selection",
+  "custom_period": "Another period"
 }

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nsg_controls/dialog/show_nsg_dialog.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -467,4 +468,94 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
       ),
     );
   }
+}
+
+Future<DateTimeRange?> showNsgDateRangePicker({
+  required BuildContext context,
+  required DateTimeRange initialDateRange,
+  required DateTime firstDate,
+  required DateTime lastDate,
+  bool barrierDismissible = true,
+}) async {
+  // theme is AI generated (not guaranteed to be correct)
+  final selectedRange = await showNsgDialog(
+    context: context,
+    showTitle: false,
+    showCancelButton: false,
+    buttons: const [],
+    barrierDismissible: barrierDismissible,
+    padding: EdgeInsets.zero,
+    contentPadding: EdgeInsets.zero,
+    child: Theme(
+      data: Theme.of(context).copyWith(
+        textTheme: Theme.of(context).textTheme.apply(bodyColor: nsgtheme.colorText, displayColor: nsgtheme.colorText),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: nsgtheme.colorMainDark,
+          selectionColor: nsgtheme.colorMain.withAlpha(80),
+          selectionHandleColor: nsgtheme.colorMainDark,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          floatingLabelStyle: TextStyle(color: nsgtheme.colorText),
+          labelStyle: TextStyle(color: nsgtheme.colorText.withAlpha(170)),
+          hintStyle: TextStyle(color: nsgtheme.colorText.withAlpha(140)),
+          fillColor: nsgtheme.colorMainBack,
+          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMain.withAlpha(150))),
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainDark, width: 2)),
+        ),
+        colorScheme: ColorScheme.light(
+          primary: nsgtheme.colorMain,
+          onPrimary: nsgtheme.colorPrimaryText,
+          secondary: nsgtheme.colorMainDark,
+          onSecondary: nsgtheme.colorPrimaryText,
+          surface: nsgtheme.colorMainBack,
+          onSurface: nsgtheme.colorText,
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: nsgtheme.colorMainDark,
+            textStyle: TextStyle(fontSize: nsgtheme.sizeM, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ),
+      child: DatePickerTheme(
+        data: DatePickerThemeData(
+          backgroundColor: nsgtheme.colorMainBack,
+          rangePickerBackgroundColor: nsgtheme.colorMainBack,
+          surfaceTintColor: Colors.transparent,
+          headerBackgroundColor: nsgtheme.colorMain,
+          headerForegroundColor: nsgtheme.colorPrimaryText,
+          rangePickerHeaderBackgroundColor: nsgtheme.colorMain,
+          rangePickerHeaderForegroundColor: nsgtheme.colorPrimaryText,
+          inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(color: nsgtheme.colorText),
+            hintStyle: TextStyle(color: nsgtheme.colorText),
+            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMain.withAlpha(150))),
+            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainDark, width: 2)),
+          ),
+          rangeSelectionBackgroundColor: nsgtheme.colorMain.withAlpha(70),
+          rangeSelectionOverlayColor: WidgetStatePropertyAll(nsgtheme.colorMain.withAlpha(35)),
+          todayForegroundColor: WidgetStatePropertyAll(nsgtheme.colorMainDark),
+          dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return nsgtheme.colorPrimaryText;
+            }
+            return nsgtheme.colorText;
+          }),
+          dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return nsgtheme.colorMain;
+            }
+            return Colors.transparent;
+          }),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        child: DateRangePickerDialog(initialDateRange: initialDateRange, firstDate: firstDate, lastDate: lastDate),
+      ),
+    ),
+  );
+
+  if (selectedRange is DateTimeRange) {
+    return selectedRange;
+  }
+  return null;
 }

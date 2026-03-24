@@ -260,4 +260,19 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
   @override
   String get confirm_delete_rows =>
       'Please confirm that you want to delete the following rows:';
+
+  @override
+  String get authorization => 'Authorization';
+
+  @override
+  String get enter_your_phone_number => 'Enter your phone number';
+
+  @override
+  String get period_with_time => 'Period over time';
+
+  @override
+  String get quick_selection => 'Quick selection';
+
+  @override
+  String get custom_period => 'Another period';
 }
