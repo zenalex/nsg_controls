@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:nsg_data/helpers/nsg_data_format.dart';
 import 'package:image/image.dart' as img;
+import 'package:nsg_data/nsg_data.dart';
 import 'localization/nsg_controls_localizations.dart';
 import 'nsg_control_options.dart';
 import 'package:timeago/timeago.dart' as timeago;
