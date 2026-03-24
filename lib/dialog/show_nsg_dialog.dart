@@ -6,10 +6,12 @@ import 'package:nsg_controls/nsg_row_to_column.dart';
 
 import '../helpers.dart';
 
-Future<dynamic> showNsgDialog({
+Future<T?> showNsgDialog<T extends dynamic>({
   required BuildContext context,
   bool showCancelButton = true,
   bool showCloseButton = false,
+  bool showTitle = true,
+  bool barrierDismissible = true,
   EdgeInsets? padding,
   EdgeInsets? contentPadding,
   String? title,
@@ -22,11 +24,19 @@ Future<dynamic> showNsgDialog({
   List<Widget>? buttons,
   VoidCallback? onConfirm,
   VoidCallback? onCancel,
+  VoidCallback? onClose,
   Future Function()? onConfirmAsync,
   bool goBack = true,
+
+  /// Добавлние скролла для контента модального окна
+  bool isScrollable = false,
+
+  /// Ограничения для контейнера модального окна
+  BoxConstraints? constraints,
 }) {
-  return showDialog(
+  return showDialog<T>(
     context: context,
+    barrierDismissible: barrierDismissible,
     builder: (context) {
       title ??= tran.need_confirmation;
       text ??= tran.are_you_sure;
@@ -40,48 +50,63 @@ Future<dynamic> showNsgDialog({
             decoration: BoxDecoration(color: nsgtheme.colorModalBack, borderRadius: BorderRadius.circular(10)),
             child: Center(
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 640),
+                constraints: constraints ?? const BoxConstraints(maxWidth: 640),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      decoration: BoxDecoration(color: titleBackColor ?? nsgtheme.colorMain),
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      constraints: BoxConstraints(minHeight: 50),
-                      child: Row(
-                        children: [
-                          if (showCloseButton) SizedBox(width: 50),
-                          Expanded(
-                            child: Text(
-                              title!,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: titleTextColor ?? nsgtheme.colorPrimaryText, fontSize: nsgtheme.sizeXL, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          if (showCloseButton)
-                            Container(
-                              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
-                              decoration: BoxDecoration(color: titleTextColor ?? nsgtheme.colorPrimaryText, borderRadius: BorderRadius.circular(10)),
-                              child: IconButton(
-                                icon: Icon(Icons.close, color: titleBackColor ?? nsgtheme.colorPrimary, size: 24), // set your color here
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                },
+                    if (showTitle)
+                      Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        decoration: BoxDecoration(color: titleBackColor ?? nsgtheme.colorMain),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        constraints: BoxConstraints(minHeight: 50),
+                        child: Row(
+                          children: [
+                            if (showCloseButton) SizedBox(width: 50),
+                            Expanded(
+                              child: Text(
+                                title!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: titleTextColor ?? nsgtheme.colorPrimaryText, fontSize: nsgtheme.sizeXL, fontWeight: FontWeight.bold),
                               ),
                             ),
-                        ],
+                            if (showCloseButton)
+                              Container(
+                                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                                decoration: BoxDecoration(color: titleTextColor ?? nsgtheme.colorPrimaryText, borderRadius: BorderRadius.circular(10)),
+                                child: IconButton(
+                                  icon: Icon(Icons.close, color: titleBackColor ?? nsgtheme.colorPrimary, size: 24), // set your color here
+                                  onPressed: () async {
+                                    onClose?.call();
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(color: nsgtheme.colorMainBack),
-                      child: Padding(
-                        padding: contentPadding ?? const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                        child: child ?? Text(text!, textAlign: TextAlign.center),
+                    if (isScrollable)
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(color: nsgtheme.colorMainBack),
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: contentPadding ?? const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                              child: child ?? Text(text!, textAlign: TextAlign.center),
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(color: nsgtheme.colorMainBack),
+                        child: Padding(
+                          padding: contentPadding ?? const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                          child: child ?? Text(text!, textAlign: TextAlign.center),
+                        ),
                       ),
-                    ),
                     if (buttons != null && buttons.isEmpty)
                       SizedBox()
                     else
