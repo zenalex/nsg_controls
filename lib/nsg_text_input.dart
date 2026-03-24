@@ -55,7 +55,7 @@ class _NsgTextInputState extends State<NsgTextInput> {
 
   @override
   Widget build(BuildContext context) {
-    Timer? _delayTimer;
+    Timer? delayTimer;
 
     // Оборачивание disabled текстового поля, чтобы обработать нажатие на него
     Widget gestureWrap(Widget child) {
@@ -99,9 +99,9 @@ class _NsgTextInputState extends State<NsgTextInput> {
           }
 
           if (widget.onChangedDelayed != null) {
-            _delayTimer?.cancel();
+            delayTimer?.cancel();
 
-            _delayTimer = Timer(widget.onChangeDelay, () {
+            delayTimer = Timer(widget.onChangeDelay, () {
               widget.onChangedDelayed!(value);
             });
           }

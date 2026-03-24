@@ -189,7 +189,7 @@ class _NsgSimpleTableState extends State<NsgSimpleTable> {
           child: SingleChildScrollView(controller: scrollVert, scrollDirection: Axis.vertical, child: child));
     } else {
       return CrossScroll(
-          // TODO тянется во всю доступную ширину, что неправильно. Плюс добавляется фоновый цвет
+          // TODO_FUTURE тянется во всю доступную ширину, что неправильно. Плюс добавляется фоновый цвет
           normalColor: ControlOptions.instance.colorMain,
           verticalBar: crossScrollBar,
           horizontalBar: crossScrollBar,

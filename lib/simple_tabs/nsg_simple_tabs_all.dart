@@ -1,5 +1,3 @@
-library nsg_controls;
-
 export 'package:nsg_controls/simple_tabs/nsg_simple_tabs.dart';
 export 'package:nsg_controls/simple_tabs/nsg_simple_tabs_style.dart';
 export 'package:nsg_controls/simple_tabs/nsg_simple_tabs_tab_icon.dart';

@@ -483,9 +483,19 @@ String colorToHex(Color color) {
 }
 
 class ColorsCalc {
-  Color dark(Color c) => Color.fromARGB(-1, (c.red * c.red) ~/ 255, (c.green * c.green) ~/ 255, (c.blue * c.blue) ~/ 255);
+  Color dark(Color c) {
+    final red = (c.r * 255.0).round().clamp(0, 255);
+    final green = (c.g * 255.0).round().clamp(0, 255);
+    final blue = (c.b * 255.0).round().clamp(0, 255);
+    return Color.fromARGB(-1, (red * red) ~/ 255, (green * green) ~/ 255, (blue * blue) ~/ 255);
+  }
 
-  Color light(Color c) => Color.fromARGB(-1, (sqrt(c.red / 255) * 255).floor(), (sqrt(c.green / 255) * 255).floor(), (sqrt(c.blue / 255) * 255).floor());
+  Color light(Color c) {
+    final red = (c.r * 255.0).round().clamp(0, 255);
+    final green = (c.g * 255.0).round().clamp(0, 255);
+    final blue = (c.b * 255.0).round().clamp(0, 255);
+    return Color.fromARGB(-1, (sqrt(red / 255) * 255).floor(), (sqrt(green / 255) * 255).floor(), (sqrt(blue / 255) * 255).floor());
+  }
 
   Color tweak(Color base, double bf, double df, double lf, double wf, {Color? darker, Color? lighter}) {
     darker ??= dark(base);

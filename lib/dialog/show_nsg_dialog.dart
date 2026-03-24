@@ -147,7 +147,7 @@ Future<T?> showNsgDialog<T extends dynamic>({
                                       onConfirm();
                                     } else if (onConfirmAsync != null) {
                                       await onConfirmAsync();
-                                      if (goBack) {
+                                      if (goBack && context.mounted) {
                                         Navigator.of(context).pop();
                                       }
                                     } else {
