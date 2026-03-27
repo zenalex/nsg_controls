@@ -319,6 +319,50 @@ class _NsgInputState extends State<NsgInput> {
   TextFormFieldType? textFormFieldType;
   bool _ignoreChange = false;
 
+  /// Recomputes the effective keyboard because it depends both on widget.keyboard
+  /// and on the current field metadata/mask.
+  TextInputType? _resolveKeyboard() {
+    var resolvedKeyboard = widget.keyboard;
+    if (widget.dataItem.getField(widget.fieldName) is NsgDataDoubleField) {
+      resolvedKeyboard = TextInputType.number;
+    } else if (widget.dataItem.getField(widget.fieldName) is NsgDataIntField) {
+      resolvedKeyboard = TextInputType.number;
+    } else if (inputType == NsgInputType.stringValue && widget.maskType == NsgInputMaskType.car) {
+      resolvedKeyboard = TextInputType.number;
+    }
+    return resolvedKeyboard;
+  }
+
+  /// Resolves the controller for reference fields.
+  /// Priority: explicitly passed controller -> referent default controller -> fallback default controller.
+  NsgBaseController? _resolveSelectionController() {
+    var sc = widget.selectionController;
+    if (sc == null) {
+      var di = widget.dataItem.getReferentOrNull(widget.fieldName);
+      if (di != null) {
+        sc = di.defaultController;
+      }
+    }
+    if (sc == null) {
+      assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
+      sc = NsgDefaultController(
+        dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType,
+        controllerMode: NsgDataControllerMode(storageType: widget.dataItem.storageType),
+      );
+    }
+    return sc;
+  }
+
+  /// Keeps cached state in sync with incoming widget config.
+  /// This is required when Flutter reuses the same State during rebuilds.
+  void _syncWidgetConfiguration() {
+    _disabled = widget.disabled;
+    inputType = widget.selectInputType();
+    keyboard = _resolveKeyboard();
+    textFormFieldType = widget.textFormFieldType ?? nsgtheme.nsgInputOutlineBorderType;
+    selectionController = useSelectionController ? _resolveSelectionController() : null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -345,17 +389,8 @@ class _NsgInputState extends State<NsgInput> {
       }
     });
     //Проверяем, выбран ли тип инпута пользователем
-    _disabled = widget.disabled;
-    inputType = widget.selectInputType();
     textController = TextEditingController();
-    keyboard = widget.keyboard;
-    if (widget.dataItem.getField(widget.fieldName) is NsgDataDoubleField) {
-      keyboard = TextInputType.number;
-    } else if (widget.dataItem.getField(widget.fieldName) is NsgDataIntField) {
-      keyboard = TextInputType.number;
-    } else if (inputType == NsgInputType.stringValue && widget.maskType == NsgInputMaskType.car) {
-      keyboard = TextInputType.number;
-    }
+    _syncWidgetConfiguration();
 
     textController.addListener(() {
       if (textController.text == '') {
@@ -412,23 +447,6 @@ class _NsgInputState extends State<NsgInput> {
       }
     });
 
-    if (useSelectionController) {
-      var sc = widget.selectionController;
-      if (sc == null) {
-        var di = widget.dataItem.getReferentOrNull(widget.fieldName);
-        if (di != null) {
-          sc = di.defaultController;
-        }
-      }
-      if (sc == null) {
-        assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
-        sc = NsgDefaultController(
-          dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType,
-          controllerMode: NsgDataControllerMode(storageType: widget.dataItem.storageType),
-        );
-      }
-      selectionController = sc;
-    }
     if (widget.controller != null && widget.controller!.readOnly == true) {
       //_disabled = true;
     }
@@ -437,7 +455,7 @@ class _NsgInputState extends State<NsgInput> {
   @override
   void didUpdateWidget(NsgInput oldWidget) {
     super.didUpdateWidget(oldWidget);
-    inputType = widget.selectInputType();
+    _syncWidgetConfiguration();
   }
 
   @override
