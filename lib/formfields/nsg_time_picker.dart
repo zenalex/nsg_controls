@@ -272,18 +272,19 @@ class _TimePickerContentState extends State<TimePickerContent> {
           height: 40,
           width: 120,
           child: TextFormField(
+            autofocus: true,
             inputFormatters: [
               MaskTextInputFormatter(mask: "##:##", filter: {"#": RegExp(r'\d+|-|/')}),
             ],
             keyboardType: TextInputType.number,
-            cursorColor: ControlOptions.instance.colorMainText,
+            cursorColor: ControlOptions.instance.colorBase.b100,
             textAlign: TextAlign.center,
             decoration: InputDecoration(
               labelText: '',
               contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10), //  <- you can it to 0.0 for no space
               isDense: true,
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainDark)),
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorMainText)),
+              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorPrimary)),
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ControlOptions.instance.colorBase.b100)),
               labelStyle: TextStyle(color: ControlOptions.instance.colorMainDark, backgroundColor: Colors.transparent),
             ),
             //   key: GlobalKey(),

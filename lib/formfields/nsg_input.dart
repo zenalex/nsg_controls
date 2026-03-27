@@ -850,6 +850,7 @@ class _NsgInputState extends State<NsgInput> {
                 widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
                 textController.text = widget.dataItem[widget.fieldName].toString();
                 textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
+                widget.dataItem.setFieldValue(widget.fieldName, textController.text);
                 Future.delayed(const Duration(milliseconds: 10), () {
                   if (context.mounted) {
                     // ignore: use_build_context_synchronously
@@ -862,7 +863,6 @@ class _NsgInputState extends State<NsgInput> {
                     }
                   }
                 });
-
                 _notifierAll.value++;
               },
               child: HoverWidget(

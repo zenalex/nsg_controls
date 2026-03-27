@@ -111,13 +111,13 @@ class NsgSelection {
     }
   }
 
-  void selectFromArray(String title, Function(NsgDataItem dataItem) onSelected, {NsgDataRequestParams? filter, required BuildContext context}) {
+  Future selectFromArray(String title, Function(NsgDataItem dataItem) onSelected, {NsgDataRequestParams? filter, required BuildContext context}) async {
     if (inputType == NsgInputType.reference) {
       selectedElement = controller!.selectedItem;
       controller!.refreshData(filter: filter);
     }
 
-    showDialog(
+    await showDialog(
       context: context,
       builder: (cont) {
         return SelectionNsgPopUp(
