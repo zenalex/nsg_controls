@@ -114,7 +114,7 @@ class NsgFocusController {
   }
 }
 
-class NsgFocusManager extends StatelessWidget {
+class NsgFocusManager extends StatefulWidget {
   final Widget child;
   final NsgFocusController controller;
   final void Function()? onEnter;
@@ -122,25 +122,59 @@ class NsgFocusManager extends StatelessWidget {
   const NsgFocusManager({super.key, required this.child, required this.controller, this.onEnter});
 
   @override
+  State<NsgFocusManager> createState() => _NsgFocusManagerState();
+}
+
+class _NsgFocusManagerState extends State<NsgFocusManager> {
+  late final FocusNode _mainFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    _mainFocus = FocusNode();
+    widget.controller.mainFocus = _mainFocus;
+  }
+
+  @override
+  void didUpdateWidget(covariant NsgFocusManager oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.controller, widget.controller)) {
+      oldWidget.controller.mainFocus = null;
+      widget.controller.mainFocus = _mainFocus;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (identical(widget.controller.mainFocus, _mainFocus)) {
+      widget.controller.mainFocus = null;
+    }
+    _mainFocus.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    FocusNode mainFocus = FocusNode();
-    controller.mainFocus = mainFocus;
     return KeyboardListener(
-      focusNode: mainFocus,
+      focusNode: _mainFocus,
       onKeyEvent: (event) {
         if (event.logicalKey == LogicalKeyboardKey.home) {
-          controller.moveFocus(context, !(event.logicalKey == LogicalKeyboardKey.shift));
+          widget.controller.moveFocus(context, !(event.logicalKey == LogicalKeyboardKey.shift));
         }
         if (event.logicalKey == LogicalKeyboardKey.enter) {
-          if (onEnter != null) {
-            onEnter!();
-          } else if (controller.onEnter != null) {
-            controller.onEnter!();
+          if (widget.onEnter != null) {
+            widget.onEnter!();
+          } else if (widget.controller.onEnter != null) {
+            widget.controller.onEnter!();
           }
         }
       },
       child: FocusScope(
-        child: NsgFocusScope(registerNode: controller.registerNode, unregisterNode: controller.unregisterNode, child: child),
+        child: NsgFocusScope(
+          registerNode: widget.controller.registerNode,
+          unregisterNode: widget.controller.unregisterNode,
+          child: widget.child,
+        ),
       ),
     );
   }

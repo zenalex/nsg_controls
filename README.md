@@ -35,6 +35,8 @@ flutter pub get
 
 ## 🎯 Основные компоненты
 
+Все элементы ввода `NsgInput` работают поверх `NsgDataItem` / `NsgDataController`, поэтому совместимы и с REST-провайдером NSG, и с новым `serverpod`-адаптером из `nsg_data`.
+
 ### Формы и поля ввода
 
 ```dart

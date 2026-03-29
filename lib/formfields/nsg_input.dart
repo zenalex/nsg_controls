@@ -319,6 +319,10 @@ class _NsgInputState extends State<NsgInput> {
   TextFormFieldType? textFormFieldType;
   bool _ignoreChange = false;
 
+  bool _isNullOrEmptyDate(dynamic value) {
+    return value is! DateTime || NsgDateHelper.isEmptyDate(value);
+  }
+
   /// Recomputes the effective keyboard because it depends both on widget.keyboard
   /// and on the current field metadata/mask.
   TextInputType? _resolveKeyboard() {
@@ -491,7 +495,7 @@ class _NsgInputState extends State<NsgInput> {
           }
         }
         if (inputType == NsgInputType.dateValue) {
-          if (DateTime(01, 01, 01).isAtSameMomentAs(fieldValue) || DateTime(1754, 01, 01).isAtSameMomentAs(fieldValue)) {
+          if (_isNullOrEmptyDate(fieldValue)) {
             //Убрал это, зачем вообще присваивать в текст значение лейбла?
             //textController.text = widget.label;
             textController.text = '';
@@ -865,10 +869,10 @@ class _NsgInputState extends State<NsgInput> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
-                widget.dataItem[widget.fieldName] = widget.dataItem.getField(widget.fieldName).defaultValue;
-                textController.text = widget.dataItem[widget.fieldName].toString();
+                final clearedValue = inputType == NsgInputType.dateValue ? NsgDateHelper.minDate : widget.dataItem.getField(widget.fieldName).defaultValue;
+                widget.dataItem.setFieldValue(widget.fieldName, clearedValue);
+                textController.text = inputType == NsgInputType.dateValue && _isNullOrEmptyDate(clearedValue) ? '' : clearedValue.toString();
                 textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
-                widget.dataItem.setFieldValue(widget.fieldName, textController.text);
                 Future.delayed(const Duration(milliseconds: 10), () {
                   if (context.mounted) {
                     // ignore: use_build_context_synchronously
@@ -1203,15 +1207,19 @@ class _NsgInputState extends State<NsgInput> {
         NsgNavigator.instance.toPage(widget.selectionForm);
       }
     } else if (inputType == NsgInputType.dateValue) {
+      final currentDateValue = widget.dataItem[widget.fieldName];
+      final hasDateValue = currentDateValue is DateTime && !NsgDateHelper.isEmptyDate(currentDateValue);
+      final resolvedDateValue = hasDateValue ? currentDateValue : NsgDateHelper.minDate;
+      final fallbackDateValue = widget.initialDateTime ?? NsgPeriod.beginOfDay(DateTime.now());
       widget.formatDateTime == 'HH:mm'
           ? NsgTimePicker(
-              dateForTime: widget.dataItem[widget.fieldName],
+              dateForTime: hasDateValue ? resolvedDateValue : DateTime.now(),
               initialTime: Duration(
-                hours: (widget.dataItem[widget.fieldName] ?? DateTime.now()).hour,
-                minutes: (widget.dataItem[widget.fieldName] ?? DateTime.now()).minute,
+                hours: (hasDateValue ? resolvedDateValue : DateTime.now()).hour,
+                minutes: (hasDateValue ? resolvedDateValue : DateTime.now()).minute,
               ),
               onClose: (Duration endDate) {},
-            ).showPopup(context, widget.dataItem[widget.fieldName].hour, widget.dataItem[widget.fieldName].minute, (value) {
+            ).showPopup(context, (hasDateValue ? resolvedDateValue : DateTime.now()).hour, (hasDateValue ? resolvedDateValue : DateTime.now()).minute, (value) {
               widget.dataItem[widget.fieldName] = value;
               if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
               if (widget.onEditingComplete != null) {
@@ -1224,11 +1232,11 @@ class _NsgInputState extends State<NsgInput> {
               lastDateTime: widget.lastDateTime,
               // initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
               //         DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
-              initialTime: (widget.dataItem[widget.fieldName] as DateTime).year < 1900
-                  ? widget.initialDateTime ?? NsgPeriod.beginOfDay(DateTime.now())
-                  : widget.dataItem[widget.fieldName],
+              initialTime: !hasDateValue || resolvedDateValue.year < 1900
+                  ? fallbackDateValue
+                  : resolvedDateValue,
               onClose: (value) {},
-            ).showPopup(context, widget.dataItem[widget.fieldName], (value) {
+            ).showPopup(context, hasDateValue ? resolvedDateValue : fallbackDateValue, (value) {
               widget.dataItem[widget.fieldName] = value;
               if (widget.onChanged != null) widget.onChanged!(widget.dataItem);
               if (widget.onEditingComplete != null) {
