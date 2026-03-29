@@ -94,12 +94,60 @@ extension MaterialColors on Color {
       var lighter = ColorsCalc().light(base);
       return {
         0: Colors.black,
-        10: ColorsCalc().tweak(base, 0.8, 0.09, 0.4, 0.98, lighter: lighter, darker: darker),
-        20: ColorsCalc().tweak(base, 0.87, 0.2, 0.0, 1, lighter: lighter, darker: darker),
-        30: ColorsCalc().tweak(base, 0.92, 0.45, 0.7, 0.97, lighter: lighter, darker: darker),
-        40: ColorsCalc().tweak(base, 0.973, 0.7, 0.9, 0.97, lighter: lighter, darker: darker),
-        50: ColorsCalc().tweak(base, 1, 1, 1, 1, lighter: lighter, darker: darker),
-        60: ColorsCalc().tweak(base, 1, 0.97, 0.55, 0.97, lighter: lighter, darker: darker),
+        10: ColorsCalc().tweak(
+          base,
+          0.8,
+          0.09,
+          0.4,
+          0.98,
+          lighter: lighter,
+          darker: darker,
+        ),
+        20: ColorsCalc().tweak(
+          base,
+          0.87,
+          0.2,
+          0.0,
+          1,
+          lighter: lighter,
+          darker: darker,
+        ),
+        30: ColorsCalc().tweak(
+          base,
+          0.92,
+          0.45,
+          0.7,
+          0.97,
+          lighter: lighter,
+          darker: darker,
+        ),
+        40: ColorsCalc().tweak(
+          base,
+          0.973,
+          0.7,
+          0.9,
+          0.97,
+          lighter: lighter,
+          darker: darker,
+        ),
+        50: ColorsCalc().tweak(
+          base,
+          1,
+          1,
+          1,
+          1,
+          lighter: lighter,
+          darker: darker,
+        ),
+        60: ColorsCalc().tweak(
+          base,
+          1,
+          0.97,
+          0.55,
+          0.97,
+          lighter: lighter,
+          darker: darker,
+        ),
         70: ColorsCalc().tweak(
           base,
           1,
@@ -109,8 +157,24 @@ extension MaterialColors on Color {
           lighter: lighter,
           darker: darker,
         ),
-        80: ColorsCalc().tweak(base, 1, 0.97, 0.0, 0.7, lighter: lighter, darker: darker),
-        90: ColorsCalc().tweak(base, 1, 0.95, 0.0, 0.4, lighter: lighter, darker: darker),
+        80: ColorsCalc().tweak(
+          base,
+          1,
+          0.97,
+          0.0,
+          0.7,
+          lighter: lighter,
+          darker: darker,
+        ),
+        90: ColorsCalc().tweak(
+          base,
+          1,
+          0.95,
+          0.0,
+          0.4,
+          lighter: lighter,
+          darker: darker,
+        ),
         100: Colors.white,
       };
     }
@@ -146,6 +210,43 @@ class ControlOptions {
   final Color nsginputCloseIconColor;
   final Color nsginputCloseIconColorHover;
   final bool nsgInputShowLabel;
+
+  /// Цвет курсора и активной каретки в поле ручного ввода даты внутри `NsgDatePicker`.
+  /// Если не задан, используется `colorMainDark`.
+  final Color? nsgDatePickerInputCursorColor;
+
+  /// Цвет неактивной нижней границы у поля ручного ввода даты внутри `NsgDatePicker`.
+  /// Если не задан, используется `colorMain.withAlpha(150)`.
+  final Color? nsgDatePickerInputBorderColor;
+
+  /// Цвет активной нижней границы у поля ручного ввода даты внутри `NsgDatePicker`.
+  /// Если не задан, используется `colorMainDark`.
+  final Color? nsgDatePickerInputFocusedBorderColor;
+
+  /// Фоновый цвет popup-календаря `NsgDatePicker`.
+  /// Если не задан, используется `colorMainBack`.
+  final Color? nsgDatePickerBackgroundColor;
+
+  /// Основной цвет текста дней, заголовков и служебных элементов в popup-календаре `NsgDatePicker`.
+  /// Если не задан, используется `colorText`.
+  final Color? nsgDatePickerTextColor;
+
+  /// Цвет фона выбранного дня в popup-календаре `NsgDatePicker`.
+  /// Если не задан, используется `colorMain`.
+  final Color? nsgDatePickerSelectedDayBackgroundColor;
+
+  /// Цвет текста выбранного дня в popup-календаре `NsgDatePicker`.
+  /// Если не задан, используется `colorPrimaryText`.
+  final Color? nsgDatePickerSelectedDayTextColor;
+
+  /// Цвет текста для текущей даты ("сегодня") в popup-календаре `NsgDatePicker`,
+  /// когда день еще не выбран.
+  /// Если не задан, используется `colorMainDark`.
+  final Color? nsgDatePickerTodayTextColor;
+
+  /// Цвет overlay при hover/focus/pressed на дне в popup-календаре `NsgDatePicker`.
+  /// Если не задан, используется `colorMain.withAlpha(35)`.
+  final Color? nsgDatePickerDayOverlayColor;
 
   final NsgSwitchHorizontalStyle nsgSwitchHorizontalStyle;
 
@@ -268,7 +369,8 @@ class ControlOptions {
   double get screenWidth => Get.width;
 
   /// Размер одного блока с иконкой у сдвигающегося влево блока
-  double get slideBlockWidth => screenWidth > 640 ? 1 / 640 * 60 : 1 / Get.width * 60;
+  double get slideBlockWidth =>
+      screenWidth > 640 ? 1 / 640 * 60 : 1 / Get.width * 60;
 
   /// Минимальная ширина экрана приложения
   double appMinWidth;
@@ -297,14 +399,33 @@ class ControlOptions {
     this.nsginputCloseIconColor = const Color.fromARGB(255, 70, 59, 11),
     this.nsginputCloseIconColorHover = const Color.fromARGB(122, 70, 59, 11),
     this.nsgInputDynamicListTextColor = const Color.fromARGB(255, 0, 0, 0),
-    this.nsgInputDynamicListTextSelectedColor = const Color.fromARGB(255, 0, 0, 0),
+    this.nsgInputDynamicListTextSelectedColor = const Color.fromARGB(
+      255,
+      0,
+      0,
+      0,
+    ),
     this.nsgInputDynamicListBackColor = const Color.fromARGB(255, 0, 0, 0),
-    this.nsgInputDynamicListBackSelectedColor = const Color.fromARGB(255, 0, 0, 0),
+    this.nsgInputDynamicListBackSelectedColor = const Color.fromARGB(
+      255,
+      0,
+      0,
+      0,
+    ),
     this.nsgInputColorFilled = Colors.transparent,
     this.nsgInputColorLabel = Colors.black,
     this.nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
     this.nsgInputContentPadding = const EdgeInsets.all(5),
     this.nsgInputShowLabel = true,
+    this.nsgDatePickerInputCursorColor,
+    this.nsgDatePickerInputBorderColor,
+    this.nsgDatePickerInputFocusedBorderColor,
+    this.nsgDatePickerBackgroundColor,
+    this.nsgDatePickerTextColor,
+    this.nsgDatePickerSelectedDayBackgroundColor,
+    this.nsgDatePickerSelectedDayTextColor,
+    this.nsgDatePickerTodayTextColor,
+    this.nsgDatePickerDayOverlayColor,
     this.appMaxWidth = 640,
     this.appMinWidth = 320,
     this.sizeH1 = 36,
@@ -322,7 +443,10 @@ class ControlOptions {
     this.nsgButtonMargin = const EdgeInsets.all(5),
     this.borderRadius = 15.0,
     this.gradients = const {
-      'main': [Color.fromRGBO(233, 200, 45, 1), Color.fromARGB(255, 153, 128, 16)],
+      'main': [
+        Color.fromRGBO(233, 200, 45, 1),
+        Color.fromARGB(255, 153, 128, 16),
+      ],
     },
     //@Deprecated('Old variable. Use colorOverlay')
     this.colorModalBack = const Color.fromARGB(150, 0, 0, 0),
@@ -377,10 +501,12 @@ class ControlOptions {
     this.colorBase = const Color.fromRGBO(255, 255, 255, 1),
     this.colorOverlay = const Color.fromARGB(150, 0, 0, 0),
   }) {
-    NsgApiException.showExceptionDefault = (ex) => NsgErrorWidget.showError(ex, showFullError: kDebugMode);
+    NsgApiException.showExceptionDefault = (ex) =>
+        NsgErrorWidget.showError(ex, showFullError: kDebugMode);
 
     // Дефолтная функция с диалоговым окном при закрытии страницы на которой были сделаны изменения (например, в текстовой форме)
-    NsgBaseController.saveOrCancelDefaultDialog = NsgDialogSaveOrCancel.saveOrCancel;
+    NsgBaseController.saveOrCancelDefaultDialog =
+        NsgDialogSaveOrCancel.saveOrCancel;
     NsgBaseController.showErrorByString = NsgErrorWidget.showErrorByString;
   }
 
@@ -395,7 +521,8 @@ class ControlOptions {
     EdgeInsets nsgInputMargin = const EdgeInsets.all(5),
     bool nsgInputFilled = false,
     bool nsgInputHintAlwaysOnTop = false,
-    TextFormFieldType nsgInputOutlineBorderType = TextFormFieldType.underlineInputBorder,
+    TextFormFieldType nsgInputOutlineBorderType =
+        TextFormFieldType.underlineInputBorder,
     EdgeInsets nsgInputContentPadding = const EdgeInsets.all(5),
     Color nsgInputColorLabel = Colors.black,
     Color nsgInputColorFilled = Colors.transparent,
@@ -433,7 +560,8 @@ class ControlOptions {
 
     NsgApiException.showExceptionDefault = NsgErrorWidget.showError;
     // Дефолтная функция с диалоговым окном при закрытии страницы на которой были сделаны изменения (например, в текстовой форме)
-    NsgBaseController.saveOrCancelDefaultDialog = NsgDialogSaveOrCancel.saveOrCancel;
+    NsgBaseController.saveOrCancelDefaultDialog =
+        NsgDialogSaveOrCancel.saveOrCancel;
     return newinstance;
   }
 }
@@ -487,19 +615,45 @@ class ColorsCalc {
     final red = (c.r * 255.0).round().clamp(0, 255);
     final green = (c.g * 255.0).round().clamp(0, 255);
     final blue = (c.b * 255.0).round().clamp(0, 255);
-    return Color.fromARGB(-1, (red * red) ~/ 255, (green * green) ~/ 255, (blue * blue) ~/ 255);
+    return Color.fromARGB(
+      -1,
+      (red * red) ~/ 255,
+      (green * green) ~/ 255,
+      (blue * blue) ~/ 255,
+    );
   }
 
   Color light(Color c) {
     final red = (c.r * 255.0).round().clamp(0, 255);
     final green = (c.g * 255.0).round().clamp(0, 255);
     final blue = (c.b * 255.0).round().clamp(0, 255);
-    return Color.fromARGB(-1, (sqrt(red / 255) * 255).floor(), (sqrt(green / 255) * 255).floor(), (sqrt(blue / 255) * 255).floor());
+    return Color.fromARGB(
+      -1,
+      (sqrt(red / 255) * 255).floor(),
+      (sqrt(green / 255) * 255).floor(),
+      (sqrt(blue / 255) * 255).floor(),
+    );
   }
 
-  Color tweak(Color base, double bf, double df, double lf, double wf, {Color? darker, Color? lighter}) {
+  Color tweak(
+    Color base,
+    double bf,
+    double df,
+    double lf,
+    double wf, {
+    Color? darker,
+    Color? lighter,
+  }) {
     darker ??= dark(base);
     lighter ??= light(base);
-    return Color.lerp(Colors.black, Color.lerp(Colors.white, Color.lerp(darker, Color.lerp(lighter, base, lf), df), wf), bf)!;
+    return Color.lerp(
+      Colors.black,
+      Color.lerp(
+        Colors.white,
+        Color.lerp(darker, Color.lerp(lighter, base, lf), df),
+        wf,
+      ),
+      bf,
+    )!;
   }
 }
