@@ -150,7 +150,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
                       if (widget.onCancel != null) {
                         widget.onCancel!();
                       } else {
-                        Navigator.pop(Get.context!, false);
+                        Navigator.of(context).pop(false);
                       }
                     },
                   ),
@@ -180,7 +180,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
                       if (widget.onCancel != null) {
                         widget.onCancel!();
                       } else {
-                        Navigator.pop(Get.context!, false);
+                        Navigator.of(context).pop(false);
                       }
                     }
                   },
