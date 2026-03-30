@@ -6,16 +6,25 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_grid.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+/// Примечание к errorMessage: мы не сохраняем errorMessage, так как он временный и исчезает при изменении периода. Он используется только для отображения ошибки при выборе времени. Мы не сохраняем неверный формат периода, поэтому при ошибке мы получаем то же состояние, просто с ошибкой.
 class NsgPeriodPickerState implements NsgState {
   final bool disabled;
   final NsgTypedPeriod period;
   final NsgPeriodGranularity? granularity;
   final String? optionLabel;
+  final String? errorMessage;
   final DateTime minimumDate;
   final DateTime maximumDate;
-  NsgPeriodPickerState({this.disabled = false, required this.period, this.granularity, this.optionLabel, DateTime? minimumDate, DateTime? maximumDate})
-    : minimumDate = minimumDate ?? DateTime.now().subtract(Duration(days: 365 * 20)),
-      maximumDate = maximumDate ?? DateTime.now().add(Duration(days: 365 * 20));
+  NsgPeriodPickerState({
+    this.disabled = false,
+    required this.period,
+    this.granularity,
+    this.optionLabel,
+    this.errorMessage,
+    DateTime? minimumDate,
+    DateTime? maximumDate,
+  }) : minimumDate = minimumDate ?? DateTime.now().subtract(Duration(days: 365 * 20)),
+       maximumDate = maximumDate ?? DateTime.now().add(Duration(days: 365 * 20));
 
   @override
   NsgPeriodPickerState copyWith({
@@ -23,6 +32,7 @@ class NsgPeriodPickerState implements NsgState {
     NsgTypedPeriod? period,
     NsgPeriodGranularity? granularity,
     String? optionLabel,
+    String? errorMessage,
     DateTime? minimumDate,
     DateTime? maximumDate,
   }) {
@@ -31,6 +41,7 @@ class NsgPeriodPickerState implements NsgState {
       period: period ?? this.period,
       granularity: granularity ?? this.granularity,
       optionLabel: optionLabel ?? this.optionLabel,
+      errorMessage: errorMessage, // Мы не созраняем errorMessage, так как он временный и исчезает при изменении периода
       minimumDate: minimumDate ?? this.minimumDate,
       maximumDate: maximumDate ?? this.maximumDate,
     );
@@ -41,8 +52,16 @@ class NsgPeriodPickerEvent<S extends NsgPeriodPickerState> extends NsgEvent<S> w
   final NsgEventActionVoid<S>? onChangedAction;
   final NsgEventActionVoid<S>? onSelectedAction;
   final NsgEventActionVoid<S>? onCheckedBelongAction;
+  final NsgEventActionVoid<S>? onErrorAction;
   final Function(NsgTypedPeriod period)? checkBelongAction;
-  NsgPeriodPickerEvent({required super.state, this.onChangedAction, this.onSelectedAction, this.onCheckedBelongAction, this.checkBelongAction}) : super() {
+  NsgPeriodPickerEvent({
+    required super.state,
+    this.onChangedAction,
+    this.onSelectedAction,
+    this.onCheckedBelongAction,
+    this.onErrorAction,
+    this.checkBelongAction,
+  }) : super() {
     if (state.optionLabel == null) {
       changeOptionLabel(checkBelong(state.period) ?? tran.quick_selection);
     }
@@ -63,6 +82,11 @@ class NsgPeriodPickerEvent<S extends NsgPeriodPickerState> extends NsgEvent<S> w
     onCheckedBelongAction?.call(state);
   }
 
+  void onError(S newState) {
+    updateState(newState);
+    onErrorAction?.call(state);
+  }
+
   void changeOptionLabel(String optionLabel, {bool selected = false}) {
     onChanged(updateState(state.copyWith(optionLabel: optionLabel) as S));
     if (selected) {
@@ -75,6 +99,10 @@ class NsgPeriodPickerEvent<S extends NsgPeriodPickerState> extends NsgEvent<S> w
     if (selected) {
       onSelected(updateState(state.copyWith(period: period) as S));
     }
+  }
+
+  void showError(String errorMessage) {
+    onError(updateState(state.copyWith(errorMessage: errorMessage) as S));
   }
 
   /// Определяет, к какой опции принадлежит период
@@ -132,7 +160,10 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
                 periodGranularity: periodGranularity,
                 label: event.granularityName(periodGranularity),
                 onChanged: (period, periodGranularity) => event.changePeriod(period),
-                onPressed: (period, periodGranularity) => event.changePeriod(period),
+                onPressed: (period, periodGranularity) {
+                  event.changePeriod(period, selected: true);
+                  Navigator.pop(context);
+                },
               ),
             )
             .toList(),
@@ -197,6 +228,64 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
                   )
                   .toList(),
         ),
+        if (state.period.type == NsgPeriodGranularity.custom)
+          Column(
+            children: [
+              Container(
+                constraints: const BoxConstraints(maxWidth: 200, maxHeight: 50),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: NsgTimePicker.time(
+                        key: GlobalKey(),
+                        initialTime: TimeOfDay.fromDateTime(state.period.begin),
+                        onClose: (time) {
+                          // onChanged(period.copyWithBegin(time));
+                        },
+                        onValidTime: (time) {
+                          event.changePeriod(state.period.copyWithBeginTime(time));
+                        },
+                        validator: (time) {
+                          final dateBegin = state.period.begin.copyWith(hour: time.hour, minute: time.minute);
+                          if (dateBegin.isAfter(state.period.end)) {
+                            event.showError(tran.period_begin_must_be_before_end);
+                            return false;
+                          }
+                          return true;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: NsgTimePicker.time(
+                        key: GlobalKey(),
+                        initialTime: TimeOfDay.fromDateTime(state.period.end),
+                        onClose: (time) {
+                          // onChanged(period.copyWithBegin(time));
+                        },
+                        onValidTime: (time) {
+                          event.changePeriod(state.period.copyWithEndTime(time));
+                        },
+                        validator: (time) {
+                          final dateEnd = state.period.end.copyWith(hour: time.hour, minute: time.minute);
+                          if (dateEnd.isBefore(state.period.begin)) {
+                            event.showError(tran.period_begin_must_be_before_end);
+                            return false;
+                          }
+                          return true;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (state.errorMessage != null)
+                Text(
+                  state.errorMessage!,
+                  style: TextStyle(color: nsgtheme.colorError, fontSize: nsgtheme.sizeS),
+                ),
+            ],
+          ),
       ],
     );
   }
@@ -259,18 +348,11 @@ class NsgPeriodPicker extends StatefulWidget {
   /// Поле для отображения и задания значения
   final String dateEndFieldName;
 
-  final void Function(NsgTypedPeriod period, String? optionLabel) onChanged;
+  final void Function(NsgTypedPeriod period, String? optionLabel)? onChanged;
 
-  final void Function(NsgTypedPeriod period, String? optionLabel) onSelected;
+  final void Function(NsgTypedPeriod period, String? optionLabel)? onSelected;
 
-  const NsgPeriodPicker({
-    super.key,
-    required this.dataItem,
-    required this.dateBeginFieldName,
-    required this.dateEndFieldName,
-    required this.onChanged,
-    required this.onSelected,
-  });
+  const NsgPeriodPicker({super.key, required this.dataItem, required this.dateBeginFieldName, required this.dateEndFieldName, this.onChanged, this.onSelected});
 
   @override
   State<NsgPeriodPicker> createState() => _NsgPeriodPickerState();
@@ -287,12 +369,12 @@ class _NsgPeriodPickerState extends State<NsgPeriodPicker> {
     event = NsgPeriodPickerEvent(
       state: NsgPeriodPickerState(period: NsgTypedPeriod(beginDate, endDate)),
       onChangedAction: (state) {
-        widget.onChanged(state.period, state.optionLabel);
+        widget.onChanged?.call(state.period, state.optionLabel);
       },
       onSelectedAction: (state) {
         widget.dataItem.setFieldValue(widget.dateBeginFieldName, state.period.begin);
         widget.dataItem.setFieldValue(widget.dateEndFieldName, state.period.end);
-        widget.onSelected(state.period, state.optionLabel);
+        widget.onSelected?.call(state.period, state.optionLabel);
       },
     );
   }

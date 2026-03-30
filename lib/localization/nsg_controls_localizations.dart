@@ -610,6 +610,12 @@ abstract class NsgControlsLocalizations {
   /// In ru, this message translates to:
   /// **'Другой период'**
   String get custom_period;
+
+  /// No description provided for @period_begin_must_be_before_end.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начало периода должно быть раньше конца периода'**
+  String get period_begin_must_be_before_end;
 }
 
 class _NsgControlsLocalizationsDelegate

@@ -83,5 +83,6 @@
   "enter_your_phone_number": "Enter your phone number",
   "period_with_time": "Period over time",
   "quick_selection": "Quick selection",
-  "custom_period": "Another period"
+  "custom_period": "Another period",
+  "period_begin_must_be_before_end": "The start of the period must be before the end of the period"
 }

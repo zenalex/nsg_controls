@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:nsg_controls/dialog/show_nsg_dialog.dart';
-import 'package:nsg_controls/dialog/show_nsg_time_picker.dart';
+// import 'package:nsg_controls/dialog/show_nsg_time_picker.dart';
 import 'package:nsg_controls/formfields/nsg_date_picker.dart';
 import 'package:nsg_data/nsg_data.dart';
 
@@ -21,8 +21,8 @@ Future<NsgTypedPeriod?> showNsgPeriodPicker({
   label ??= '';
   DateTime? date;
   DateTimeRange? range;
-  TimeOfDay? timeBegin;
-  TimeOfDay? timeEnd;
+  // TimeOfDay? timeBegin;
+  // TimeOfDay? timeEnd;
   switch (period.type) {
     case NsgPeriodGranularity.year:
     case NsgPeriodGranularity.quarter:
@@ -63,13 +63,6 @@ Future<NsgTypedPeriod?> showNsgPeriodPicker({
       }
       break;
     case NsgPeriodGranularity.days:
-      range = await showNsgDateRangePicker(
-        context: context,
-        initialDateRange: DateTimeRange(start: period.begin, end: period.end),
-        firstDate: minimumDate,
-        lastDate: maximumDate,
-      );
-      break;
     case NsgPeriodGranularity.custom:
       range = await showNsgDateRangePicker(
         context: context,
@@ -77,27 +70,35 @@ Future<NsgTypedPeriod?> showNsgPeriodPicker({
         firstDate: minimumDate,
         lastDate: maximumDate,
       );
-      if (range == null) break;
-      if (context.mounted) {
-        timeBegin = await showNsgTimePicker(
-          context: context,
-          initialTime: period.beginTime(),
-          minimumTime: isDateSameDays(range.start, minimumDate) ? TimeOfDay.fromDateTime(minimumDate) : null,
-          label: 'Time begin',
-        );
-        if (timeBegin == null) break;
-      }
-      if (context.mounted) {
-        timeEnd = await showNsgTimePicker(
-          context: context,
-          initialTime: period.beginTime(),
-          minimumTime: isRangeSameDays(range) ? timeBegin : null,
-          maximumTime: isDateSameDays(range.end, maximumDate) ? TimeOfDay.fromDateTime(maximumDate) : null,
-          label: 'Time end',
-        );
-        if (timeEnd == null) break;
-      }
       break;
+    // case NsgPeriodGranularity.custom:
+    //   range = await showNsgDateRangePicker(
+    //     context: context,
+    //     initialDateRange: DateTimeRange(start: period.begin, end: period.end),
+    //     firstDate: minimumDate,
+    //     lastDate: maximumDate,
+    //   );
+    //   if (range == null) break;
+    //   if (context.mounted) {
+    //     timeBegin = await showNsgTimePicker(
+    //       context: context,
+    //       initialTime: period.beginTime(),
+    //       minimumTime: isDateSameDays(range.start, minimumDate) ? TimeOfDay.fromDateTime(minimumDate) : null,
+    //       label: 'Time begin',
+    //     );
+    //     if (timeBegin == null) break;
+    //   }
+    //   if (context.mounted) {
+    //     timeEnd = await showNsgTimePicker(
+    //       context: context,
+    //       initialTime: period.beginTime(),
+    //       minimumTime: isRangeSameDays(range) ? timeBegin : null,
+    //       maximumTime: isDateSameDays(range.end, maximumDate) ? TimeOfDay.fromDateTime(maximumDate) : null,
+    //       label: 'Time end',
+    //     );
+    //     if (timeEnd == null) break;
+    //   }
+    //   break;
   }
   if (date != null) {
     final newPeriod = switch (period.type) {
@@ -110,7 +111,8 @@ Future<NsgTypedPeriod?> showNsgPeriodPicker({
       NsgPeriodGranularity.custom => throw UnimplementedError('Unreachable code'),
     };
     return newPeriod;
-  } else if (range != null && (period.type == NsgPeriodGranularity.custom && timeBegin != null && timeEnd != null)) {
+    // } else if (range != null && (period.type == NsgPeriodGranularity.custom && timeBegin != null && timeEnd != null)) {
+  } else if (range != null) {
     final newPeriod = switch (period.type) {
       NsgPeriodGranularity.year => throw UnimplementedError('Unreachable code'),
       NsgPeriodGranularity.quarter => throw UnimplementedError('Unreachable code'),
@@ -119,8 +121,10 @@ Future<NsgTypedPeriod?> showNsgPeriodPicker({
       NsgPeriodGranularity.day => throw UnimplementedError('Unreachable code'),
       NsgPeriodGranularity.days => NsgTypedPeriod.days(range.start, range.end),
       NsgPeriodGranularity.custom => NsgTypedPeriod(
-        range.start.add(Duration(hours: timeBegin.hour, minutes: timeBegin.minute)),
-        range.end.add(Duration(hours: timeEnd.hour, minutes: timeEnd.minute)),
+        // range.start.add(Duration(hours: timeBegin.hour, minutes: timeBegin.minute)),
+        // range.end.add(Duration(hours: timeEnd.hour, minutes: timeEnd.minute)),
+        range.start,
+        range.end,
       ),
     };
     return newPeriod;

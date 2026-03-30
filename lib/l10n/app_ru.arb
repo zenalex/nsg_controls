@@ -83,5 +83,6 @@
   "enter_your_phone_number": "Введите номер телефона",
   "period_with_time": "Период со временем",
   "quick_selection": "Быстрый выбор",
-  "custom_period": "Другой период"
+  "custom_period": "Другой период",
+  "period_begin_must_be_before_end": "Начало периода должно быть раньше конца периода"
 }

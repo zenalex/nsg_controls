@@ -275,4 +275,8 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
 
   @override
   String get custom_period => 'Another period';
+
+  @override
+  String get period_begin_must_be_before_end =>
+      'The start of the period must be before the end of the period';
 }

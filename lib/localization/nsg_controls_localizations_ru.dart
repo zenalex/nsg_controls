@@ -277,4 +277,8 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
 
   @override
   String get custom_period => 'Другой период';
+
+  @override
+  String get period_begin_must_be_before_end =>
+      'Начало периода должно быть раньше конца периода';
 }

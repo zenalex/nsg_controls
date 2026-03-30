@@ -59,6 +59,25 @@ class NsgTimePicker extends StatefulWidget {
     // this.textStyle,
   });
 
+  NsgTimePicker.time({
+    super.key,
+    required TimeOfDay initialTime,
+    required Function(TimeOfDay time) onClose,
+    bool Function(TimeOfDay time)? validator,
+    dynamic Function(TimeOfDay time)? onValidTime,
+    this.label = '',
+    this.textAlign = TextAlign.center,
+    this.disabled = false,
+    this.margin = const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+    this.simple = false,
+    this.dateForTime,
+  }) : initialTime = Duration(hours: initialTime.hour, minutes: initialTime.minute),
+       onClose = ((time) {
+         onClose(TimeOfDay(hour: time.inHours % 24, minute: time.inMinutes % 60));
+       }),
+       validator = validator != null ? ((time) => validator(TimeOfDay(hour: time.inHours % 24, minute: time.inMinutes % 60))) : null,
+       onValidTime = onValidTime != null ? ((time) => onValidTime(TimeOfDay(hour: time.inHours % 24, minute: time.inMinutes % 60))) : null;
+
   void showPopup(BuildContext context, int hours, int minutes, Function(DateTime endDate) onClose) {
     DateTime today = DateTime.now();
     DateTime selectedDate = DateTime(today.year, today.month, today.day, hours, minutes);
