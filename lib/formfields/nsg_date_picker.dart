@@ -59,7 +59,11 @@ class NsgDatePicker extends StatefulWidget {
     // this.textStyle,
   });
 
-  void showPopup(BuildContext context, DateTime date, Function(DateTime endDate) onClose) {
+  void showPopup(
+    BuildContext context,
+    DateTime date,
+    Function(DateTime endDate) onClose,
+  ) {
     DateTime selectedDate = date;
     //Если не задана дата (<1755) устанавливаем initialTime как начальную
     //Иначе, при нажатии на галку не происходит выбор даты
@@ -118,7 +122,10 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
         return InkWell(
           onTap: widget.disabled != true
               ? () {
-                  NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
+                  NsgDatePicker(
+                    initialTime: _initTime,
+                    onClose: (value) {},
+                  ).showPopup(context, _initTime, (value) {
                     widget.onClose(value);
                     _initTime = value;
                     setState(() {});
@@ -144,7 +151,10 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                   textAlign: widget.textAlign,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorPrimary),
+                  style: TextStyle(
+                    fontSize: nsgtheme.sizeS,
+                    color: nsgtheme.colorPrimary,
+                  ),
                 ),
               ),
             Container(
@@ -158,20 +168,32 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                     //     ? Border.fromBorderSide(
                     //         BorderSide(color: widget.outlineBorderColor ?? nsgtheme.colorGreyLighter),
                     //       )
-                    Border(bottom: BorderSide(width: 1, color: nsgtheme.colorMain)),
+                    Border(
+                      bottom: BorderSide(width: 1, color: nsgtheme.colorMain),
+                    ),
               ),
               child: Row(
                 children: [
                   if (widget.disabled == true)
                     Padding(
                       padding: const EdgeInsets.only(right: 3.0),
-                      child: Icon(Icons.lock, size: 12, color: nsgtheme.colorMain),
+                      child: Icon(
+                        Icons.lock,
+                        size: 12,
+                        color: nsgtheme.colorMain,
+                      ),
                     ),
                   Expanded(
                     child:
                         widget.labelWidget ??
                         Text(
-                          NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy', locale: Localizations.localeOf(context).languageCode),
+                          NsgDateFormat.dateFormat(
+                            _initTime,
+                            format: 'dd.MM.yy',
+                            locale: Localizations.localeOf(
+                              context,
+                            ).languageCode,
+                          ),
                           textAlign: widget.textAlign,
                           style:
                               // widget.textStyle ??
@@ -194,7 +216,14 @@ class DatePickerContent extends StatefulWidget {
   final TextAlign textAlign;
   final DateTime? firstDateTime;
   final DateTime? lastDateTime;
-  const DatePickerContent({super.key, this.firstDateTime, this.lastDateTime, required this.initialTime, required this.textAlign, required this.onChange});
+  const DatePickerContent({
+    super.key,
+    this.firstDateTime,
+    this.lastDateTime,
+    required this.initialTime,
+    required this.textAlign,
+    required this.onChange,
+  });
 
   @override
   State<DatePickerContent> createState() => _DatePickerContentState();
@@ -211,7 +240,11 @@ class _DatePickerContentState extends State<DatePickerContent> {
     //textController.text = _initialTime;
     //var loc = Localizations.localeOf(context).languageCode;
 
-    textController.text = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy', locale: 'en');
+    textController.text = NsgDateFormat.dateFormat(
+      widget.initialTime,
+      format: 'dd.MM.yyyy',
+      locale: 'en',
+    );
     textController.addListener(textChanged);
     super.initState();
   }
@@ -252,7 +285,9 @@ class _DatePickerContentState extends State<DatePickerContent> {
       _ignoreChange = true;
       textController.text = _initialTime;
 
-      textController.selection = TextSelection.fromPosition(TextPosition(offset: start));
+      textController.selection = TextSelection.fromPosition(
+        TextPosition(offset: start),
+      );
       _ignoreChange = false;
     }
     // } else {
@@ -269,9 +304,21 @@ class _DatePickerContentState extends State<DatePickerContent> {
   @override
   Widget build(BuildContext context) {
     if (_initialTime.isEmpty) {
-      _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
+      _initialTime = NsgDateFormat.dateFormat(
+        widget.initialTime,
+        format: 'dd.MM.yyyy',
+        locale: Localizations.localeOf(context).languageCode,
+      );
       _initialTime2 = widget.initialTime;
     }
+    final inputCursorColor =
+        nsgtheme.nsgDatePickerInputCursorColor ?? nsgtheme.colorBase.b100;
+    final inputBorderColor =
+        nsgtheme.nsgDatePickerInputBorderColor ?? nsgtheme.colorMainDark;
+    final inputFocusedBorderColor =
+        nsgtheme.nsgDatePickerInputFocusedBorderColor ?? nsgtheme.colorMainText;
+    final inputTextColor =
+        nsgtheme.nsgDatePickerTextColor ?? nsgtheme.colorText;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -281,20 +328,32 @@ class _DatePickerContentState extends State<DatePickerContent> {
           height: 40,
           width: 150,
           child: TextFormField(
-            inputFormatters: [MaskTextInputFormatter(initialText: _initialTime, mask: "##.##.####")],
+            inputFormatters: [
+              MaskTextInputFormatter(
+                initialText: _initialTime,
+                mask: "##.##.####",
+              ),
+            ],
             keyboardType: TextInputType.number,
-            cursorColor: nsgtheme.colorBase.b100,
+            cursorColor: inputCursorColor,
             textAlign: widget.textAlign,
             controller: textController,
             decoration: InputDecoration(
-              hintStyle: TextStyle(color: nsgtheme.colorText),
-              errorStyle: TextStyle(color: nsgtheme.colorText),
+              hintStyle: TextStyle(color: inputTextColor),
+              errorStyle: TextStyle(color: inputTextColor),
               labelText: '',
               contentPadding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
               isDense: true,
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainDark)),
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainText)),
-              labelStyle: TextStyle(color: nsgtheme.colorMainDark, backgroundColor: Colors.transparent),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: inputBorderColor),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: inputFocusedBorderColor),
+              ),
+              labelStyle: TextStyle(
+                color: nsgtheme.colorMainDark,
+                backgroundColor: Colors.transparent,
+              ),
             ),
             // key: GlobalKey(),
             onEditingComplete: () {
@@ -304,7 +363,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
               //
             },
 
-            style: TextStyle(color: nsgtheme.colorText, fontSize: 24),
+            style: TextStyle(color: inputTextColor, fontSize: 24),
           ),
         ),
         !kIsWeb && (Platform.isAndroid || Platform.isIOS)
@@ -322,10 +381,16 @@ class _DatePickerContentState extends State<DatePickerContent> {
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         widget.onChange(value);
-        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
+        _initialTime = NsgDateFormat.dateFormat(
+          value,
+          format: 'dd.MM.yyyy',
+          locale: Localizations.localeOf(context).languageCode,
+        );
         _ignoreChange = true;
         textController.text = _initialTime;
-        textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
+        textController.selection = TextSelection.fromPosition(
+          const TextPosition(offset: 0),
+        );
         _ignoreChange = false;
       },
     );
@@ -341,10 +406,16 @@ class _DatePickerContentState extends State<DatePickerContent> {
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         widget.onChange(value);
-        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
+        _initialTime = NsgDateFormat.dateFormat(
+          value,
+          format: 'dd.MM.yyyy',
+          locale: Localizations.localeOf(context).languageCode,
+        );
         _ignoreChange = true;
         textController.text = _initialTime;
-        textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
+        textController.selection = TextSelection.fromPosition(
+          const TextPosition(offset: 0),
+        );
         _ignoreChange = false;
       },
     );
@@ -359,7 +430,13 @@ class NsgCupertinoDatePicker extends StatefulWidget {
   final DateTime? firstDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  NsgCupertinoDatePicker({super.key, this.firstDateTime, this.lastDateTime, required this.initialDateTime, required this.onDateTimeChanged});
+  NsgCupertinoDatePicker({
+    super.key,
+    this.firstDateTime,
+    this.lastDateTime,
+    required this.initialDateTime,
+    required this.onDateTimeChanged,
+  });
 
   @override
   State<NsgCupertinoDatePicker> createState() => NsgCupertinoDateState();
@@ -389,10 +466,17 @@ class NsgCupertinoDateState extends State<NsgCupertinoDatePicker> {
   Widget build(BuildContext context) {
     return CupertinoTheme(
       data: CupertinoThemeData(
-        textTheme: CupertinoTextThemeData(dateTimePickerTextStyle: TextStyle(fontSize: 16, color: nsgtheme.colorText)),
+        textTheme: CupertinoTextThemeData(
+          dateTimePickerTextStyle: TextStyle(
+            fontSize: 16,
+            color: nsgtheme.colorText,
+          ),
+        ),
       ),
       child: CupertinoDatePicker(
-        maximumDate: widget.lastDateTime ?? DateTime.now().add(const Duration(days: 365 * 2)),
+        maximumDate:
+            widget.lastDateTime ??
+            DateTime.now().add(const Duration(days: 365 * 2)),
         minimumDate: widget.firstDateTime ?? DateTime(0),
         key: GlobalKey(),
         mode: CupertinoDatePickerMode.date,
@@ -412,7 +496,13 @@ class NsgCalendarDatePicker extends StatefulWidget {
   final DateTime? firstDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  NsgCalendarDatePicker({super.key, this.lastDateTime, this.firstDateTime, required this.initialDateTime, required this.onDateTimeChanged});
+  NsgCalendarDatePicker({
+    super.key,
+    this.lastDateTime,
+    this.firstDateTime,
+    required this.initialDateTime,
+    required this.onDateTimeChanged,
+  });
 
   @override
   State<NsgCalendarDatePicker> createState() => NsgCalendarDatePickerState();
@@ -438,32 +528,126 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
     setState(() {});
   }
 
+  bool get _hasCustomCalendarColors =>
+      nsgtheme.nsgDatePickerBackgroundColor != null ||
+      nsgtheme.nsgDatePickerTextColor != null ||
+      nsgtheme.nsgDatePickerSelectedDayBackgroundColor != null ||
+      nsgtheme.nsgDatePickerSelectedDayTextColor != null ||
+      nsgtheme.nsgDatePickerTodayTextColor != null ||
+      nsgtheme.nsgDatePickerDayOverlayColor != null;
+
   @override
   Widget build(BuildContext context) {
-    var lastDate = widget.initialDateTime.isBefore(DateTime.now().add(const Duration(days: 365 * 2)))
+    var lastDate =
+        widget.initialDateTime.isBefore(
+          DateTime.now().add(const Duration(days: 365 * 2)),
+        )
         ? DateTime.now().add(const Duration(days: 365 * 2))
         : widget.initialDateTime;
+
+    final calendarPicker = CalendarDatePicker(
+      key: GlobalKey(),
+      firstDate: widget.firstDateTime ?? DateTime(0),
+      lastDate: widget.lastDateTime ?? lastDate,
+      initialDate: widget.initialDateTime,
+      onDateChanged: (d) {
+        widget.onDateTimeChanged(d);
+      },
+    );
+
+    if (!_hasCustomCalendarColors) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10, bottom: 15),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            inputDecorationTheme: InputDecorationTheme(
+              fillColor: nsgtheme.colorPrimary,
+            ),
+            colorScheme: ColorScheme.light(
+              primary: nsgtheme.colorTertiary,
+              onPrimary: nsgtheme.colorText,
+              onSurface: nsgtheme.colorText.withAlpha(80),
+              secondary: nsgtheme.colorText,
+              tertiary: nsgtheme.colorText,
+            ),
+          ),
+          child: calendarPicker,
+        ),
+      );
+    }
+
+    final backgroundColor =
+        nsgtheme.nsgDatePickerBackgroundColor ?? nsgtheme.colorMainBack;
+    final textColor = nsgtheme.nsgDatePickerTextColor ?? nsgtheme.colorText;
+    final selectedDayBackgroundColor =
+        nsgtheme.nsgDatePickerSelectedDayBackgroundColor ?? nsgtheme.colorMain;
+    final selectedDayTextColor =
+        nsgtheme.nsgDatePickerSelectedDayTextColor ?? nsgtheme.colorPrimaryText;
+    final todayTextColor =
+        nsgtheme.nsgDatePickerTodayTextColor ?? nsgtheme.colorMainDark;
+    final dayOverlayColor =
+        nsgtheme.nsgDatePickerDayOverlayColor ??
+        nsgtheme.colorMain.withAlpha(35);
+    final datePickerTheme = DatePickerThemeData(
+      backgroundColor: backgroundColor,
+      surfaceTintColor: Colors.transparent,
+      dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return selectedDayTextColor;
+        }
+        return textColor;
+      }),
+      dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return selectedDayBackgroundColor;
+        }
+        return Colors.transparent;
+      }),
+      dayOverlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.pressed) ||
+            states.contains(WidgetState.hovered) ||
+            states.contains(WidgetState.focused)) {
+          return dayOverlayColor;
+        }
+        return null;
+      }),
+      todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return selectedDayTextColor;
+        }
+        return todayTextColor;
+      }),
+      todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return selectedDayBackgroundColor;
+        }
+        return Colors.transparent;
+      }),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    );
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 15),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          inputDecorationTheme: InputDecorationTheme(fillColor: nsgtheme.colorPrimary),
-          colorScheme: ColorScheme.light(
-            primary: nsgtheme.colorTertiary,
-            onPrimary: nsgtheme.colorText,
-            onSurface: nsgtheme.colorText.withAlpha(80),
-            secondary: nsgtheme.colorText,
-            tertiary: nsgtheme.colorText,
+      child: DatePickerTheme(
+        data: datePickerTheme,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            textTheme: Theme.of(
+              context,
+            ).textTheme.apply(bodyColor: textColor, displayColor: textColor),
+            inputDecorationTheme: InputDecorationTheme(
+              fillColor: backgroundColor,
+            ),
+            colorScheme: ColorScheme.light(
+              primary: selectedDayBackgroundColor,
+              onPrimary: selectedDayTextColor,
+              secondary: todayTextColor,
+              onSecondary: selectedDayTextColor,
+              surface: backgroundColor,
+              onSurface: textColor,
+              tertiary: todayTextColor,
+            ),
           ),
-        ),
-        child: CalendarDatePicker(
-          key: GlobalKey(),
-          firstDate: widget.firstDateTime ?? DateTime(0),
-          lastDate: widget.lastDateTime ?? lastDate,
-          initialDate: widget.initialDateTime,
-          onDateChanged: (d) {
-            widget.onDateTimeChanged(d);
-          },
+          child: calendarPicker,
         ),
       ),
     );
@@ -488,7 +672,10 @@ Future<DateTimeRange?> showNsgDateRangePicker({
     contentPadding: EdgeInsets.zero,
     child: Theme(
       data: Theme.of(context).copyWith(
-        textTheme: Theme.of(context).textTheme.apply(bodyColor: nsgtheme.colorText, displayColor: nsgtheme.colorText),
+        textTheme: Theme.of(context).textTheme.apply(
+          bodyColor: nsgtheme.colorText,
+          displayColor: nsgtheme.colorText,
+        ),
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: nsgtheme.colorMainDark,
           selectionColor: nsgtheme.colorMain.withAlpha(80),
@@ -499,8 +686,12 @@ Future<DateTimeRange?> showNsgDateRangePicker({
           labelStyle: TextStyle(color: nsgtheme.colorText.withAlpha(170)),
           hintStyle: TextStyle(color: nsgtheme.colorText.withAlpha(140)),
           fillColor: nsgtheme.colorMainBack,
-          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMain.withAlpha(150))),
-          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainDark, width: 2)),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: nsgtheme.colorMain.withAlpha(150)),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: nsgtheme.colorMainDark, width: 2),
+          ),
         ),
         colorScheme: ColorScheme.light(
           primary: nsgtheme.colorMain,
@@ -513,7 +704,10 @@ Future<DateTimeRange?> showNsgDateRangePicker({
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             foregroundColor: nsgtheme.colorMainDark,
-            textStyle: TextStyle(fontSize: nsgtheme.sizeM, fontWeight: FontWeight.w600),
+            textStyle: TextStyle(
+              fontSize: nsgtheme.sizeM,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),
@@ -529,11 +723,17 @@ Future<DateTimeRange?> showNsgDateRangePicker({
           inputDecorationTheme: InputDecorationTheme(
             labelStyle: TextStyle(color: nsgtheme.colorText),
             hintStyle: TextStyle(color: nsgtheme.colorText),
-            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMain.withAlpha(150))),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainDark, width: 2)),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: nsgtheme.colorMain.withAlpha(150)),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: nsgtheme.colorMainDark, width: 2),
+            ),
           ),
           rangeSelectionBackgroundColor: nsgtheme.colorMain.withAlpha(70),
-          rangeSelectionOverlayColor: WidgetStatePropertyAll(nsgtheme.colorMain.withAlpha(35)),
+          rangeSelectionOverlayColor: WidgetStatePropertyAll(
+            nsgtheme.colorMain.withAlpha(35),
+          ),
           todayForegroundColor: WidgetStatePropertyAll(nsgtheme.colorMainDark),
           dayForegroundColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
@@ -547,9 +747,15 @@ Future<DateTimeRange?> showNsgDateRangePicker({
             }
             return Colors.transparent;
           }),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
-        child: DateRangePickerDialog(initialDateRange: initialDateRange, firstDate: firstDate, lastDate: lastDate),
+        child: DateRangePickerDialog(
+          initialDateRange: initialDateRange,
+          firstDate: firstDate,
+          lastDate: lastDate,
+        ),
       ),
     ),
   );

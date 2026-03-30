@@ -63,10 +63,9 @@ class _NsgTextFilterState extends State<NsgTextFilter> {
 
   @override
   void dispose() {
-    super.dispose();
     textController.dispose();
-    focus.removeListener(() {});
-    //focus.dispose();
+    focus.dispose();
+    super.dispose();
   }
 
   @override

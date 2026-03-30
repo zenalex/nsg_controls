@@ -2050,7 +2050,7 @@ class _NsgTableState extends State<NsgTable> {
 
       /// Если Дата
     } else if (field is NsgDataDateField) {
-      if (fieldkey != DateTime(0) && fieldkey != DateTime(1754, 01, 01)) {
+      if (fieldkey is DateTime && !NsgDateHelper.isEmptyDate(fieldkey)) {
         var format = 'dd.MM.yy';
         if (column.format.isNotEmpty) {
           format = column.format;
