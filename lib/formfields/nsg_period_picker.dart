@@ -88,21 +88,21 @@ class NsgPeriodPickerEvent<S extends NsgPeriodPickerState> extends NsgEvent<S> w
   }
 
   void changeOptionLabel(String optionLabel, {bool selected = false}) {
-    onChanged(updateState(state.copyWith(optionLabel: optionLabel) as S));
+    onChanged(state.copyWith(optionLabel: optionLabel) as S);
     if (selected) {
-      onSelected(updateState(state.copyWith(optionLabel: optionLabel) as S));
+      onSelected(state.copyWith(optionLabel: optionLabel) as S);
     }
   }
 
   void changePeriod(NsgTypedPeriod period, {bool selected = false}) {
-    onChanged(updateState(state.copyWith(period: period) as S));
+    onChanged(state.copyWith(period: period) as S);
     if (selected) {
-      onSelected(updateState(state.copyWith(period: period) as S));
+      onSelected(state.copyWith(period: period) as S);
     }
   }
 
   void showError(String errorMessage) {
-    onError(updateState(state.copyWith(errorMessage: errorMessage) as S));
+    onError(state.copyWith(errorMessage: errorMessage) as S);
   }
 
   /// Определяет, к какой опции принадлежит период
@@ -323,10 +323,13 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
     await showNsgDialog(
       context: context,
       isScrollable: true,
+      title: tran.select_period,
+      showCloseButton: true,
       constraints: BoxConstraints(maxWidth: 600),
-      child: ListenableBuilder(listenable: event.stateN, builder: (context, widget) => pickerContentBuilder(context, state)),
+      child: ListenableBuilder(listenable: event.stateN, builder: (context, widget) => pickerContentBuilder(context, event.state)),
       onConfirm: () {
-        event.changePeriod(state.period);
+        // state может быть не актуальным, поэтому берём state из event
+        event.changePeriod(event.state.period, selected: true);
       },
       onClose: () {},
     );
