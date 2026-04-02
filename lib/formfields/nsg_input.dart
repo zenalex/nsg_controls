@@ -1156,7 +1156,7 @@ class _NsgInputState extends State<NsgInput> {
             _notifierAll.value++;
           }
         };
-        Get.toNamed(widget.selectionForm);
+        Get.toNamed(widget.selectionForm, arguments: selectionController);
       }
     } else if (inputType == NsgInputType.enumReference) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;

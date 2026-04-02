@@ -55,13 +55,9 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
 
     //scrollController.heightMap.clear();
     scrollController.dataGroups = dataGroups;
-
-    // Defer scroll restoration to avoid RenderSliverList mutation during build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients && scrollController.lastOffset != 0.0) {
-        scrollController.jumpTo(scrollController.lastOffset);
-      }
-    });
+    if (items.isNotEmpty) {
+      scrollController.scheduleRestoreScrollOffsetAfterRebuild();
+    }
 
     return ListView.builder(
       controller: scrollController,
@@ -78,20 +74,16 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
             }
           } else {
             var elem = scrollController.dataGroups.getElemet(i);
+            // Не используем GlobalKey как key виджета: синглтон-контроллер может обслуживать
+            // несколько ListView одновременно (переход + диалог) → Duplicate GlobalKey.
             if (elem.isDivider) {
               if (dividerBuilder != null) {
-                return Container(
-                  key: elem.key,
-                  /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: dividerBuilder(elem.value) ?? SizedBox(),
-                );
+                return dividerBuilder(elem.value) ?? SizedBox();
               } else {
-                return Container(key: elem.key, /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: elem.group.goupDividerWidget);
+                return elem.group.goupDividerWidget;
               }
             } else {
-              return Container(
-                key: elem.key,
-                /*onHeight: (h) => scrollController.heightMap.addAll({i: h}),*/ child: itemBuilder(elem.value as T) ?? SizedBox(),
-              );
+              return itemBuilder(elem.value as T) ?? SizedBox();
             }
           }
 
@@ -127,12 +119,9 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
     }
 
     scrollController.dataGroups = dataGroups;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients && scrollController.lastOffset != 0.0) {
-        scrollController.jumpTo(scrollController.lastOffset);
-      }
-    });
+    if (items.isNotEmpty) {
+      scrollController.scheduleRestoreScrollOffsetAfterRebuild();
+    }
 
     if (items.isEmpty) {
       return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20, right: 20), child: Text(tran.empty_list));
@@ -154,7 +143,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
 
         // Добавляем разделитель
         final dividerWidget = dividerBuilder?.call(elem.value) ?? elem.group.goupDividerWidget;
-        widgetList.add(Container(key: elem.key, child: dividerWidget));
+        widgetList.add(dividerWidget);
       } else {
         // Добавляем элемент в текущую строку
         currentRowItems.add(elem.value as T);
