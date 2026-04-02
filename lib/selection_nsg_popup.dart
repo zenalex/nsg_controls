@@ -71,6 +71,8 @@ class SelectionNsgPopUp extends StatefulWidget {
 class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
   final ScrollController controller1 = ScrollController();
   final ScrollController controller2 = ScrollController();
+  // Общий фокус не даёт прервать ввод после обновления списка контроллером.
+  final FocusNode searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -87,6 +89,7 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
   void dispose() {
     controller1.dispose();
     controller2.dispose();
+    searchFocusNode.dispose();
     if (widget.editPageController != null) {
       widget.editPageController!.statusChanged.unsubscribe(editControllerUpdate);
     }
@@ -113,7 +116,8 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
           //backgroundColor: Colors.black,
           //backgroundColor: Colors.black.withOpacity(0.8),
           // filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          children: [widget.dataController == null ? _widgetData() : widget.dataController!.obx((state) => _widgetData())],
+          // Нельзя пересобирать весь попап при refresh, иначе поле поиска теряет фокус.
+          children: [_widgetData()],
         ),
       ),
     );
@@ -188,14 +192,14 @@ class _SelectionNsgPopUpState extends State<SelectionNsgPopUp> {
               ],
             ),
           ),
-          if (widget.dataController != null &&
-              ((widget.dataController?.dataItemList.length != null && widget.dataController!.dataItemList.length > 5) ||
-                  widget.dataController!.controllerFilter.searchString.isNotEmpty))
+          if (widget.dataController != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 15, 20, 10),
               child: NsgSearchTextfield(
                 borderRadius: 10,
                 controller: widget.dataController,
+                textController: widget.textEditController,
+                focusNode: searchFocusNode,
                 onChanged: (text) {
                   if (widget.dataController == null) {
                     widget.textEditController.text = text;

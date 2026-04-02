@@ -8,27 +8,54 @@ class NsgSearchTextfield extends StatefulWidget {
   final NsgBaseController? controller;
   final double borderRadius;
   final Function(String text)? onChanged;
-  const NsgSearchTextfield({super.key, required this.controller, this.borderRadius = 20, required this.onChanged});
+  final TextEditingController? textController;
+  final FocusNode? focusNode;
+  const NsgSearchTextfield({
+    super.key,
+    required this.controller,
+    this.borderRadius = 20,
+    required this.onChanged,
+    this.textController,
+    this.focusNode,
+  });
 
   @override
   State<NsgSearchTextfield> createState() => _NsgSearchTextfieldState();
 }
 
 class _NsgSearchTextfieldState extends State<NsgSearchTextfield> {
-  TextEditingController textEditController = TextEditingController();
+  late final TextEditingController _localTextController;
+  late final FocusNode _localFocusNode;
+  late final bool _ownsTextController;
+  late final bool _ownsFocusNode;
+
+  // Внешние экземпляры сохраняют текст и фокус при обновлении списка в попапе.
+  TextEditingController get textEditController => widget.textController ?? _localTextController;
+  FocusNode get focusNode => widget.focusNode ?? _localFocusNode;
 
   @override
   void initState() {
+    _ownsTextController = widget.textController == null;
+    _ownsFocusNode = widget.focusNode == null;
+    _localTextController = TextEditingController();
+    _localFocusNode = FocusNode();
     if (widget.controller != null) {
       widget.controller!.controllerFilter.isOpen = true;
-      textEditController.text = widget.controller!.controllerFilter.searchString;
+      if (textEditController.text != widget.controller!.controllerFilter.searchString) {
+        textEditController.text = widget.controller!.controllerFilter.searchString;
+      }
     }
     super.initState();
   }
 
   @override
   void dispose() {
-    textEditController.dispose();
+    if (_ownsTextController) {
+      _localTextController.dispose();
+    }
+    if (_ownsFocusNode) {
+      _localFocusNode.dispose();
+    }
     if (widget.controller != null) {
       widget.controller!.controllerFilter.isOpen = false;
     }
@@ -41,6 +68,7 @@ class _NsgSearchTextfieldState extends State<NsgSearchTextfield> {
       height: 40,
       child: TextField(
         controller: textEditController,
+        focusNode: focusNode,
         decoration: InputDecoration(
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 12, right: 8),
@@ -90,8 +118,8 @@ class _NsgSearchTextfieldState extends State<NsgSearchTextfield> {
             } else {
               filter = widget.controller!.getRequestFilter;
             }
+            // Обновляем список по таймеру после запроса, без промежуточной локальной перерисовки.
             widget.controller!.controllerFilter.refreshControllerWithDelay(filter: filter);
-            widget.controller!.sendNotify();
           }
         },
       ),

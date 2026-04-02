@@ -58,21 +58,25 @@ class NsgSelection {
       itemsList = allValues!;
     }
     for (var element in itemsList) {
-      if (textEditingController.text.isEmpty ||
-          (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase()))) {
-        list.add(
-          InkWell(
-            onTap: () {
-              selectedElement = element;
-              // ignore: invalid_use_of_protected_member
-              selectionController?.refresh();
-              // ignore: invalid_use_of_protected_member
-              controller?.refresh();
-            },
-            child: _controllerUpdateWidget(element),
-          ),
-        );
+      final needShow = inputType == NsgInputType.reference
+          ? true
+          : textEditingController.text.isEmpty ||
+              (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase()));
+      if (!needShow) {
+        continue;
       }
+      list.add(
+        InkWell(
+          onTap: () {
+            selectedElement = element;
+            // ignore: invalid_use_of_protected_member
+            selectionController?.refresh();
+            // ignore: invalid_use_of_protected_member
+            controller?.refresh();
+          },
+          child: _controllerUpdateWidget(element),
+        ),
+      );
     }
     if (inputType == NsgInputType.reference) {
       if ((controller!.totalCount ?? 0) > itemsList.length) {
