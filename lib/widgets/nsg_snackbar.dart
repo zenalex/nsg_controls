@@ -23,23 +23,29 @@ void nsgSnackbar({
   Duration? duration,
   double? fontSize,
   TextAlign? textAlign,
+  Color? color,
+  Color? backColor,
 }) {
   Flushbar(
     onTap: onTap,
     boxShadows: [BoxShadow(color: Colors.black.withAlpha(128), spreadRadius: 5, blurRadius: 15, offset: const Offset(0, -5))],
-    backgroundColor: ControlOptions.instance.colorMain,
+    backgroundColor: backColor ?? ControlOptions.instance.colorMain,
     messageColor: ControlOptions.instance.colorMainText,
     titleText: title == null
         ? null
         : Text(
             title,
             textAlign: textAlign ?? TextAlign.center,
-            style: TextStyle(fontSize: fontSize ?? ControlOptions.instance.sizeL, color: ControlOptions.instance.colorMainText, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontSize: fontSize ?? ControlOptions.instance.sizeL,
+              color: color ?? ControlOptions.instance.colorMainText,
+              fontWeight: FontWeight.w500,
+            ),
           ),
     messageText: Text(
       text,
       textAlign: textAlign ?? TextAlign.center,
-      style: TextStyle(color: ControlOptions.instance.colorMainText, fontSize: fontSize ?? ControlOptions.instance.sizeL),
+      style: TextStyle(color: color ?? ControlOptions.instance.colorMainText, fontSize: fontSize ?? ControlOptions.instance.sizeL),
     ),
     duration: duration ?? const Duration(seconds: 3),
     maxWidth: 640,
