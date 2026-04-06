@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import 'package:nsg_data/helpers/nsg_data_format.dart';
 import 'package:image/image.dart' as img;
 import 'package:nsg_data/nsg_data.dart';
+import 'package:flutter/widgets.dart';
 import 'localization/nsg_controls_localizations.dart';
+import 'localization/nsg_controls_localizations_en.dart';
+import 'localization/nsg_controls_localizations_ru.dart';
 import 'nsg_control_options.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -21,10 +24,20 @@ class Helper {
         bytes[7] == 0x0A;
   }
 
-  static Uint8List imageResize({required Uint8List bytes, int? maxHeight, int? maxWidth}) {
+  static Uint8List imageResize({
+    required Uint8List bytes,
+    int? maxHeight,
+    int? maxWidth,
+  }) {
     var imageIsPng = isPng(bytes);
     img.Image originalImage = img.decodeImage(bytes)!;
-    img.Image fixedImage = img.copyResize(interpolation: img.Interpolation.average, originalImage, height: maxHeight, width: maxWidth, maintainAspect: true);
+    img.Image fixedImage = img.copyResize(
+      interpolation: img.Interpolation.average,
+      originalImage,
+      height: maxHeight,
+      width: maxWidth,
+      maintainAspect: true,
+    );
     if (imageIsPng) {
       return img.encodePng(fixedImage);
     } else {
@@ -43,7 +56,11 @@ extension NsgDate on DateTime {
   }
 
   String format(String? format, String locale) {
-    return NsgDateFormat.dateFormat(this, format: format ?? ControlOptions.instance.dateformat, locale: locale);
+    return NsgDateFormat.dateFormat(
+      this,
+      format: format ?? ControlOptions.instance.dateformat,
+      locale: locale,
+    );
   }
 
   Duration toDuration() {
@@ -59,14 +76,27 @@ extension NsgDate on DateTime {
     return Duration(microseconds: microseconds.round());
   }
 
-  String timeAgo({String locale = 'ru', bool short = false, DateTime? fromDateTime}) {
-    return timeago.format(this, locale: short ? '${locale}_short' : locale, clock: fromDateTime);
+  String timeAgo({
+    String locale = 'ru',
+    bool short = false,
+    DateTime? fromDateTime,
+  }) {
+    return timeago.format(
+      this,
+      locale: short ? '${locale}_short' : locale,
+      clock: fromDateTime,
+    );
   }
 }
 
 extension NsgDuration on Duration {
   String formatAsDate(String? format, String locale) {
-    return NsgDateFormat.dateFormat(toDateTime(), format: format ?? ControlOptions.instance.dateformat, ignoreYear: true, locale: locale);
+    return NsgDateFormat.dateFormat(
+      toDateTime(),
+      format: format ?? ControlOptions.instance.dateformat,
+      ignoreYear: true,
+      locale: locale,
+    );
   }
 
   String get defaultFormat {
@@ -126,11 +156,17 @@ extension NsgDuration on Duration {
   //   return '';
   // }
 
-  String timeAgo({String locale = 'ru', bool short = false, Duration? fromDateTime}) {
+  String timeAgo({
+    String locale = 'ru',
+    bool short = false,
+    Duration? fromDateTime,
+  }) {
     return timeago.format(
       toDateTime(),
       locale: short ? '${locale}_short' : locale,
-      clock: fromDateTime != null ? fromDateTime.toDateTime() : const Duration().toDateTime(),
+      clock: fromDateTime != null
+          ? fromDateTime.toDateTime()
+          : const Duration().toDateTime(),
     );
   }
 
@@ -158,7 +194,16 @@ extension NsgDuration on Duration {
     var milliseconds = microseconds ~/ DatePart.millisecond.microseconds;
     microseconds = microseconds.remainder(DatePart.millisecond.microseconds);
 
-    return DateTime(years, mounths, days, hours, minutes, seconds, milliseconds, microseconds.round());
+    return DateTime(
+      years,
+      mounths,
+      days,
+      hours,
+      minutes,
+      seconds,
+      milliseconds,
+      microseconds.round(),
+    );
   }
 }
 
@@ -173,7 +218,10 @@ enum DatePart {
   microsecond(0, 1, 'C');
 
   static DatePart getPartFromIndex(int index) {
-    return DatePart.values.firstWhereOrNull((element) => element.ind == index) ?? DatePart.year;
+    return DatePart.values.firstWhereOrNull(
+          (element) => element.ind == index,
+        ) ??
+        DatePart.year;
   }
 
   static List<DatePart> get listFromBig {
@@ -195,13 +243,33 @@ enum DatePart {
 }
 
 class DatePartFormat {
-  const DatePartFormat({required this.datePart, this.count = 1, required this.position});
+  const DatePartFormat({
+    required this.datePart,
+    this.count = 1,
+    required this.position,
+  });
   final DatePart datePart;
   final int count;
   final int position;
 }
 
-NsgControlsLocalizations get tranControls => NsgControlsLocalizations.of(Get.context!)!;
+NsgControlsLocalizations get tranControls {
+  final context = Get.context;
+  final localization = context == null
+      ? null
+      : NsgControlsLocalizations.of(context);
+  if (localization != null) {
+    return localization;
+  }
+
+  final locale =
+      (context == null ? null : Localizations.maybeLocaleOf(context)) ??
+      Get.deviceLocale ??
+      WidgetsBinding.instance.platformDispatcher.locale;
+  return locale.languageCode.toLowerCase().startsWith('ru')
+      ? NsgControlsLocalizationsRu()
+      : NsgControlsLocalizationsEn();
+}
 
 extension CompareBool on bool {
   int compareTo(bool other, {bool reversed = false}) {
