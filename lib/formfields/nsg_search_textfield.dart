@@ -10,14 +10,7 @@ class NsgSearchTextfield extends StatefulWidget {
   final Function(String text)? onChanged;
   final TextEditingController? textController;
   final FocusNode? focusNode;
-  const NsgSearchTextfield({
-    super.key,
-    required this.controller,
-    this.borderRadius = 20,
-    required this.onChanged,
-    this.textController,
-    this.focusNode,
-  });
+  const NsgSearchTextfield({super.key, required this.controller, this.borderRadius = 20, required this.onChanged, this.textController, this.focusNode});
 
   @override
   State<NsgSearchTextfield> createState() => _NsgSearchTextfieldState();
@@ -97,7 +90,7 @@ class _NsgSearchTextfieldState extends State<NsgSearchTextfield> {
             icon: Icon(NsgIcons.close, color: nsgtheme.colorTertiary, size: 20),
           ),
           // prefixIcon: Icon(Icons.search),
-          hintText: tran.search,
+          hintText: tranControls.search,
           hintStyle: TextStyle(color: ControlOptions.instance.colorSecondary, fontWeight: FontWeight.w500),
         ),
         textAlignVertical: TextAlignVertical.bottom,

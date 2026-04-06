@@ -48,7 +48,7 @@ Future<TimeOfDay?> showNsgTimePicker({
           }
           Navigator.of(context).pop(selectedTime);
         },
-        text: tran.confirm,
+        text: tranControls.confirm,
       ),
     ],
   );

@@ -38,10 +38,10 @@ Future<T?> showNsgDialog<T extends dynamic>({
     context: context,
     barrierDismissible: barrierDismissible,
     builder: (context) {
-      title ??= tran.need_confirmation;
-      text ??= tran.are_you_sure;
-      textConfirm ??= tran.ok.toUpperCase();
-      textCancel ??= tran.cancel;
+      title ??= tranControls.need_confirmation;
+      text ??= tranControls.are_you_sure;
+      textConfirm ??= tranControls.ok.toUpperCase();
+      textCancel ??= tranControls.cancel;
       return nsgBackDrop(
         child: Material(
           color: Colors.transparent,

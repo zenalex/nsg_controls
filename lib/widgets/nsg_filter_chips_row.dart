@@ -52,7 +52,7 @@ class _NsgFilterChipsRowState extends State<NsgFilterChipsRow> {
                       widget.onClearTap!(this);
                     }
                   },
-                  text: tran.cancel,
+                  text: tranControls.cancel,
                   color: nsgtheme.colorError,
                   padding: EdgeInsets.zero,
                 ),
@@ -348,7 +348,7 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
                                   icon: Icon(NsgIcons.close, color: nsgtheme.colorTertiary, size: 20),
                                 ),
                                 // prefixIcon: Icon(Icons.search),
-                                hintText: tran.search,
+                                hintText: tranControls.search,
                                 hintStyle: TextStyle(color: ControlOptions.instance.colorSecondary, fontWeight: FontWeight.w500),
                               ),
                               textAlignVertical: TextAlignVertical.bottom,
@@ -397,7 +397,7 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
                           children: [
                             Expanded(
                               child: NsgButton(
-                                text: tran.cancel,
+                                text: tranControls.cancel,
                                 onTap: () {
                                   if (backupItem != null) {
                                     widget.filterItem[widget.fieldName!] = backupItem;
@@ -409,7 +409,7 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
                             ),
                             Expanded(
                               child: NsgButton(
-                                text: tran.ok,
+                                text: tranControls.ok,
                                 onTap: () {
                                   Navigator.pop(context);
                                 },
@@ -569,7 +569,7 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
 
   Widget getClearButton() {
     return NsgTextButton(
-      text: tran.cancel,
+      text: tranControls.cancel,
       color: nsgtheme.colorError,
       onTap: () {
         resetFilter();

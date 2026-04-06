@@ -64,7 +64,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
       itemCount: scrollController.dataGroups.length + 1,
       itemBuilder: (context, i) {
         if (items.isEmpty) {
-          return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tran.empty_list));
+          return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tranControls.empty_list));
         } else {
           if (i >= scrollController.dataGroups.length) {
             if (scrollController.status == NsgLoadingScrollStatus.loading) {
@@ -124,7 +124,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
     }
 
     if (items.isEmpty) {
-      return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20, right: 20), child: Text(tran.empty_list));
+      return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20, right: 20), child: Text(tranControls.empty_list));
     }
 
     // Собираем все виджеты с учетом разделителей и группировки по 3 элемента
@@ -230,7 +230,7 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
   //     ),
   //     itemBuilder: (context, i) {
   //       if (items.isEmpty) {
-  //         return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tran.empty_list));
+  //         return onEmptyList ?? Padding(padding: EdgeInsets.only(top: 15, left: 20), child: Text(tranControls.empty_list));
   //       } else {
   //         if (i >= scrollController.dataGroups.length) {
   //           if (scrollController.status == NsgLoadingScrollStatus.loading) {

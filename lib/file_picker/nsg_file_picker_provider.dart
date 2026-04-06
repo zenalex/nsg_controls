@@ -21,26 +21,9 @@ import '../dialog/nsg_future_progress_exception.dart';
 import '../helpers.dart';
 
 class NsgFilePickerProvider {
-  static List<String> globalAllowedImageFormats = const [
-    'jpeg',
-    'jpg',
-    'gif',
-    'png',
-    'bmp',
-  ];
+  static List<String> globalAllowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'];
   static List<String> globalAllowedVideoFormats = const ['mp4', 'mov'];
-  static List<String> globalAllowedFileFormats = const [
-    'doc',
-    'docx',
-    'rtf',
-    'xls',
-    'xlsx',
-    'pdf',
-    'rtf',
-    'csv',
-    'svg',
-    'json',
-  ];
+  static List<String> globalAllowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv', 'svg', 'json'];
 
   static NsgFilePickerObjectType getFileTypeByExtension(String ext) {
     ext = ext.toLowerCase();
@@ -66,22 +49,15 @@ class NsgFilePickerProvider {
     return getFileTypeByExtension(ext);
   }
 
-  static NsgFilePickerObjectType getMobileFileType({
-    required XFile file,
-    Uint8List? fileContent,
-    NsgFilePickerObjectType? fallbackType,
-  }) {
+  static NsgFilePickerObjectType getMobileFileType({required XFile file, Uint8List? fileContent, NsgFilePickerObjectType? fallbackType}) {
     final typeFromPath = getFileTypeByPath(file.path);
     if (typeFromPath != NsgFilePickerObjectType.unknown) {
       return typeFromPath;
     }
-    if (fileContent != null &&
-        fileContent.isNotEmpty &&
-        img.decodeImage(fileContent) != null) {
+    if (fileContent != null && fileContent.isNotEmpty && img.decodeImage(fileContent) != null) {
       return NsgFilePickerObjectType.image;
     }
-    if (fallbackType != null &&
-        fallbackType != NsgFilePickerObjectType.unknown) {
+    if (fallbackType != null && fallbackType != NsgFilePickerObjectType.unknown) {
       return fallbackType;
     }
     return NsgFilePickerObjectType.unknown;
@@ -113,18 +89,7 @@ class NsgFilePickerProvider {
   const NsgFilePickerProvider({
     this.allowedImageFormats = const ['jpeg', 'jpg', 'gif', 'png', 'bmp'],
     this.allowedVideoFormats = const ['mp4', 'mov'],
-    this.allowedFileFormats = const [
-      'doc',
-      'docx',
-      'rtf',
-      'xls',
-      'xlsx',
-      'pdf',
-      'rtf',
-      'csv',
-      'svg',
-      'json',
-    ],
+    this.allowedFileFormats = const ['doc', 'docx', 'rtf', 'xls', 'xlsx', 'pdf', 'rtf', 'csv', 'svg', 'json'],
     this.imageMaxWidth = 1920.0,
     this.imageMaxHeight = 1080.0,
     this.imageQuality = 85,
@@ -141,19 +106,10 @@ class NsgFilePickerProvider {
     }
   }
 
-  Future<NsgFilePickerObject?> _createMobilePickerObject(
-    XFile element, {
-    required ESourceType sourceType,
-  }) async {
+  Future<NsgFilePickerObject?> _createMobilePickerObject(XFile element, {required ESourceType sourceType}) async {
     final fileContent = await element.readAsBytes();
-    final fileType = getMobileFileType(
-      file: element,
-      fileContent: fileContent,
-      fallbackType: mobileSelectionType,
-    );
-    final description = basenameWithoutExtension(element.path).isNotEmpty
-        ? basenameWithoutExtension(element.path)
-        : savePrefix;
+    final fileType = getMobileFileType(file: element, fileContent: fileContent, fallbackType: mobileSelectionType);
+    final description = basenameWithoutExtension(element.path).isNotEmpty ? basenameWithoutExtension(element.path) : savePrefix;
 
     if (fileType == NsgFilePickerObjectType.image) {
       return NsgFilePickerObject(
@@ -181,11 +137,7 @@ class NsgFilePickerProvider {
     return null;
   }
 
-  Future<List<NsgFilePickerObject>> autoSelectPicker({
-    bool oneFile = false,
-    ESourceType eSourceType = ESourceType.auto,
-    BuildContext? mainContext,
-  }) async {
+  Future<List<NsgFilePickerObject>> autoSelectPicker({bool oneFile = false, ESourceType eSourceType = ESourceType.auto, BuildContext? mainContext}) async {
     /* ------------------------------------------------------------------- Если Веб ------------------------------------------------------------------- */
     if (kIsWeb) {
       return galleryImage(oneFile: oneFile);
@@ -226,11 +178,7 @@ class NsgFilePickerProvider {
         func: () async {
           result = await FilePicker.platform.pickFiles(
             type: FileType.custom,
-            allowedExtensions: [
-              ...allowedFileFormats,
-              ...allowedImageFormats,
-              ...allowedVideoFormats,
-            ],
+            allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats],
             allowMultiple: !oneFile,
           );
         },
@@ -242,10 +190,7 @@ class NsgFilePickerProvider {
           String fileName = element.name;
           var fileType = getFileTypeByPath(fileName);
           if (fileType == NsgFilePickerObjectType.image) {
-            var resizedBytes = Helper.imageResize(
-              bytes: element.bytes!,
-              maxHeight: imageMaxHeight.toInt(),
-            );
+            var resizedBytes = Helper.imageResize(bytes: element.bytes!, maxHeight: imageMaxHeight.toInt());
             fileBytes = resizedBytes;
             objectsList.add(
               NsgFilePickerObject(
@@ -270,8 +215,7 @@ class NsgFilePickerProvider {
               ),
             );
           } else {
-            error =
-                '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
           }
         }
       }
@@ -283,11 +227,7 @@ class NsgFilePickerProvider {
         func: () async {
           result = await FilePicker.platform.pickFiles(
             type: FileType.custom,
-            allowedExtensions: [
-              ...allowedFileFormats,
-              ...allowedImageFormats,
-              ...allowedVideoFormats,
-            ],
+            allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats],
             allowMultiple: !oneFile,
           );
         },
@@ -307,9 +247,7 @@ class NsgFilePickerProvider {
                 NsgFilePickerObject(
                   isNew: true,
                   image: Image.file(File(element.name.toString())),
-                  description: basenameWithoutExtension(
-                    element.name.toString(),
-                  ),
+                  description: basenameWithoutExtension(element.name.toString()),
                   fileType: fileType,
                   fileContent: fileContent,
                   filePath: element.path ?? '',
@@ -328,8 +266,7 @@ class NsgFilePickerProvider {
                 ),
               );
             } else {
-              error =
-                  '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+              error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
             }
           }
           if (GetPlatform.isLinux) {
@@ -338,9 +275,7 @@ class NsgFilePickerProvider {
                 NsgFilePickerObject(
                   isNew: true,
                   image: Image.file(File(element.path.toString())),
-                  description: basenameWithoutExtension(
-                    element.path.toString(),
-                  ),
+                  description: basenameWithoutExtension(element.path.toString()),
                   fileType: fileType,
                   fileContent: fileContent,
                   filePath: element.path.toString(),
@@ -359,8 +294,7 @@ class NsgFilePickerProvider {
                 ),
               );
             } else {
-              error =
-                  '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+              error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
             }
           }
         }
@@ -369,25 +303,10 @@ class NsgFilePickerProvider {
       /* ---------------------------------------------- Галерея на мобильных ---------------------------------------------- */
     } else if (GetPlatform.isMacOS) {
       /* ------------------------------------------- Галерея MacOS (файл пикер) ------------------------------------------- */
-      var jpgsTypeGroup = const file.XTypeGroup(
-        label: 'JPEGs',
-        extensions: <String>['jpg', 'jpeg'],
-      );
-      var pngTypeGroup = const file.XTypeGroup(
-        label: 'PNGs',
-        extensions: <String>['png'],
-      );
-      var pdfTypeGroup = const file.XTypeGroup(
-        label: 'PDFs',
-        extensions: <String>['pdf'],
-      );
-      List<XFile> result = await file.openFiles(
-        acceptedTypeGroups: <file.XTypeGroup>[
-          jpgsTypeGroup,
-          pngTypeGroup,
-          pdfTypeGroup,
-        ],
-      );
+      var jpgsTypeGroup = const file.XTypeGroup(label: 'JPEGs', extensions: <String>['jpg', 'jpeg']);
+      var pngTypeGroup = const file.XTypeGroup(label: 'PNGs', extensions: <String>['png']);
+      var pdfTypeGroup = const file.XTypeGroup(label: 'PDFs', extensions: <String>['pdf']);
+      List<XFile> result = await file.openFiles(acceptedTypeGroups: <file.XTypeGroup>[jpgsTypeGroup, pngTypeGroup, pdfTypeGroup]);
 
       if (result.isNotEmpty) {
         /// Если стоит ограничение на 1 файл
@@ -422,8 +341,7 @@ class NsgFilePickerProvider {
               ),
             );
           } else {
-            error =
-                '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
           }
         }
       }
@@ -444,16 +362,10 @@ class NsgFilePickerProvider {
               result = [image];
             }
           } else {
-            result = await ImagePicker().pickMultiImage(
-              imageQuality: imageQuality,
-              maxWidth: imageMaxWidth,
-              maxHeight: imageMaxHeight,
-            );
+            result = await ImagePicker().pickMultiImage(imageQuality: imageQuality, maxWidth: imageMaxWidth, maxHeight: imageMaxHeight);
           }
         } else if (mobileSelectionType == NsgFilePickerObjectType.video) {
-          var video = await ImagePicker().pickVideo(
-            source: ImageSource.gallery,
-          );
+          var video = await ImagePicker().pickVideo(source: ImageSource.gallery);
           if (video != null) {
             result = [video];
           }
@@ -470,14 +382,11 @@ class NsgFilePickerProvider {
         objectsList.clear();
       }
       for (var element in result) {
-        final pickerObject = await _createMobilePickerObject(
-          element,
-          sourceType: ESourceType.gallery,
-        );
+        final pickerObject = await _createMobilePickerObject(element, sourceType: ESourceType.gallery);
         if (pickerObject != null) {
           objectsList.add(pickerObject);
         } else {
-          error = tran.unsupported_format;
+          error = tranControls.unsupported_format;
         }
       }
     }
@@ -499,11 +408,7 @@ class NsgFilePickerProvider {
       func: () async {
         result = await FilePicker.platform.pickFiles(
           type: FileType.custom,
-          allowedExtensions: [
-            ...allowedFileFormats,
-            ...allowedImageFormats,
-            ...allowedVideoFormats,
-          ],
+          allowedExtensions: [...allowedFileFormats, ...allowedImageFormats, ...allowedVideoFormats],
           allowMultiple: !oneFile,
         );
       },
@@ -515,16 +420,10 @@ class NsgFilePickerProvider {
         /* ------------------------------------------------------------------- ЕСЛИ ВЕБ ------------------------------------------------------------------- */
         if (kIsWeb) {
           element.bytes!.clear();
-          element.bytes!.addAll(
-            Helper.imageResize(
-              bytes: element.bytes!,
-              maxHeight: imageMaxHeight.toInt(),
-              maxWidth: imageMaxWidth.toInt(),
-            ),
-          );
+          element.bytes!.addAll(Helper.imageResize(bytes: element.bytes!, maxHeight: imageMaxHeight.toInt(), maxWidth: imageMaxWidth.toInt()));
           var file = File(element.bytes.toString());
           if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
-            error = tran.file_size_exceeded((fileMaxSize / 1024).toString());
+            error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
           }
           if (fileType == NsgFilePickerObjectType.image) {
             objectsList.add(
@@ -548,8 +447,7 @@ class NsgFilePickerProvider {
               ),
             );
           } else {
-            error =
-                '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
           }
           /* ----------------------------------------------------------------- Если WINDOWS ----------------------------------------------------------------- */
         } else if (GetPlatform.isWindows) {
@@ -557,20 +455,13 @@ class NsgFilePickerProvider {
             var file = File(element.path!);
             var asBytes = await file.readAsBytes();
             if (fileType == NsgFilePickerObjectType.image) {
-              asBytes = Helper.imageResize(
-                bytes: asBytes,
-                maxHeight: imageMaxHeight.toInt(),
-              );
+              asBytes = Helper.imageResize(bytes: asBytes, maxHeight: imageMaxHeight.toInt());
               if (!ignoreMaxSize && (asBytes.length) > fileMaxSize) {
-                error = tran.file_size_exceeded(
-                  (fileMaxSize / 1024).toString(),
-                );
+                error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
               }
             } else {
               if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
-                error = tran.file_size_exceeded(
-                  (fileMaxSize / 1024).toString(),
-                );
+                error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
               }
             }
             if (fileType == NsgFilePickerObjectType.image) {
@@ -580,9 +471,7 @@ class NsgFilePickerProvider {
                   file: file,
                   fileContent: asBytes,
                   image: Image.memory(asBytes),
-                  description: basenameWithoutExtension(
-                    element.name.toString(),
-                  ),
+                  description: basenameWithoutExtension(element.name.toString()),
                   fileType: fileType,
                   filePath: element.path ?? '',
                 ),
@@ -600,17 +489,13 @@ class NsgFilePickerProvider {
                 ),
               );
             } else {
-              error =
-                  '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+              error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
             }
           } else {
-            error = '${element.path} - ${tran.path_error}';
+            error = '${element.path} - ${tranControls.path_error}';
           }
         }
-        if (GetPlatform.isLinux ||
-            GetPlatform.isMacOS ||
-            GetPlatform.isAndroid ||
-            GetPlatform.isIOS) {
+        if (GetPlatform.isLinux || GetPlatform.isMacOS || GetPlatform.isAndroid || GetPlatform.isIOS) {
           Uint8List? fileContent;
           if (element.path != null) {
             fileContent = await File(element.path!).readAsBytes();
@@ -639,8 +524,7 @@ class NsgFilePickerProvider {
               ),
             );
           } else {
-            error =
-                '${fileType.toString().toUpperCase()} - ${tran.unsupported_format}';
+            error = '${fileType.toString().toUpperCase()} - ${tranControls.unsupported_format}';
           }
         }
       }
@@ -662,12 +546,7 @@ class NsgFilePickerProvider {
 
     try {
       if (mobileSelectionType == NsgFilePickerObjectType.image) {
-        var image = await ImagePicker().pickImage(
-          source: ImageSource.camera,
-          imageQuality: imageQuality,
-          maxWidth: imageMaxWidth,
-          maxHeight: imageMaxHeight,
-        );
+        var image = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: imageQuality, maxWidth: imageMaxWidth, maxHeight: imageMaxHeight);
         if (image != null) {
           result = [image];
         }
@@ -690,14 +569,11 @@ class NsgFilePickerProvider {
       objectsList.clear();
     }
     for (var element in result) {
-      final pickerObject = await _createMobilePickerObject(
-        element,
-        sourceType: ESourceType.camera,
-      );
+      final pickerObject = await _createMobilePickerObject(element, sourceType: ESourceType.camera);
       if (pickerObject != null) {
         objectsList.add(pickerObject);
       } else {
-        error = tran.unsupported_format;
+        error = tranControls.unsupported_format;
       }
     }
 
@@ -709,11 +585,7 @@ class NsgFilePickerProvider {
     }
   }
 
-  Future saveFile(
-    NsgFilePickerObject fileObject, {
-    String? customFileName,
-    String? customPrefix,
-  }) async {
+  Future saveFile(NsgFilePickerObject fileObject, {String? customFileName, String? customPrefix}) async {
     FileType fileType = FileType.any;
     switch (fileObject.fileType) {
       case NsgFilePickerObjectType.image:
@@ -731,11 +603,9 @@ class NsgFilePickerProvider {
     if (!kIsWeb) {
       if (!GetPlatform.isAndroid && !GetPlatform.isIOS) {
         var fileName = await FilePicker.platform.saveFile(
-          dialogTitle: tran.save_file,
+          dialogTitle: tranControls.save_file,
           type: fileType,
-          allowedExtensions: [
-            extension(fileObject.filePath).replaceAll('.', ''),
-          ],
+          allowedExtensions: [extension(fileObject.filePath).replaceAll('.', '')],
         );
         if (fileName == null) return;
         var ext = extension(fileName);
@@ -744,18 +614,12 @@ class NsgFilePickerProvider {
         }
 
         dio.Dio io = dio.Dio();
-        await io.download(
-          fileObject.filePath,
-          fileName,
-          onReceiveProgress: (receivedBytes, totalBytes) {},
-        );
+        await io.download(fileObject.filePath, fileName, onReceiveProgress: (receivedBytes, totalBytes) {});
         //fileName = '/Users/zenalex/Downloads/ttt.docx';
         fileName = Uri.encodeFull(fileName);
         await launchUrlString('file:$fileName');
       } else {
-        String fileName =
-            customFileName ??
-            '${customPrefix ?? savePrefix}${extension(fileObject.filePath)}';
+        String fileName = customFileName ?? '${customPrefix ?? savePrefix}${extension(fileObject.filePath)}';
         Directory appDir;
         if (Platform.isIOS) {
           appDir = await getApplicationDocumentsDirectory();
@@ -765,11 +629,7 @@ class NsgFilePickerProvider {
 
         String filePath = '${appDir.path}/$fileName';
         dio.Dio io = dio.Dio();
-        await io.download(
-          fileObject.filePath,
-          filePath,
-          onReceiveProgress: (receivedBytes, totalBytes) {},
-        );
+        await io.download(fileObject.filePath, filePath, onReceiveProgress: (receivedBytes, totalBytes) {});
       }
     }
     if (kIsWeb) {
@@ -782,19 +642,15 @@ class NsgFilePickerProvider {
           final url = html.Url.createObjectUrlFromBlob(blob);
 
           final anchor = html.AnchorElement(href: url)
-            ..setAttribute(
-              "download",
-              customFileName ??
-                  '${customPrefix ?? savePrefix}${extension(fileObject.filePath)}',
-            );
+            ..setAttribute("download", customFileName ?? '${customPrefix ?? savePrefix}${extension(fileObject.filePath)}');
           anchor.click();
 
           html.Url.revokeObjectUrl(url);
         } else {
-          Get.snackbar(tran.failed_download, tran.failed_download_try_again);
+          Get.snackbar(tranControls.failed_download, tranControls.failed_download_try_again);
         }
       } catch (e) {
-        Get.snackbar(tran.error, '${tran.error_file_download}: $e');
+        Get.snackbar(tranControls.error, '${tranControls.error_file_download}: $e');
       }
     }
   }
@@ -818,15 +674,8 @@ class NsgFilePickerProvider {
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: ControlOptions.instance.colorBase,
-                      ),
-                      child: Icon(
-                        Icons.image_outlined,
-                        size: 50,
-                        color: ControlOptions.instance.colorPrimary,
-                      ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorBase),
+                      child: Icon(Icons.image_outlined, size: 50, color: ControlOptions.instance.colorPrimary),
                     ),
                   ),
                   const Padding(padding: EdgeInsets.only(right: 10)),
@@ -836,15 +685,8 @@ class NsgFilePickerProvider {
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: ControlOptions.instance.colorBase,
-                      ),
-                      child: Icon(
-                        Icons.photo_camera,
-                        size: 50,
-                        color: ControlOptions.instance.colorPrimary,
-                      ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorBase),
+                      child: Icon(Icons.photo_camera, size: 50, color: ControlOptions.instance.colorPrimary),
                     ),
                   ),
                   const Padding(padding: EdgeInsets.only(right: 10)),
@@ -854,15 +696,8 @@ class NsgFilePickerProvider {
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: ControlOptions.instance.colorBase,
-                      ),
-                      child: Icon(
-                        Icons.file_open_rounded,
-                        size: 50,
-                        color: ControlOptions.instance.colorPrimary,
-                      ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ControlOptions.instance.colorBase),
+                      child: Icon(Icons.file_open_rounded, size: 50, color: ControlOptions.instance.colorPrimary),
                     ),
                   ),
                 ],

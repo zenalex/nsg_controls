@@ -33,7 +33,7 @@ class NsgTimeRangePickerWidget extends StatelessWidget {
                 },
                 validator: (time) {
                   if (time.isAfter(period.end)) {
-                    onError?.call(tran.period_begin_must_be_before_end);
+                    onError?.call(tranControls.period_begin_must_be_before_end);
                     return false;
                   }
                   final newPeriod = period.copyWithBegin(time);
@@ -58,7 +58,7 @@ class NsgTimeRangePickerWidget extends StatelessWidget {
                 },
                 validator: (time) {
                   if (period.begin.isAfter(time)) {
-                    onError?.call(tran.period_begin_must_be_before_end);
+                    onError?.call(tranControls.period_begin_must_be_before_end);
                     return false;
                   }
                   final newPeriod = period.copyWithEnd(time);

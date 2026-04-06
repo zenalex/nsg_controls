@@ -147,7 +147,7 @@ Widget widgetOverlay({
     List<Widget> resultList = [];
     var widgetList2 = widgetList();
     if (widgetList2.isEmpty) {
-      resultList.add(Padding(padding: const EdgeInsets.all(10.0), child: Text(tran.no_options_available)));
+      resultList.add(Padding(padding: const EdgeInsets.all(10.0), child: Text(tranControls.no_options_available)));
     } else {
       for (var element in widgetList2) {
         bool hovered = false;

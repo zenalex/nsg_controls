@@ -63,7 +63,7 @@ class NsgPeriodPickerEvent<S extends NsgPeriodPickerState> extends NsgEvent<S> w
     this.checkBelongAction,
   }) : super() {
     if (state.optionLabel == null) {
-      changeOptionLabel(checkBelong(state.period) ?? tran.quick_selection);
+      changeOptionLabel(checkBelong(state.period) ?? tranControls.quick_selection);
     }
   }
 
@@ -111,13 +111,13 @@ class NsgPeriodPickerEvent<S extends NsgPeriodPickerState> extends NsgEvent<S> w
     if (label != null) {
     } else {
       label = switch (period.type) {
-        NsgPeriodGranularity.year => tran.quick_selection,
-        NsgPeriodGranularity.quarter => tran.quick_selection,
-        NsgPeriodGranularity.month => tran.quick_selection,
-        NsgPeriodGranularity.week => tran.quick_selection,
-        NsgPeriodGranularity.day => tran.quick_selection,
-        NsgPeriodGranularity.days => tran.period_with_time,
-        NsgPeriodGranularity.custom => tran.period_with_time,
+        NsgPeriodGranularity.year => tranControls.quick_selection,
+        NsgPeriodGranularity.quarter => tranControls.quick_selection,
+        NsgPeriodGranularity.month => tranControls.quick_selection,
+        NsgPeriodGranularity.week => tranControls.quick_selection,
+        NsgPeriodGranularity.day => tranControls.quick_selection,
+        NsgPeriodGranularity.days => tranControls.period_with_time,
+        NsgPeriodGranularity.custom => tranControls.period_with_time,
       };
     }
     return label;
@@ -125,13 +125,13 @@ class NsgPeriodPickerEvent<S extends NsgPeriodPickerState> extends NsgEvent<S> w
 
   String granularityName(NsgPeriodGranularity granularity) {
     return switch (granularity) {
-      NsgPeriodGranularity.year => tran.year,
-      NsgPeriodGranularity.quarter => tran.quarter,
-      NsgPeriodGranularity.month => tran.month,
-      NsgPeriodGranularity.week => tran.week,
-      NsgPeriodGranularity.day => tran.day,
-      NsgPeriodGranularity.days => tran.period,
-      NsgPeriodGranularity.custom => tran.period_with_time,
+      NsgPeriodGranularity.year => tranControls.year,
+      NsgPeriodGranularity.quarter => tranControls.quarter,
+      NsgPeriodGranularity.month => tranControls.month,
+      NsgPeriodGranularity.week => tranControls.week,
+      NsgPeriodGranularity.day => tranControls.day,
+      NsgPeriodGranularity.days => tranControls.period,
+      NsgPeriodGranularity.custom => tranControls.period_with_time,
     };
   }
 }
@@ -248,7 +248,7 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
                         validator: (time) {
                           final dateBegin = state.period.begin.copyWith(hour: time.hour, minute: time.minute);
                           if (dateBegin.isAfter(state.period.end)) {
-                            event.showError(tran.period_begin_must_be_before_end);
+                            event.showError(tranControls.period_begin_must_be_before_end);
                             return false;
                           }
                           return true;
@@ -269,7 +269,7 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
                         validator: (time) {
                           final dateEnd = state.period.end.copyWith(hour: time.hour, minute: time.minute);
                           if (dateEnd.isBefore(state.period.begin)) {
-                            event.showError(tran.period_begin_must_be_before_end);
+                            event.showError(tranControls.period_begin_must_be_before_end);
                             return false;
                           }
                           return true;
@@ -291,7 +291,7 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
   }
 
   List<(String, NsgEventBuilder<S>)> optionBuilders() {
-    return [(tran.quick_selection, commonOption), (tran.period_with_time, customOption)];
+    return [(tranControls.quick_selection, commonOption), (tranControls.period_with_time, customOption)];
   }
 
   Widget pickerContentBuilder(BuildContext context, S state) {
@@ -323,7 +323,7 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
     await showNsgDialog(
       context: context,
       isScrollable: true,
-      title: tran.select_period,
+      title: tranControls.select_period,
       showCloseButton: true,
       constraints: BoxConstraints(maxWidth: 600),
       child: ListenableBuilder(listenable: event.stateN, builder: (context, widget) => pickerContentBuilder(context, event.state)),

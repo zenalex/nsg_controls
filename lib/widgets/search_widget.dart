@@ -43,7 +43,7 @@ class SearchWidget extends StatefulWidget {
       icon: suffixIcon ?? Icon(NsgIcons.close, color: nsgtheme.colorTertiary, size: 20),
     ),
     // prefixIcon: Icon(Icons.search),
-    hintText: tran.search,
+    hintText: tranControls.search,
     hintStyle: TextStyle(color: ControlOptions.instance.colorTertiary, fontWeight: FontWeight.w500),
   );
 

@@ -201,4 +201,67 @@ class DatePartFormat {
   final int position;
 }
 
-NsgControlsLocalizations get tran => NsgControlsLocalizations.of(Get.context!)!;
+NsgControlsLocalizations get tranControls => NsgControlsLocalizations.of(Get.context!)!;
+
+extension CompareBool on bool {
+  int compareTo(bool other, {bool reversed = false}) {
+    if (this == other) {
+      return 0;
+    } else if (this) {
+      return -1;
+    } else {
+      return 1;
+    }
+  }
+}
+
+extension CompareInt on int {
+  int nsgCompareTo(int other, {bool zeroValueLast = false, int zeroValue = 0}) {
+    if (!zeroValueLast) return compareTo(other);
+
+    if (this <= zeroValue && other > zeroValue) {
+      return 1;
+    } else if (other <= zeroValue && this > zeroValue) {
+      return -1;
+    }
+    return compareTo(other);
+  }
+}
+
+extension CompareDouble on double {
+  int nsgCompareTo(double other, {bool zeroValueLast = false}) {
+    if (!zeroValueLast) return compareTo(other);
+
+    if (this <= 0 && other > 0) {
+      return 1;
+    } else if (other <= 0 && this > 0) {
+      return -1;
+    }
+    return compareTo(other);
+  }
+}
+
+extension CompareNullableInt on int? {
+  int nsgCompareTo(int? other, {bool zeroValueLast = false}) {
+    if (this == null) {
+      if (other == null) {
+        return 0;
+      } else {
+        return 1;
+      }
+    }
+    if (other == null) {
+      return -1;
+    }
+    return this!.nsgCompareTo(other, zeroValueLast: zeroValueLast);
+  }
+}
+
+int compareMultiple(List<int> compares) {
+  var ans = 0;
+  for (var i in compares) {
+    if (ans != 0) continue;
+    ans = i;
+  }
+  return ans;
+}

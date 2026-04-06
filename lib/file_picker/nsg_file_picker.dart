@@ -62,7 +62,7 @@ class NsgFilePicker extends StatefulWidget {
   // popup() {
   //   Get.dialog(
   //       NsgPopUp(
-  //         title: tran.upload_photo,
+  //         title: tranControls.upload_photo,
   //         contentTop: SizedBox(width: 300, height: 300, child: this),
   //       ),
   //       barrierDismissible: true);
@@ -82,8 +82,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
 
   Widget _appBar() {
     return NsgAppBar(
-      text: objectsList.isEmpty ? tran.add_photos.toUpperCase() : tran.save_photos.toUpperCase(),
-      text2: objectsList.isNotEmpty ? tran.photos_added(objectsList.length) : null,
+      text: objectsList.isEmpty ? tranControls.add_photos.toUpperCase() : tranControls.save_photos.toUpperCase(),
+      text2: objectsList.isNotEmpty ? tranControls.photos_added(objectsList.length) : null,
       icon: Icons.arrow_back_ios_new,
       color: ControlOptions.instance.colorInverted,
       colorsInverted: true,
@@ -168,8 +168,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                         onTap: () {
                           Get.dialog(
                             NsgPopUp(
-                              title: tran.delete_photos,
-                              text: tran.delete_photo_warning,
+                              title: tranControls.delete_photos,
+                              text: tranControls.delete_photo_warning,
                               onConfirm: () {
                                 element.markToDelete = true;
                                 //objectsList.remove(element);
@@ -211,7 +211,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                             Get.back();
                           },
                           margin: const EdgeInsets.all(15),
-                          title: tran.view_photo,
+                          title: tranControls.view_photo,
                           width: Get.width,
                           height: Get.height,
                           getContent: () => [NsgGallery(imagesList: imagesList, currentPage: currentPage)],
@@ -220,8 +220,8 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
                       );
                     } else {
                       Get.snackbar(
-                        tran.error,
-                        tran.not_an_image_file,
+                        tranControls.error,
+                        tranControls.not_an_image_file,
                         duration: const Duration(seconds: 3),
                         maxWidth: 300,
                         snackPosition: SnackPosition.bottom,
@@ -253,7 +253,7 @@ class _NsgFilePickerState extends State<NsgFilePicker> {
     List<Widget> listWithPlus = list;
     listWithPlus.add(
       NsgImagePickerButton(
-        textChooseFile: widget.textChooseFile ?? tran.add_photo,
+        textChooseFile: widget.textChooseFile ?? tranControls.add_photo,
         onPressed: () async {
           var ans = await widget.filePicker.autoSelectPicker();
           //widget.objectsList.clear();
@@ -410,7 +410,7 @@ class NsgImagePickerButton extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(top: 0),
                                 child: Text(
-                                  tran.camera,
+                                  tranControls.camera,
                                   style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10),
                                 ),
                               ),
@@ -434,7 +434,7 @@ class NsgImagePickerButton extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(top: 0),
                                 child: Text(
-                                  tran.gallery,
+                                  tranControls.gallery,
                                   style: TextStyle(color: ControlOptions.instance.colorInverted, fontWeight: FontWeight.bold, fontSize: 10),
                                 ),
                               ),

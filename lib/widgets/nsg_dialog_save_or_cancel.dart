@@ -10,7 +10,7 @@ class NsgDialogSaveOrCancel {
     bool? value;
     await Get.dialog(
       NsgPopUp(
-        title: tran.saveChangesPrompt,
+        title: tranControls.saveChangesPrompt,
         getContent: () {
           return [
             Padding(
@@ -19,7 +19,7 @@ class NsgDialogSaveOrCancel {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    tran.saveChangesOption,
+                    tranControls.saveChangesOption,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: ControlOptions.instance.colorText),
                   ),
@@ -33,7 +33,7 @@ class NsgDialogSaveOrCancel {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    tran.continue_editing,
+                    tranControls.continue_editing,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: ControlOptions.instance.colorText),
                   ),
@@ -47,7 +47,7 @@ class NsgDialogSaveOrCancel {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    tran.discardAndExit,
+                    tranControls.discardAndExit,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: ControlOptions.instance.colorText),
                   ),
@@ -60,7 +60,7 @@ class NsgDialogSaveOrCancel {
         contentBottom: Center(
           child: NsgButton(
             width: 260,
-            text: tran.exitWithoutSaving,
+            text: tranControls.exitWithoutSaving,
             icon: Icons.close,
             onPressed: () {
               value = false;
@@ -73,7 +73,7 @@ class NsgDialogSaveOrCancel {
           ),
         ),
         //dataController: controller,
-        confirmText: tran.confirm,
+        confirmText: tranControls.confirm,
         onConfirm: () {
           value = true;
           if (context != null) {

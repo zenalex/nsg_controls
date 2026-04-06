@@ -208,7 +208,7 @@ class NsgListPage extends StatelessWidget {
               if (type != NsgListPageMode.table)
                 controller.controllerFilter.isAllowed && controller.controllerFilter.isPeriodAllowed
                     ? controller.obx(
-                        (state) => NsgPeriodFilter(label: tran.date_filter, controller: controller),
+                        (state) => NsgPeriodFilter(label: tranControls.date_filter, controller: controller),
                         onLoading: NsgPeriodFilter(controller: controller),
                         onError: (error) => const SizedBox(),
                       )
@@ -268,9 +268,9 @@ class NsgListPage extends StatelessWidget {
                   labelColor: ControlOptions.instance.colorText,
                   labelPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   tabs: [
-                    Tab(child: Text(tran.all.toUpperCase(), textAlign: TextAlign.center)),
-                    Tab(child: Text(tran.recent.toUpperCase(), textAlign: TextAlign.center)),
-                    Tab(child: Text(tran.favorites.toUpperCase(), textAlign: TextAlign.center)),
+                    Tab(child: Text(tranControls.all.toUpperCase(), textAlign: TextAlign.center)),
+                    Tab(child: Text(tranControls.recent.toUpperCase(), textAlign: TextAlign.center)),
+                    Tab(child: Text(tranControls.favorites.toUpperCase(), textAlign: TextAlign.center)),
                   ],
                 ),
               ),
@@ -335,7 +335,7 @@ class NsgListPage extends StatelessWidget {
         ),
       );
     } else if (type == NsgListPageMode.table) {
-      assert(columns != null, tran.columns_not_set);
+      assert(columns != null, tranControls.columns_not_set);
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: NsgTable(
@@ -357,7 +357,7 @@ class NsgListPage extends StatelessWidget {
         ),
       );
     } else {
-      return Text(tran.unknown_display_type);
+      return Text(tranControls.unknown_display_type);
     }
   }
   /*
@@ -416,7 +416,7 @@ class NsgListPage extends StatelessWidget {
           color: appBarColor,
           backColor: appBarBackColor,
           key: GlobalKey(),
-          text: error != null ? tran.error_colon(error).toUpperCase() : title,
+          text: error != null ? tranControls.error_colon(error).toUpperCase() : title,
           text2: showCount != null
               ? controller.totalCount != null
                     ? '${showCount!} ${controller.totalCount}'

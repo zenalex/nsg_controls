@@ -1127,7 +1127,7 @@ class _NsgTableState extends State<NsgTable> {
                               Get.dialog(
                                 NsgPopUp(
                                   hideBackButton: true,
-                                  title: tran.cell_data,
+                                  title: tranControls.cell_data,
                                   contentTop: Padding(
                                     padding: const EdgeInsets.all(15),
                                     child: NsgText(textValue, type: NsgTextType.textL),
@@ -1136,10 +1136,10 @@ class _NsgTableState extends State<NsgTable> {
                                     child: NsgButton(
                                       width: 260,
                                       icon: Icons.copy,
-                                      text: tran.copy_to_clipboard,
+                                      text: tranControls.copy_to_clipboard,
                                       onPressed: () {
                                         Clipboard.setData(ClipboardData(text: textValue));
-                                        nsgSnackbar(text: tran.cell_data_copied);
+                                        nsgSnackbar(text: tranControls.cell_data_copied);
                                       },
                                     ),
                                   ),
@@ -1235,7 +1235,7 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.createNewElement))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.add_row,
+                      tooltip: tranControls.add_row,
                       icon: NsgTableMenuButtonType.createNewElement.icon,
                       onPressed: () {
                         NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.createNewElement.toString());
@@ -1248,7 +1248,7 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.editElement) && widget.elementEditPageName != null)
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.edit_row,
+                      tooltip: tranControls.edit_row,
                       icon: NsgTableMenuButtonType.editElement.icon,
                       onPressed: () {
                         NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.editElement.toString());
@@ -1261,7 +1261,7 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.copyElement))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.copy_row,
+                      tooltip: tranControls.copy_row,
                       icon: NsgTableMenuButtonType.copyElement.icon,
                       onPressed: () {
                         NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.copyElement.toString());
@@ -1274,7 +1274,7 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.removeElement))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.delete_row,
+                      tooltip: tranControls.delete_row,
                       icon: NsgTableMenuButtonType.removeElement.icon,
                       onPressed: () {
                         NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.removeElement.toString());
@@ -1289,7 +1289,7 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.refreshTable))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.refresh_table,
+                      tooltip: tranControls.refresh_table,
                       icon: NsgTableMenuButtonType.refreshTable.icon,
                       onPressed: () {
                         NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.refreshTable.toString());
@@ -1300,17 +1300,17 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.columnsSelect))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.column_display,
+                      tooltip: tranControls.column_display,
                       icon: NsgTableMenuButtonType.columnsSelect.icon,
                       onPressed: () {
                         NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.columnsSelect.toString());
                         if (widget.userSettingsController != null) {
                           Get.dialog(
                             NsgPopUp(
-                              title: tran.column_order_and_disable,
+                              title: tranControls.column_order_and_disable,
                               width: 300,
                               getContent: () => [NsgTableColumnsReorder(controller: widget.controller, columns: widget.columns)],
-                              hint: tran.drag_columns_to_reorder,
+                              hint: tranControls.drag_columns_to_reorder,
                               onConfirm: () {
                                 if (widget.userSettingsController != null) {
                                   widget.userSettingsController!.settingsMap[widget.userSettingsId] = toJson();
@@ -1323,7 +1323,7 @@ class _NsgTableState extends State<NsgTable> {
                             barrierDismissible: false,
                           );
                         } else {
-                          NsgErrorWidget.showErrorByString(tran.user_settings_not_set);
+                          NsgErrorWidget.showErrorByString(tranControls.user_settings_not_set);
                         }
                       },
                     ),
@@ -1331,7 +1331,7 @@ class _NsgTableState extends State<NsgTable> {
                       !(visibleColumns.length == 1 && visibleColumns.first.expanded == true)) //&& horizontalScrollEnabled)
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.column_width,
+                      tooltip: tranControls.column_width,
                       icon: NsgTableMenuButtonType.columnsSize.icon,
                       onPressed: () {
                         NsgMetrica.reportTableButtonTap(widget.userSettingsId, NsgTableMenuButtonType.columnsSize.toString());
@@ -1380,7 +1380,7 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.filterPeriod))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.period_filter,
+                      tooltip: tranControls.period_filter,
                       backColor: isPeriodFilterOpen ? ControlOptions.instance.colorMainDark : null,
                       icon: isPeriodFilterOpen ? Icons.date_range : NsgTableMenuButtonType.filterPeriod.icon,
                       onPressed: () {
@@ -1392,7 +1392,7 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.recent))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.recent,
+                      tooltip: tranControls.recent,
                       backColor: editMode == NsgTableEditMode.recent ? ControlOptions.instance.colorMainDark : null,
                       icon: editMode == NsgTableEditMode.recent ? Icons.history : NsgTableMenuButtonType.recent.icon,
                       onPressed: () {
@@ -1415,7 +1415,7 @@ class _NsgTableState extends State<NsgTable> {
                   if (widget.availableButtons.contains(NsgTableMenuButtonType.favorites))
                     NsgTableMenuButton(
                       color: buildStyle.menuIconColor,
-                      tooltip: tran.favorites,
+                      tooltip: tranControls.favorites,
                       backColor: editMode == NsgTableEditMode.favorites ? ControlOptions.instance.colorMainDark : null,
                       icon: editMode == NsgTableEditMode.favorites ? Icons.star : NsgTableMenuButtonType.favorites.icon,
                       onPressed: () {
@@ -1461,10 +1461,10 @@ class _NsgTableState extends State<NsgTable> {
                       setState(() {});
                     },
                   ),
-                  Text(tran.column_width, style: TextStyle(color: ControlOptions.instance.colorMainText)),
+                  Text(tranControls.column_width, style: TextStyle(color: ControlOptions.instance.colorMainText)),
                   NsgTableMenuButton(
                     color: buildStyle.menuIconColor,
-                    tooltip: tran.apply,
+                    tooltip: tranControls.apply,
                     icon: Icons.check,
                     onPressed: () {
                       if (widget.userSettingsController != null) {
@@ -1502,11 +1502,11 @@ class _NsgTableState extends State<NsgTable> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(tran.delete_rows(listRowsToDelete.length), style: TextStyle(color: ControlOptions.instance.colorMainText)),
+                    child: Text(tranControls.delete_rows(listRowsToDelete.length), style: TextStyle(color: ControlOptions.instance.colorMainText)),
                   ),
                   NsgTableMenuButton(
                     color: buildStyle.menuIconColor,
-                    tooltip: tran.delete,
+                    tooltip: tranControls.delete,
                     icon: Icons.check,
                     onPressed: () {
                       deleteSelectedRows(listRowsToDelete);
@@ -1543,7 +1543,7 @@ class _NsgTableState extends State<NsgTable> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(tran.copy_row_dialog, style: TextStyle(color: ControlOptions.instance.colorMainText)),
+                    child: Text(tranControls.copy_row_dialog, style: TextStyle(color: ControlOptions.instance.colorMainText)),
                   ),
                 ],
               ),
@@ -1573,7 +1573,7 @@ class _NsgTableState extends State<NsgTable> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(tran.edit_rows, style: TextStyle(color: ControlOptions.instance.colorMainText)),
+                    child: Text(tranControls.edit_rows, style: TextStyle(color: ControlOptions.instance.colorMainText)),
                   ),
                 ],
               ),
@@ -1598,7 +1598,7 @@ class _NsgTableState extends State<NsgTable> {
                 if (isSearchStringFilterOpen && widget.availableButtons.contains(NsgTableMenuButtonType.filterText))
                   _expanded(
                     child: NsgTextFilter(
-                      label: tran.text_filter,
+                      label: tranControls.text_filter,
                       onSetFilter: () {
                         setState(() {
                           editModeLast = NsgTableEditMode.view;
@@ -1616,7 +1616,7 @@ class _NsgTableState extends State<NsgTable> {
                       //showCompact: isPeriodFilterOpen,
                       key: GlobalKey(),
 
-                      label: widget.periodFilterLabel ?? tran.period_filter,
+                      label: widget.periodFilterLabel ?? tranControls.period_filter,
                       controller: widget.controller,
                     ),
                   ),
@@ -1719,7 +1719,7 @@ class _NsgTableState extends State<NsgTable> {
                         ? Row(
                             children: [
                               Text(
-                                '${tran.total}: ',
+                                '${tranControls.total}: ',
                                 style: TextStyle(
                                   color: ControlOptions.instance.colorMainBack,
                                   fontSize: ControlOptions.instance.sizeM,
@@ -1980,7 +1980,7 @@ class _NsgTableState extends State<NsgTable> {
 
     Get.dialog(
       NsgPopUp(
-        title: tran.delete_rows(listRowsToDelete.length),
+        title: tranControls.delete_rows(listRowsToDelete.length),
         getContent: () => [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -1994,7 +1994,7 @@ class _NsgTableState extends State<NsgTable> {
                         padding: const EdgeInsets.only(right: 10),
                         child: Icon(Icons.error_outline, size: 38, color: ControlOptions.instance.colorMain),
                       ),
-                      Flexible(child: Text(tran.confirm_delete_rows)),
+                      Flexible(child: Text(tranControls.confirm_delete_rows)),
                     ],
                   ),
                   Flexible(

@@ -61,7 +61,7 @@ class NsgSelection {
       final needShow = inputType == NsgInputType.reference
           ? true
           : textEditingController.text.isEmpty ||
-              (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase()));
+                (element.toString() != '' && element.toString().toLowerCase().contains(textEditingController.text.toLowerCase()));
       if (!needShow) {
         continue;
       }
@@ -81,7 +81,7 @@ class NsgSelection {
     if (inputType == NsgInputType.reference) {
       if ((controller!.totalCount ?? 0) > itemsList.length) {
         list.add(const Divider());
-        list.add(Center(child: Text(tran.there_are_count_elements_more_use_search((controller!.totalCount ?? 0) - itemsList.length))));
+        list.add(Center(child: Text(tranControls.there_are_count_elements_more_use_search((controller!.totalCount ?? 0) - itemsList.length))));
       }
     }
     return list;
