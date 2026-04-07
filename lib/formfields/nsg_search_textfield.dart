@@ -63,6 +63,8 @@ class _NsgSearchTextfieldState extends State<NsgSearchTextfield> {
         controller: textEditController,
         focusNode: focusNode,
         decoration: InputDecoration(
+          filled: true,
+          fillColor: ControlOptions.instance.colorMainBack,
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 12, right: 8),
             child: Icon(NsgIcons.search, color: nsgtheme.colorTertiary, size: 20),
@@ -91,10 +93,10 @@ class _NsgSearchTextfieldState extends State<NsgSearchTextfield> {
           ),
           // prefixIcon: Icon(Icons.search),
           hintText: tranControls.search,
-          hintStyle: TextStyle(color: ControlOptions.instance.colorSecondary, fontWeight: FontWeight.w500),
+          hintStyle: TextStyle(color: ControlOptions.instance.colorGrey, fontWeight: FontWeight.w500),
         ),
         textAlignVertical: TextAlignVertical.bottom,
-        style: TextStyle(color: ControlOptions.instance.colorBase.c100),
+        style: TextStyle(color: ControlOptions.instance.colorText),
         onChanged: (val) {
           if (widget.onChanged != null) {
             widget.onChanged!(val);
