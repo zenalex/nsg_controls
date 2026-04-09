@@ -37,6 +37,9 @@ class NsgInput extends StatefulWidget {
   final int maxLines;
   final int minLines;
 
+  /// Количество знаков после запятой в Double
+  final int maxDecimalPlaces;
+
   /// Дефолтный выбранный код страны, например: 'en'
   final String? countryCodeInitial;
 
@@ -189,6 +192,7 @@ class NsgInput extends StatefulWidget {
 
   const NsgInput({
     super.key,
+    this.maxDecimalPlaces = 2,
     this.countryCodes,
     this.countryCodeInitial,
     this.child,
@@ -278,6 +282,7 @@ class NsgInput extends StatefulWidget {
       } else if (dataItem.getField(fieldName) is NsgDataStringField ||
           dataItem.getField(fieldName) is NsgDataIntField ||
           dataItem.getField(fieldName) is NsgDataDoubleField) {
+        dataItem.maxDecimalPlaces = maxDecimalPlaces;
         return NsgInputType.stringValue;
       } else if (dataItem.getField(fieldName) is NsgDataDateField) {
         return NsgInputType.dateValue;
@@ -815,7 +820,7 @@ class _NsgInputState extends State<NsgInput> {
   Widget _gestureWrap({required Widget interactiveWidget, required bool clearIcon}) {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
       // Оборачиваем в GestureDetector для активации фокуса при клике на любую область
-      return clearIcon == true 
+      return clearIcon == true
           ? _addClearIcon(
               GestureDetector(
                 onTap: () {
@@ -823,10 +828,7 @@ class _NsgInputState extends State<NsgInput> {
                     focus.requestFocus();
                   }
                 },
-                child: AbsorbPointer(
-                  absorbing: false,
-                  child: interactiveWidget,
-                ),
+                child: AbsorbPointer(absorbing: false, child: interactiveWidget),
               ),
             )
           : GestureDetector(
@@ -835,10 +837,7 @@ class _NsgInputState extends State<NsgInput> {
                   focus.requestFocus();
                 }
               },
-              child: AbsorbPointer(
-                absorbing: false,
-                child: interactiveWidget,
-              ),
+              child: AbsorbPointer(absorbing: false, child: interactiveWidget),
             );
     } else {
       if (inputType == NsgInputType.phoneCode) {
@@ -1232,9 +1231,7 @@ class _NsgInputState extends State<NsgInput> {
               lastDateTime: widget.lastDateTime,
               // initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
               //         DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
-              initialTime: !hasDateValue || resolvedDateValue.year < 1900
-                  ? fallbackDateValue
-                  : resolvedDateValue,
+              initialTime: !hasDateValue || resolvedDateValue.year < 1900 ? fallbackDateValue : resolvedDateValue,
               onClose: (value) {},
             ).showPopup(context, hasDateValue ? resolvedDateValue : fallbackDateValue, (value) {
               widget.dataItem[widget.fieldName] = value;
