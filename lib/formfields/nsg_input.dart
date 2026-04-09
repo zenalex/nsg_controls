@@ -37,9 +37,6 @@ class NsgInput extends StatefulWidget {
   final int maxLines;
   final int minLines;
 
-  /// Количество знаков после запятой в Double
-  final int maxDecimalPlaces;
-
   /// Дефолтный выбранный код страны, например: 'en'
   final String? countryCodeInitial;
 
@@ -192,7 +189,6 @@ class NsgInput extends StatefulWidget {
 
   const NsgInput({
     super.key,
-    this.maxDecimalPlaces = 2,
     this.countryCodes,
     this.countryCodeInitial,
     this.child,
@@ -282,7 +278,6 @@ class NsgInput extends StatefulWidget {
       } else if (dataItem.getField(fieldName) is NsgDataStringField ||
           dataItem.getField(fieldName) is NsgDataIntField ||
           dataItem.getField(fieldName) is NsgDataDoubleField) {
-        dataItem.maxDecimalPlaces = maxDecimalPlaces;
         return NsgInputType.stringValue;
       } else if (dataItem.getField(fieldName) is NsgDataDateField) {
         return NsgInputType.dateValue;
