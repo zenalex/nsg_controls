@@ -10,7 +10,17 @@ class SearchWidget extends StatefulWidget {
   final double borderRadius;
   final EdgeInsets? padding;
   final TextEditingController? textController;
-  const SearchWidget({super.key, required this.controller, this.borderRadius = 100, this.onSuffixIconTap, this.suffixIcon, this.padding, this.textController});
+  final FocusNode? focusNode;
+  const SearchWidget({
+    super.key,
+    required this.controller,
+    this.borderRadius = 100,
+    this.onSuffixIconTap,
+    this.suffixIcon,
+    this.padding,
+    this.textController,
+    this.focusNode,
+  });
 
   @override
   State<SearchWidget> createState() => SearchWidgetState();
@@ -37,36 +47,62 @@ class SearchWidget extends StatefulWidget {
           onSuffixIconTap ??
           () {
             state.textEditController.text = '';
-            controller.controllerFilter.searchString = state.textEditController.text;
+            controller.controllerFilter.searchString =
+                state.textEditController.text;
             controller.refreshData();
           },
-      icon: suffixIcon ?? Icon(NsgIcons.close, color: nsgtheme.colorTertiary, size: 20),
+      icon:
+          suffixIcon ??
+          Icon(NsgIcons.close, color: nsgtheme.colorTertiary, size: 20),
     ),
     // prefixIcon: Icon(Icons.search),
     hintText: tranControls.search,
-    hintStyle: TextStyle(color: ControlOptions.instance.colorTertiary, fontWeight: FontWeight.w500),
+    hintStyle: TextStyle(
+      color: ControlOptions.instance.colorTertiary,
+      fontWeight: FontWeight.w500,
+    ),
   );
 
   ///Для перекрытия в каждом проекте
   TextAlignVertical get textAlignVertical => TextAlignVertical.bottom;
 
   ///Для перекрытия в каждом проекте
-  TextStyle get textStyle => TextStyle(color: ControlOptions.instance.colorBase.c100);
+  TextStyle get textStyle =>
+      TextStyle(color: ControlOptions.instance.colorBase.c100);
 }
 
 class SearchWidgetState extends State<SearchWidget> {
-  late TextEditingController textEditController = widget.textController ?? TextEditingController();
+  late final TextEditingController _localTextController;
+  late final FocusNode _localFocusNode;
+  late final bool _ownsTextController;
+  late final bool _ownsFocusNode;
+
+  TextEditingController get textEditController =>
+      widget.textController ?? _localTextController;
+  FocusNode get focusNode => widget.focusNode ?? _localFocusNode;
 
   @override
   void initState() {
     super.initState();
+    _ownsTextController = widget.textController == null;
+    _ownsFocusNode = widget.focusNode == null;
+    _localTextController = TextEditingController();
+    _localFocusNode = FocusNode();
     widget.controller.controllerFilter.isOpen = true;
-    textEditController.text = widget.controller.controllerFilter.searchString;
+    if (textEditController.text !=
+        widget.controller.controllerFilter.searchString) {
+      textEditController.text = widget.controller.controllerFilter.searchString;
+    }
   }
 
   @override
   void dispose() {
-    textEditController.dispose();
+    if (_ownsTextController) {
+      _localTextController.dispose();
+    }
+    if (_ownsFocusNode) {
+      _localFocusNode.dispose();
+    }
     widget.controller.controllerFilter.isOpen = false;
     super.dispose();
   }
@@ -80,12 +116,14 @@ class SearchWidgetState extends State<SearchWidget> {
         child: TextField(
           cursorColor: Theme.of(context).primaryColor,
           controller: textEditController,
+          focusNode: focusNode,
           decoration: widget.decoration(this),
           textAlignVertical: widget.textAlignVertical,
           style: widget.textStyle,
           onChanged: (val) {
             widget.controller.top = 0;
-            widget.controller.controllerFilter.searchString = textEditController.text;
+            widget.controller.controllerFilter.searchString =
+                textEditController.text;
             var filter = widget.controller.getRequestFilter;
             if (textEditController.text.isNotEmpty) {
               var params = <String, dynamic>{};
@@ -96,7 +134,9 @@ class SearchWidgetState extends State<SearchWidget> {
             } else {
               filter = widget.controller.getRequestFilter;
             }
-            widget.controller.controllerFilter.refreshControllerWithDelay(filter: filter);
+            widget.controller.controllerFilter.refreshControllerWithDelay(
+              filter: filter,
+            );
             widget.controller.sendNotify();
           },
         ),
