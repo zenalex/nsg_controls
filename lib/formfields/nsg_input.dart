@@ -315,9 +315,7 @@ class _NsgInputState extends State<NsgInput> {
   PhoneInputFormatter phoneFormatter = PhoneInputFormatter();
   bool _disabled = false;
   late TextEditingController textController;
-  bool get useSelectionController =>
-      inputType == NsgInputType.reference ||
-      inputType == NsgInputType.referenceList;
+  bool get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
   TextFormFieldType? textFormFieldType;
   bool _ignoreChange = false;
 
@@ -352,8 +350,7 @@ class _NsgInputState extends State<NsgInput> {
       resolvedKeyboard = TextInputType.number;
     } else if (widget.dataItem.getField(widget.fieldName) is NsgDataIntField) {
       resolvedKeyboard = TextInputType.number;
-    } else if (inputType == NsgInputType.stringValue &&
-        widget.maskType == NsgInputMaskType.car) {
+    } else if (inputType == NsgInputType.stringValue && widget.maskType == NsgInputMaskType.car) {
       resolvedKeyboard = TextInputType.number;
     }
     return resolvedKeyboard;
@@ -370,18 +367,10 @@ class _NsgInputState extends State<NsgInput> {
       }
     }
     if (sc == null) {
-      assert(
-        widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField,
-        widget.fieldName,
-      );
+      assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
       sc = NsgDefaultController(
-        dataType:
-            (widget.dataItem.getField(widget.fieldName)
-                    as NsgDataBaseReferenceField)
-                .referentElementType,
-        controllerMode: NsgDataControllerMode(
-          storageType: widget.dataItem.storageType,
-        ),
+        dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType,
+        controllerMode: NsgDataControllerMode(storageType: widget.dataItem.storageType),
       );
     }
     return sc;
@@ -393,11 +382,8 @@ class _NsgInputState extends State<NsgInput> {
     _disabled = widget.disabled;
     inputType = widget.selectInputType();
     keyboard = _resolveKeyboard();
-    textFormFieldType =
-        widget.textFormFieldType ?? nsgtheme.nsgInputOutlineBorderType;
-    selectionController = useSelectionController
-        ? _resolveSelectionController()
-        : null;
+    textFormFieldType = widget.textFormFieldType ?? nsgtheme.nsgInputOutlineBorderType;
+    selectionController = useSelectionController ? _resolveSelectionController() : null;
   }
 
   @override
@@ -406,8 +392,7 @@ class _NsgInputState extends State<NsgInput> {
 
     focus = FocusNode(onKeyEvent: widget.onKeyEvent);
 
-    textFormFieldType =
-        widget.textFormFieldType ?? nsgtheme.nsgInputOutlineBorderType;
+    textFormFieldType = widget.textFormFieldType ?? nsgtheme.nsgInputOutlineBorderType;
     fontSize = widget.fontSize ?? ControlOptions.instance.sizeM;
     focus.addListener(() {
       if (focus.hasFocus) {
@@ -417,10 +402,7 @@ class _NsgInputState extends State<NsgInput> {
         // Выделяем текст один раз при получении фокуса, а не при каждом build.
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (focus.hasFocus && textController.text.isNotEmpty) {
-            textController.selection = TextSelection(
-              baseOffset: 0,
-              extentOffset: textController.text.length,
-            );
+            textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
           }
         });
         _notifierAll.value++;
@@ -461,10 +443,7 @@ class _NsgInputState extends State<NsgInput> {
           if (textController.text != text) {
             textController.text = text;
             if (start != -1 && end != -1) {
-              textController.selection = TextSelection(
-                baseOffset: start,
-                extentOffset: end,
-              );
+              textController.selection = TextSelection(baseOffset: start, extentOffset: end);
             }
           }
         } finally {
@@ -485,10 +464,7 @@ class _NsgInputState extends State<NsgInput> {
           try {
             textController.text = text;
             if (start != -1 && end != -1) {
-              textController.selection = TextSelection(
-                baseOffset: start,
-                extentOffset: end,
-              );
+              textController.selection = TextSelection(baseOffset: start, extentOffset: end);
             }
           } finally {
             _ignoreChange = false;
@@ -549,13 +525,7 @@ class _NsgInputState extends State<NsgInput> {
             //textController.text = widget.label;
             _syncTextControllerValue('');
           } else {
-            _syncTextControllerValue(
-              NsgDateFormat.dateFormat(
-                fieldValue,
-                format: widget.formatDateTime,
-                locale: Localizations.localeOf(context).languageCode,
-              ),
-            );
+            _syncTextControllerValue(NsgDateFormat.dateFormat(fieldValue, format: widget.formatDateTime, locale: Localizations.localeOf(context).languageCode));
           }
         } else {
           _syncTextControllerValue(fieldValue.toString());
@@ -568,12 +538,8 @@ class _NsgInputState extends State<NsgInput> {
         if (widget.maxLenght != null) {
           maxLength = widget.maxLenght;
         } else {
-          if (widget.dataItem.getField(widget.fieldName)
-              is NsgDataStringField) {
-            maxLength =
-                (widget.dataItem.getField(widget.fieldName)
-                        as NsgDataStringField)
-                    .maxLength;
+          if (widget.dataItem.getField(widget.fieldName) is NsgDataStringField) {
+            maxLength = (widget.dataItem.getField(widget.fieldName) as NsgDataStringField).maxLength;
             if (maxLength == 0) {
               maxLength = null;
             }
@@ -596,21 +562,12 @@ class _NsgInputState extends State<NsgInput> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 2),
                       child: Text(
-                        focus.hasFocus ||
-                                textController.text != '' ||
-                                nsgtheme.nsgInputHintAlwaysOnTop == true
-                            ? (widget.required ??
-                                      widget.dataItem.isFieldRequired(
-                                        widget.fieldName,
-                                      ))
+                        focus.hasFocus || textController.text != '' || nsgtheme.nsgInputHintAlwaysOnTop == true
+                            ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
                                   ? '${widget.label} *'
                                   : widget.label
                             : ' ',
-                        style: TextStyle(
-                          fontSize: ControlOptions.instance.sizeS,
-                          color:
-                              widget.labelColor ?? nsgtheme.nsgInputColorLabel,
-                        ),
+                        style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
                       ),
                     ),
                   _gestureWrap(
@@ -623,213 +580,88 @@ class _NsgInputState extends State<NsgInput> {
                         children: [
                           inputType == NsgInputType.phoneCode
                               ? CountryDropdown(
-                                  initialCountryData:
-                                      widget.countryCodeInitial == null
+                                  initialCountryData: widget.countryCodeInitial == null
                                       ? null
-                                      : PhoneCodes.getPhoneCountryDataByCountryCode(
-                                          widget.countryCodeInitial!,
-                                        ),
+                                      : PhoneCodes.getPhoneCountryDataByCountryCode(widget.countryCodeInitial!),
                                   filter: getPhoneCountryDataByCountryCodes(),
                                   printCountryName: true,
-                                  onCountrySelected:
-                                      (PhoneCountryData countryData) {
-                                        textController.text = countryData
-                                            .countryCode
-                                            .toString();
-                                        widget.dataItem.setFieldValue(
-                                          widget.fieldName,
-                                          countryData.countryCode.toString(),
-                                        );
-                                        if (widget.onChanged != null) {
-                                          widget.onChanged!(widget.dataItem);
-                                        }
-                                        if (widget.onEditingComplete != null) {
-                                          widget.onEditingComplete!(
-                                            widget.dataItem,
-                                            widget.fieldName,
-                                          );
-                                        }
-                                        _notifierAll.value++;
-                                      },
+                                  onCountrySelected: (PhoneCountryData countryData) {
+                                    textController.text = countryData.countryCode.toString();
+                                    widget.dataItem.setFieldValue(widget.fieldName, countryData.countryCode.toString());
+                                    if (widget.onChanged != null) {
+                                      widget.onChanged!(widget.dataItem);
+                                    }
+                                    if (widget.onEditingComplete != null) {
+                                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+                                    }
+                                    _notifierAll.value++;
+                                  },
                                   dropdownColor: nsgtheme.colorModalBack,
                                   decoration: InputDecoration(
                                     suffixIcon: widget.suffixIcon,
-                                    floatingLabelBehavior:
-                                        widget.floatingLabelBehavior,
-                                    contentPadding:
-                                        getContentPaddingPhoneCode(),
+                                    floatingLabelBehavior: widget.floatingLabelBehavior,
+                                    contentPadding: getContentPaddingPhoneCode(),
                                     isDense: widget.isDense ?? true,
-                                    filled:
-                                        widget.filled ??
-                                        nsgtheme.nsgInputFilled,
-                                    fillColor:
-                                        widget.filledColor ??
-                                        nsgtheme.nsgInputColorFilled,
-                                    border:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          )
-                                        : defaultUnderlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          ),
-                                    focusedBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? focusedOutlineBorder
-                                        : focusedUnderlineBorder,
-                                    enabledBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          )
-                                        : defaultUnderlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          ),
-                                    errorBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? errorOutlineBorder
-                                        : errorUnderlineBorder,
-                                    disabledBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          )
-                                        : defaultUnderlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          ),
-                                    focusedErrorBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? errorOutlineBorder
-                                        : errorUnderlineBorder,
+                                    filled: widget.filled ?? nsgtheme.nsgInputFilled,
+                                    fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
+                                    border: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                    focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                                    enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                    errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                    disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                    focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                                   ),
-                                  style:
-                                      widget.textStyle ??
-                                      TextStyle(
-                                        color: nsgtheme.nsgInputTextColor,
-                                        fontSize: fontSize,
-                                      ),
+                                  style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
                                 )
                               : TextFormField(
                                   textCapitalization: widget.textCapitalization,
                                   autocorrect: widget.autocorrect,
                                   controller: textController,
-                                  inputFormatters:
-                                      widget.maskType == NsgInputMaskType.phone
+                                  inputFormatters: widget.maskType == NsgInputMaskType.phone
                                       ? [phoneFormatter]
                                       : widget.mask != null
-                                      ? [
-                                          MaskTextInputFormatter(
-                                            initialText: fieldValue.toString(),
-                                            mask: widget.mask,
-                                          ),
-                                        ]
+                                      ? [MaskTextInputFormatter(initialText: fieldValue.toString(), mask: widget.mask)]
                                       : null,
                                   maxLength: maxLength,
                                   autofocus: widget.autofocus,
                                   focusNode: focus,
                                   maxLines: widget.maxLines,
                                   minLines: widget.minLines,
-                                  textInputAction:
-                                      keyboard == TextInputType.multiline
-                                      ? TextInputAction.newline
-                                      : TextInputAction.next,
+                                  textInputAction: keyboard == TextInputType.multiline ? TextInputAction.newline : TextInputAction.next,
                                   keyboardType: keyboard,
-                                  cursorColor:
-                                      ControlOptions.instance.colorText,
+                                  cursorColor: ControlOptions.instance.colorText,
                                   decoration: InputDecoration(
                                     suffixIcon: widget.suffixIcon,
-                                    floatingLabelBehavior:
-                                        widget.floatingLabelBehavior,
+                                    floatingLabelBehavior: widget.floatingLabelBehavior,
                                     //label: widget.labelWidget,
                                     prefix: prefix(),
                                     counterText: "",
                                     contentPadding: getContentPadding(),
                                     isDense: widget.isDense ?? true,
-                                    filled:
-                                        widget.filled ??
-                                        nsgtheme.nsgInputFilled,
-                                    fillColor:
-                                        widget.filledColor ??
-                                        nsgtheme.nsgInputColorFilled,
-                                    border:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          )
-                                        : defaultUnderlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          ),
-                                    focusedBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? focusedOutlineBorder
-                                        : focusedUnderlineBorder,
-                                    enabledBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          )
-                                        : defaultUnderlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          ),
-                                    errorBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? errorOutlineBorder
-                                        : errorUnderlineBorder,
-                                    disabledBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          )
-                                        : defaultUnderlineBorder(
-                                            color:
-                                                widget.borderColor ??
-                                                nsgtheme.nsgInputBorderColor,
-                                          ),
-                                    focusedErrorBorder:
-                                        textFormFieldType ==
-                                            TextFormFieldType.outlineInputBorder
-                                        ? errorOutlineBorder
-                                        : errorUnderlineBorder,
+                                    filled: widget.filled ?? nsgtheme.nsgInputFilled,
+                                    fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
+                                    border: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                    focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                                    enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                    errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                    disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
+                                    focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
                                   ),
                                   onFieldSubmitted: (s) {
                                     if (widget.onFieldSubmitted != null) {
-                                      widget.onFieldSubmitted!(
-                                        widget.dataItem,
-                                        widget.fieldName,
-                                      );
+                                      widget.onFieldSubmitted!(widget.dataItem, widget.fieldName);
                                     }
                                   },
 
@@ -844,20 +676,14 @@ class _NsgInputState extends State<NsgInput> {
                                   onEditingComplete: () {
                                     if (keyboard != TextInputType.multiline) {
                                       if (widget.onEditingComplete != null) {
-                                        widget.onEditingComplete!(
-                                          widget.dataItem,
-                                          widget.fieldName,
-                                        );
+                                        widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                                       }
 
-                                      Future.delayed(
-                                        const Duration(milliseconds: 10),
-                                        () {
-                                          if (context.mounted) {
-                                            FocusScope.of(context).unfocus();
-                                          }
-                                        },
-                                      );
+                                      Future.delayed(const Duration(milliseconds: 10), () {
+                                        if (context.mounted) {
+                                          FocusScope.of(context).unfocus();
+                                        }
+                                      });
                                     }
                                     focus.unfocus();
                                     if (widget.onFocusChanged != null) {
@@ -870,16 +696,10 @@ class _NsgInputState extends State<NsgInput> {
                                     }
                                   },
                                   textAlign: widget.textAlign,
-                                  style:
-                                      widget.textStyle ??
-                                      TextStyle(
-                                        color: nsgtheme.nsgInputTextColor,
-                                        fontSize: fontSize,
-                                      ),
+                                  style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
                                   readOnly: _disabled,
                                 ),
-                          if (!nsgtheme.nsgInputHintHidden &&
-                              (!focus.hasFocus && textController.text == ''))
+                          if (!nsgtheme.nsgInputHintHidden && (!focus.hasFocus && textController.text == ''))
                             IgnorePointer(
                               child: Align(
                                 alignment: Alignment.centerLeft,
@@ -888,62 +708,35 @@ class _NsgInputState extends State<NsgInput> {
                                   child: widget.hint != null
                                       ? Text(
                                           widget.hint!,
-                                          style: TextStyle(
-                                            fontSize:
-                                                ControlOptions.instance.sizeM,
-                                            color: nsgtheme.nsgInputHintColor,
-                                          ),
+                                          style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
                                         )
                                       : widget.labelWidget ??
                                             Text(
-                                              (widget.required ??
-                                                      widget.dataItem
-                                                          .isFieldRequired(
-                                                            widget.fieldName,
-                                                          ))
-                                                  ? '${widget.label} *'
-                                                  : widget.label,
-                                              style: TextStyle(
-                                                fontSize: ControlOptions
-                                                    .instance
-                                                    .sizeM,
-                                                color:
-                                                    nsgtheme.nsgInputHintColor,
-                                              ),
+                                              (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? '${widget.label} *' : widget.label,
+                                              style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
                                             ),
                                 ),
                               ),
                             ),
-                          if (widget.hint != null &&
-                              focus.hasFocus &&
-                              textController.text == '')
+                          if (widget.hint != null && focus.hasFocus && textController.text == '')
                             ValueListenableBuilder(
                               valueListenable: _notifier,
-                              builder:
-                                  (
-                                    BuildContext context,
-                                    bool val,
-                                    Widget? child,
-                                  ) {
-                                    if (_notifier.value == true) {
-                                      return Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Padding(
-                                          padding: getHintPadding(),
-                                          child: Text(
-                                            widget.hint!,
-                                            style: TextStyle(
-                                              fontSize:
-                                                  ControlOptions.instance.sizeM,
-                                              color: nsgtheme.nsgInputHintColor,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return const SizedBox();
-                                    }
-                                  },
+                              builder: (BuildContext context, bool val, Widget? child) {
+                                if (_notifier.value == true) {
+                                  return Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: getHintPadding(),
+                                      child: Text(
+                                        widget.hint!,
+                                        style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
+                              },
                             ),
                         ],
                       ),
@@ -954,10 +747,7 @@ class _NsgInputState extends State<NsgInput> {
                       padding: const EdgeInsets.only(top: 2),
                       child: Text(
                         getValidateText(),
-                        style: TextStyle(
-                          fontSize: ControlOptions.instance.sizeS,
-                          color: ControlOptions.instance.colorError,
-                        ),
+                        style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: ControlOptions.instance.colorError),
                       ),
                     ),
                 ],
@@ -991,19 +781,13 @@ class _NsgInputState extends State<NsgInput> {
         ? widget.prefix ??
               Padding(
                 padding: const EdgeInsets.only(right: 3.0),
-                child: Icon(
-                  Icons.lock,
-                  size: 12,
-                  color: ControlOptions.instance.colorMain,
-                ),
+                child: Icon(Icons.lock, size: 12, color: ControlOptions.instance.colorMain),
               )
         : null;
   }
 
   String getValidateText() {
-    if (widget.controller != null &&
-        widget.controller!.fieldsWithError.isNotEmpty &&
-        widget.controller!.fieldsWithError[widget.fieldName] != null) {
+    if (widget.controller != null && widget.controller!.fieldsWithError.isNotEmpty && widget.controller!.fieldsWithError[widget.fieldName] != null) {
       return widget.controller!.fieldsWithError[widget.fieldName]!;
     } else {
       return widget.validateText;
@@ -1013,17 +797,11 @@ class _NsgInputState extends State<NsgInput> {
   EdgeInsets getHintPadding() {
     if (widget.contentPadding != null) {
       return widget.contentPadding != null
-          ? widget
-                .contentPadding! //.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr)
+          ? widget.contentPadding! //.subtract(const EdgeInsets.symmetric(vertical: 4)).resolve(TextDirection.ltr)
           : EdgeInsets.zero;
     } else {
       return nsgtheme.nsgInputContentPadding
-          .subtract(
-            EdgeInsets.only(
-              top: nsgtheme.nsgInputContentPadding.top,
-              bottom: nsgtheme.nsgInputContentPadding.bottom,
-            ),
-          )
+          .subtract(EdgeInsets.only(top: nsgtheme.nsgInputContentPadding.top, bottom: nsgtheme.nsgInputContentPadding.bottom))
           .resolve(TextDirection.ltr);
     }
   }
@@ -1054,18 +832,13 @@ class _NsgInputState extends State<NsgInput> {
     if (widget.contentPadding != null) {
       return widget.contentPadding!;
     } else {
-      EdgeInsets padding = nsgtheme.nsgInputContentPadding
-          .subtract(EdgeInsets.fromLTRB(0, 7, 10, 7))
-          .resolve(TextDirection.ltr);
+      EdgeInsets padding = nsgtheme.nsgInputContentPadding.subtract(EdgeInsets.fromLTRB(0, 7, 10, 7)).resolve(TextDirection.ltr);
       return padding;
     }
   }
 
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
-  Widget _gestureWrap({
-    required Widget interactiveWidget,
-    required bool clearIcon,
-  }) {
+  Widget _gestureWrap({required Widget interactiveWidget, required bool clearIcon}) {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
       // Оборачиваем в GestureDetector для активации фокуса при клике на любую область
       return clearIcon == true
@@ -1076,10 +849,7 @@ class _NsgInputState extends State<NsgInput> {
                     focus.requestFocus();
                   }
                 },
-                child: AbsorbPointer(
-                  absorbing: false,
-                  child: interactiveWidget,
-                ),
+                child: AbsorbPointer(absorbing: false, child: interactiveWidget),
               ),
             )
           : GestureDetector(
@@ -1119,28 +889,16 @@ class _NsgInputState extends State<NsgInput> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
-                final clearedValue = inputType == NsgInputType.dateValue
-                    ? NsgDateHelper.minDate
-                    : widget.dataItem.getField(widget.fieldName).defaultValue;
+                final clearedValue = inputType == NsgInputType.dateValue ? NsgDateHelper.minDate : widget.dataItem.getField(widget.fieldName).defaultValue;
                 widget.dataItem.setFieldValue(widget.fieldName, clearedValue);
-                textController.text =
-                    inputType == NsgInputType.dateValue &&
-                        _isNullOrEmptyDate(clearedValue)
-                    ? ''
-                    : clearedValue.toString();
-                textController.selection = TextSelection(
-                  baseOffset: 0,
-                  extentOffset: textController.text.length,
-                );
+                textController.text = inputType == NsgInputType.dateValue && _isNullOrEmptyDate(clearedValue) ? '' : clearedValue.toString();
+                textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
                 Future.delayed(const Duration(milliseconds: 10), () {
                   if (context.mounted) {
                     // ignore: use_build_context_synchronously
                     FocusScope.of(context).requestFocus(focus);
                     if (widget.onEditingComplete != null) {
-                      widget.onEditingComplete!(
-                        widget.dataItem,
-                        widget.fieldName,
-                      );
+                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                     }
                     if (widget.onChanged != null) {
                       widget.onChanged!(widget.dataItem);
@@ -1152,20 +910,12 @@ class _NsgInputState extends State<NsgInput> {
               child: HoverWidget(
                 hoverChild: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Icon(
-                    Icons.close_outlined,
-                    color: nsgtheme.nsginputCloseIconColor,
-                    size: 16,
-                  ),
+                  child: Icon(Icons.close_outlined, color: nsgtheme.nsginputCloseIconColor, size: 16),
                 ),
                 onHover: (PointerEnterEvent event) {},
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Icon(
-                    Icons.close_outlined,
-                    color: nsgtheme.nsginputCloseIconColorHover,
-                    size: 16,
-                  ),
+                  child: Icon(Icons.close_outlined, color: nsgtheme.nsginputCloseIconColorHover, size: 16),
                 ),
               ),
             ),
@@ -1182,15 +932,11 @@ class _NsgInputState extends State<NsgInput> {
       widget.onPressed!();
       return;
     }
-    var filter = widget.getRequestFilter == null
-        ? null
-        : widget.getRequestFilter!();
+    var filter = widget.getRequestFilter == null ? null : widget.getRequestFilter!();
     if (inputType == NsgInputType.dynamicList) {
       var field = widget.dataItem.getField(widget.fieldName);
 
-      var value = field is NsgDataReferenceField
-          ? widget.dataItem.getReferent(widget.fieldName)
-          : widget.dataItem.getFieldValue(widget.fieldName);
+      var value = field is NsgDataReferenceField ? widget.dataItem.getReferent(widget.fieldName) : widget.dataItem.getFieldValue(widget.fieldName);
       int initItem = widget.dynamicList.indexOf(value);
       int countItem = initItem;
       // for (var item in widget.dynamicList) {
@@ -1213,10 +959,7 @@ class _NsgInputState extends State<NsgInput> {
               if (!scrollController.hasClients) return;
               // Высота элемента в dynamicListWidget() = 50.
               final double target = initItem * 50.0;
-              final double clamped = target.clamp(
-                0.0,
-                scrollController.position.maxScrollExtent,
-              );
+              final double clamped = target.clamp(0.0, scrollController.position.maxScrollExtent);
               if ((scrollController.offset - clamped).abs() > 0.5) {
                 scrollController.jumpTo(clamped);
               }
@@ -1237,21 +980,14 @@ class _NsgInputState extends State<NsgInput> {
                       child: Container(
                         //key: GlobalKey(),
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        color: element == selectedElement
-                            ? nsgtheme.nsgInputDynamicListBackSelectedColor
-                            : nsgtheme.nsgInputDynamicListBackColor,
+                        color: element == selectedElement ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
                         height: 50,
                         child: Center(
                           child: Text(
                             element.toString(),
                             style: TextStyle(
-                              fontWeight: element == selectedElement
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
-                              color: element == selectedElement
-                                  ? nsgtheme
-                                        .nsgInputDynamicListTextSelectedColor
-                                  : nsgtheme.nsgInputDynamicListTextColor,
+                              fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w400,
+                              color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor,
                             ),
                           ),
                         ),
@@ -1281,9 +1017,7 @@ class _NsgInputState extends State<NsgInput> {
                     child: Text(
                       element.toString(),
                       style: TextStyle(
-                        fontWeight: element == selectedElement
-                            ? FontWeight.w600
-                            : FontWeight.w200,
+                        fontWeight: element == selectedElement ? FontWeight.w600 : FontWeight.w200,
                         //color: element == selectedElement ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor),
                         color: nsgtheme.nsgInputDynamicListTextColor,
                       ),
@@ -1302,18 +1036,11 @@ class _NsgInputState extends State<NsgInput> {
                     width: 300,
                     onConfirm: () {
                       countItem = widget.dynamicList.indexOf(selectedElement);
-                      textController.text = widget.dynamicList[countItem]
-                          .toString();
-                      widget.dataItem.setFieldValue(
-                        widget.fieldName,
-                        widget.dynamicList[countItem],
-                      );
+                      textController.text = widget.dynamicList[countItem].toString();
+                      widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
                       _notifierAll.value++;
                       if (widget.onEditingComplete != null) {
-                        widget.onEditingComplete!(
-                          widget.dataItem,
-                          widget.fieldName,
-                        );
+                        widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                       }
                     },
                     title: widget.label,
@@ -1331,10 +1058,7 @@ class _NsgInputState extends State<NsgInput> {
                         thumbVisibility: true,
                         trackVisibility: true,
                         controller: scrollController,
-                        child: SingleChildScrollView(
-                          controller: scrollController,
-                          child: dynamicListWidget(),
-                        ),
+                        child: SingleChildScrollView(controller: scrollController, child: dynamicListWidget()),
                       ),
                     ),
                   )
@@ -1342,17 +1066,10 @@ class _NsgInputState extends State<NsgInput> {
                     width: 300,
                     onConfirm: () {
                       countItem = widget.dynamicList.indexOf(selectedElement);
-                      textController.text = widget.dynamicList[countItem]
-                          .toString();
-                      widget.dataItem.setFieldValue(
-                        widget.fieldName,
-                        widget.dynamicList[countItem],
-                      );
+                      textController.text = widget.dynamicList[countItem].toString();
+                      widget.dataItem.setFieldValue(widget.fieldName, widget.dynamicList[countItem]);
                       if (widget.onEditingComplete != null) {
-                        widget.onEditingComplete!(
-                          widget.dataItem,
-                          widget.fieldName,
-                        );
+                        widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                       }
                       _notifierAll.value++;
                     },
@@ -1375,14 +1092,9 @@ class _NsgInputState extends State<NsgInput> {
                             },
                             scrollController: FixedExtentScrollController(
                               initialItem: widget.dynamicList.indexOf(
-                                widget.dataItem.getField(widget.fieldName)
-                                        is NsgDataReferenceField
-                                    ? widget.dataItem.getReferent(
-                                        widget.fieldName,
-                                      )
-                                    : widget.dataItem.getFieldValue(
-                                        widget.fieldName,
-                                      ),
+                                widget.dataItem.getField(widget.fieldName) is NsgDataReferenceField
+                                    ? widget.dataItem.getReferent(widget.fieldName)
+                                    : widget.dataItem.getFieldValue(widget.fieldName),
                               ),
                             ),
                             children: dynamicListWidgets(),
@@ -1404,59 +1116,33 @@ class _NsgInputState extends State<NsgInput> {
           }
         }
         if (sc == null) {
-          assert(
-            widget.dataItem.getField(widget.fieldName)
-                is NsgDataBaseReferenceField,
-            widget.fieldName,
-          );
+          assert(widget.dataItem.getField(widget.fieldName) is NsgDataBaseReferenceField, widget.fieldName);
           sc = NsgDefaultController(
-            dataType:
-                (widget.dataItem.getField(widget.fieldName)
-                        as NsgDataBaseReferenceField)
-                    .referentElementType,
-            controllerMode: NsgDataControllerMode(
-              storageType: widget.dataItem.storageType,
-            ),
+            dataType: (widget.dataItem.getField(widget.fieldName) as NsgDataBaseReferenceField).referentElementType,
+            controllerMode: NsgDataControllerMode(storageType: widget.dataItem.storageType),
           );
         }
         selectionController = sc;
       }
-      selectionController!.selectedItem = widget.dataItem.getReferent(
-        widget.fieldName,
-      );
+      selectionController!.selectedItem = widget.dataItem.getReferent(widget.fieldName);
       //Зенков 27.12.2022 Вызывается в form.selectFromArray
       //Перенес вызов ниже в случае передачи пользовательской формы
       //selectionController!.refreshData();
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
-        var form = NsgSelection(
-          widgetType: widget.selectionWidgetType,
-          inputType: inputType,
-          controller: selectionController,
-          rowWidget: widget.rowWidget,
-        );
+        var form = NsgSelection(widgetType: widget.selectionWidgetType, inputType: inputType, controller: selectionController, rowWidget: widget.rowWidget);
         form.selectFromArray(
           widget.label,
           (item) {
-            widget.dataItem.setFieldValue(
-              widget.fieldName,
-              selectionController!.selectedItem,
-            );
+            widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
             if (widget.onChanged != null) {
-              WidgetsBinding.instance.addPostFrameCallback(
-                (_) => widget.onChanged!(widget.dataItem),
-              );
+              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
             }
             if (widget.onFocusChanged != null) {
               widget.onFocusChanged!(false);
             }
             if (widget.onEditingComplete != null) {
-              WidgetsBinding.instance.addPostFrameCallback(
-                (_) => widget.onEditingComplete!(
-                  widget.dataItem,
-                  widget.fieldName,
-                ),
-              );
+              WidgetsBinding.instance.addPostFrameCallback((_) => widget.onEditingComplete!(widget.dataItem, widget.fieldName));
             }
             if (widget.controller != null) {
               widget.controller!.sendNotify();
@@ -1481,9 +1167,7 @@ class _NsgInputState extends State<NsgInput> {
           selectionController!.onSelected = null;
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) {
-            WidgetsBinding.instance.addPostFrameCallback(
-              (_) => widget.onChanged!(widget.dataItem),
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
           }
           if (widget.onEditingComplete != null) {
             widget.onEditingComplete!(widget.dataItem, widget.fieldName);
@@ -1509,9 +1193,7 @@ class _NsgInputState extends State<NsgInput> {
         (item) {
           widget.dataItem.setFieldValue(widget.fieldName, item);
           if (widget.onChanged != null) {
-            WidgetsBinding.instance.addPostFrameCallback(
-              (_) => widget.onChanged!(widget.dataItem),
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
           }
           if (widget.onFocusChanged != null) {
             widget.onFocusChanged!(false);
@@ -1527,17 +1209,14 @@ class _NsgInputState extends State<NsgInput> {
       );
     } else if (inputType == NsgInputType.referenceList) {
       var form = NsgMultiSelection(controller: selectionController!);
-      form.selectedItems = (widget.dataItem[widget.fieldName] as List)
-          .cast<NsgDataItem>();
+      form.selectedItems = (widget.dataItem[widget.fieldName] as List).cast<NsgDataItem>();
       selectionController!.refreshData(filter: filter);
       if (widget.selectionForm == '') {
         //Если формы для выбора не задана: вызываем форму подбора по умолчанию
         form.selectFromArray(widget.label, '', (items) {
           widget.dataItem.setFieldValue(widget.fieldName, items);
           if (widget.onChanged != null) {
-            WidgetsBinding.instance.addPostFrameCallback(
-              (_) => widget.onChanged!(widget.dataItem),
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
           }
           if (widget.onEditingComplete != null) {
             widget.onEditingComplete!(widget.dataItem, widget.fieldName);
@@ -1549,60 +1228,45 @@ class _NsgInputState extends State<NsgInput> {
       }
     } else if (inputType == NsgInputType.dateValue) {
       final currentDateValue = widget.dataItem[widget.fieldName];
-      final hasDateValue =
-          currentDateValue is DateTime &&
-          !NsgDateHelper.isEmptyDate(currentDateValue);
-      final resolvedDateValue = hasDateValue
-          ? currentDateValue
-          : NsgDateHelper.minDate;
-      final fallbackDateValue =
-          widget.initialDateTime ?? NsgPeriod.beginOfDay(DateTime.now());
+      final hasDateValue = currentDateValue is DateTime && !NsgDateHelper.isEmptyDate(currentDateValue);
+      final resolvedDateValue = hasDateValue ? currentDateValue : NsgDateHelper.minDate;
+      final fallbackDateValue = widget.initialDateTime ?? NsgPeriod.beginOfDay(DateTime.now());
       widget.formatDateTime == 'HH:mm'
           ? NsgTimePicker(
               dateForTime: hasDateValue ? resolvedDateValue : DateTime.now(),
               initialTime: Duration(
                 hours: (hasDateValue ? resolvedDateValue : DateTime.now()).hour,
-                minutes:
-                    (hasDateValue ? resolvedDateValue : DateTime.now()).minute,
+                minutes: (hasDateValue ? resolvedDateValue : DateTime.now()).minute,
               ),
               onClose: (Duration endDate) {},
-            ).showPopup(
-              context,
-              (hasDateValue ? resolvedDateValue : DateTime.now()).hour,
-              (hasDateValue ? resolvedDateValue : DateTime.now()).minute,
-              (value) {
-                widget.dataItem[widget.fieldName] = value;
-                if (widget.onChanged != null)
-                  widget.onChanged!(widget.dataItem);
-                if (widget.onEditingComplete != null) {
-                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                }
-                _notifierAll.value++;
-              },
-            )
+            ).showPopup(context, (hasDateValue ? resolvedDateValue : DateTime.now()).hour, (hasDateValue ? resolvedDateValue : DateTime.now()).minute, (value) {
+              widget.dataItem[widget.fieldName] = value;
+              if (widget.onChanged != null) {
+                widget.onChanged!(widget.dataItem);
+              }
+              if (widget.onEditingComplete != null) {
+                widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+              }
+              _notifierAll.value++;
+            })
           : NsgDatePicker(
               firstDateTime: widget.firstDateTime,
               lastDateTime: widget.lastDateTime,
               // initialTime: DateTime(01, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName]) ||
               //         DateTime(1754, 01, 01).isAtSameMomentAs(widget.dataItem[widget.fieldName])
-              initialTime: !hasDateValue || resolvedDateValue.year < 1900
-                  ? fallbackDateValue
-                  : resolvedDateValue,
+              initialTime: !hasDateValue || resolvedDateValue.year < 1900 ? fallbackDateValue : resolvedDateValue,
               onClose: (value) {},
-            ).showPopup(
-              context,
-              hasDateValue ? resolvedDateValue : fallbackDateValue,
-              (value) {
-                widget.dataItem[widget.fieldName] = value;
-                if (widget.onChanged != null)
-                  widget.onChanged!(widget.dataItem);
-                if (widget.onEditingComplete != null) {
-                  widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                }
-                // widget.dataItem[widget.fieldName] = value;
-                _notifierAll.value++;
-              },
-            );
+            ).showPopup(context, hasDateValue ? resolvedDateValue : fallbackDateValue, (value) {
+              widget.dataItem[widget.fieldName] = value;
+              if (widget.onChanged != null) {
+                widget.onChanged!(widget.dataItem);
+              }
+              if (widget.onEditingComplete != null) {
+                widget.onEditingComplete!(widget.dataItem, widget.fieldName);
+              }
+              // widget.dataItem[widget.fieldName] = value;
+              _notifierAll.value++;
+            });
     }
   }
 
@@ -1621,10 +1285,7 @@ class _NsgInputState extends State<NsgInput> {
                   fieldValue = !fieldValue;
                   widget.dataItem.setFieldValue(widget.fieldName, fieldValue);
                   if (widget.onEditingComplete != null) {
-                    widget.onEditingComplete!(
-                      widget.dataItem,
-                      widget.fieldName,
-                    );
+                    widget.onEditingComplete!(widget.dataItem, widget.fieldName);
                   }
                   if (widget.updateController != null) {
                     widget.updateController!.update();
@@ -1672,9 +1333,7 @@ class _NsgInputState extends State<NsgInput> {
 
 OutlineInputBorder defaultOutlineBorder({Color? color}) {
   return OutlineInputBorder(
-    borderSide: BorderSide(
-      color: color ?? ControlOptions.instance.colorGreyLighter,
-    ),
+    borderSide: BorderSide(color: color ?? ControlOptions.instance.colorGreyLighter),
     borderRadius: const BorderRadius.all(Radius.circular(10)),
   );
 }
