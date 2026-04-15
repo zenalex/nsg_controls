@@ -164,12 +164,14 @@ class ImageLoader implements platform.ImageLoader {
       );
       assert(cacheManager is NsgImageCacheManager || (maxWidth == null && maxHeight == null), 'cacheManager должен быть NsgImageCacheManager');
 
+      final mgr = cacheManager as NsgImageCacheManager;
+
       final Stream<FileResponse> stream = cacheManager is ImageCacheManager
-          ? (cacheManager as NsgImageCacheManager).getImageFileUsingDataItem(
+          ? mgr.getImageFileUsingDataItem(
               item,
               size: size,
             )
-          : (cacheManager as NsgImageCacheManager).getFileStreamUsingDataItem(
+          : mgr.getFileStreamUsingDataItem(
               item,
               size: size,
             );
