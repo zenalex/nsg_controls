@@ -166,15 +166,10 @@ class ImageLoader implements platform.ImageLoader {
 
       final mgr = cacheManager as NsgImageCacheManager;
 
-      final Stream<FileResponse> stream = cacheManager is ImageCacheManager
-          ? mgr.getImageFileUsingDataItem(
-              item,
-              size: size,
-            )
-          : mgr.getFileStreamUsingDataItem(
-              item,
-              size: size,
-            );
+      final Stream<FileResponse> stream = mgr.getImageFileUsingDataItem(
+        item,
+        size: size,
+      );
 
       await for (final result in stream) {
         if (result is DownloadProgress) {
