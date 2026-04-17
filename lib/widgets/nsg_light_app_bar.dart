@@ -219,7 +219,7 @@ class NsgLigthAppBarIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return customBuild != null
-        ? customBuild!(context)
+        ? NsgLightAppBarOnTap(onTapDown: onTapCallback, onTap: onTap, child: customBuild!(context))
         : Padding(
             padding: padding ?? EdgeInsets.zero,
             child: _listenableWrapper(
