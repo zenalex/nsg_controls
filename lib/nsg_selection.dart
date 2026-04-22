@@ -24,6 +24,8 @@ class NsgSelection {
   Color? colorInverted;
   NsgInputSelectionWidgetType widgetType;
   var textEditingController = TextEditingController();
+  BuildContext? _dialogContext;
+  void Function(NsgDataItem dataItem)? _onSelectedItem;
 
   NsgSelection({
     required this.inputType,
@@ -74,6 +76,14 @@ class NsgSelection {
             // ignore: invalid_use_of_protected_member
             controller?.refresh();
           },
+          onDoubleTap: () {
+            selectedElement = element;
+            controller?.selectedItem = element;
+            _onSelectedItem?.call(element);
+            if (_dialogContext != null) {
+              Navigator.of(_dialogContext!).pop();
+            }
+          },
           child: _controllerUpdateWidget(element),
         ),
       );
@@ -120,10 +130,12 @@ class NsgSelection {
       selectedElement = controller!.selectedItem;
       controller!.refreshData(filter: filter);
     }
+    _onSelectedItem = onSelected;
 
     await showDialog(
       context: context,
       builder: (cont) {
+        _dialogContext = cont;
         return SelectionNsgPopUp(
           widgetType: widgetType,
           title: title,
@@ -142,6 +154,8 @@ class NsgSelection {
       },
       barrierDismissible: false,
     );
+    _dialogContext = null;
+    _onSelectedItem = null;
   }
 
   void selectFromStringArray({required String title, required Function(String item) onSelected, NsgDataRequestParams? filter, required BuildContext context}) {
@@ -158,6 +172,11 @@ class NsgSelection {
                     onTap: () {
                       selectedString = item;
                       update(() {});
+                    },
+                    onDoubleTap: () {
+                      selectedString = item;
+                      onSelected(item);
+                      Navigator.of(cont).pop();
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
