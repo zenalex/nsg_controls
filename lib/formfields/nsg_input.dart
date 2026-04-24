@@ -1315,7 +1315,7 @@ class _NsgInputState extends State<NsgInput> {
     return Container(
       //key: widget.key ?? GlobalKey(),
       margin: widget.margin ?? nsgtheme.nsgInputMargin,
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+      //padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
       decoration: BoxDecoration(
         color: widget.filledColor ?? ControlOptions.instance.colorMainBack,
         borderRadius: BorderRadius.circular(widget.borderRadius),
