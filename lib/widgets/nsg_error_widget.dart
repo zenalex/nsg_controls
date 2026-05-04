@@ -33,7 +33,10 @@ class NsgErrorWidget {
       await _showError(message, title);
     } else {
       var split = splitErrorMessage(message);
-      await _showError(split.message ?? "Empty message", title);
+      // Если фильтр не нашёл "человеческой" строки — показываем оригинальный
+      // текст, чтобы не терять диагностическую информацию (CORS, network и т.п.).
+      var fallback = message.trim().isNotEmpty ? message : 'Empty message';
+      await _showError(split.message ?? fallback, title);
     }
   }
 
