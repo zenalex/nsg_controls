@@ -82,6 +82,8 @@ class NsgFilterChips extends StatefulWidget {
     this.presentation,
     this.selectionForm = '',
     this.style = const NsgFilterChipsStyle(),
+    this.useLazyLoading = false,
+    this.onTap,
   });
 
   final String title;
@@ -105,6 +107,9 @@ class NsgFilterChips extends StatefulWidget {
 
   ///Имя формы для открытия при открытии пользователем чипса. Если задано имя, то форма будет открыта вместо формы по умолчани/
   final String selectionForm;
+
+  final bool useLazyLoading;
+  final void Function()? onTap;
 
   @override
   State<NsgFilterChips> createState() => _NsgFilterChipsState();
@@ -191,7 +196,12 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
 
     return NsgMainChips(
       icon: NsgIcons.chevron_down,
-      onTap: () => showFilterSheet(context),
+      onTap: () {
+        if (widget.onTap != null) {
+          widget.onTap!();
+        }
+        showFilterSheet(context);
+      },
       onReset: () {
         resetFilter();
         setState(() {});
@@ -377,19 +387,28 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: SingleChildScrollView(
-                            child:
-                                (filterType == EFilterFieldType.nsgItem ||
-                                        filterType == EFilterFieldType.nsgItemsList ||
-                                        filterType == EFilterFieldType.nsgItemSingle) &&
-                                    sc != null
-                                ? sc!.obx(
-                                    (state) => Column(
-                                      children: getItemsWidgets(sc: sc, context: context),
-                                    ),
-                                  )
-                                : Column(children: getItemsWidgets(context: context)),
-                          ),
+                          // Используем getListWidget контроллера NsgDataUI для ленивой загрузки данных
+                          // Сделал отдельным флагом useLazyLoading, чтобы не ломать существующую логику
+                          child: widget.useLazyLoading && sc != null && sc is NsgDataUI
+                              ? (sc as NsgDataUI).getListWidget(
+                                  (item) => InkWell(onTap: () => onItemTap(item, context), child: widget.builder(context, item, false)),
+                                )
+                              : SingleChildScrollView(
+                                  child: (() {
+                                    if ((filterType == EFilterFieldType.nsgItem ||
+                                            filterType == EFilterFieldType.nsgItemsList ||
+                                            filterType == EFilterFieldType.nsgItemSingle) &&
+                                        sc != null) {
+                                      return sc!.obx(
+                                        (state) => Column(
+                                          children: getItemsWidgets(sc: sc, context: context),
+                                        ),
+                                      );
+                                    } else {
+                                      return Column(children: getItemsWidgets(context: context));
+                                    }
+                                  })(),
+                                ),
                         ),
                       ),
                       if (multipleSelect)
