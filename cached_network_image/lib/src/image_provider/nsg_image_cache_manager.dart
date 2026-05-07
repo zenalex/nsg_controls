@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' as dev;
 
 import 'package:cached_network_image_platform_interface/nsg_image_item.dart';
@@ -6,6 +7,11 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 class NsgImageCacheManager extends CacheManager with ImageCacheManager {
   static const key = 'nsgImageCacheManager';
 
+  /// Таймаут на отсутствие прогресса при скачивании. Если за это время
+  /// не пришло ни DownloadProgress, ни FileInfo — стрим завершится ошибкой
+  /// и downstream retry-логика перезапустит запрос.
+  static const Duration _streamTimeout = Duration(seconds: 20);
+
   static final NsgImageCacheManager _instance = NsgImageCacheManager._();
 
   factory NsgImageCacheManager() {
@@ -13,6 +19,13 @@ class NsgImageCacheManager extends CacheManager with ImageCacheManager {
   }
 
   NsgImageCacheManager._() : super(Config(key));
+
+  Stream<FileResponse> _withTimeout(Stream<FileResponse> source) {
+    return source.timeout(_streamTimeout, onTimeout: (sink) {
+      sink.addError(TimeoutException('NsgImageCacheManager: stalled download', _streamTimeout));
+      sink.close();
+    });
+  }
 
   Stream<FileResponse> getFileStreamUsingDataItem(NsgImageItem image,
       {String? key, Map<String, String>? headers, bool withProgress = false, required ImageSize size}) async* {
@@ -30,16 +43,12 @@ class NsgImageCacheManager extends CacheManager with ImageCacheManager {
 
   @override
   Stream<FileResponse> getImageFile(String url, {String? key, Map<String, String>? headers, bool withProgress = false, int? maxHeight, int? maxWidth}) {
-    var newUrl = url;
-
-    return super.getImageFile(newUrl, key: key, headers: headers, withProgress: withProgress, maxHeight: maxHeight, maxWidth: maxWidth);
+    return _withTimeout(super.getImageFile(url, key: key, headers: headers, withProgress: withProgress, maxHeight: maxHeight, maxWidth: maxWidth));
   }
 
   @override
   Stream<FileResponse> getFileStream(String url, {String? key, Map<String, String>? headers, bool withProgress = false}) {
-    var newUrl = url;
-
-    return super.getFileStream(newUrl, key: key, headers: headers, withProgress: withProgress);
+    return _withTimeout(super.getFileStream(url, key: key, headers: headers, withProgress: withProgress));
   }
 
   Future<String> _changeLink(NsgImageItem image, ImageSize size) async {
