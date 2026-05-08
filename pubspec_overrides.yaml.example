@@ -1,0 +1,7 @@
+# Локальные переопределения зависимостей для разработки.
+# Скопируйте в pubspec_overrides.yaml (gitignored) и раскомментируйте, если у вас
+# рядом лежит локальная копия nsg_data.
+
+dependency_overrides:
+  # nsg_data:
+  #   path: ../nsg_data

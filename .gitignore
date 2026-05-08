@@ -66,3 +66,6 @@ examples/controls_examples/macos/Flutter/ephemeral/flutter_export_environment.sh
 examples/controls_examples/macos/Flutter/ephemeral/Flutter-Generated.xcconfig
 /example/controls_examples/pubspec.lock
 /example/controls_examples/android/local.properties
+
+# Локальные dep-overrides — у каждого свой
+pubspec_overrides.yaml

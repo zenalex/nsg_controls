@@ -20,8 +20,12 @@ dependencies:
   get: ^5.0.0-release-candidate-9.2.1
 
   # nsg_data: ^1.0.0
-  nsg_data: #^0.2.0
-    path: ../nsg_data
+  # git-зависимость по умолчанию (для CI и встраивания в потребителях через git).
+  # Локальная разработка: pubspec_overrides.yaml с path: ../nsg_data — см. .example.
+  nsg_data:
+    git:
+      url: https://github.com/zenalex/nsg_data.git
+      ref: master
   flutter_fadein: ^2.0.0
   pull_to_refresh_flutter3: ^2.0.2
   # pull_to_refresh: #^2.0.0
