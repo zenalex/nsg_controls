@@ -12,8 +12,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.4.1
+  # git-зависимость, чтобы пакет можно было встраивать в потребителях через git.
+  # Локальная разработка — pubspec_overrides.yaml в корне nsg_controls.
   nsg_data:
-    path: ../../nsg_data
+    git:
+      url: https://github.com/zenalex/nsg_data.git
+      ref: master
 
 dev_dependencies:
   file: '>=7.0.0 <8.0.0'
