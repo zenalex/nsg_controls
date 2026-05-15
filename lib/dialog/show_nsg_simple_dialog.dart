@@ -11,6 +11,7 @@ Future showNsgSimpleDialog({
   // String title = 'Необходимо подтверждение',
   String? text,
   Color? barrierColor,
+  Color? backgroundColor,
   // String textConfirm = 'ОК',
   // String textCancel = 'Отмена',
   Widget? child,
@@ -27,7 +28,7 @@ Future showNsgSimpleDialog({
         insetPadding: const EdgeInsets.all(10),
         titlePadding: EdgeInsets.zero,
         contentPadding: const EdgeInsets.all(20),
-        backgroundColor: nsgtheme.colorModalBack,
+        backgroundColor: backgroundColor ?? nsgtheme.colorModalBack,
         children: [
           Center(child: child ?? Text(text!)),
           Padding(
