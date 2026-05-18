@@ -8,6 +8,26 @@ import 'package:nsg_controls/dialog/show_nsg_dialog.dart';
 import 'package:nsg_controls/formfields/nsg_date_picker.dart';
 import 'package:nsg_data/nsg_data.dart';
 
+/// Начальная дата для пикера периода: пустая NSG-дата или вне [minimumDate, maximumDate] → сегодня в диапазоне.
+DateTime _periodPickerInitialDate(DateTime date, DateTime minimumDate, DateTime maximumDate) {
+  var value = date;
+  if (NsgDateHelper.isEmptyDate(value) || value.isBefore(minimumDate) || value.isAfter(maximumDate)) {
+    value = NsgPeriod.beginOfDay(DateTime.now());
+  }
+  if (value.isBefore(minimumDate)) return minimumDate;
+  if (value.isAfter(maximumDate)) return maximumDate;
+  return value;
+}
+
+DateTimeRange _periodPickerInitialRange(DateTime begin, DateTime end, DateTime minimumDate, DateTime maximumDate) {
+  var start = _periodPickerInitialDate(begin, minimumDate, maximumDate);
+  var finish = _periodPickerInitialDate(end, minimumDate, maximumDate);
+  if (start.isAfter(finish)) {
+    finish = start;
+  }
+  return DateTimeRange(start: start, end: finish);
+}
+
 /// Показать модальное окно выбора периода, granularity берётся из period, а не задаётся отдельно
 Future<NsgTypedPeriod?> showNsgPeriodPicker({
   required BuildContext context,
@@ -19,6 +39,7 @@ Future<NsgTypedPeriod?> showNsgPeriodPicker({
   minimumDate ??= DateTime.now().subtract(Duration(days: 365 * 20));
   maximumDate ??= DateTime.now().add(Duration(days: 365 * 20));
   label ??= '';
+  final initialDate = _periodPickerInitialDate(period.begin, minimumDate, maximumDate);
   DateTime? date;
   DateTimeRange? range;
   // TimeOfDay? timeBegin;
@@ -39,7 +60,7 @@ Future<NsgTypedPeriod?> showNsgPeriodPicker({
             firstDateTime: minimumDate,
             lastDateTime: maximumDate,
             key: GlobalKey(),
-            initialDateTime: period.begin,
+            initialDateTime: initialDate,
             onDateTimeChanged: (DateTime value) {
               date = value;
             },
@@ -54,7 +75,7 @@ Future<NsgTypedPeriod?> showNsgPeriodPicker({
           child: NsgCalendarDatePicker(
             firstDateTime: minimumDate,
             lastDateTime: maximumDate,
-            initialDateTime: period.begin,
+            initialDateTime: initialDate,
             onDateTimeChanged: (DateTime value) {
               date = value;
             },
@@ -66,7 +87,7 @@ Future<NsgTypedPeriod?> showNsgPeriodPicker({
     case NsgPeriodGranularity.custom:
       range = await showNsgDateRangePicker(
         context: context,
-        initialDateRange: DateTimeRange(start: period.begin, end: period.end),
+        initialDateRange: _periodPickerInitialRange(period.begin, period.end, minimumDate, maximumDate),
         firstDate: minimumDate,
         lastDate: maximumDate,
       );
