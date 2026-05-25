@@ -204,6 +204,7 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
       },
       onReset: () {
         resetFilter();
+        widget.onClearFilter?.call();
         setState(() {});
       },
       isSelected: isSelected,
