@@ -212,7 +212,18 @@ class ImageLoader implements platform.ImageLoader {
       platform.ImageRenderMethodForWeb imageRenderMethodForWeb,
       ui.VoidCallback evictImage,
       ImageSize size) {
-    return _load(item.globalFilePath(size), cacheKey, chunkEvents, (bytes) async {
+    final url = item.globalFilePath(size);
+    // Защита от пустого/относительного url (у FileItem нет файла либо не
+    // инициализирован serverUri): иначе HttpGet уйдёт в Uri.parse('') без хоста,
+    // а HtmlImage отрисует Uri.base.resolve('') — текущую страницу как «картинку».
+    // Отдаём внятную ошибку в стрим — downstream покажет errorWidget.
+    final uri = Uri.tryParse(url);
+    if (url.isEmpty || uri == null || !uri.hasScheme || uri.host.isEmpty) {
+      return Stream<ui.Codec>.error(
+        ArgumentError('ImageLoader: image url has no host: "$url"'),
+      );
+    }
+    return _load(url, cacheKey, chunkEvents, (bytes) async {
       final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
       return decode(buffer);
     }, cacheManager, maxHeight, maxWidth, headers, imageRenderMethodForWeb, evictImage);

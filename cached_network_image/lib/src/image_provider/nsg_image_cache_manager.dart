@@ -30,6 +30,7 @@ class NsgImageCacheManager extends CacheManager with ImageCacheManager {
   Stream<FileResponse> getFileStreamUsingDataItem(NsgImageItem image,
       {String? key, Map<String, String>? headers, bool withProgress = false, required ImageSize size}) async* {
     var newUrl = await _changeLink(image, size);
+    _ensureHost(newUrl, image, size);
 
     yield* getFileStream(newUrl, key: key, headers: headers, withProgress: withProgress);
   }
@@ -37,8 +38,28 @@ class NsgImageCacheManager extends CacheManager with ImageCacheManager {
   Stream<FileResponse> getImageFileUsingDataItem(NsgImageItem image,
       {String? key, Map<String, String>? headers, bool withProgress = false, required ImageSize size}) async* {
     var newUrl = await _changeLink(image, size);
+    _ensureHost(newUrl, image, size);
 
     yield* getImageFile(newUrl, key: key, headers: headers, withProgress: withProgress);
+  }
+
+  /// Защита от пустого/относительного url. Без неё flutter_cache_manager уходит в
+  /// `http.Request('GET', Uri.parse(''))`, а dart:io HttpClient бросает малопонятное
+  /// `ArgumentError: No host specified in URI`. Пустой путь означает, что у FileItem
+  /// нет файла (пустые filePath*) либо не инициализирован serverUri — в обоих случаях
+  /// качать нечего. Бросаем внятную ошибку: в async*-генераторе она уходит в стрим,
+  /// downstream показывает errorWidget, а в логе вместо мусора — что и для чего пусто.
+  static void _ensureHost(String url, NsgImageItem image, ImageSize size) {
+    if (_hasHost(url)) return;
+    dev.log('⚠️ NsgImageCacheManager: пустой/относительный url для изображения '
+        '(id=${image.id}, size=$size): "$url" — загрузка пропущена');
+    throw ArgumentError('NsgImageCacheManager: image url has no host: "$url"');
+  }
+
+  static bool _hasHost(String url) {
+    if (url.isEmpty) return false;
+    final uri = Uri.tryParse(url);
+    return uri != null && uri.hasScheme && uri.host.isNotEmpty;
   }
 
   @override
