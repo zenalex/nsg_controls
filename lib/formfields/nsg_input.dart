@@ -437,6 +437,14 @@ class _NsgInputState extends State<NsgInput> {
         String text = textController.text;
         text = text.replaceAll(',', '.');
         text = text.replaceAll(RegExp('[^0-9.-]'), '');
+        // После фильтрации текст может стать короче исходного, тогда сохранённый
+        // offset выходит за границы и TextSelection бросает
+        // "FlutterError: invalid text selection" (GT-451 / fb-diary#486).
+        // Зажимаем offset в границы — как уже сделано в ветке car-plate ниже.
+        if (start > text.length) {
+          start = text.length;
+          end = start;
+        }
         widget.dataItem.setFieldValue(widget.fieldName, text);
         _ignoreChange = true;
         try {
