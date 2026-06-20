@@ -616,6 +616,12 @@ abstract class NsgControlsLocalizations {
   /// In ru, this message translates to:
   /// **'Начало периода должно быть раньше конца периода'**
   String get period_begin_must_be_before_end;
+
+  /// No description provided for @arbitrary_period.
+  ///
+  /// In ru, this message translates to:
+  /// **'Произвольный период'**
+  String get arbitrary_period;
 }
 
 class _NsgControlsLocalizationsDelegate
