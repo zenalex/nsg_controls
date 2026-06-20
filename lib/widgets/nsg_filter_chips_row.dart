@@ -81,6 +81,8 @@ class NsgFilterChips extends StatefulWidget {
     this.maxWidth,
     this.presentation,
     this.selectionForm = '',
+    this.selectionPage,
+    this.selectionTransition,
     this.style = const NsgFilterChipsStyle(),
     this.useLazyLoading = false,
     this.onTap,
@@ -107,6 +109,8 @@ class NsgFilterChips extends StatefulWidget {
 
   ///Имя формы для открытия при открытии пользователем чипса. Если задано имя, то форма будет открыта вместо формы по умолчани/
   final String selectionForm;
+  final Widget Function()? selectionPage;
+  final Transition? selectionTransition;
 
   final bool useLazyLoading;
   final void Function()? onTap;
@@ -268,7 +272,14 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
         sc!.onSelected = null;
         onItemTap(item, context);
       };
-      Get.toNamed(widget.selectionForm);
+      if (widget.selectionTransition != null && widget.selectionPage != null) {
+        Get.to(
+          widget.selectionPage!,
+          transition: widget.selectionTransition,
+        );
+      } else {
+        Get.toNamed(widget.selectionForm);
+      }
     } else {
       await showModalBottomSheet(
         useSafeArea: true,
