@@ -33,6 +33,9 @@ Future<T?> showNsgDialog<T extends dynamic>({
 
   /// Ограничения для контейнера модального окна
   BoxConstraints? constraints,
+
+  /// Дополнительные кнопки для модального окна
+  List<(IconData icon, void Function()? onPressed)>? additionalButtons,
 }) {
   return showDialog<T>(
     context: context,
@@ -69,6 +72,16 @@ Future<T?> showNsgDialog<T extends dynamic>({
                                 title!,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(color: titleTextColor ?? nsgtheme.colorPrimaryText, fontSize: nsgtheme.sizeXL, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            ...(additionalButtons ?? []).map(
+                              (e) => Container(
+                                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+                                decoration: BoxDecoration(color: titleTextColor ?? nsgtheme.colorPrimaryText, borderRadius: BorderRadius.circular(10)),
+                                child: IconButton(
+                                  icon: Icon(e.$1, color: titleBackColor ?? nsgtheme.colorPrimary, size: 24), // set your color here
+                                  onPressed: e.$2,
+                                ),
                               ),
                             ),
                             if (showCloseButton)
