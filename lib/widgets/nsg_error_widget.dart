@@ -5,6 +5,7 @@ import 'package:nsg_controls/widgets/nsg_snackbar.dart';
 import 'package:nsg_data/nsgApiException.dart';
 import 'package:share_plus/share_plus.dart';
 import '../nsg_button.dart';
+import '../nsg_control_options.dart';
 import '../nsg_popup.dart';
 
 // This function is triggered when the copy icon is pressed
@@ -98,7 +99,12 @@ class NsgErrorWidget {
             showCloseButton: true,
             hideBackButton: true,
             title: title,
-            getContent: () => [Padding(padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15), child: Text(errorMessage))],
+            getContent: () => [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                child: Text(errorMessage, style: TextStyle(color: ControlOptions.instance.colorText)),
+              ),
+            ],
             contentBottom: Container(
               padding: const EdgeInsets.all(5.0),
               child: Row(
@@ -125,12 +131,7 @@ class NsgErrorWidget {
                       icon: Icons.share,
                       text: 'Переслать',
                       onPressed: () {
-                        SharePlus.instance.share(
-                          ShareParams(
-                            text: errorMessage,
-                            subject: 'Отправить текст ошибки',
-                          ),
-                        );
+                        SharePlus.instance.share(ShareParams(text: errorMessage, subject: 'Отправить текст ошибки'));
                       },
                     ),
                   ),
