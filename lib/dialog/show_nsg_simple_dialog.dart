@@ -30,7 +30,9 @@ Future showNsgSimpleDialog({
         contentPadding: const EdgeInsets.all(20),
         backgroundColor: backgroundColor ?? nsgtheme.colorModalBack,
         children: [
-          Center(child: child ?? Text(text!)),
+          Center(
+            child: child ?? Text(text!, style: TextStyle(color: nsgtheme.colorText)),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 20),
             child: Row(
