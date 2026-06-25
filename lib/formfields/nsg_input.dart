@@ -497,6 +497,15 @@ class _NsgInputState extends State<NsgInput> {
     super.dispose();
   }
 
+  UnderlineInputBorder errorUnderlineBorder = UnderlineInputBorder(
+    borderSide: BorderSide(color: ControlOptions.instance.colorError),
+    borderRadius: BorderRadius.zero,
+  );
+  UnderlineInputBorder focusedUnderlineBorder = UnderlineInputBorder(
+    borderSide: BorderSide(color: ControlOptions.instance.colorMain),
+    borderRadius: BorderRadius.zero,
+  );
+
   /* --------------------------------------------------------------------- BUILD -------------------------------------------------------------------- */
   @override
   Widget build(BuildContext context) {
@@ -605,17 +614,23 @@ class _NsgInputState extends State<NsgInput> {
                                     filled: widget.filled ?? nsgtheme.nsgInputFilled,
                                     fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
                                     border: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor, borderRadius: widget.borderRadius)
                                         : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                    focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                                    focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? focusedOutlineBorder(borderRadius: widget.borderRadius)
+                                        : focusedUnderlineBorder,
                                     enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor, borderRadius: widget.borderRadius)
                                         : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                    errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                    errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? errorOutlineBorder(borderRadius: widget.borderRadius)
+                                        : errorUnderlineBorder,
                                     disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor, borderRadius: widget.borderRadius)
                                         : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                    focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                    focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? errorOutlineBorder(borderRadius: widget.borderRadius)
+                                        : errorUnderlineBorder,
                                   ),
                                   style: widget.textStyle ?? TextStyle(color: nsgtheme.nsgInputTextColor, fontSize: fontSize),
                                 )
@@ -647,17 +662,23 @@ class _NsgInputState extends State<NsgInput> {
                                     filled: widget.filled ?? nsgtheme.nsgInputFilled,
                                     fillColor: widget.filledColor ?? nsgtheme.nsgInputColorFilled,
                                     border: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor, borderRadius: widget.borderRadius)
                                         : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                    focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? focusedOutlineBorder : focusedUnderlineBorder,
+                                    focusedBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? focusedOutlineBorder(borderRadius: widget.borderRadius)
+                                        : focusedUnderlineBorder,
                                     enabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor, borderRadius: widget.borderRadius)
                                         : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                    errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                    errorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? errorOutlineBorder(borderRadius: widget.borderRadius)
+                                        : errorUnderlineBorder,
                                     disabledBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
-                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor)
+                                        ? defaultOutlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor, borderRadius: widget.borderRadius)
                                         : defaultUnderlineBorder(color: widget.borderColor ?? nsgtheme.nsgInputBorderColor),
-                                    focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder ? errorOutlineBorder : errorUnderlineBorder,
+                                    focusedErrorBorder: textFormFieldType == TextFormFieldType.outlineInputBorder
+                                        ? errorOutlineBorder(borderRadius: widget.borderRadius)
+                                        : errorUnderlineBorder,
                                   ),
                                   onFieldSubmitted: (s) {
                                     if (widget.onFieldSubmitted != null) {
@@ -1330,22 +1351,26 @@ class _NsgInputState extends State<NsgInput> {
 }
 
 // Определяем параметры границ текстового поля
-
-OutlineInputBorder defaultOutlineBorder({Color? color}) {
+OutlineInputBorder defaultOutlineBorder({Color? color, double? borderRadius}) {
   return OutlineInputBorder(
     borderSide: BorderSide(color: color ?? ControlOptions.instance.colorGreyLighter),
-    borderRadius: const BorderRadius.all(Radius.circular(10)),
+    borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? ControlOptions.instance.borderRadius)),
   );
 }
 
-OutlineInputBorder errorOutlineBorder = OutlineInputBorder(
-  borderSide: BorderSide(color: ControlOptions.instance.colorError),
-  borderRadius: const BorderRadius.all(Radius.circular(10)),
-);
-OutlineInputBorder focusedOutlineBorder = OutlineInputBorder(
-  borderSide: BorderSide(color: ControlOptions.instance.colorMain),
-  borderRadius: const BorderRadius.all(Radius.circular(10)),
-);
+OutlineInputBorder errorOutlineBorder({double? borderRadius}) {
+  return OutlineInputBorder(
+    borderSide: BorderSide(color: ControlOptions.instance.colorError),
+    borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? ControlOptions.instance.borderRadius)),
+  );
+}
+
+OutlineInputBorder focusedOutlineBorder({double? borderRadius}) {
+  return OutlineInputBorder(
+    borderSide: BorderSide(color: ControlOptions.instance.colorMain),
+    borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? ControlOptions.instance.borderRadius)),
+  );
+}
 
 UnderlineInputBorder defaultUnderlineBorder({Color? color}) {
   return UnderlineInputBorder(
@@ -1353,12 +1378,3 @@ UnderlineInputBorder defaultUnderlineBorder({Color? color}) {
     borderRadius: BorderRadius.zero,
   );
 }
-
-UnderlineInputBorder errorUnderlineBorder = UnderlineInputBorder(
-  borderSide: BorderSide(color: ControlOptions.instance.colorError),
-  borderRadius: BorderRadius.zero,
-);
-UnderlineInputBorder focusedUnderlineBorder = UnderlineInputBorder(
-  borderSide: BorderSide(color: ControlOptions.instance.colorMain),
-  borderRadius: BorderRadius.zero,
-);
