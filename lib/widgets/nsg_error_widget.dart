@@ -92,6 +92,16 @@ class NsgErrorWidget {
   }
 
   static Future _showError(String errorMessage, String title) async {
+    // #659 (GT-697): Get.dialog падал null-check, когда нет активного overlay/
+    // navigator (ошибка прилетела во время перехода или до готовности UI) —
+    // падал сам показ ошибки. Guard: нет контекста для диалога → логируем и
+    // выходим, без краша.
+    if (Get.overlayContext == null && Get.context == null) {
+      debugPrint(
+        'NsgErrorWidget._showError: нет overlay/context — диалог ошибки пропущен ($title): $errorMessage',
+      );
+      return;
+    }
     await Get.dialog(
       Builder(
         builder: (dialogContext) {
