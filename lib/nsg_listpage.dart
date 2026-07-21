@@ -18,7 +18,7 @@ enum NsgListPageMode { list, grid, table, tree }
 // ignore: must_be_immutable
 class NsgListPage extends StatelessWidget {
   /// Контроллер пользовательских настроек
-  final NsgUserSettingsController<NsgDataItem>? userSettingsController;
+  final NsgUserSettingsController<NsgUserSettings>? userSettingsController;
 
   /// Отступы внутри скролла
   final EdgeInsets contentPadding;
