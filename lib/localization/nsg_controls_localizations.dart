@@ -389,6 +389,12 @@ abstract class NsgControlsLocalizations {
   /// **'Отмена'**
   String get cancel;
 
+  /// No description provided for @use_long_press_to_cancel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Удерживайте для отмены'**
+  String get use_long_press_to_cancel;
+
   /// No description provided for @ok.
   ///
   /// In ru, this message translates to:

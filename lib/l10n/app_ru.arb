@@ -47,6 +47,7 @@
   "are_you_sure": "Вы уверены?",
   "need_confirmation": "Нужно подтверждение",
   "cancel": "Отмена",
+  "use_long_press_to_cancel": "Удерживайте для отмены",
   "ok": "Ок",
   "empty_list": "Пустой список",
   "there_are_count_elements_more_use_search": "Есть еще {count} элементов. Воспользуйтесь поиском.",

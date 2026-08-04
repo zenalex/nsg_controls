@@ -159,6 +159,9 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
   String get cancel => 'Отмена';
 
   @override
+  String get use_long_press_to_cancel => 'Удерживайте для отмены';
+
+  @override
   String get ok => 'Ок';
 
   @override

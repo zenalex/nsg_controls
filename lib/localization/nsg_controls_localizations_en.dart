@@ -158,6 +158,9 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get use_long_press_to_cancel => 'Long press to cancel';
+
+  @override
   String get ok => 'Ok';
 
   @override
