@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nsg_controls/main_forms/nsg_main_item_form.dart';
-import 'package:nsg_controls/main_forms/nsg_main_items_list_form.dart';
+import 'package:nsg_controls/main_forms/nsg_main_pages_factory.dart';
 import 'package:nsg_data/nsg_data.dart';
 
-class NsgMainFormController<T extends NsgDataItem> extends NsgDataController<T> with NsgDataUI {
-  NsgMainFormController() : super() {
+class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataUI {
+  NsgMainFormController(Type itemType) : super() {
     autoRepeate = true;
     requestOnInit = false;
     autoRepeateCount = 10;
     showExceptionDialog = false;
     controllerFilter.isPeriodAllowed = false;
     referenceList = null;
-    dataType = T;
+    dataType = itemType;
   }
 
   String get title => dataType.toString();
@@ -40,19 +39,31 @@ class NsgMainFormController<T extends NsgDataItem> extends NsgDataController<T> 
     return key.replaceAll(' ', '_').toLowerCase();
   }
 
-  String getItemPageRoute() {
-    return '/${dataType}_default_auto_generated_page';
+  Future<void> openDefaultItemPage() async {
+    var reg = ControlsRoutes.registry[dataType]!;
+    final tag = reg.t();
+    if (!Get.isRegistered<NsgMainFormController>(tag: tag)) {
+      Get.put(reg.c(), tag: tag);
+    }
+    await Get.to(() => reg.p());
   }
 
-  String getItemsListPageRoute() {
-    return '/${dataType}_default_auto_generated_list_page';
+  Future<void> itemDefaultPageOpen(NsgDataItem item) async {
+    currentItem = item;
+    await openDefaultItemPage();
   }
 
-  GetPage getItemPage() {
-    return GetPage(name: getItemPageRoute(), page: () => NsgMainItemForm<T>());
+  Future<void> itemNewDefaultPageOpen() async {
+    await createNewItemAsync();
+    await openDefaultItemPage();
   }
 
-  GetPage getItemsListPage() {
-    return GetPage(name: getItemsListPageRoute(), page: () => NsgMainItemsListForm<T>());
+  Future<void> openDefaultItemsListPage() async {
+    var reg = ControlsRoutes.registry[dataType]!;
+    final tag = reg.t();
+    if (!Get.isRegistered<NsgMainFormController>(tag: tag)) {
+      Get.put(reg.c(), tag: tag);
+    }
+    await Get.to(() => reg.l());
   }
 }

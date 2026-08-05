@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/formfields/nsg_input.dart';
 import 'package:nsg_controls/main_forms/nsg_main_form_controller.dart';
+import 'package:nsg_controls/main_forms/nsg_main_pages_factory.dart';
 import 'package:nsg_controls/widgets/body_wrap.dart';
 import 'package:nsg_controls/widgets/nsg_light_app_bar.dart';
-import 'package:nsg_data/nsg_data_item.dart';
 
-class NsgMainItemForm<T extends NsgDataItem> extends StatelessWidget {
-  const NsgMainItemForm({super.key});
+class NsgMainItemForm extends StatelessWidget {
+  const NsgMainItemForm({super.key, required this.dataType});
+  final Type dataType;
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.putOrFind<NsgMainFormController<T>>(() => NsgMainFormController<T>());
+    var controller = Get.find<NsgMainFormController>(tag: ControlsRoutes.getTagForType(dataType));
     return BodyWrap(
       child: Column(
         children: [
