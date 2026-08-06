@@ -62,14 +62,25 @@ void nsgSnackbar({
 
   void show() {
     final effectiveContext = context ?? Get.overlayContext ?? Get.context;
-    if (effectiveContext == null) {
+    if (effectiveContext == null || !effectiveContext.mounted) {
       if (kDebugMode) {
-        debugPrint('[nsgSnackbar] overlay/context still null after frame — dropping snackbar: ${title ?? ''} / $text');
+        debugPrint('[nsgSnackbar] overlay/context still null or unmounted — dropping snackbar: ${title ?? ''} / $text');
       }
       return;
     }
     try {
-      buildBar().show(effectiveContext);
+      /// `Flushbar.show()` асинхронен: он дожидается кадра и только потом
+      /// обращается к `Navigator.of(context)`. Синхронный try/catch к этому моменту
+      /// уже вышел, поэтому падение на протухшем контексте прилетало
+      /// необработанной асинхронной ошибкой и роняло приложение
+      /// (GlitchTip 3661: Null check в `Navigator.of`, flushbar.dart:233).
+      /// Потерять снекбар лучше, чем уронить экран.
+      buildBar().show(effectiveContext).catchError((Object e) {
+        if (kDebugMode) {
+          debugPrint('[nsgSnackbar] show failed asynchronously: $e');
+        }
+        return null;
+      });
     } catch (e) {
       if (kDebugMode) {
         debugPrint('[nsgSnackbar] swallowed: $e');
