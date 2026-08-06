@@ -96,68 +96,89 @@ class NsgErrorWidget {
     // navigator (ошибка прилетела во время перехода или до готовности UI) —
     // падал сам показ ошибки. Guard: нет контекста для диалога → логируем и
     // выходим, без краша.
-    if (Get.overlayContext == null && Get.context == null) {
+    //
+    // titan-112, GlitchTip #3635: старый гард требовал, чтобы оба контекста
+    // были null, а Get.dialog разыменовывает именно Get.context (`context!`
+    // внутри ExtensionDialog.dialog). При живом overlayContext и мёртвом
+    // Get.context мы всё равно падали — причём в колбэке кадра, т.е. fatal.
+    // Проверяем ровно то, что нужно диалогу, плюс что элемент ещё в дереве.
+    // Get.context не возвращает null, а бросает исключение, если GetRoot не в
+    // дереве, — поэтому под try.
+    BuildContext? dialogContext;
+    try {
+      dialogContext = Get.context;
+    } catch (_) {
+      dialogContext = null;
+    }
+    if (dialogContext == null || !dialogContext.mounted) {
       debugPrint(
-        'NsgErrorWidget._showError: нет overlay/context — диалог ошибки пропущен ($title): $errorMessage',
+        'NsgErrorWidget._showError: нет живого context — диалог ошибки пропущен ($title): $errorMessage',
       );
       return;
     }
-    await Get.dialog(
-      Builder(
-        builder: (dialogContext) {
-          return NsgPopUp(
-            showCloseButton: true,
-            hideBackButton: true,
-            title: title,
-            getContent: () => [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                child: Text(errorMessage, style: TextStyle(color: ControlOptions.instance.colorText)),
-              ),
-            ],
-            contentBottom: Container(
-              padding: const EdgeInsets.all(5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: NsgButton(
-                      margin: EdgeInsets.zero,
-                      width: 150,
-                      height: 40,
-                      icon: Icons.copy,
-                      text: 'Копировать',
-                      onPressed: () {
-                        _copyToClipboard(errorMessage, dialogContext);
-                      },
+    try {
+      await Get.dialog(
+        Builder(
+          builder: (dialogContext) {
+            return NsgPopUp(
+              showCloseButton: true,
+              hideBackButton: true,
+              title: title,
+              getContent: () => [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: Text(errorMessage, style: TextStyle(color: ControlOptions.instance.colorText)),
+                ),
+              ],
+              contentBottom: Container(
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: NsgButton(
+                        margin: EdgeInsets.zero,
+                        width: 150,
+                        height: 40,
+                        icon: Icons.copy,
+                        text: 'Копировать',
+                        onPressed: () {
+                          _copyToClipboard(errorMessage, dialogContext);
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 15),
-                  Center(
-                    child: NsgButton(
-                      margin: EdgeInsets.zero,
-                      width: 150,
-                      height: 40,
-                      icon: Icons.share,
-                      text: 'Переслать',
-                      onPressed: () {
-                        SharePlus.instance.share(ShareParams(text: errorMessage, subject: 'Отправить текст ошибки'));
-                      },
+                    const SizedBox(width: 15),
+                    Center(
+                      child: NsgButton(
+                        margin: EdgeInsets.zero,
+                        width: 150,
+                        height: 40,
+                        icon: Icons.share,
+                        text: 'Переслать',
+                        onPressed: () {
+                          SharePlus.instance.share(ShareParams(text: errorMessage, subject: 'Отправить текст ошибки'));
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            onConfirm: () {
-              //print(widget.imageList.indexOf(_selected));
+              onConfirm: () {
+                //print(widget.imageList.indexOf(_selected));
 
-              //setState(() {});
-              Get.back();
-            },
-          );
-        },
-      ),
-      barrierDismissible: false,
-    );
+                //setState(() {});
+                Get.back();
+              },
+            );
+          },
+        ),
+        barrierDismissible: false,
+      );
+    } catch (e) {
+      // Показ ошибки не должен сам становиться ошибкой: гард выше ловит
+      // отсутствие контекста, но Get.dialog может упасть и на гонке с
+      // перестроением дерева. Диагностика уже ушла в лог/Sentry выше по стеку.
+      debugPrint('NsgErrorWidget._showError: не удалось показать диалог ($title): $e');
+    }
   }
 }

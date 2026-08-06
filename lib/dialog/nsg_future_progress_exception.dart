@@ -16,6 +16,9 @@ Future nsgFutureProgressAndException({
   bool? showFullError,
 }) async {
   var progress = NsgProgressDialog(textDialog: text ?? '', context: context, delay: delay);
+  // Обработчик исключения может намеренно оставить прогресс на экране
+  // (hideProgress: false) — тогда финальная страховка его не трогает.
+  var keepProgress = false;
   try {
     if (showProgress) {
       progress.show();
@@ -29,6 +32,7 @@ Future nsgFutureProgressAndException({
     if (exceptionHandlers != null) {
       for (var handler in exceptionHandlers) {
         if (handler.match(ex)) {
+          keepProgress = !handler.hideProgress;
           await handler.onEx(ex as Exception);
           if (handler.hideProgress && showProgress) {
             progress.hide();
@@ -43,14 +47,28 @@ Future nsgFutureProgressAndException({
       await Future.delayed(const Duration(milliseconds: 100));
     }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (ex is Exception) {
-        showFullError ??= kDebugMode ? true : false;
-        await NsgErrorWidget.showError(ex, showFullError: showFullError!);
-      } else {
-        await NsgErrorWidget.showErrorByString(ex.toString());
+      // Ошибка внутри показа диалога об ошибке — это уже необработанное
+      // исключение в колбэке кадра, т.е. fatal-событие вместо сообщения
+      // пользователю (titan-112, GlitchTip #3635). Гасим здесь.
+      try {
+        if (ex is Exception) {
+          showFullError ??= kDebugMode ? true : false;
+          await NsgErrorWidget.showError(ex, showFullError: showFullError!);
+        } else {
+          await NsgErrorWidget.showErrorByString(ex.toString());
+        }
+      } catch (e) {
+        debugPrint('nsgFutureProgressAndException: не удалось показать диалог ошибки: $e');
       }
     });
     rethrow;
+  } finally {
+    // Страховка на все пути выхода (упал обработчик, прилетел неожиданный
+    // Error): модальный прогресс не должен пережить операцию, иначе экран
+    // остаётся под барьером и выглядит зависшим. hide() идемпотентен.
+    if (showProgress && !keepProgress) {
+      progress.hide();
+    }
   }
 }
 
