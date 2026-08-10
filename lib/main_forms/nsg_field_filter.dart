@@ -227,7 +227,7 @@ class NsgFieldFilter {
       controller: textC,
       enabled: isEnable,
       textAlign: textAlign,
-      textAlignVertical: TextAlignVertical.center,
+      textAlignVertical: TextAlignVertical.top,
       keyboardType: TextInputType.numberWithOptions(decimal: allowDecimal),
       inputFormatters: [if (allowDecimal) FilteringTextInputFormatter.allow(RegExp(r'[0-9,\.]')) else FilteringTextInputFormatter.digitsOnly],
       style: _valueTextStyle,

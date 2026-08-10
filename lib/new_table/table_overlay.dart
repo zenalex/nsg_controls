@@ -140,44 +140,38 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
   }
 
   void openAt(Offset position) {
-    if (widget.tableController.contextMenuItems.isNotEmpty) {
+    if (widget.menuList.isNotEmpty) {
       _showMenu(position);
-    } else {
-      _invokeRowTap();
     }
   }
 
-  void _invokeRowTap() {
-    final dynamic tc = widget.tableController;
-    final dynamic fn = tc.onRowTap;
-    if (fn != null) {
-      Function.apply(fn, [widget.rowIndex, widget.columnIndex, tc.getCellData(widget.rowIndex, widget.columnIndex)]);
-    }
+  void _invokeCellDoubleClick() {
+    widget.onCellDoubleClick?.call(widget.rowIndex, widget.columnIndex, widget.tableController.getCellData(widget.rowIndex, widget.columnIndex));
   }
+
+  bool get _isMobile => !kIsWeb && (Platform.isAndroid || Platform.isIOS);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () {
-        _closeMenu();
-        _invokeRowTap();
-      },
-      onLongPressStart: (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
+      onTap: _closeMenu,
+      // Double click на ПК — колбек ячейки. На мобильных — через контекстное меню.
+      onDoubleTap: _isMobile
+          ? null
+          : () {
+              _closeMenu();
+              _invokeCellDoubleClick();
+            },
+      onLongPressStart: _isMobile
           ? (details) {
               openAt(details.globalPosition);
             }
           : null,
       child: Listener(
         onPointerDown: (event) {
-          if (event.kind == PointerDeviceKind.mouse) {
-            if (event.buttons == kSecondaryMouseButton) {
-              openAt(event.position);
-            }
-            if (event.buttons == kPrimaryMouseButton) {
-              _closeMenu();
-              widget.onCellDoubleClick?.call(widget.rowIndex, widget.columnIndex, widget.tableController.getCellData(widget.rowIndex, widget.columnIndex));
-            }
+          if (event.kind == PointerDeviceKind.mouse && event.buttons == kSecondaryMouseButton) {
+            openAt(event.position);
           } else {
             _closeMenu();
           }
