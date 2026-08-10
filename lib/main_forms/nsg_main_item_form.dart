@@ -12,7 +12,9 @@ class NsgMainItemForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.find<NsgMainFormController>(tag: ControlsRoutes.getTagForType(dataType));
+    var controller = Get.find<NsgMainFormController>(
+      tag: ControlsRoutes.getTagForType(dataType),
+    );
     return Material(
       child: BodyWrap(
         child: Column(
@@ -25,14 +27,25 @@ class NsgMainItemForm extends StatelessWidget {
                   onTap: () => controller.itemPageCancel(context: context),
                 ),
               ],
-              rightIcons: [NsgLigthAppBarIcon(icon: Icons.save, onTap: () => controller.itemPagePost())],
+              rightIcons: [
+                NsgLigthAppBarIcon(
+                  icon: Icons.save,
+                  onTap: () => controller.itemPagePost(),
+                ),
+              ],
             ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: SingleChildScrollView(
                   child: Column(
-                    children: controller.getFormFields((item, title, field) => NsgInput(dataItem: item, fieldName: field.name, label: title)),
+                    children: controller.getFormFields(
+                      (item, title, field) => NsgInput(
+                        dataItem: item,
+                        fieldName: field.name,
+                        label: title,
+                      ),
+                    ),
                   ),
                 ),
               ),
