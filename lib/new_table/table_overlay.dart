@@ -29,10 +29,10 @@ class ContextMenuRegion extends StatefulWidget {
     required this.rowIndex,
     required this.columnIndex,
     required this.tableController,
-    this.onCellClick,
+    this.onCellDoubleClick,
   });
 
-  final void Function(int rowIndex, int columnIndex, dynamic data)? onCellClick;
+  final void Function(int rowIndex, int columnIndex, dynamic data)? onCellDoubleClick;
 
   @override
   State<ContextMenuRegion> createState() => _ContextMenuRegionState();
@@ -176,7 +176,7 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
             }
             if (event.buttons == kPrimaryMouseButton) {
               _closeMenu();
-              widget.onCellClick?.call(widget.rowIndex, widget.columnIndex, widget.tableController.getCellData(widget.rowIndex, widget.columnIndex));
+              widget.onCellDoubleClick?.call(widget.rowIndex, widget.columnIndex, widget.tableController.getCellData(widget.rowIndex, widget.columnIndex));
             }
           } else {
             _closeMenu();

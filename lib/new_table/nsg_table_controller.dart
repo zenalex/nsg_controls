@@ -6,12 +6,12 @@ import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 abstract class NsgTableController<T> extends ChangeNotifier {
-  NsgTableController({this.columns = const [], this.style, this.onRowTap, this.contextMenu, this.headerInitHeight, this.fixHeaderHeight = false}) {
+  NsgTableController({this.columns = const [], this.style, this.onCellDoubleTap, this.contextMenu, this.headerInitHeight, this.fixHeaderHeight = false}) {
     init();
   }
 
   List<ContextMenuItem>? contextMenu;
-  void Function(int rowIndex, int columnIndex, dynamic data)? onRowTap;
+  void Function(int rowIndex, int columnIndex, dynamic data)? onCellDoubleTap;
 
   void init() {
     horizontalScrollController.addListener(_syncHorizontalToOverlay);
@@ -236,7 +236,7 @@ abstract class NsgTableController<T> extends ChangeNotifier {
   Widget getCell(int rowIndex, int colIndex) {
     try {
       return ContextMenuRegion(
-        onCellClick: onRowTap,
+        onCellDoubleClick: onCellDoubleTap,
         tableController: this,
         menuList: contextMenuItems,
         rowIndex: rowIndex,

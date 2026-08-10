@@ -12,7 +12,7 @@ class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableControl
     required this.dataController,
     required super.columns,
     super.contextMenu,
-    super.onRowTap,
+    super.onCellDoubleTap,
     super.style,
     super.headerInitHeight,
     super.fixHeaderHeight,

@@ -137,39 +137,101 @@ class NsgFieldFilter {
 
   /// Виджет ввода значения фильтра по типу поля и оператору.
   Widget buildFilterInput({required BuildContext context, required VoidCallback onChanged}) {
+    Widget child;
+    TextAlign textAlign = TextAlign.left;
+    AlignmentGeometry alignment = Alignment.centerLeft;
+
     if (isDateTime) {
-      return _buildDateTimeInput(context, onChanged);
+      child = _buildDateTimeInput(context, onChanged);
+    } else if (isInt) {
+      textAlign = TextAlign.right;
+      alignment = Alignment.centerRight;
+      child = _buildNumberInput(onChanged, allowDecimal: false, textAlign: textAlign);
+    } else if (isDouble) {
+      textAlign = TextAlign.right;
+      alignment = Alignment.centerRight;
+      child = _buildNumberInput(onChanged, allowDecimal: true, textAlign: textAlign);
+    } else if (isBool) {
+      alignment = Alignment.center;
+      child = _buildBoolInput(onChanged);
+    } else if (isEqualityOperator && isEnum) {
+      child = _buildEnumInput(context, onChanged);
+    } else if (isEqualityOperator && isReference) {
+      child = _buildReferenceInput(context, onChanged);
+    } else {
+      textAlign = TextAlign.center;
+      alignment = Alignment.center;
+      child = _buildTextInput(onChanged, textAlign: textAlign);
     }
-    if (isInt) {
-      return _buildNumberInput(onChanged, allowDecimal: false);
-    }
-    if (isDouble) {
-      return _buildNumberInput(onChanged, allowDecimal: true);
-    }
-    if (isBool) {
-      return _buildBoolInput(onChanged);
-    }
-    if (isEqualityOperator) {
-      if (isEnum) return _buildEnumInput(context, onChanged);
-      if (isReference) return _buildReferenceInput(context, onChanged);
-    }
+
+    return _wrapFilterField(child: child, alignment: alignment);
+  }
+
+  TextStyle get _valueTextStyle =>
+      TextStyle(fontSize: nsgtheme.sizeS, color: isEnable ? nsgtheme.colorBase.c0 : nsgtheme.colorBase.c0.withValues(alpha: 0.45), height: 1.2);
+
+  TextStyle get _hintTextStyle => TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorBase.c0.withValues(alpha: 0.35), height: 1.2);
+
+  InputDecoration _inputDecoration({String? hint}) {
+    return InputDecoration(
+      isDense: true,
+      hintText: hint,
+      hintStyle: _hintTextStyle,
+      border: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      disabledBorder: InputBorder.none,
+      contentPadding: EdgeInsets.zero,
+      filled: false,
+    );
+  }
+
+  Widget _wrapFilterField({required Widget child, AlignmentGeometry alignment = Alignment.centerLeft}) {
+    final borderColor = isEnable ? nsgtheme.colorPrimary.withValues(alpha: 0.45) : nsgtheme.colorBase.c0.withValues(alpha: 0.15);
+    final fillColor = isEnable ? nsgtheme.colorBase.c100.withValues(alpha: 0.65) : nsgtheme.colorBase.c100.withValues(alpha: 0.3);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 150),
+        opacity: isEnable ? 1 : 0.7,
+        child: Container(
+          height: 32,
+          alignment: alignment,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(
+            color: fillColor,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: borderColor, width: 1),
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextInput(VoidCallback onChanged, {TextAlign textAlign = TextAlign.left}) {
     return TextFormField(
       controller: textC,
       enabled: isEnable,
-      style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorBase.c0),
-      decoration: const InputDecoration(isDense: true, border: InputBorder.none, contentPadding: EdgeInsets.symmetric(horizontal: 4)),
+      textAlign: textAlign,
+      textAlignVertical: TextAlignVertical.top,
+      style: _valueTextStyle,
+      decoration: _inputDecoration(hint: '…'),
       onChanged: (_) => onChanged(),
     );
   }
 
-  Widget _buildNumberInput(VoidCallback onChanged, {required bool allowDecimal}) {
+  Widget _buildNumberInput(VoidCallback onChanged, {required bool allowDecimal, TextAlign textAlign = TextAlign.right}) {
     return TextFormField(
       controller: textC,
       enabled: isEnable,
+      textAlign: textAlign,
+      textAlignVertical: TextAlignVertical.center,
       keyboardType: TextInputType.numberWithOptions(decimal: allowDecimal),
       inputFormatters: [if (allowDecimal) FilteringTextInputFormatter.allow(RegExp(r'[0-9,\.]')) else FilteringTextInputFormatter.digitsOnly],
-      style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorBase.c0),
-      decoration: const InputDecoration(isDense: true, border: InputBorder.none, contentPadding: EdgeInsets.symmetric(horizontal: 4)),
+      style: _valueTextStyle,
+      decoration: _inputDecoration(hint: '0'),
       onChanged: (_) => onChanged(),
     );
   }
@@ -179,18 +241,15 @@ class NsgFieldFilter {
     return Center(
       child: IconButton(
         padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(),
+        visualDensity: VisualDensity.compact,
+        constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
         onPressed: !isEnable
             ? null
             : () {
                 _filterValue = !value;
                 onChanged();
               },
-        icon: Icon(
-          value ? Icons.check_circle : Icons.cancel,
-          color: value ? Colors.green : Colors.red,
-          size: 22,
-        ),
+        icon: Icon(value ? Icons.check_circle : Icons.cancel, color: value ? Colors.green : Colors.red, size: 22),
       ),
     );
   }
@@ -200,6 +259,7 @@ class NsgFieldFilter {
     final hasValue = _filterValue is DateTime && !NsgDateHelper.isEmptyDate(_filterValue as DateTime);
     final label = hasValue ? NsgDateFormat.dateFormat(date, format: 'dd.MM.yyyy HH:mm', locale: Localizations.localeOf(context).languageCode) : '';
     return InkWell(
+      borderRadius: BorderRadius.circular(6),
       onTap: !isEnable
           ? null
           : () async {
@@ -214,21 +274,20 @@ class NsgFieldFilter {
                 onChanged();
               });
             },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorBase.c0),
-              ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label.isEmpty ? 'дд.мм.гггг' : label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.left,
+              style: label.isEmpty ? _hintTextStyle : _valueTextStyle,
             ),
-            Icon(Icons.calendar_month, size: 18, color: nsgtheme.colorBase.c0),
-          ],
-        ),
+          ),
+          const SizedBox(width: 4),
+          Icon(Icons.calendar_month, size: 16, color: nsgtheme.colorPrimary),
+        ],
       ),
     );
   }
@@ -239,49 +298,46 @@ class NsgFieldFilter {
     return PopupMenuButton<NsgEnum>(
       enabled: isEnable,
       tooltip: selected?.name ?? '',
+      padding: EdgeInsets.zero,
       initialValue: selected,
       onSelected: (value) {
         setFilterItemValue(value);
         onChanged();
       },
       itemBuilder: (context) => values.map((e) => PopupMenuItem<NsgEnum>(value: e, child: Text(e.name))).toList(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                selected?.name ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorBase.c0),
-              ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              selected?.name ?? 'Выберите…',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: selected == null ? _hintTextStyle : _valueTextStyle,
             ),
-            Icon(Icons.arrow_drop_down, size: 20, color: nsgtheme.colorBase.c0),
-          ],
-        ),
+          ),
+          Icon(Icons.arrow_drop_down, size: 20, color: nsgtheme.colorPrimary),
+        ],
       ),
     );
   }
 
   Widget _buildReferenceInput(BuildContext context, VoidCallback onChanged) {
+    final text = _filterItemValue?.toString() ?? '';
     return InkWell(
+      borderRadius: BorderRadius.circular(6),
       onTap: !isEnable ? null : () => _openReferenceSelection(context, onChanged),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                _filterItemValue?.toString() ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorBase.c0),
-              ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              text.isEmpty ? 'Выберите…' : text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: text.isEmpty ? _hintTextStyle : _valueTextStyle,
             ),
-            Icon(Icons.arrow_drop_down, size: 20, color: nsgtheme.colorBase.c0),
-          ],
-        ),
+          ),
+          Icon(Icons.arrow_drop_down, size: 20, color: nsgtheme.colorPrimary),
+        ],
       ),
     );
   }

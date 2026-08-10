@@ -116,7 +116,7 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
       fixHeaderHeight: true,
       dataController: this,
       columns: getListColumns(),
-      onRowTap: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]),
+      onCellDoubleTap: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]),
       contextMenu: [ContextMenuItem('Edit', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]))],
       style: NsgTableStyle(
         backgroundColor: nsgtheme.colorModalBack,
@@ -186,7 +186,16 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
                         enabled: filter.isEnable,
                         tooltip: filter.operator.name,
                         initialValue: filter.operator,
-                        icon: Icon(filter.operator.icon),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(filter.operator.icon, size: 20),
+                              Icon(Icons.arrow_drop_down, size: 18, color: nsgtheme.colorPrimary),
+                            ],
+                          ),
+                        ),
                         onSelected: (value) {
                           filter.operator = value;
                           tableController?.sendNotify();

@@ -9,7 +9,7 @@ import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 
 class NsgSimpleTableController extends NsgTableController {
   NsgSimpleTableController({
-    super.onRowTap,
+    super.onCellDoubleTap,
     super.contextMenu,
     required this.data,
     this.loadingDataController,
