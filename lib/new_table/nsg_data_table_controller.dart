@@ -4,11 +4,7 @@ import 'package:nsg_controls/helpers.dart';
 import 'package:nsg_controls/new_table/nsg_table_controller.dart';
 import 'package:nsg_controls/new_table/table_overlay.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
-import 'package:nsg_data/controllers/nsgDataController.dart';
-import 'package:nsg_data/nsg_data_client.dart';
-import 'package:nsg_data/nsg_data_item.dart';
-import 'package:nsg_data/nsg_data_item_state.dart';
-import 'package:nsg_data/ui/nsg_data_ui.dart';
+import 'package:nsg_data/nsg_data.dart';
 import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 
 class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableController<T> {
@@ -52,14 +48,7 @@ class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableControl
             rowIndex: dataController.items.indexOf(row),
             index: columns.indexOf(column),
             position: column.position,
-            child: Text(
-              NsgDataClient.client
-                      .getFieldList(dataController.dataType)
-                      .fields[column.fieldName]
-                      ?.formattedValue(row, Localizations.localeOf(Get.context!).languageCode) ??
-                  '',
-              style: style?.textStyle ?? TextStyle(color: nsgtheme.colorBase.c0),
-            ),
+            child: _buildCellChild(row, column),
           ),
         );
       }
@@ -69,6 +58,24 @@ class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableControl
     updateSizes();
 
     return rows;
+  }
+
+  Widget _buildCellChild(T row, NewNsgTableColumn column) {
+    final field = NsgDataClient.client.getFieldList(dataController.dataType).fields[column.fieldName];
+    final textStyle = style?.textStyle ?? TextStyle(color: nsgtheme.colorBase.c0);
+
+    if (field is NsgDataBoolField) {
+      final value = row.getFieldValue(column.fieldName) == true;
+      return Icon(value ? Icons.check_circle : Icons.cancel, color: value ? Colors.green : Colors.red, size: 20);
+    }
+
+    if (field is NsgDataReferenceField || field is NsgDataEnumReferenceField) {
+      final referent = row.getReferentOrNull(column.fieldName);
+      return Text(referent?.toString() ?? '', style: textStyle);
+    }
+
+    final locale = Get.context != null ? Localizations.localeOf(Get.context!).languageCode : 'en';
+    return Text(field?.formattedValue(row, locale) ?? '', style: textStyle);
   }
 
   @override
