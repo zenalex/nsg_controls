@@ -36,6 +36,8 @@ abstract class NsgTableController<T> extends ChangeNotifier {
   final NsgTableStyle? style;
   final double? headerInitHeight;
 
+  final bool fixHeaderHeight = false;
+
   List<double?> columnWidths = [];
   List<double?> rowHeights = [];
   late double? headerHeight = headerInitHeight ?? initHeight;
