@@ -176,24 +176,22 @@ class NsgFieldFilter {
 
   Widget _buildBoolInput(VoidCallback onChanged) {
     final value = (_filterValue as bool?) ?? false;
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            value ? 'true' : 'false',
-            style: TextStyle(fontSize: nsgtheme.sizeS, color: nsgtheme.colorBase.c0),
-          ),
+    return Center(
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(),
+        onPressed: !isEnable
+            ? null
+            : () {
+                _filterValue = !value;
+                onChanged();
+              },
+        icon: Icon(
+          value ? Icons.check_circle : Icons.cancel,
+          color: value ? Colors.green : Colors.red,
+          size: 22,
         ),
-        Switch(
-          value: value,
-          onChanged: isEnable
-              ? (v) {
-                  _filterValue = v;
-                  onChanged();
-                }
-              : null,
-        ),
-      ],
+      ),
     );
   }
 

@@ -4,7 +4,6 @@ import 'package:nsg_controls/new_table/nsg_base_table.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/widgets/nsg_light_app_bar.dart';
 import 'package:nsg_data/navigator/nsg_navigator.dart';
-import 'package:nsg_data/nsg_data_item.dart';
 
 class NsgMainItemsListForm extends StatelessWidget {
   const NsgMainItemsListForm({super.key, required this.dataType});
@@ -26,24 +25,6 @@ class NsgMainItemsListForm extends StatelessWidget {
             Expanded(child: NsgBaseTable(controller: controller.tableController!)),
           ],
         ),
-      ),
-    );
-  }
-}
-
-extension on NsgDataItem {
-  Widget buildItemWidget(BuildContext context, NsgMainFormController controller) {
-    return GestureDetector(
-      onTap: () => controller.itemDefaultPageOpen(this),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        margin: EdgeInsets.only(bottom: 2),
-        padding: EdgeInsets.all(10),
-        child: Text(toString()),
       ),
     );
   }
