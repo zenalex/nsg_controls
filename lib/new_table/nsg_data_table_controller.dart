@@ -12,7 +12,15 @@ import 'package:nsg_data/ui/nsg_data_ui.dart';
 import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 
 class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableController<T> {
-  NsgDataItemsTableController({required this.dataController, required super.columns, super.contextMenu, super.onRowTap, super.style, super.headerInitHeight});
+  NsgDataItemsTableController({
+    required this.dataController,
+    required super.columns,
+    super.contextMenu,
+    super.onRowTap,
+    super.style,
+    super.headerInitHeight,
+    super.fixHeaderHeight,
+  });
 
   NsgDataController<T> dataController;
 

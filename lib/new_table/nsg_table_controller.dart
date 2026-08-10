@@ -6,12 +6,12 @@ import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 abstract class NsgTableController<T> extends ChangeNotifier {
-  NsgTableController({this.columns = const [], this.style, this.onRowTap, this.contextMenu, this.headerInitHeight}) {
+  NsgTableController({this.columns = const [], this.style, this.onRowTap, this.contextMenu, this.headerInitHeight, this.fixHeaderHeight = false}) {
     init();
   }
 
   List<ContextMenuItem>? contextMenu;
-  void Function(int rowIndex, int columnIndex, T data)? onRowTap;
+  void Function(int rowIndex, int columnIndex, dynamic data)? onRowTap;
 
   void init() {
     horizontalScrollController.addListener(_syncHorizontalToOverlay);
@@ -36,7 +36,9 @@ abstract class NsgTableController<T> extends ChangeNotifier {
   final NsgTableStyle? style;
   final double? headerInitHeight;
 
-  final bool fixHeaderHeight = false;
+  /// Запрещает изменение высоты строки заголовка через drag-ручку.
+  /// Программный вызов [resizeRow] с `rowIndex < 0` по-прежнему разрешён.
+  final bool fixHeaderHeight;
 
   List<double?> columnWidths = [];
   List<double?> rowHeights = [];
@@ -234,6 +236,7 @@ abstract class NsgTableController<T> extends ChangeNotifier {
   Widget getCell(int rowIndex, int colIndex) {
     try {
       return ContextMenuRegion(
+        onCellClick: onRowTap,
         tableController: this,
         menuList: contextMenuItems,
         rowIndex: rowIndex,
@@ -339,7 +342,7 @@ class NewNsgCell extends StatelessWidget {
           ),
 
           _RowResizeHandle(
-            disableResize: disableResize,
+            disableResize: disableResize || (rowIndex < 0 && controller.fixHeaderHeight),
             onDrag: (dy) => controller.resizeRow(rowIndex, dy),
             onDoubleTap: () => controller.autoHeightRow(rowIndex),
             width: controller.columnWidths.reduce((value, element) => (value ?? 0) + (element ?? 0))! + controller.columnWidths.length * handleWidth,

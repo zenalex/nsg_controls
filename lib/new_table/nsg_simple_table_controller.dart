@@ -16,6 +16,8 @@ class NsgSimpleTableController extends NsgTableController {
     required super.columns,
     this.disableResize = true,
     super.style,
+    super.headerInitHeight,
+    super.fixHeaderHeight,
     this.minHeight = 40,
     this.maxHeight = 400,
     this.minWidth = 60,

@@ -7,6 +7,7 @@ import 'package:nsg_controls/main_forms/nsg_main_items_list_form.dart';
 import 'package:nsg_controls/main_forms/nsg_main_pages_factory.dart';
 import 'package:nsg_controls/new_table/nsg_data_table_controller.dart';
 import 'package:nsg_controls/new_table/nsg_table_controller.dart';
+import 'package:nsg_controls/new_table/table_overlay.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -112,8 +113,11 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
 
   void buildTable() {
     tableController = NsgDataItemsTableController(
+      fixHeaderHeight: true,
       dataController: this,
       columns: getListColumns(),
+      onRowTap: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]),
+      contextMenu: [ContextMenuItem('Edit', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]))],
       style: NsgTableStyle(
         backgroundColor: nsgtheme.colorModalBack,
         secondBackgroundColor: nsgtheme.colorModalBack.c10,
