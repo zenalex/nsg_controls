@@ -9,6 +9,7 @@ class NsgObjectTypeSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final searchController = TextEditingController();
     return Material(
       child: BodyWrap(
         child: Column(
@@ -17,16 +18,69 @@ class NsgObjectTypeSelect extends StatelessWidget {
               title: 'Object Type Select',
               leftIcons: [NsgLigthAppBarIcon(icon: NsgIcons.close, onTap: () => NsgNavigator.pop())],
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+              child: SizedBox(
+                height: 44,
+                child: TextFormField(
+                  controller: searchController,
+                  textAlignVertical: TextAlignVertical.center,
+                  style: TextStyle(color: nsgtheme.colorText, fontSize: nsgtheme.sizeM),
+                  cursorColor: nsgtheme.colorPrimary,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: nsgtheme.colorSecondary,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    hintText: 'Search',
+                    hintStyle: TextStyle(color: nsgtheme.colorTertiary, fontWeight: FontWeight.w500, fontSize: nsgtheme.sizeM),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.only(left: 12, right: 8),
+                      child: Icon(NsgIcons.search, color: nsgtheme.colorTertiary, size: 20),
+                    ),
+                    prefixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                    suffixIcon: ListenableBuilder(
+                      listenable: searchController,
+                      builder: (context, _) {
+                        if (searchController.text.isEmpty) {
+                          return const SizedBox.shrink();
+                        }
+                        return IconButton(
+                          padding: const EdgeInsets.only(right: 8),
+                          onPressed: () => searchController.clear(),
+                          icon: Icon(NsgIcons.close, color: nsgtheme.colorTertiary, size: 18),
+                        );
+                      },
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: nsgtheme.colorTertiary.withValues(alpha: 0.55)),
+                      borderRadius: BorderRadius.circular(nsgtheme.borderRadius),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: nsgtheme.colorPrimary, width: 1.5),
+                      borderRadius: BorderRadius.circular(nsgtheme.borderRadius),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
-                child: Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    for (var item in NsgDataClient.client.registeredDataItems.where((i) => (i is! NsgEnum)))
-                      _NsgDataItemListItem(item: item, onTap: (item) => NsgMainFormController.openItemsListDefaultPage(item.runtimeType)),
-                  ],
+                child: ListenableBuilder(
+                  listenable: searchController,
+                  builder: (context, w) {
+                    return Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        for (var item in NsgDataClient.client.registeredDataItems.where(
+                          (i) => (i is! NsgEnum) && i.typeName.toLowerCase().contains(searchController.text.toLowerCase()),
+                        ))
+                          _NsgDataItemListItem(item: item, onTap: (item) => NsgMainFormController.openItemsListDefaultPage(item.runtimeType)),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),

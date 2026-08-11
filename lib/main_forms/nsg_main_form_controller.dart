@@ -128,10 +128,10 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
       onCellDoubleTap: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]),
       contextMenu: [ContextMenuItem('Edit', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]))],
       style: NsgTableStyle(
-        backgroundColor: nsgtheme.colorModalBack,
-        secondBackgroundColor: nsgtheme.colorModalBack.c10,
-        textStyle: TextStyle(color: nsgtheme.colorBase.c0),
-        border: NsgTableBorder(color: nsgtheme.colorBase.c0, width: 1),
+        backgroundColor: nsgtheme.colorPrimary,
+        secondBackgroundColor: nsgtheme.colorSecondary,
+        textStyle: TextStyle(color: nsgtheme.colorText),
+        border: NsgTableBorder(color: nsgtheme.colorBase.c0, width: 1.5),
       ),
       headerInitHeight: 50,
     );
