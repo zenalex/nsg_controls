@@ -331,11 +331,15 @@ class NewNsgCell extends StatelessWidget {
 
                 _ColumnResizeHandle(
                   disableResize: disableResize,
-                  onDrag: (dx) => controller.resizeColumn(index, dx),
+                  onResizeEnd: (dx) => controller.resizeColumn(index, dx),
                   onDoubleTap: () => controller.autoFitColumn(index),
                   height: rowIndex < 0 ? controller.headerHeight : controller.getRowHeight(rowIndex),
                   width: showVerticalBorder ? handleWidth : 0,
                   borderColor: showVerticalBorder ? verticalBorderColor ?? borderColor : backgroundColor,
+                  phantomColor: nsgtheme.colorPrimary,
+                  minExtent: controller.minWidth,
+                  maxExtent: controller.maxWidth,
+                  currentExtent: controller.getColumnWidth(index) ?? controller.minWidth,
                 ),
               ],
             ),
@@ -343,11 +347,15 @@ class NewNsgCell extends StatelessWidget {
 
           _RowResizeHandle(
             disableResize: disableResize || (rowIndex < 0 && controller.fixHeaderHeight),
-            onDrag: (dy) => controller.resizeRow(rowIndex, dy),
+            onResizeEnd: (dy) => controller.resizeRow(rowIndex, dy),
             onDoubleTap: () => controller.autoHeightRow(rowIndex),
             width: controller.columnWidths.reduce((value, element) => (value ?? 0) + (element ?? 0))! + controller.columnWidths.length * handleWidth,
             height: showHorizontalBorder ? handleHeight : 0,
             borderColor: showHorizontalBorder ? borderColor : backgroundColor,
+            phantomColor: nsgtheme.colorPrimary,
+            minExtent: controller.minHeight,
+            maxExtent: controller.maxHeight,
+            currentExtent: (rowIndex < 0 ? controller.headerHeight : controller.getRowHeight(rowIndex)) ?? controller.minHeight,
           ),
         ],
       ),
@@ -355,57 +363,261 @@ class NewNsgCell extends StatelessWidget {
   }
 }
 
-class _ColumnResizeHandle extends StatelessWidget {
-  final Function(double dx) onDrag;
+class _ColumnResizeHandle extends StatefulWidget {
+  final void Function(double totalDx) onResizeEnd;
   final VoidCallback onDoubleTap;
   final double? height;
   final double? width;
   final Color? borderColor;
+  final Color phantomColor;
   final bool disableResize;
+  final double minExtent;
+  final double maxExtent;
+  final double currentExtent;
 
-  const _ColumnResizeHandle({required this.onDrag, required this.height, required this.onDoubleTap, this.width, this.borderColor, this.disableResize = false});
+  const _ColumnResizeHandle({
+    required this.onResizeEnd,
+    required this.height,
+    required this.onDoubleTap,
+    required this.minExtent,
+    required this.maxExtent,
+    required this.currentExtent,
+    required this.phantomColor,
+    this.width,
+    this.borderColor,
+    this.disableResize = false,
+  });
+
+  @override
+  State<_ColumnResizeHandle> createState() => _ColumnResizeHandleState();
+}
+
+class _ColumnResizeHandleState extends State<_ColumnResizeHandle> {
+  OverlayEntry? _overlay;
+  double _totalDx = 0;
+  double _startGlobalX = 0;
+  double _startExtent = 0;
+  double _lineX = 0;
+
+  void _removeOverlay() {
+    _overlay?.remove();
+    _overlay = null;
+  }
+
+  void _updateLineX() {
+    final clampedExtent = (_startExtent + _totalDx).clamp(widget.minExtent, widget.maxExtent);
+    _totalDx = clampedExtent - _startExtent;
+    _lineX = _startGlobalX + _totalDx;
+  }
+
+  void _showOrUpdateOverlay() {
+    _updateLineX();
+    if (_overlay == null) {
+      _overlay = OverlayEntry(
+        builder: (context) => IgnorePointer(
+          child: Stack(
+            children: [
+              Positioned(
+                left: _lineX,
+                top: 0,
+                bottom: 0,
+                child: Container(
+                  width: 2,
+                  decoration: BoxDecoration(
+                    color: widget.phantomColor.withValues(alpha: 0.85),
+                    boxShadow: [
+                      BoxShadow(color: widget.phantomColor.withValues(alpha: 0.35), blurRadius: 4, spreadRadius: 0.5),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+      Overlay.of(context).insert(_overlay!);
+    } else {
+      _overlay!.markNeedsBuild();
+    }
+  }
+
+  void _onDragStart(DragStartDetails details) {
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null) return;
+    _totalDx = 0;
+    _startExtent = widget.currentExtent;
+    _startGlobalX = box.localToGlobal(Offset(box.size.width / 2, 0)).dx;
+    _showOrUpdateOverlay();
+  }
+
+  void _onDragUpdate(DragUpdateDetails details) {
+    _totalDx += details.delta.dx;
+    _showOrUpdateOverlay();
+  }
+
+  void _onDragEnd(DragEndDetails details) {
+    final dx = _totalDx;
+    _removeOverlay();
+    _totalDx = 0;
+    if (dx.abs() > 0.5) {
+      widget.onResizeEnd(dx);
+    }
+  }
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (disableResize) {
-      return Container(width: width ?? 8, height: height, color: borderColor ?? Colors.transparent);
+    if (widget.disableResize) {
+      return Container(width: widget.width ?? 8, height: widget.height, color: widget.borderColor ?? Colors.transparent);
     }
     return MouseRegion(
       cursor: SystemMouseCursors.resizeColumn,
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onHorizontalDragUpdate: (details) => onDrag(details.delta.dx),
-        onDoubleTap: onDoubleTap,
-        child: Container(width: width ?? 8, height: height, color: borderColor ?? Colors.transparent),
+        onHorizontalDragStart: _onDragStart,
+        onHorizontalDragUpdate: _onDragUpdate,
+        onHorizontalDragEnd: _onDragEnd,
+        onHorizontalDragCancel: () {
+          _removeOverlay();
+          _totalDx = 0;
+        },
+        onDoubleTap: widget.onDoubleTap,
+        child: Container(width: widget.width ?? 8, height: widget.height, color: widget.borderColor ?? Colors.transparent),
       ),
     );
   }
 }
 
-class _RowResizeHandle extends StatelessWidget {
-  final Function(double dy) onDrag;
+class _RowResizeHandle extends StatefulWidget {
+  final void Function(double totalDy) onResizeEnd;
   final VoidCallback onDoubleTap;
   final double width;
   final double? height;
   final Color? borderColor;
+  final Color phantomColor;
   final bool disableResize;
+  final double minExtent;
+  final double maxExtent;
+  final double currentExtent;
 
-  const _RowResizeHandle({required this.onDrag, required this.width, required this.onDoubleTap, this.height, this.borderColor, this.disableResize = false});
+  const _RowResizeHandle({
+    required this.onResizeEnd,
+    required this.width,
+    required this.onDoubleTap,
+    required this.minExtent,
+    required this.maxExtent,
+    required this.currentExtent,
+    required this.phantomColor,
+    this.height,
+    this.borderColor,
+    this.disableResize = false,
+  });
+
+  @override
+  State<_RowResizeHandle> createState() => _RowResizeHandleState();
+}
+
+class _RowResizeHandleState extends State<_RowResizeHandle> {
+  OverlayEntry? _overlay;
+  double _totalDy = 0;
+  double _startGlobalY = 0;
+  double _startExtent = 0;
+  double _lineY = 0;
+
+  void _removeOverlay() {
+    _overlay?.remove();
+    _overlay = null;
+  }
+
+  void _updateLineY() {
+    final clampedExtent = (_startExtent + _totalDy).clamp(widget.minExtent, widget.maxExtent);
+    _totalDy = clampedExtent - _startExtent;
+    _lineY = _startGlobalY + _totalDy;
+  }
+
+  void _showOrUpdateOverlay() {
+    _updateLineY();
+    if (_overlay == null) {
+      _overlay = OverlayEntry(
+        builder: (context) => IgnorePointer(
+          child: Stack(
+            children: [
+              Positioned(
+                top: _lineY,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 2,
+                  decoration: BoxDecoration(
+                    color: widget.phantomColor.withValues(alpha: 0.85),
+                    boxShadow: [
+                      BoxShadow(color: widget.phantomColor.withValues(alpha: 0.35), blurRadius: 4, spreadRadius: 0.5),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+      Overlay.of(context).insert(_overlay!);
+    } else {
+      _overlay!.markNeedsBuild();
+    }
+  }
+
+  void _onDragStart(DragStartDetails details) {
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null) return;
+    _totalDy = 0;
+    _startExtent = widget.currentExtent;
+    _startGlobalY = box.localToGlobal(Offset(0, box.size.height / 2)).dy;
+    _showOrUpdateOverlay();
+  }
+
+  void _onDragUpdate(DragUpdateDetails details) {
+    _totalDy += details.delta.dy;
+    _showOrUpdateOverlay();
+  }
+
+  void _onDragEnd(DragEndDetails details) {
+    final dy = _totalDy;
+    _removeOverlay();
+    _totalDy = 0;
+    if (dy.abs() > 0.5) {
+      widget.onResizeEnd(dy);
+    }
+  }
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (disableResize) {
-      return Container(width: width, height: height ?? 6, color: borderColor ?? Colors.transparent);
+    if (widget.disableResize) {
+      return Container(width: widget.width, height: widget.height ?? 6, color: widget.borderColor ?? Colors.transparent);
     }
     return MouseRegion(
       cursor: SystemMouseCursors.resizeRow,
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onVerticalDragUpdate: (details) {
-          onDrag(details.delta.dy);
+        onVerticalDragStart: _onDragStart,
+        onVerticalDragUpdate: _onDragUpdate,
+        onVerticalDragEnd: _onDragEnd,
+        onVerticalDragCancel: () {
+          _removeOverlay();
+          _totalDy = 0;
         },
-        onDoubleTap: onDoubleTap,
-        child: Container(height: height ?? 6, width: width, color: borderColor ?? Colors.transparent),
+        onDoubleTap: widget.onDoubleTap,
+        child: Container(height: widget.height ?? 6, width: widget.width, color: widget.borderColor ?? Colors.transparent),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:nsg_controls/main_forms/nsg_field_filter.dart';
 import 'package:nsg_controls/main_forms/nsg_main_item_form.dart';
 import 'package:nsg_controls/main_forms/nsg_main_items_list_form.dart';
 import 'package:nsg_controls/main_forms/nsg_main_pages_factory.dart';
+import 'package:nsg_controls/main_forms/nsg_object_type_select.dart';
 import 'package:nsg_controls/new_table/nsg_data_table_controller.dart';
 import 'package:nsg_controls/new_table/nsg_table_controller.dart';
 import 'package:nsg_controls/new_table/table_overlay.dart';
@@ -23,7 +24,13 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
     dataType = itemType;
   }
 
+  static Future<dynamic> openObjectTypeSelectPage() async {
+    ControlsRoutes.initRegistry();
+    await Get.to(() => NsgObjectTypeSelect());
+  }
+
   static Future<dynamic> openItemsListDefaultPage(Type type, {bool withRefreshData = true, NsgDataRequestParams? filter}) async {
+    ControlsRoutes.initRegistry();
     ({NsgMainFormController Function() c, NsgMainItemsListForm Function() l, NsgMainItemForm Function() p, String Function() t})? reg;
     reg = ControlsRoutes.registry[type];
     if (reg == null) {
@@ -41,6 +48,7 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
   }
 
   static Future<dynamic> openItemDefaultPage(NsgDataItem item, {bool withRefreshData = true, List<String>? referenceList}) async {
+    ControlsRoutes.initRegistry();
     ({NsgMainFormController Function() c, NsgMainItemsListForm Function() l, NsgMainItemForm Function() p, String Function() t})? reg;
     reg = ControlsRoutes.registry[item.runtimeType];
     if (reg == null) {
@@ -60,6 +68,7 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
   static NsgMainFormController? getItemDefaultController(NsgDataItem item) => getTypeDefaultController(item.runtimeType);
 
   static NsgMainFormController? getTypeDefaultController(Type type) {
+    ControlsRoutes.initRegistry();
     try {
       var reg = ControlsRoutes.registry[type]!;
       final tag = reg.t();
