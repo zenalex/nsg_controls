@@ -128,7 +128,8 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
       onCellDoubleTap: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]),
       contextMenu: [ContextMenuItem('Edit', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]))],
       style: NsgTableStyle(
-        backgroundColor: nsgtheme.colorPrimary,
+        backgroundColor: nsgtheme.colorSecondary.b60,
+        headerBackgroundColor: nsgtheme.colorPrimary,
         secondBackgroundColor: nsgtheme.colorSecondary,
         textStyle: TextStyle(color: nsgtheme.colorText),
         border: NsgTableBorder(color: nsgtheme.colorBase.c0, width: 1.5),
@@ -154,7 +155,7 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
           fieldName: field.name,
           name: _getFildNormalizeName(key, field),
           width: 200,
-          position: Alignment.center,
+          position: getAlignmentFromFieldType(field),
           headerBuilder: (title, style) => Column(
             children: [
               Row(
@@ -227,6 +228,15 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
       );
     });
     return columns;
+  }
+
+  Alignment getAlignmentFromFieldType(NsgDataField field) {
+    var centerFields = [NsgDataDoubleField, NsgDataBoolField, NsgDataIntField, NsgDataEnumReferenceField, NsgDataDateField];
+    if (centerFields.contains(field.runtimeType)) {
+      return Alignment.center;
+    } else {
+      return Alignment.centerLeft;
+    }
   }
 
   @override

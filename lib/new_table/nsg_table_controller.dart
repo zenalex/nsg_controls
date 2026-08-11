@@ -299,7 +299,7 @@ class NewNsgCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final buildStyle = controller.style?._style() ?? NsgTableStyle()._style();
-    final backgroundColor = buildStyle.backgroundColorFromIndex(rowIndex);
+    final backgroundColor = rowIndex < 0 ? buildStyle.headerBackgroundColor : buildStyle.backgroundColorFromIndex(rowIndex);
     final borderColor = buildStyle.border.color;
     final verticalBorderColor = buildStyle.border.verticalColor;
     final double handleWidth = buildStyle.border.width;
@@ -425,9 +425,7 @@ class _ColumnResizeHandleState extends State<_ColumnResizeHandle> {
                   width: 2,
                   decoration: BoxDecoration(
                     color: widget.phantomColor.withValues(alpha: 0.85),
-                    boxShadow: [
-                      BoxShadow(color: widget.phantomColor.withValues(alpha: 0.35), blurRadius: 4, spreadRadius: 0.5),
-                    ],
+                    boxShadow: [BoxShadow(color: widget.phantomColor.withValues(alpha: 0.35), blurRadius: 4, spreadRadius: 0.5)],
                   ),
                 ),
               ),
@@ -555,9 +553,7 @@ class _RowResizeHandleState extends State<_RowResizeHandle> {
                   height: 2,
                   decoration: BoxDecoration(
                     color: widget.phantomColor.withValues(alpha: 0.85),
-                    boxShadow: [
-                      BoxShadow(color: widget.phantomColor.withValues(alpha: 0.35), blurRadius: 4, spreadRadius: 0.5),
-                    ],
+                    boxShadow: [BoxShadow(color: widget.phantomColor.withValues(alpha: 0.35), blurRadius: 4, spreadRadius: 0.5)],
                   ),
                 ),
               ),
@@ -631,11 +627,20 @@ class NsgTableStyle {
   final Color? backgroundColor;
   final Color? secondBackgroundColor;
   final Color? tableBackColor;
+  final Color? headerBackgroundColor;
   final NsgTableBorder? border;
   final EdgeInsets? cellPadding;
   final TextStyle? textStyle;
 
-  const NsgTableStyle({this.backgroundColor, this.secondBackgroundColor, this.border, this.tableBackColor, this.cellPadding, this.textStyle});
+  const NsgTableStyle({
+    this.backgroundColor,
+    this.secondBackgroundColor,
+    this.border,
+    this.tableBackColor,
+    this.cellPadding,
+    this.textStyle,
+    this.headerBackgroundColor,
+  });
 
   _NsgTableStyleMain _style() {
     return _NsgTableStyleMain(
@@ -645,6 +650,7 @@ class NsgTableStyle {
       border: border ?? NsgTableBorder(),
       cellPadding: cellPadding ?? const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       textStyle: textStyle ?? TextStyle(color: nsgtheme.colorBase.c0),
+      headerBackgroundColor: headerBackgroundColor ?? Colors.grey.shade200,
     );
   }
 }
@@ -652,6 +658,7 @@ class NsgTableStyle {
 class _NsgTableStyleMain {
   final Color backgroundColor;
   final Color secondBackgroundColor;
+  final Color headerBackgroundColor;
   final NsgTableBorder border;
   final Color tableBackColor;
   final EdgeInsets cellPadding;
@@ -660,6 +667,7 @@ class _NsgTableStyleMain {
   const _NsgTableStyleMain({
     required this.backgroundColor,
     required this.secondBackgroundColor,
+    required this.headerBackgroundColor,
     required this.border,
     required this.tableBackColor,
     required this.cellPadding,
