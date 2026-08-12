@@ -6,12 +6,23 @@ import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 abstract class NsgTableController<T> extends ChangeNotifier {
-  NsgTableController({this.columns = const [], this.style, this.onCellDoubleTap, this.contextMenu, this.headerInitHeight, this.fixHeaderHeight = false}) {
+  NsgTableController({
+    this.columns = const [],
+    this.style,
+    this.onCellDoubleTap,
+    this.onResizeColumn,
+    this.onResizeRow,
+    this.contextMenu,
+    this.headerInitHeight,
+    this.fixHeaderHeight = false,
+  }) {
     init();
   }
 
   List<ContextMenuItem>? contextMenu;
   void Function(int rowIndex, int columnIndex, dynamic data)? onCellDoubleTap;
+  void Function(int columnIndex, double width)? onResizeColumn;
+  void Function(int rowIndex, double height)? onResizeRow;
 
   void init() {
     horizontalScrollController.addListener(_syncHorizontalToOverlay);
@@ -164,6 +175,7 @@ abstract class NsgTableController<T> extends ChangeNotifier {
 
   void resizeColumn(int index, double dx) {
     columnWidths[index] = (columnWidths[index]! + dx).clamp(minWidth, maxWidth);
+    onResizeColumn?.call(index, columnWidths[index]!);
     notifyListeners();
   }
 
@@ -174,6 +186,7 @@ abstract class NsgTableController<T> extends ChangeNotifier {
       return;
     }
     rowHeights[rowIndex] = (rowHeights[rowIndex]! + dy).clamp(minHeight, maxHeight);
+    onResizeRow?.call(rowIndex, rowHeights[rowIndex]!);
     notifyListeners();
   }
 

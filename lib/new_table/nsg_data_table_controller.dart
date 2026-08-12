@@ -16,9 +16,12 @@ class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableControl
     super.style,
     super.headerInitHeight,
     super.fixHeaderHeight,
+    this.onResizeDataColumn,
   });
 
   NsgDataController<T> dataController;
+
+  final void Function(String fieldName, double width)? onResizeDataColumn;
 
   @override
   void init() {
@@ -152,6 +155,11 @@ class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableControl
       return elem as T;
     }
   }
+
+  @override
+  void Function(int columnIndex, double width)? get onResizeColumn => (columnIndex, width) {
+    onResizeDataColumn?.call(columns[columnIndex].fieldName, width);
+  };
 
   @override
   List<ContextMenuItem> get contextMenuItems =>

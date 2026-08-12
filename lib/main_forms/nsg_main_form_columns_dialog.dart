@@ -122,7 +122,8 @@ class _ColumnsDialogModel extends ChangeNotifier {
     for (final entry in fields) {
       final field = entry.value;
       final isVisible = visible[field] ?? true;
-      controller.columnsConfig.setItemValue(field, isVisible, isVisible ? order++ : 0);
+      controller.columnsConfig.setItemVisible(field, isVisible);
+      controller.columnsConfig.setItemOrder(field, isVisible ? order++ : 0);
     }
     await controller.saveColumnsConfig();
     controller.applyColumnsConfigToTable();

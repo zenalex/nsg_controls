@@ -114,6 +114,16 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
     return fields;
   }
 
+  List<NsgTableParams> getTableParams() {
+    List<NsgTableParams> params = [];
+    fieldsList.fields.forEach((key, field) {
+      if (serviceFields.contains(key) || serviceFields.contains(field.name)) return;
+      if (field is! NsgDataReferenceListField) return;
+      params.add(NsgTableParams(field: field, type: field.referentElementType));
+    });
+    return params;
+  }
+
   String _getFildNormalizeName(String key, NsgDataField field) {
     if (field.presentation.isNotEmpty) return field.presentation;
     var norm = field.name.replaceAll(' ', '_').toLowerCase();
@@ -137,7 +147,11 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
       dataController: this,
       columns: getListColumns(),
       onCellDoubleTap: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]),
-      contextMenu: [ContextMenuItem('Edit', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]))],
+      contextMenu: [
+        ContextMenuItem('Edit', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex])),
+        ContextMenuItem('Delete', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex])),
+        ContextMenuItem('Add to filter', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex])),
+      ],
       style: NsgTableStyle(
         backgroundColor: nsgtheme.colorSecondary.b60,
         headerBackgroundColor: nsgtheme.colorPrimary,
@@ -146,6 +160,10 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
         border: NsgTableBorder(color: nsgtheme.colorBase.c0, width: 1.5),
       ),
       headerInitHeight: 50,
+      onResizeDataColumn: (fieldName, width) {
+        columnsConfig.setItemWidth(fieldsList.fields[fieldName]!, width);
+        saveColumnsConfig();
+      },
     );
   }
 
@@ -170,7 +188,7 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
         NewNsgTableColumn.data(
           fieldName: field.name,
           name: _getFildNormalizeName(key, field),
-          width: 200,
+          width: columnsConfig.getItemWidth(field),
           position: getAlignmentFromFieldType(field),
           headerBuilder: (title, style) => Column(
             children: [
@@ -270,7 +288,8 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
   }
 
   void hideColumn(NsgDataField field) {
-    _columnsConfig.setItemValue(field, false, 0);
+    _columnsConfig.setItemVisible(field, false);
+    _columnsConfig.setItemWidth(field, 0);
   }
 
   /// Обновляет колонки таблицы по [_columnsConfig] и уведомляет UI.
@@ -315,11 +334,18 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
   }
 }
 
+class NsgTableParams {
+  NsgTableParams({required this.field, required this.type});
+  final NsgDataField field;
+  final Type type;
+}
+
 class NsgDataFieldConfigItem {
-  NsgDataFieldConfigItem({required this.field, this.visible = true, this.order = 0});
+  NsgDataFieldConfigItem({required this.field, this.visible = true, this.order = 0, this.width = 200});
   final NsgDataField field;
   int order;
   bool visible;
+  double width;
 }
 
 class NsgDataFieldConfig {
@@ -334,7 +360,12 @@ class NsgDataFieldConfig {
       if (item is! Map) continue;
       final fieldName = item['field']?.toString();
       if (fieldName == null || fieldsList.fields[fieldName] == null) continue;
-      config.setItemValue(fieldsList.fields[fieldName]!, item['visible'] == true, (item['order'] as num?)?.toInt() ?? 0);
+      config.setItemValue(
+        fieldsList.fields[fieldName]!,
+        item['visible'] == true,
+        (item['order'] as num?)?.toInt() ?? 0,
+        (item['width'] as num?)?.toDouble() ?? 200,
+      );
     }
     return config;
   }
@@ -343,13 +374,14 @@ class NsgDataFieldConfig {
     return items.firstWhereOrNull((item) => item.field == field);
   }
 
-  void setItemValue(NsgDataField field, bool visible, int order) {
+  void setItemValue(NsgDataField field, bool visible, int order, double width) {
     var item = _getItem(field);
     if (item == null) {
-      items.add(NsgDataFieldConfigItem(field: field, visible: visible, order: order));
+      items.add(NsgDataFieldConfigItem(field: field, visible: visible, order: order, width: width));
     } else {
       item.visible = visible;
       item.order = order;
+      item.width = width;
     }
   }
 
@@ -371,6 +403,15 @@ class NsgDataFieldConfig {
     }
   }
 
+  void setItemWidth(NsgDataField field, double width) {
+    var item = _getItem(field);
+    if (item == null) {
+      items.add(NsgDataFieldConfigItem(field: field, visible: true, order: 0, width: width));
+    } else {
+      item.width = width;
+    }
+  }
+
   bool getItemVisible(NsgDataField field) {
     var item = _getItem(field);
     if (item == null) return true;
@@ -383,12 +424,18 @@ class NsgDataFieldConfig {
     return item.order;
   }
 
+  double getItemWidth(NsgDataField field) {
+    var item = _getItem(field);
+    if (item == null || item.width <= 0) return 200;
+    return item.width;
+  }
+
   void removeItem(NsgDataField field) {
     items.removeWhere((item) => item.field == field);
   }
 
   Map<String, dynamic> toJson() {
-    var itemsJson = items.map((item) => {'field': item.field.name, 'visible': item.visible, 'order': item.order}).toList();
+    var itemsJson = items.map((item) => {'field': item.field.name, 'visible': item.visible, 'order': item.order, 'width': item.width}).toList();
     return {'columns': itemsJson};
   }
 }
