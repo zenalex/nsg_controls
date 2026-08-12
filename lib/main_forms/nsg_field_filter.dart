@@ -61,10 +61,62 @@ class NsgFieldFilter {
     }
   }
 
+  /// Устанавливает значение фильтра извне и синхронизирует поля ввода.
+  void setValue(dynamic value) {
+    if (value == null) {
+      clearValue();
+      return;
+    }
+
+    if (value is NsgDataItem) {
+      setFilterItemValue(value);
+      return;
+    }
+
+    clearFilterItemValue();
+
+    if (isBool) {
+      _filterValue = value == true || value == 1 || value.toString().trim().toLowerCase() == 'true';
+      return;
+    }
+
+    if (isDateTime) {
+      if (value is DateTime) {
+        _filterValue = value;
+      } else if (value is String) {
+        _filterValue = DateTime.tryParse(value) ?? field.defaultValue;
+      } else {
+        _filterValue = value;
+      }
+      return;
+    }
+
+    _filterValue = value;
+    if (isDouble && value is num) {
+      textC.text = value.toString().replaceAll('.', ',');
+    } else {
+      textC.text = value.toString();
+    }
+  }
+
+  /// Сбрасывает значение фильтра и очищает связанные поля ввода.
+  void clearValue() {
+    clearFilterItemValue();
+    _filterValue = isBool ? false : null;
+    textC.clear();
+  }
+
   bool toggleFilterEnable({bool Function()? isFilterVisible}) {
     isFilterVisible = isFilterVisible ?? () => false;
     final wasVisible = isFilterVisible();
     isEnable = !isEnable;
+    return wasVisible != isFilterVisible();
+  }
+
+  bool setFilterEnable(bool value, {bool Function()? isFilterVisible}) {
+    isFilterVisible = isFilterVisible ?? () => false;
+    final wasVisible = isFilterVisible();
+    isEnable = value;
     return wasVisible != isFilterVisible();
   }
 

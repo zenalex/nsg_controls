@@ -17,11 +17,15 @@ class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableControl
     super.headerInitHeight,
     super.fixHeaderHeight,
     this.onResizeDataColumn,
+    this.deletedRowStyle,
+    this.selectedRowStyle,
   });
 
   NsgDataController<T> dataController;
 
   final void Function(String fieldName, double width)? onResizeDataColumn;
+  final NsgTableCustomStyle? deletedRowStyle;
+  final NsgTableCustomStyle? selectedRowStyle;
 
   @override
   void init() {
@@ -45,12 +49,21 @@ class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableControl
     for (var row in dataController.items) {
       List<NewNsgCell> cells = [];
       for (var column in columns) {
+        var customStyle = NsgTableCustomStyle();
+        if (deletedRowStyle != null && row.docState == NsgDataItemDocState.deleted) {
+          customStyle = customStyle.merge(deletedRowStyle!);
+        }
+        if (selectedRowStyle != null && row == dataController.selectedItem) {
+          customStyle = customStyle.merge(selectedRowStyle!);
+        }
+
         cells.add(
           NewNsgCell(
             controller: this,
             rowIndex: dataController.items.indexOf(row),
             index: columns.indexOf(column),
             position: column.position,
+            customStyle: row.docState == NsgDataItemDocState.deleted || row == dataController.selectedItem ? customStyle : null,
             child: _buildCellChild(row, column),
           ),
         );
@@ -96,7 +109,14 @@ class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableControl
           rowIndex: -1,
           index: cells.length,
           position: column.position,
-          child: column.headerBuilder?.call(title, style?.textStyle) ?? Text(title, style: style?.textStyle ?? TextStyle(color: nsgtheme.colorBase.c0)),
+          child:
+              column.headerBuilder?.call(title, style?.textStyle) ??
+              Text(
+                title,
+                style: style?.textStyle ?? TextStyle(color: nsgtheme.colorBase.c0),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
         ),
       );
     }
@@ -160,6 +180,10 @@ class NsgDataItemsTableController<T extends NsgDataItem> extends NsgTableControl
   void Function(int columnIndex, double width)? get onResizeColumn => (columnIndex, width) {
     onResizeDataColumn?.call(columns[columnIndex].fieldName, width);
   };
+
+  String getFieldNameByColumnIndex(int columnIndex) {
+    return columns[columnIndex].fieldName;
+  }
 
   @override
   List<ContextMenuItem> get contextMenuItems =>

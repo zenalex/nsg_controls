@@ -296,8 +296,7 @@ class NewNsgCell extends StatelessWidget {
     required this.child,
     this.position = Alignment.centerLeft,
     this.disableResize = false,
-    this.backgroundColor,
-    this.borderColor,
+    this.customStyle,
   });
 
   final NsgTableController controller;
@@ -306,13 +305,19 @@ class NewNsgCell extends StatelessWidget {
   final Widget child;
   final Alignment position;
   final bool disableResize;
-  final Color? backgroundColor;
-  final Color? borderColor;
+  final NsgTableCustomStyle? customStyle;
 
   @override
   Widget build(BuildContext context) {
-    final buildStyle = controller.style?._style() ?? NsgTableStyle()._style();
-    final backgroundColor = rowIndex < 0 ? buildStyle.headerBackgroundColor : buildStyle.backgroundColorFromIndex(rowIndex);
+    var buildStyleStyle = controller.style ?? NsgTableCustomStyle();
+    if (customStyle != null) {
+      buildStyleStyle = buildStyleStyle.merge(customStyle!);
+    }
+    final buildStyle = buildStyleStyle._style();
+    var backgroundColor = rowIndex < 0 ? buildStyle.headerBackgroundColor : buildStyle.backgroundColorFromIndex(rowIndex);
+    if (customStyle != null && customStyle!.backgroundColor != null) {
+      backgroundColor = buildStyle.backgroundColor;
+    }
     final borderColor = buildStyle.border.color;
     final verticalBorderColor = buildStyle.border.verticalColor;
     final double handleWidth = buildStyle.border.width;
@@ -666,6 +671,18 @@ class NsgTableStyle {
       headerBackgroundColor: headerBackgroundColor ?? Colors.grey.shade200,
     );
   }
+
+  NsgTableStyle merge(NsgTableStyle other) {
+    return NsgTableStyle(
+      backgroundColor: other.backgroundColor ?? backgroundColor,
+      secondBackgroundColor: other.secondBackgroundColor ?? secondBackgroundColor,
+      border: other.border ?? border,
+      tableBackColor: other.tableBackColor ?? tableBackColor,
+      cellPadding: other.cellPadding ?? cellPadding,
+      textStyle: other.textStyle ?? textStyle,
+      headerBackgroundColor: other.headerBackgroundColor ?? headerBackgroundColor,
+    );
+  }
 }
 
 class _NsgTableStyleMain {
@@ -688,6 +705,19 @@ class _NsgTableStyleMain {
   });
 
   Color backgroundColorFromIndex(int index) => index % 2 == 0 ? secondBackgroundColor : backgroundColor;
+}
+
+class NsgTableCustomStyle extends NsgTableStyle {
+  NsgTableCustomStyle({super.backgroundColor, super.border, super.textStyle});
+
+  @override
+  NsgTableCustomStyle merge(NsgTableStyle other) {
+    return NsgTableCustomStyle(
+      backgroundColor: other.backgroundColor ?? backgroundColor,
+      border: other.border ?? border,
+      textStyle: other.textStyle ?? textStyle,
+    );
+  }
 }
 
 class NsgTableBorder {

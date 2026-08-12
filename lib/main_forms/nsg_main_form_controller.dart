@@ -141,6 +141,12 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
     await openItemDefaultPage(currentItem);
   }
 
+  @override
+  set currentItem(NsgDataItem item) {
+    super.currentItem = item;
+    tableController?.sendNotify();
+  }
+
   void buildTable() {
     tableController = NsgDataItemsTableController(
       fixHeaderHeight: true,
@@ -149,8 +155,9 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
       onCellDoubleTap: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex]),
       contextMenu: [
         ContextMenuItem('Edit', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex])),
-        ContextMenuItem('Delete', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex])),
-        ContextMenuItem('Add to filter', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex])),
+        ContextMenuItem('Delete', onClick: (rowIndex, columnIndex, data) => deleteItems([items[rowIndex]])),
+        ContextMenuItem('Add to filter', onClick: (rowIndex, columnIndex, data) => _addValueToFilter(data as NsgDataItem, columnIndex)),
+        ContextMenuItem('Copy', onClick: (rowIndex, columnIndex, data) => itemDefaultPageOpen(items[rowIndex].clone())),
       ],
       style: NsgTableStyle(
         backgroundColor: nsgtheme.colorSecondary.b60,
@@ -164,7 +171,30 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
         columnsConfig.setItemWidth(fieldsList.fields[fieldName]!, width);
         saveColumnsConfig();
       },
+      deletedRowStyle: NsgTableCustomStyle(
+        backgroundColor: nsgtheme.colorError.c70,
+        textStyle: TextStyle(color: nsgtheme.colorText),
+      ),
+      selectedRowStyle: NsgTableCustomStyle(
+        border: NsgTableBorder(verticalColor: nsgtheme.colorBase.c0, color: nsgtheme.colorPrimary, width: 1.5),
+      ),
     );
+  }
+
+  void _addValueToFilter(NsgDataItem item, int columnIndex) {
+    var fieldName = tableController?.getFieldNameByColumnIndex(columnIndex) ?? '';
+    var filter = fieldFilters[fieldName];
+    if (filter != null) {
+      filter.setValue(item.getFieldValue(fieldName));
+      var needChangeHeight = filter.setFilterEnable(true, isFilterVisible: () => isFilterVisible);
+      if (needChangeHeight) {
+        tableController?.resizeRow(-1, isFilterVisible ? 50 : -50);
+      } else {
+        tableController?.sendNotify();
+      }
+      filter.operator = NsgComparisonOperator.equal;
+    }
+    refreshData();
   }
 
   Map<String, NsgFieldFilter> fieldFilters = {};
@@ -192,24 +222,31 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
           position: getAlignmentFromFieldType(field),
           headerBuilder: (title, style) => Column(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Center(child: Text(title, style: style)),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      var needChangeHeight = filter.toggleFilterEnable(isFilterVisible: () => isFilterVisible);
-                      if (needChangeHeight) {
-                        tableController?.resizeRow(-1, isFilterVisible ? 50 : -50);
-                      } else {
-                        tableController?.sendNotify();
-                      }
-                      controllerFilter.refreshControllerWithDelay(filter: getRequestFilter);
-                    },
-                    icon: Icon(filter.isEnable ? Icons.filter_alt : Icons.filter_alt_off),
-                  ),
-                ],
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(title, style: style, maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
+                      ),
+                    ),
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                      iconSize: 20,
+                      onPressed: () {
+                        var needChangeHeight = filter.toggleFilterEnable(isFilterVisible: () => isFilterVisible);
+                        if (needChangeHeight) {
+                          tableController?.resizeRow(-1, isFilterVisible ? 50 : -50);
+                        } else {
+                          tableController?.sendNotify();
+                        }
+                        controllerFilter.refreshControllerWithDelay(filter: getRequestFilter);
+                      },
+                      icon: Icon(filter.isEnable ? Icons.filter_alt : Icons.filter_alt_off),
+                    ),
+                  ],
+                ),
               ),
               if (filter.isEnable)
                 Row(
@@ -232,13 +269,7 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
                         initialValue: filter.operator,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(filter.operator.icon, size: 20),
-                              Icon(Icons.arrow_drop_down, size: 18, color: nsgtheme.colorPrimary),
-                            ],
-                          ),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [Icon(filter.operator.icon, size: 20), Icon(Icons.arrow_drop_down, size: 18)]),
                         ),
                         onSelected: (value) {
                           filter.operator = value;
@@ -276,6 +307,7 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
   @override
   NsgDataRequestParams get getRequestFilter {
     var filter = super.getRequestFilter;
+    filter.showDeletedObjects = true;
     fieldFilters.forEach((fieldName, filterField) {
       if (!filterField.isEnable) return;
       filter.compare.add(name: fieldName, value: filterField.filterValue, comparisonOperator: filterField.operator);
