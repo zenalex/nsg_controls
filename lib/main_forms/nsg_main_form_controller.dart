@@ -87,6 +87,7 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
   }
 
   String get columnsConfigKey => 'columns_config_${dataType.toString()}';
+  String get fieldsConfigKey => 'fields_config_${dataType.toString()}';
 
   String get title => dataType.toString();
   String get listTitle => "List of ${dataType.toString()}";
@@ -107,6 +108,7 @@ class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataU
     List<Widget> fields = [];
     fieldsList.fields.forEach((key, field) {
       if (serviceFields.contains(key) || serviceFields.contains(field.name)) return;
+      if (field is NsgDataReferenceListField) return;
       fields.add(builder(currentItem, _getFildNormalizeName(key, field), field));
     });
     return fields;
