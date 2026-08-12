@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nsg_controls/main_forms/nsg_main_form_columns_dialog.dart';
 import 'package:nsg_controls/main_forms/nsg_main_form_controller.dart';
 import 'package:nsg_controls/new_table/nsg_base_table.dart';
 import 'package:nsg_controls/nsg_controls.dart';
@@ -20,7 +21,13 @@ class NsgMainItemsListForm extends StatelessWidget {
             NsgLightAppBar(
               title: controller.listTitle,
               leftIcons: [NsgLigthAppBarIcon(icon: Icons.arrow_back, onTap: () => NsgNavigator.pop())],
-              rightIcons: [NsgLigthAppBarIcon(icon: Icons.add, onTap: () => controller.itemNewDefaultPageOpen())],
+              rightIcons: [
+                NsgLigthAppBarIcon(
+                  icon: Icons.settings,
+                  onTap: () => NsgMainFormColumnsDialog(controller: controller).show(context),
+                ),
+                NsgLigthAppBarIcon(icon: Icons.add, onTap: () => controller.itemNewDefaultPageOpen()),
+              ],
             ),
             Expanded(child: NsgBaseTable(controller: controller.tableController!)),
           ],
