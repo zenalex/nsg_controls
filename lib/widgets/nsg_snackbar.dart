@@ -107,15 +107,21 @@ void nsgSnackbar({
       );
     }
 
+    // Ограничение ширины 640 — как было у Flushbar, иначе на десктопе плашка
+    // растягивается во всю ширину окна.
+    //
+    // Ограничиваем ШИРИНУ САМОГО SnackBar, а не content через ConstrainedBox:
+    // первая версия сжимала только содержимое, а подложка всё равно занимала всю
+    // ширину — на окне 1440 плашка выходила ~1380 (поймано живым прогоном).
+    //
+    // На узких экранах width не задаём: SnackBar сам расставит отступы по краям,
+    // а жёсткие 640 просто вылезли бы за экран.
+    final screenWidth = MediaQuery.maybeOf(messenger.context)?.size.width;
+    final barWidth = (screenWidth != null && screenWidth > 672) ? 640.0 : null;
+
     return SnackBar(
-      content: Center(
-        child: ConstrainedBox(
-          // maxWidth: 640 — как было у Flushbar, иначе на десктопе плашка
-          // растягивается во всю ширину окна.
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: content,
-        ),
-      ),
+      content: content,
+      width: barWidth,
       backgroundColor: backColor ?? ControlOptions.instance.colorMain,
       duration: duration ?? const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
