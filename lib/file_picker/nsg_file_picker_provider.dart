@@ -190,7 +190,13 @@ class NsgFilePickerProvider {
           String fileName = element.name;
           var fileType = getFileTypeByPath(fileName);
           if (fileType == NsgFilePickerObjectType.image) {
-            var resizedBytes = Helper.imageResize(bytes: element.bytes!, maxHeight: imageMaxHeight.toInt());
+            Uint8List? resizedBytes;
+            try {
+              resizedBytes = Helper.imageResize(bytes: element.bytes!, maxHeight: imageMaxHeight.toInt());
+            } catch (_) {
+              error = '$fileName - ${tranControls.unsupported_format}';
+              continue;
+            }
             fileBytes = resizedBytes;
             objectsList.add(
               NsgFilePickerObject(
@@ -419,8 +425,14 @@ class NsgFilePickerProvider {
 
         /* ------------------------------------------------------------------- ЕСЛИ ВЕБ ------------------------------------------------------------------- */
         if (kIsWeb) {
-          element.bytes!.clear();
-          element.bytes!.addAll(Helper.imageResize(bytes: element.bytes!, maxHeight: imageMaxHeight.toInt(), maxWidth: imageMaxWidth.toInt()));
+          try {
+            final resized = Helper.imageResize(bytes: element.bytes!, maxHeight: imageMaxHeight.toInt(), maxWidth: imageMaxWidth.toInt());
+            element.bytes!.clear();
+            element.bytes!.addAll(resized);
+          } catch (_) {
+            error = '${element.name} - ${tranControls.unsupported_format}';
+            continue;
+          }
           var file = File(element.bytes.toString());
           if (!ignoreMaxSize && (await file.length()) > fileMaxSize) {
             error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
@@ -455,7 +467,12 @@ class NsgFilePickerProvider {
             var file = File(element.path!);
             var asBytes = await file.readAsBytes();
             if (fileType == NsgFilePickerObjectType.image) {
-              asBytes = Helper.imageResize(bytes: asBytes, maxHeight: imageMaxHeight.toInt());
+              try {
+                asBytes = Helper.imageResize(bytes: asBytes, maxHeight: imageMaxHeight.toInt());
+              } catch (_) {
+                error = '${element.name} - ${tranControls.unsupported_format}';
+                continue;
+              }
               if (!ignoreMaxSize && (asBytes.length) > fileMaxSize) {
                 error = tranControls.file_size_exceeded((fileMaxSize / 1024).toString());
               }
