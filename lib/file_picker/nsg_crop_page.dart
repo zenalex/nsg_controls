@@ -125,7 +125,13 @@ class NsgCropPageState extends State<NsgCropPage> {
                   Crop(
                     image: widget.imageDataList[_currentImage],
                     controller: _controller,
-                    onCropped: (image) {
+                    onCropped: (result) {
+                      // crop_your_image 2.x отдаёт CropResult вместо голых
+                      // байтов: помимо успеха он умеет сообщить об ошибке.
+                      // Неуспех молча игнорируем — поведение как раньше,
+                      // когда колбэк на ошибке просто не звался.
+                      if (result is! CropSuccess) return;
+                      final image = result.croppedImage;
                       /*final img = Image.memory(image, 
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -134,12 +140,17 @@ class NsgCropPageState extends State<NsgCropPage> {
                       widget.imageDataList[_currentImage] = image;
                       currentImage = _currentImage;
                     },
-                    initialRectBuilder: (rect, rect2) => Rect.fromLTRB(rect.left + 24, rect.top + 32, rect.right - 24, rect.bottom - 32),
+                    // 2.x: initialArea/initialSize схлопнули в InitialRectBuilder,
+                    // голую функцию сюда больше не присвоить.
+                    initialRectBuilder: InitialRectBuilder.withBuilder(
+                      (viewportRect, imageRect) => Rect.fromLTRB(viewportRect.left + 24, viewportRect.top + 32, viewportRect.right - 24, viewportRect.bottom - 32),
+                    ),
                     withCircleUi: widget.isCircle,
                     baseColor: ControlOptions.instance.colorMainLighter,
                     maskColor: Colors.black.withAlpha(150),
                     radius: 20,
-                    onMoved: (newRect) {},
+                    // 2.x: onMoved вторым аргументом отдаёт imageRect.
+                    onMoved: (viewportRect, imageRect) {},
                     onStatusChanged: (status) {
                       if (status == CropStatus.ready) {
                         _controller.aspectRatio = widget.aspectRatio;
