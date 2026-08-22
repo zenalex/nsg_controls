@@ -29,6 +29,7 @@ export 'file_picker/nsg_file_picker_controller.dart';
 export 'file_picker/nsg_file_picker_gallery.dart';
 export 'file_picker/nsg_file_picker_provider.dart';
 export 'nsg_icons.dart';
+export 'nsg_color.dart';
 export 'dialog/nsg_future_progress_exception.dart';
 export 'nsg_data_controller_ui.dart';
 export 'ui/nsg_data_ui.dart';
