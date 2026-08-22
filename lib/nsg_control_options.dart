@@ -508,6 +508,8 @@ class ControlOptions {
     NsgBaseController.saveOrCancelDefaultDialog =
         NsgDialogSaveOrCancel.saveOrCancel;
     NsgBaseController.showErrorByString = NsgErrorWidget.showErrorByString;
+    // Провайдер данных больше не рисует снекбар сам — отдаёт текст сюда.
+    NsgDataProvider.showError = NsgErrorWidget.showErrorByString;
   }
 
   static ControlOptions instance = ControlOptions();

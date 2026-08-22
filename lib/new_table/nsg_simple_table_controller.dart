@@ -5,7 +5,8 @@ import 'package:nsg_controls/new_table/nsg_table_controller.dart';
 import 'package:nsg_controls/new_table/table_overlay.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:nsg_data/nsg_data.dart';
-import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
+import 'package:nsg_controls/ui/nsg_data_ui.dart';
+import 'package:nsg_controls/ui/nsg_loading_scroll_controller.dart';
 
 class NsgSimpleTableController extends NsgTableController {
   NsgSimpleTableController({

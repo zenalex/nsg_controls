@@ -15,6 +15,7 @@ import 'package:nsg_controls/new_table/table_overlay.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:nsg_controls/widgets/nsg_error_widget.dart';
 import 'package:nsg_data/nsg_data.dart';
+import 'package:nsg_controls/ui/nsg_data_ui.dart';
 
 class NsgMainFormController extends NsgDataController<NsgDataItem> with NsgDataUI {
   NsgMainFormController(Type itemType) : super() {

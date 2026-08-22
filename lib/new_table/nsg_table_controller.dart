@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/new_table/table_overlay.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
-import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
+import 'package:nsg_controls/ui/nsg_loading_scroll_controller.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 abstract class NsgTableController<T> extends ChangeNotifier {

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:nsg_controls/helpers.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
-import 'package:nsg_data/ui/nsg_loading_scroll_controller.dart';
 
 extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
   ///Виджет списка объектов
