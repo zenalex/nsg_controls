@@ -79,10 +79,15 @@ class NsgSelection {
           onDoubleTap: () {
             selectedElement = element;
             controller?.selectedItem = element;
-            _onSelectedItem?.call(element);
+            // Диалог закрываем ДО пользовательского колбэка. Колбэк может синхронно
+            // открыть собственный маршрут (например прогресс через
+            // nsgFutureProgressAndException), и тогда pop снимет ЕГО, а окно выбора
+            // останется на экране — со стороны выглядит как «кнопка не нажимается».
+            final callback = _onSelectedItem;
             if (_dialogContext != null) {
               Navigator.of(_dialogContext!).pop();
             }
+            callback?.call(element);
           },
           child: _controllerUpdateWidget(element),
         ),
@@ -144,11 +149,16 @@ class NsgSelection {
           textEditController: textEditingController,
           confirmText: 'Подтвердить',
           onConfirm: () {
-            if (selectedElement != null) {
-              controller?.selectedItem = selectedElement;
-              onSelected(selectedElement!);
-            }
+            // Диалог закрываем ДО пользовательского колбэка. Колбэк может синхронно
+            // открыть собственный маршрут (например прогресс через
+            // nsgFutureProgressAndException), и тогда pop снимет ЕГО, а окно выбора
+            // останется на экране — со стороны выглядит как «кнопка не нажимается».
+            final selected = selectedElement;
             Navigator.pop(cont);
+            if (selected != null) {
+              controller?.selectedItem = selected;
+              onSelected(selected);
+            }
           },
         );
       },
@@ -175,8 +185,9 @@ class NsgSelection {
                     },
                     onDoubleTap: () {
                       selectedString = item;
-                      onSelected(item);
+                      // См. комментарий выше: сначала закрываем, потом колбэк.
                       Navigator.of(cont).pop();
+                      onSelected(item);
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -205,10 +216,12 @@ class NsgSelection {
               textEditController: textEditingController,
               confirmText: 'Подтвердить',
               onConfirm: () {
-                if (selectedString != null) {
-                  onSelected(selectedString!);
-                }
+                // См. комментарий выше: сначала закрываем, потом колбэк.
+                final selected = selectedString;
                 Navigator.pop(cont);
+                if (selected != null) {
+                  onSelected(selected);
+                }
               },
             );
           },

@@ -98,8 +98,11 @@ class NsgMultiSelection {
             editPageController: controller,
             elementEditPageName: controllerItem.defaultEditPage,
             onConfirm: () {
-              onSelected(_selectedItems);
+              // Сначала закрываем окно, потом колбэк: он может синхронно открыть
+              // свой маршрут (прогресс), и Get.back() снял бы его вместо нас.
+              final selected = _selectedItems;
               Get.back();
+              onSelected(selected);
             })),
         barrierDismissible: false);
   }
