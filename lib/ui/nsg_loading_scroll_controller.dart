@@ -10,6 +10,29 @@ class NsgLoadingScrollController<T> extends ScrollController {
           return;
         }
         final p = positions.first;
+        // Содержимое списка изменилось - значит предыдущая подгрузка что-то
+        // принесла (или список перечитали целиком), и счётчик попыток пора
+        // обнулить. Это единственный сброс, который работает на КОРОТКОМ списке:
+        // ветка по позиции (ниже) требует уйти от низа дальше чем на
+        // [positionBeforeLoad], а при maxScrollExtent < positionBeforeLoad правая
+        // часть её условия отрицательна, тогда как pixels снизу ограничен
+        // minScrollExtent, - недостижимо ни при какой прокрутке.
+        //
+        // Сравнивается ПРЕДЫДУЩИЙ замер, и годится изменение в любую сторону:
+        // после refreshData запас прокрутки схлопывается обратно к первой
+        // странице, и требовать здесь именно роста значило бы намертво запереть
+        // счётчик, если новая выборка тоже короче порога.
+        //
+        // А вот привязывать сброс к самому факту завершения загрузки нельзя:
+        // холостой вызов, который ничего не принёс, тоже завершается успехом, а
+        // сеттер статуса зовёт notifyListeners, то есть этого же слушателя, -
+        // вышла бы вечная карусель таймеров нулевой длины. Изменение запаса
+        // прокрутки как раз и отличает сделанную работу от холостой.
+        if (_lastMaxExtent != p.maxScrollExtent) {
+          _attCount = 0;
+          _errCount = 0;
+          _lastMaxExtent = p.maxScrollExtent;
+        }
         if (_attCount < attemptCount &&
             _stat != NsgLoadingScrollStatus.loading &&
             _stat != NsgLoadingScrollStatus.pause &&
@@ -21,15 +44,12 @@ class NsgLoadingScrollController<T> extends ScrollController {
               Future(function!).then((T val) {
                 _value = val;
                 _stat = NsgLoadingScrollStatus.success;
-              });
+              }, onError: _failAttempt);
             } else {
               _stat = NsgLoadingScrollStatus.empty;
             }
-          } catch (er) {
-            _errCount++;
-            if (_errCount > 3) {
-              _stat = NsgLoadingScrollStatus.error;
-            }
+          } catch (er, st) {
+            _failAttempt(er, st);
           }
         } else if (!(p.pixels >= p.maxScrollExtent - positionBeforeLoad)) {
           _attCount = 0;
@@ -55,6 +75,10 @@ class NsgLoadingScrollController<T> extends ScrollController {
 
   int _errCount = 0;
   int _attCount = 0;
+
+  /// Запас прокрутки на предыдущем срабатывании слушателя. По его ИЗМЕНЕНИЮ
+  /// видно, что содержимое списка обновилось, и счётчик попыток можно обнулять.
+  double _lastMaxExtent = 0;
 
   /// Схлопывает несколько scheduleRestoreScrollOffsetAfterRebuild подряд (per-frame obx).
   int _restoreScrollSeq = 0;
@@ -87,7 +111,25 @@ class NsgLoadingScrollController<T> extends ScrollController {
   startUpdate() {
     _errCount = 0;
     _attCount = 0;
+    _lastMaxExtent = 0;
     _status = NsgLoadingScrollStatus.init;
+  }
+
+  /// Неудачная попытка подгрузки.
+  ///
+  /// Из [NsgLoadingScrollStatus.loading] надо выйти при ЛЮБОМ исходе: пока
+  /// статус loading, условие запуска закрыто независимо от счётчика попыток -
+  /// список молчит навсегда, а потребители, которые по этому статусу рисуют
+  /// крутилку (nsg_data_controller_ui, таблицы), показывают её вечно.
+  /// Раньше сюда попадали только при СИНХРОННОМ броске и только начиная с
+  /// четвёртой ошибки: у [Future.then] не было onError, и асинхронная ошибка
+  /// уходила в никуда вместе со статусом.
+  void _failAttempt(Object error, StackTrace stackTrace) {
+    _errCount++;
+    // Порог в три ошибки - замысел исходного кода, он сохранён: рябь сети даёт
+    // право на следующую попытку, устойчивый отказ переводит список в error.
+    // Изменилось только то, что из loading выходят ОБЕ ветки, а не одна.
+    _stat = _errCount > 3 ? NsgLoadingScrollStatus.error : NsgLoadingScrollStatus.success;
   }
 
   /// Восстановить [lastOffset] после пересборки списка. Без [position] при 0/2+ Scrollable; один jumpTo на серию rebuild.
