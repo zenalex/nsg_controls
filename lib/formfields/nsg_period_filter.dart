@@ -277,14 +277,21 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
     if (selectedRange == null || !mounted || !context.mounted) return;
 
     if (_timeselected) {
-      date.beginDate = Jiffy.parseFromDateTime(selectedRange.start)
+      final selectedBegin = Jiffy.parseFromDateTime(selectedRange.start)
           .startOf(Unit.day)
           .add(hours: time1.hour, minutes: time1.minute)
           .dateTime;
-      date.endDate = Jiffy.parseFromDateTime(selectedRange.end)
+      var selectedEnd = Jiffy.parseFromDateTime(selectedRange.end)
           .startOf(Unit.day)
           .add(hours: time2.hour, minutes: time2.minute)
           .dateTime;
+      // A same-day date range can still describe an overnight time range.
+      // Preserve the selected times and move only its end to the next day.
+      if (selectedEnd.isBefore(selectedBegin)) {
+        selectedEnd = selectedEnd.add(const Duration(days: 1));
+      }
+      date.beginDate = selectedBegin;
+      date.endDate = selectedEnd;
       _selected = NsgPeriodType.periodWidthTime;
       date.selectedType = _selected;
       date.setToPeriodWithTime(date);

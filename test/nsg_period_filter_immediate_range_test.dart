@@ -201,6 +201,79 @@ void main() {
     expect(source.selectedType, NsgPeriodType.periodWidthTime);
   });
 
+  testWidgets('same-day range keeps an overnight end after its begin', (tester) async {
+    final source = NsgPeriod()
+      ..beginDate = DateTime(2026, 9, 2, 20)
+      ..endDate = DateTime(2026, 9, 3, 8)
+      ..selectedType = NsgPeriodType.periodWidthTime;
+    final selected = DateTimeRange(start: DateTime(2026, 9, 5), end: DateTime(2026, 9, 5));
+    await openPopup(
+      tester,
+      source: source,
+      drafts: <NsgPeriod>[],
+      periodTimeEnabled: true,
+      onConfirm: () {},
+      rangePicker: routedRangePicker(selected, onOpen: () {}),
+    );
+
+    await tester.tap(periodChip());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Подтвердить диапазон'));
+    await tester.pumpAndSettle();
+
+    expect(source.beginDate, DateTime(2026, 9, 5, 20));
+    expect(source.endDate, DateTime(2026, 9, 6, 8));
+    expect(source.endDate.isAfter(source.beginDate), isTrue);
+  });
+
+  testWidgets('same-day range permits equal begin and end time', (tester) async {
+    final source = NsgPeriod()
+      ..beginDate = DateTime(2026, 9, 2, 8, 15)
+      ..endDate = DateTime(2026, 9, 2, 8, 15)
+      ..selectedType = NsgPeriodType.periodWidthTime;
+    final selected = DateTimeRange(start: DateTime(2026, 9, 5), end: DateTime(2026, 9, 5));
+    await openPopup(
+      tester,
+      source: source,
+      drafts: <NsgPeriod>[],
+      periodTimeEnabled: true,
+      onConfirm: () {},
+      rangePicker: routedRangePicker(selected, onOpen: () {}),
+    );
+
+    await tester.tap(periodChip());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Подтвердить диапазон'));
+    await tester.pumpAndSettle();
+
+    expect(source.beginDate, DateTime(2026, 9, 5, 8, 15));
+    expect(source.endDate, source.beginDate);
+  });
+
+  testWidgets('multi-day range does not extend an overnight clock pair', (tester) async {
+    final source = NsgPeriod()
+      ..beginDate = DateTime(2026, 9, 2, 20)
+      ..endDate = DateTime(2026, 9, 3, 8)
+      ..selectedType = NsgPeriodType.periodWidthTime;
+    final selected = DateTimeRange(start: DateTime(2026, 9, 5), end: DateTime(2026, 9, 6));
+    await openPopup(
+      tester,
+      source: source,
+      drafts: <NsgPeriod>[],
+      periodTimeEnabled: true,
+      onConfirm: () {},
+      rangePicker: routedRangePicker(selected, onOpen: () {}),
+    );
+
+    await tester.tap(periodChip());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Подтвердить диапазон'));
+    await tester.pumpAndSettle();
+
+    expect(source.beginDate, DateTime(2026, 9, 5, 20));
+    expect(source.endDate, DateTime(2026, 9, 6, 8));
+  });
+
   testWidgets('ordinary chips keep the existing OK flow', (tester) async {
     final source = initialPeriod();
     final drafts = <NsgPeriod>[];
