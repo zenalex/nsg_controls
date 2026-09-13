@@ -67,6 +67,22 @@ class NsgPopUp extends StatefulWidget {
     this.customIconOnTap,
   });
 
+  /// Confirms the nearest popup exactly as its header check button does.
+  /// Returns false when [context] is not inside a confirmable [NsgPopUp].
+  static bool confirmOf(BuildContext context) {
+    final popup = context.findAncestorStateOfType<_NsgPopUpState>();
+    return popup?._confirm() ?? false;
+  }
+
+  /// Registers work that must happen only when the surrounding popup is confirmed.
+  /// The returned callback removes the registration.
+  static VoidCallback? registerBeforeConfirm(BuildContext context, VoidCallback callback) {
+    final popup = context.findAncestorStateOfType<_NsgPopUpState>();
+    if (popup == null) return null;
+    popup._beforeConfirm.add(callback);
+    return () => popup._beforeConfirm.remove(callback);
+  }
+
   @override
   State<NsgPopUp> createState() => _NsgPopUpState();
 }
@@ -74,6 +90,17 @@ class NsgPopUp extends StatefulWidget {
 class _NsgPopUpState extends State<NsgPopUp> {
   final ScrollController controller1 = ScrollController();
   final ScrollController controller2 = ScrollController();
+  final Set<VoidCallback> _beforeConfirm = {};
+
+  bool _confirm() {
+    if (widget.onConfirm == null) return false;
+    for (final callback in List<VoidCallback>.from(_beforeConfirm)) {
+      callback();
+    }
+    if (widget.popOnConfirm) Navigator.of(context).pop();
+    widget.onConfirm!();
+    return true;
+  }
 
   @override
   void initState() {
@@ -198,8 +225,7 @@ class _NsgPopUpState extends State<NsgPopUp> {
                       icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: nsgtheme.colorPrimary, size: 24), // set your color here
                       onPressed: () async {
                         if (widget.onConfirm != null && widget.showCloseButton == false) {
-                          if (widget.popOnConfirm) Navigator.of(context).pop();
-                          widget.onConfirm!();
+                          _confirm();
                         }
                         if (widget.showCloseButton == true) {
                           if (widget.onCancel != null) {
