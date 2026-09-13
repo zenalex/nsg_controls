@@ -22,9 +22,22 @@ NsgPeriod _cloneNsgPeriod(NsgPeriod source) {
     ..beginDate = source.beginDate
     ..endDate = source.endDate
     ..selectedType = source.selectedType
-    ..customPeriods = List<NsgPeriodCustomPeriod>.from(source.customPeriods)
+    ..customPeriods = source.customPeriods
+        .map((item) => NsgPeriodCustomPeriod(name: item.name, beginDate: item.beginDate, endDate: item.endDate))
+        .toList()
     ..customPeriodsTitle = source.customPeriodsTitle
     ..customPeriodsIndex = source.customPeriodsIndex;
+}
+
+void _copyNsgPeriod(NsgPeriod source, NsgPeriod target) {
+  final copy = _cloneNsgPeriod(source);
+  target
+    ..beginDate = copy.beginDate
+    ..endDate = copy.endDate
+    ..selectedType = copy.selectedType
+    ..customPeriods = copy.customPeriods
+    ..customPeriodsTitle = copy.customPeriodsTitle
+    ..customPeriodsIndex = copy.customPeriodsIndex;
 }
 
 /// Виджет фильтра периода по датам (времени) + метод открытия диалогового окна с виджетом контента фильтра
@@ -205,15 +218,39 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
   NsgPeriod date = NsgPeriod();
   late NsgPeriod period;
   int customPeriodsIndex = 0;
+  VoidCallback? _unregisterBeforeConfirm;
 
   @override
   void initState() {
     super.initState();
     period = widget.period ?? widget.controller.controllerFilter.nsgPeriod;
     date = _cloneNsgPeriod(period);
-    _selected = period.type;
+    // Custom periods cannot be inferred from dates; built-in periods retain the
+    // legacy date-based detection so stale/default selectedType values stay safe.
+    _selected = period.selectedType == NsgPeriodType.custom ? NsgPeriodType.custom : period.type;
     date.selectedType = _selected;
     _timeselected = widget.periodTimeEnabled;
+    time1 = date.beginDate;
+    time2 = date.endDate;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _unregisterBeforeConfirm?.call();
+    _unregisterBeforeConfirm = NsgPopUp.registerBeforeConfirm(context, _commitDraft);
+  }
+
+  @override
+  void dispose() {
+    _unregisterBeforeConfirm?.call();
+    super.dispose();
+  }
+
+  void _commitDraft() {
+    _copyNsgPeriod(date, period);
+    widget.controller.controllerFilter.periodSelected = _selected;
+    widget.controller.controllerFilter.periodTimeEnabled = _timeselected;
   }
 
   Future<void> _pickPeriodAndConfirm(BuildContext context) async {
@@ -257,8 +294,6 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
       date.selectedType = _selected;
       date.setToPeriod(date);
     }
-    widget.controller.controllerFilter.periodSelected = _selected;
-    widget.controller.controllerFilter.periodTimeEnabled = _timeselected;
     widget.onSelect?.call(date);
     NsgPopUp.confirmOf(context);
   }
@@ -304,10 +339,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
       }
     }
 
-    widget.controller.controllerFilter.periodSelected = _selected;
-    widget.controller.controllerFilter.periodTimeEnabled = _timeselected;
     _setToSelected(_selected);
-    widget.onSelect!(date);
+    widget.onSelect?.call(date);
     //print(_selected);
 
     custom() {

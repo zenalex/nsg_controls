@@ -25,8 +25,10 @@ void main() {
     required NsgPeriodRangePicker rangePicker,
     required List<NsgPeriod> drafts,
     required VoidCallback onConfirm,
+    NsgDataController<NsgDataItem>? dataController,
+    bool periodTimeEnabled = false,
   }) async {
-    final controller = NsgDataController<NsgDataItem>(requestOnInit: false);
+    final controller = dataController ?? NsgDataController<NsgDataItem>(requestOnInit: false);
     await tester.pumpWidget(
       GetMaterialApp(
         locale: const Locale('ru'),
@@ -43,6 +45,7 @@ void main() {
                     NsgPeriodFilterContent(
                       controller: controller,
                       period: source,
+                      periodTimeEnabled: periodTimeEnabled,
                       rangePicker: rangePicker,
                       onSelect: drafts.add,
                     ),
@@ -169,15 +172,33 @@ void main() {
     expect(find.byType(NsgPopUp), findsOneWidget);
     expect(source.beginDate, originalBegin);
     expect(source.endDate, originalEnd);
-    expect(
-      drafts,
-      everyElement(
-        isA<NsgPeriod>()
-            .having((period) => period.beginDate, 'begin', originalBegin)
-            .having((period) => period.endDate, 'end', originalEnd),
-      ),
-      reason: 'повторная сборка может переотдать только исходный draft',
+    expect(drafts, isNotEmpty);
+    expect(drafts.last, isNot(same(source)));
+  });
+
+  testWidgets('range confirm preserves configured begin and end time', (tester) async {
+    final source = NsgPeriod()
+      ..beginDate = DateTime(2026, 1, 1, 10, 30)
+      ..endDate = DateTime(2026, 1, 2, 12, 45)
+      ..selectedType = NsgPeriodType.periodWidthTime;
+    final selected = DateTimeRange(start: DateTime(2026, 9, 2), end: DateTime(2026, 9, 3));
+    await openPopup(
+      tester,
+      source: source,
+      drafts: <NsgPeriod>[],
+      periodTimeEnabled: true,
+      onConfirm: () {},
+      rangePicker: routedRangePicker(selected, onOpen: () {}),
     );
+
+    await tester.tap(periodChip());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Подтвердить диапазон'));
+    await tester.pumpAndSettle();
+
+    expect(source.beginDate, DateTime(2026, 9, 2, 10, 30));
+    expect(source.endDate, DateTime(2026, 9, 3, 12, 45));
+    expect(source.selectedType, NsgPeriodType.periodWidthTime);
   });
 
   testWidgets('ordinary chips keep the existing OK flow', (tester) async {
@@ -222,15 +243,27 @@ void main() {
   testWidgets('outer cancel does not apply or mutate its source period', (
     tester,
   ) async {
-    final source = initialPeriod();
+    final customEntry = NsgPeriodCustomPeriod(
+      name: 'Сезон 2026',
+      beginDate: DateTime(2026, 1, 1),
+      endDate: DateTime(2026, 12, 31),
+    );
+    final source = initialPeriod()
+      ..customPeriods = [customEntry]
+      ..customPeriodsTitle = 'Сезон'
+      ..customPeriodsIndex = 0;
     final originalBegin = source.beginDate;
     final originalEnd = source.endDate;
+    final controller = NsgDataController<NsgDataItem>(requestOnInit: false);
+    controller.controllerFilter.periodSelected = NsgPeriodType.quarter;
+    controller.controllerFilter.periodTimeEnabled = true;
     final drafts = <NsgPeriod>[];
     var confirms = 0;
     await openPopup(
       tester,
       source: source,
       drafts: drafts,
+      dataController: controller,
       onConfirm: () => confirms++,
       rangePicker:
           ({
@@ -241,6 +274,9 @@ void main() {
             barrierDismissible = true,
           }) async => null,
     );
+
+    final contentState = tester.state<NsgPeriodFilterContentState>(find.byType(NsgPeriodFilterContent));
+    contentState.date.customPeriods.single.name = 'Изменённый draft';
 
     final monthChip = find.byWidgetPredicate(
       (widget) => widget is NsgCheckBox && widget.label == 'Месяц',
@@ -254,6 +290,53 @@ void main() {
     expect(confirms, 0);
     expect(source.beginDate, originalBegin);
     expect(source.endDate, originalEnd);
+    expect(source.selectedType, NsgPeriodType.year);
+    expect(source.customPeriodsTitle, 'Сезон');
+    expect(source.customPeriodsIndex, 0);
+    expect(source.customPeriods.single, same(customEntry));
+    expect(source.customPeriods.single.name, 'Сезон 2026');
+    expect(controller.controllerFilter.periodSelected, NsgPeriodType.quarter);
+    expect(controller.controllerFilter.periodTimeEnabled, isTrue);
+  });
+
+  testWidgets('direct popup OK commits all period metadata atomically', (tester) async {
+    final customEntry = NsgPeriodCustomPeriod(
+      name: 'Сезон 2026',
+      beginDate: DateTime(2026, 1, 1),
+      endDate: DateTime(2026, 12, 31),
+    );
+    final source = initialPeriod()
+      ..customPeriods = [customEntry]
+      ..customPeriodsTitle = 'Сезон'
+      ..customPeriodsIndex = 0;
+    final controller = NsgDataController<NsgDataItem>(requestOnInit: false);
+    controller.controllerFilter.periodSelected = NsgPeriodType.quarter;
+    var confirms = 0;
+    await openPopup(
+      tester,
+      source: source,
+      drafts: <NsgPeriod>[],
+      dataController: controller,
+      onConfirm: () => confirms++,
+      rangePicker: ({required context, required initialDateRange, required firstDate, required lastDate, barrierDismissible = true}) async => null,
+    );
+
+    final monthChip = find.byWidgetPredicate((widget) => widget is NsgCheckBox && widget.label == 'Месяц');
+    await tester.tap(monthChip);
+    await tester.pump();
+    expect(source.selectedType, NsgPeriodType.year, reason: 'selection is still a draft');
+    expect(controller.controllerFilter.periodSelected, NsgPeriodType.quarter);
+
+    await tester.tap(find.byIcon(Icons.check));
+    await tester.pumpAndSettle();
+
+    expect(confirms, 1);
+    expect(source.selectedType, NsgPeriodType.month);
+    expect(source.customPeriodsTitle, 'Сезон');
+    expect(source.customPeriodsIndex, 0);
+    expect(source.customPeriods.single.name, 'Сезон 2026');
+    expect(source.customPeriods.single, isNot(same(customEntry)));
+    expect(controller.controllerFilter.periodSelected, NsgPeriodType.month);
   });
 
   testWidgets(
