@@ -9,6 +9,24 @@ import 'package:nsg_data/nsg_data.dart';
 
 import '../helpers.dart';
 
+typedef NsgPeriodRangePicker = Future<DateTimeRange?> Function({
+  required BuildContext context,
+  required DateTimeRange initialDateRange,
+  required DateTime firstDate,
+  required DateTime lastDate,
+  bool barrierDismissible,
+});
+
+NsgPeriod _cloneNsgPeriod(NsgPeriod source) {
+  return NsgPeriod()
+    ..beginDate = source.beginDate
+    ..endDate = source.endDate
+    ..selectedType = source.selectedType
+    ..customPeriods = List<NsgPeriodCustomPeriod>.from(source.customPeriods)
+    ..customPeriodsTitle = source.customPeriodsTitle
+    ..customPeriodsIndex = source.customPeriodsIndex;
+}
+
 /// Виджет фильтра периода по датам (времени) + метод открытия диалогового окна с виджетом контента фильтра
 class NsgPeriodFilter extends StatefulWidget {
   final NsgDataController controller;
@@ -21,6 +39,7 @@ class NsgPeriodFilter extends StatefulWidget {
   final bool? isOpen;
   final bool showCompact;
   final NsgPeriod? period;
+  final NsgPeriodRangePicker rangePicker;
   const NsgPeriodFilter({
     super.key,
     required this.controller,
@@ -34,6 +53,7 @@ class NsgPeriodFilter extends StatefulWidget {
     this.showCompact = false,
     this.isOpen,
     this.period,
+    this.rangePicker = showNsgDateRangePicker,
   });
   @override
   State<NsgPeriodFilter> createState() => _NsgPeriodFilterState();
@@ -73,6 +93,7 @@ class _NsgPeriodFilterState extends State<NsgPeriodFilter> {
             controller: widget.controller,
             periodTimeEnabled: widget.controller.controllerFilter.periodTimeEnabled,
             period: widget.period,
+            rangePicker: widget.rangePicker,
           ),
         ],
         onConfirm: () {
@@ -161,8 +182,16 @@ class NsgPeriodFilterContent extends StatefulWidget {
   final bool periodTimeEnabled;
   final Function(NsgPeriod)? onSelect;
   final NsgPeriod? period;
+  final NsgPeriodRangePicker rangePicker;
 
-  const NsgPeriodFilterContent({super.key, this.onSelect, this.periodTimeEnabled = false, required this.controller, this.period});
+  const NsgPeriodFilterContent({
+    super.key,
+    this.onSelect,
+    this.periodTimeEnabled = false,
+    required this.controller,
+    this.period,
+    this.rangePicker = showNsgDateRangePicker,
+  });
 
   @override
   State<NsgPeriodFilterContent> createState() => NsgPeriodFilterContentState();
@@ -181,12 +210,57 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
   void initState() {
     super.initState();
     period = widget.period ?? widget.controller.controllerFilter.nsgPeriod;
-    date = period;
-    date.beginDate = period.beginDate;
-    date.endDate = period.endDate;
+    date = _cloneNsgPeriod(period);
     _selected = period.type;
     date.selectedType = _selected;
     _timeselected = widget.periodTimeEnabled;
+  }
+
+  Future<void> _pickPeriodAndConfirm(BuildContext context) async {
+    final minimumDate = DateTime.now().subtract(const Duration(days: 365 * 20));
+    final maximumDate = DateTime.now().add(const Duration(days: 365 * 20));
+    DateTime clamp(DateTime value) {
+      if (value.isBefore(minimumDate)) return minimumDate;
+      if (value.isAfter(maximumDate)) return maximumDate;
+      return value;
+    }
+
+    final initialStart = clamp(date.beginDate);
+    final initialEnd = clamp(date.endDate);
+    final selectedRange = await widget.rangePicker(
+      context: context,
+      initialDateRange: DateTimeRange(
+        start: initialStart,
+        end: initialEnd.isBefore(initialStart) ? initialStart : initialEnd,
+      ),
+      firstDate: minimumDate,
+      lastDate: maximumDate,
+    );
+    if (selectedRange == null || !mounted || !context.mounted) return;
+
+    if (_timeselected) {
+      date.beginDate = Jiffy.parseFromDateTime(selectedRange.start)
+          .startOf(Unit.day)
+          .add(hours: time1.hour, minutes: time1.minute)
+          .dateTime;
+      date.endDate = Jiffy.parseFromDateTime(selectedRange.end)
+          .startOf(Unit.day)
+          .add(hours: time2.hour, minutes: time2.minute)
+          .dateTime;
+      _selected = NsgPeriodType.periodWidthTime;
+      date.selectedType = _selected;
+      date.setToPeriodWithTime(date);
+    } else {
+      date.beginDate = selectedRange.start;
+      date.endDate = selectedRange.end;
+      _selected = NsgPeriodType.period;
+      date.selectedType = _selected;
+      date.setToPeriod(date);
+    }
+    widget.controller.controllerFilter.periodSelected = _selected;
+    widget.controller.controllerFilter.periodTimeEnabled = _timeselected;
+    widget.onSelect?.call(date);
+    NsgPopUp.confirmOf(context);
   }
 
   void _setToSelected(NsgPeriodType selected) {
@@ -483,25 +557,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         radio: true,
                                         label: tranControls.period,
                                         value: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? true : false,
-                                        onPressed: (value) {
-                                          if (_timeselected) {
-                                            _selected = NsgPeriodType.periodWidthTime;
-                                            date.selectedType = _selected;
-                                            date.beginDate = Jiffy.parseFromDateTime(
-                                              date.beginDate,
-                                            ).startOf(Unit.day).add(hours: time1.hour, minutes: time1.minute).dateTime;
-                                            date.endDate = Jiffy.parseFromDateTime(
-                                              date.endDate,
-                                            ).startOf(Unit.day).add(hours: time2.hour, minutes: time2.minute).dateTime;
-                                            date.setToPeriodWithTime(date);
-                                          } else {
-                                            _selected = NsgPeriodType.period;
-                                            date.selectedType = _selected;
-                                            date.setToPeriod(date);
-                                          }
-
-                                          setState(() {});
-                                        },
+                                        onPressed: (value) => _pickPeriodAndConfirm(context),
                                       ),
                                       Opacity(
                                         opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,

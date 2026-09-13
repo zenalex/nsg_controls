@@ -67,6 +67,16 @@ class NsgPopUp extends StatefulWidget {
     this.customIconOnTap,
   });
 
+  /// Confirms the nearest popup exactly as its header check button does.
+  /// Returns false when [context] is not inside a confirmable [NsgPopUp].
+  static bool confirmOf(BuildContext context) {
+    final popup = context.findAncestorWidgetOfExactType<NsgPopUp>();
+    if (popup?.onConfirm == null) return false;
+    if (popup!.popOnConfirm) Navigator.of(context).pop();
+    popup.onConfirm!();
+    return true;
+  }
+
   @override
   State<NsgPopUp> createState() => _NsgPopUpState();
 }
