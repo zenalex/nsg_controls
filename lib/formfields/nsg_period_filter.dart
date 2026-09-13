@@ -251,6 +251,7 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
     _copyNsgPeriod(date, period);
     widget.controller.controllerFilter.periodSelected = _selected;
     widget.controller.controllerFilter.periodTimeEnabled = _timeselected;
+    widget.onSelect?.call(date);
   }
 
   Future<void> _pickPeriodAndConfirm(BuildContext context) async {
@@ -294,7 +295,6 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
       date.selectedType = _selected;
       date.setToPeriod(date);
     }
-    widget.onSelect?.call(date);
     NsgPopUp.confirmOf(context);
   }
 
@@ -340,7 +340,6 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
     }
 
     _setToSelected(_selected);
-    widget.onSelect?.call(date);
     //print(_selected);
 
     custom() {

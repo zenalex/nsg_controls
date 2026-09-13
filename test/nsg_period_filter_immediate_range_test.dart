@@ -27,6 +27,7 @@ void main() {
     required VoidCallback onConfirm,
     NsgDataController<NsgDataItem>? dataController,
     bool periodTimeEnabled = false,
+    ValueChanged<NsgPeriod>? onSelect,
   }) async {
     final controller = dataController ?? NsgDataController<NsgDataItem>(requestOnInit: false);
     await tester.pumpWidget(
@@ -47,7 +48,7 @@ void main() {
                       period: source,
                       periodTimeEnabled: periodTimeEnabled,
                       rangePicker: rangePicker,
-                      onSelect: drafts.add,
+                      onSelect: onSelect ?? drafts.add,
                     ),
                   ],
                   onConfirm: onConfirm,
@@ -129,7 +130,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(confirms, 1);
-    expect(drafts, hasLength(2), reason: 'initial draft plus confirmed range');
+    expect(drafts, hasLength(1));
     expect(drafts.last.beginDate, start);
     expect(drafts.last.endDate, DateTime(2026, 9, 3, 23, 59, 59, 999, 999));
     expect(find.byType(NsgPopUp), findsNothing);
@@ -172,8 +173,7 @@ void main() {
     expect(find.byType(NsgPopUp), findsOneWidget);
     expect(source.beginDate, originalBegin);
     expect(source.endDate, originalEnd);
-    expect(drafts, isNotEmpty);
-    expect(drafts.last, isNot(same(source)));
+    expect(drafts, isEmpty);
   });
 
   testWidgets('range confirm preserves configured begin and end time', (tester) async {
@@ -257,6 +257,8 @@ void main() {
     final controller = NsgDataController<NsgDataItem>(requestOnInit: false);
     controller.controllerFilter.periodSelected = NsgPeriodType.quarter;
     controller.controllerFilter.periodTimeEnabled = true;
+    NsgPeriod assignedPeriod = source;
+    var selectionCallbacks = 0;
     final drafts = <NsgPeriod>[];
     var confirms = 0;
     await openPopup(
@@ -264,6 +266,10 @@ void main() {
       source: source,
       drafts: drafts,
       dataController: controller,
+      onSelect: (value) {
+        selectionCallbacks++;
+        assignedPeriod = value;
+      },
       onConfirm: () => confirms++,
       rangePicker:
           ({
@@ -295,6 +301,8 @@ void main() {
     expect(source.customPeriodsIndex, 0);
     expect(source.customPeriods.single, same(customEntry));
     expect(source.customPeriods.single.name, 'Сезон 2026');
+    expect(selectionCallbacks, 0);
+    expect(assignedPeriod, same(source));
     expect(controller.controllerFilter.periodSelected, NsgPeriodType.quarter);
     expect(controller.controllerFilter.periodTimeEnabled, isTrue);
   });
@@ -312,12 +320,23 @@ void main() {
     final controller = NsgDataController<NsgDataItem>(requestOnInit: false);
     controller.controllerFilter.periodSelected = NsgPeriodType.quarter;
     var confirms = 0;
+    var selectionCallbacks = 0;
+    var externalConfirmSawCommittedDraft = false;
+    NsgPeriod assignedPeriod = source;
     await openPopup(
       tester,
       source: source,
       drafts: <NsgPeriod>[],
       dataController: controller,
-      onConfirm: () => confirms++,
+      onSelect: (value) {
+        selectionCallbacks++;
+        assignedPeriod = value;
+      },
+      onConfirm: () {
+        confirms++;
+        externalConfirmSawCommittedDraft =
+            selectionCallbacks == 1 && assignedPeriod.selectedType == NsgPeriodType.month;
+      },
       rangePicker: ({required context, required initialDateRange, required firstDate, required lastDate, barrierDismissible = true}) async => null,
     );
 
@@ -326,16 +345,60 @@ void main() {
     await tester.pump();
     expect(source.selectedType, NsgPeriodType.year, reason: 'selection is still a draft');
     expect(controller.controllerFilter.periodSelected, NsgPeriodType.quarter);
+    expect(selectionCallbacks, 0);
+    expect(assignedPeriod, same(source));
 
     await tester.tap(find.byIcon(Icons.check));
     await tester.pumpAndSettle();
 
     expect(confirms, 1);
+    expect(externalConfirmSawCommittedDraft, isTrue);
+    expect(selectionCallbacks, 1);
+    expect(assignedPeriod.selectedType, NsgPeriodType.month);
     expect(source.selectedType, NsgPeriodType.month);
     expect(source.customPeriodsTitle, 'Сезон');
     expect(source.customPeriodsIndex, 0);
     expect(source.customPeriods.single.name, 'Сезон 2026');
     expect(source.customPeriods.single, isNot(same(customEntry)));
+    expect(controller.controllerFilter.periodSelected, NsgPeriodType.month);
+  });
+
+  testWidgets('custom draft assignment is not exposed when outer route is cancelled', (tester) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 0.5;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final source = initialPeriod()
+      ..customPeriods = [
+        NsgPeriodCustomPeriod(
+          name: '',
+          beginDate: DateTime(2026, 1, 1),
+          endDate: DateTime(2026, 12, 31, 23, 59, 59, 999),
+        ),
+      ]
+      ..customPeriodsTitle = 'Сезон';
+    final controller = NsgDataController<NsgDataItem>(requestOnInit: false);
+    NsgPeriod assignedPeriod = source;
+    var selectionCallbacks = 0;
+    await openPopup(
+      tester,
+      source: source,
+      drafts: <NsgPeriod>[],
+      dataController: controller,
+      onSelect: (value) {
+        selectionCallbacks++;
+        assignedPeriod = value;
+      },
+      onConfirm: () {},
+      rangePicker: ({required context, required initialDateRange, required firstDate, required lastDate, barrierDismissible = true}) async => null,
+    );
+
+    await tester.tap(find.byWidgetPredicate((widget) => widget is NsgCheckBox && widget.label == 'Сезон'));
+    await tester.pump();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(selectionCallbacks, 0);
+    expect(assignedPeriod, same(source));
+    expect(source.selectedType, NsgPeriodType.year);
     expect(controller.controllerFilter.periodSelected, NsgPeriodType.month);
   });
 
