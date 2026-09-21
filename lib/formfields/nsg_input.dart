@@ -867,53 +867,56 @@ class _NsgInputState extends State<NsgInput> {
   }
 
   /// Оборачивание disabled текстового поля, чтобы обработать нажатие на него
+  ///
+  /// NSG-SOFT/futbolista-tasks#2437. Раньше форма дерева зависела от [clearIcon]:
+  /// у пустого поля корнем был GestureDetector, у непустого — Stack из
+  /// [_addClearIcon]. На первом же ребилде после ввода первого символа тип
+  /// корневого виджета менялся, `Widget.canUpdate` давал false, и поддерево с
+  /// TextFormField демонтировалось вместе с фокусом — Android закрывал
+  /// клавиатуру посреди набора.
+  ///
+  /// Поэтому обёртка теперь постоянная, а [clearIcon] управляет только
+  /// видимостью самой иконки. Отступ под неё и так резервировался по
+  /// `widget.showDeleteIcon` (см. getContentPadding), поэтому раскладка не
+  /// меняется.
   Widget _gestureWrap({required Widget interactiveWidget, required bool clearIcon}) {
     if (inputType == NsgInputType.stringValue && widget.onPressed == null) {
       // Оборачиваем в GestureDetector для активации фокуса при клике на любую область
-      return clearIcon == true
-          ? _addClearIcon(
-              GestureDetector(
-                onTap: () {
-                  if (!_disabled) {
-                    focus.requestFocus();
-                  }
-                },
-                child: AbsorbPointer(absorbing: false, child: interactiveWidget),
-              ),
-            )
-          : GestureDetector(
-              onTap: () {
-                if (!_disabled) {
-                  focus.requestFocus();
-                }
-              },
-              child: AbsorbPointer(absorbing: false, child: interactiveWidget),
-            );
+      return _addClearIcon(
+        GestureDetector(
+          onTap: () {
+            if (!_disabled) {
+              focus.requestFocus();
+            }
+          },
+          child: AbsorbPointer(absorbing: false, child: interactiveWidget),
+        ),
+        showIcon: clearIcon,
+      );
     } else {
       if (inputType == NsgInputType.phoneCode) {
         return interactiveWidget;
       }
-      return clearIcon == true
-          ? _addClearIcon(
-              InkWell(
-                onTap: _onPressed,
-                child: AbsorbPointer(child: interactiveWidget),
-              ),
-            )
-          : InkWell(
-              onTap: _onPressed,
-              child: AbsorbPointer(child: interactiveWidget),
-            );
+      return _addClearIcon(
+        InkWell(
+          onTap: _onPressed,
+          child: AbsorbPointer(child: interactiveWidget),
+        ),
+        showIcon: clearIcon,
+      );
     }
   }
 
   /// Оборачиваем Stack и добавляем иконку "очистить поле"
-  Widget _addClearIcon(Widget child) {
+  ///
+  /// Stack строится всегда — форма дерева не должна зависеть от того, пустое
+  /// поле или нет (#2437). [showIcon] гасит только саму иконку.
+  Widget _addClearIcon(Widget child, {required bool showIcon}) {
     return Stack(
       alignment: Alignment.centerRight,
       children: [
         child,
-        if (!_disabled && widget.showDeleteIcon)
+        if (showIcon && !_disabled && widget.showDeleteIcon)
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
