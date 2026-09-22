@@ -212,6 +212,7 @@ class NsgButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
           color: _backColor,
           child: InkWell(
+            mouseCursor: SystemMouseCursors.click,
             customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius)),
             //focusColor: _backHoverColor,
             //hoverColor: _backHoverColor,
@@ -238,6 +239,7 @@ class NsgButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius ?? ControlOptions.instance.borderRadius),
           color: disabled == true ? _backColor.withAlpha(128) : _backColor,
           child: InkWell(
+            mouseCursor: SystemMouseCursors.click,
             onTap: () async {
               if (disabled == true) {
                 if (onDisabledPressed != null) {
