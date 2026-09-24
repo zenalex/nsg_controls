@@ -118,6 +118,9 @@ class NsgInput extends StatefulWidget {
   /// Выравнивание текста
   final TextAlign textAlign;
 
+  /// Выравнивание лейбла
+  final AlignmentGeometry labelAlign;
+
   /// Тип поля ввода
   final TextFormFieldType? textFormFieldType;
 
@@ -153,6 +156,9 @@ class NsgInput extends StatefulWidget {
 
   /// Стиль текста в поле ввода
   final TextStyle? textStyle;
+
+  /// Стиль текста лейбла
+  final TextStyle? labelTextStyle;
 
   /// Заменяет  дефолтный виджет для bool значений на кастомный
   final Widget? boolWidget;
@@ -206,6 +212,7 @@ class NsgInput extends StatefulWidget {
     this.maxLenght,
     this.validateText = '',
     this.textAlign = TextAlign.left,
+    this.labelAlign = Alignment.centerLeft,
     required this.dataItem,
     required this.fieldName,
     this.showDeleteIcon = true,
@@ -248,6 +255,7 @@ class NsgInput extends StatefulWidget {
     this.showLock = true,
     this.floatingLabelBehavior = FloatingLabelBehavior.never,
     this.textStyle,
+    this.labelTextStyle,
     this.boolWidget,
     this.boolBoxPosition = BoolBoxPosition.end,
     this.contentPadding,
@@ -731,7 +739,7 @@ class _NsgInputState extends State<NsgInput> {
                           if (!nsgtheme.nsgInputHintHidden && (!focus.hasFocus && textController.text == ''))
                             IgnorePointer(
                               child: Align(
-                                alignment: Alignment.centerLeft,
+                                alignment: widget.labelAlign,
                                 child: Padding(
                                   padding: getHintPadding(),
                                   child: widget.hint != null
@@ -742,7 +750,9 @@ class _NsgInputState extends State<NsgInput> {
                                       : widget.labelWidget ??
                                             Text(
                                               (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName)) ? '${widget.label} *' : widget.label,
-                                              style: TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
+                                              style:
+                                                  widget.labelTextStyle ??
+                                                  TextStyle(fontSize: ControlOptions.instance.sizeM, color: nsgtheme.nsgInputHintColor),
                                             ),
                                 ),
                               ),
@@ -1166,7 +1176,7 @@ class _NsgInputState extends State<NsgInput> {
         form.selectFromArray(
           widget.label,
           (item) {
-            widget.dataItem.setFieldValue(widget.fieldName, selectionController!.selectedItem);
+            widget.dataItem.setFieldValue(widget.fieldName, item);
             if (widget.onChanged != null) {
               WidgetsBinding.instance.addPostFrameCallback((_) => widget.onChanged!(widget.dataItem));
             }
