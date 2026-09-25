@@ -72,6 +72,9 @@ class NsgCropPageState extends State<NsgCropPage> {
   final CropController _controller = CropController();
 
   var _currentImage = 0;
+
+  /// Обрезанная картинка подставлена в редактор и ещё разбирается.
+  bool _reloadingCroppedImage = false;
   //late List<Uint8List> _croppedDataList;
   set currentImage(int value) {
     setState(() {
@@ -138,6 +141,7 @@ class NsgCropPageState extends State<NsgCropPage> {
                         );*/
                       // _croppedDataList[_currentImage] = image;
                       widget.imageDataList[_currentImage] = image;
+                      _reloadingCroppedImage = true;
                       currentImage = _currentImage;
                     },
                     // 2.x: initialArea/initialSize схлопнули в InitialRectBuilder,
@@ -152,6 +156,15 @@ class NsgCropPageState extends State<NsgCropPage> {
                     // 2.x: onMoved вторым аргументом отдаёт imageRect.
                     onMoved: (viewportRect, imageRect) {},
                     onStatusChanged: (status) {
+                      if (status == CropStatus.ready && _reloadingCroppedImage) {
+                        // Этот ready отдаёт сам _crop() после onCropped, а
+                        // картинка к этому моменту уже подменена: редактор
+                        // снова в Preparing, и сеттер aspectRatio падает на
+                        // касте к Ready (#1777). Настоящий ready придёт, когда
+                        // разберётся новая картинка, — там и применим.
+                        _reloadingCroppedImage = false;
+                        return;
+                      }
                       if (status == CropStatus.ready) {
                         _controller.aspectRatio = widget.aspectRatio;
                         text = tranControls.prepare_photo;
