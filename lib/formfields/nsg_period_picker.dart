@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nsg_controls/dialog/show_nsg_dialog.dart';
-import 'package:nsg_controls/dialog/show_nsg_period_picker.dart';
 import 'package:nsg_controls/helpers.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -141,7 +140,11 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
     );
   }
 
-  /// Кастомная опция выбора вида периода. Пользователь выбирает NsgPeriodGranularity и уже при нажатии на виждет NsgPeriodWidget, выскакивает модальное окно с выбором времени
+  /// Кастомная опция выбора произвольного периода. По тапу открывается
+  /// системный `showNsgDateRangePicker` сразу — с календарём диапазона и
+  /// возможностью ввода дат текстом (встроенная функция Material-пикера).
+  /// После выбора период применяется и родительское окно picker-а закрывается
+  /// — симметрично `commonOption` (быстрый выбор).
   Widget customOption(BuildContext context, S state) {
     return Column(
       children: [
@@ -154,13 +157,29 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
           label: tranControls.arbitrary_period,
           onChanged: (period, periodGranularity) => event.changePeriod(period),
           onPressed: (period, periodGranularity) async {
-            final newPeriod = await showNsgPeriodPicker(context: context, period: state.period, minimumDate: state.minimumDate, maximumDate: state.maximumDate);
-            if (newPeriod != null) {
-              event.changePeriod(newPeriod);
+            final minimumDate = state.minimumDate;
+            final maximumDate = state.maximumDate;
+            DateTime clamp(DateTime value) {
+              if (value.isBefore(minimumDate)) return minimumDate;
+              if (value.isAfter(maximumDate)) return maximumDate;
+              return value;
             }
+
+            final initialStart = clamp(state.period.begin);
+            final initialEndClamped = clamp(state.period.end);
+            final initialEnd = initialEndClamped.isBefore(initialStart) ? initialStart : initialEndClamped;
+            final selectedRange = await showNsgDateRangePicker(
+              context: context,
+              initialDateRange: DateTimeRange(start: initialStart, end: initialEnd),
+              firstDate: minimumDate,
+              lastDate: maximumDate,
+            );
+            if (selectedRange == null) return;
+            if (!context.mounted) return;
+            event.changePeriod(NsgTypedPeriod.days(selectedRange.start, selectedRange.end), selected: true);
+            Navigator.pop(context);
           },
         ),
-        // if (state.period.type == NsgPeriodGranularity.custom)
       ],
     );
   }
