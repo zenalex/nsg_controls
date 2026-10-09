@@ -86,5 +86,7 @@
   "quick_selection": "Быстрый выбор",
   "custom_period": "Другой период",
   "period_begin_must_be_before_end": "Начало периода должно быть раньше конца периода",
-  "arbitrary_period": "Произвольный период"
+  "arbitrary_period": "Произвольный период",
+  "start": "Начало",
+  "end": "Конец"
 }

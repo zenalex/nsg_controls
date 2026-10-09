@@ -628,6 +628,18 @@ abstract class NsgControlsLocalizations {
   /// In ru, this message translates to:
   /// **'Произвольный период'**
   String get arbitrary_period;
+
+  /// No description provided for @start.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начало'**
+  String get start;
+
+  /// No description provided for @end.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конец'**
+  String get end;
 }
 
 class _NsgControlsLocalizationsDelegate

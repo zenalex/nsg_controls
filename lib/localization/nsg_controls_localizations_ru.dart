@@ -287,4 +287,10 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
 
   @override
   String get arbitrary_period => 'Произвольный период';
+
+  @override
+  String get start => 'Начало';
+
+  @override
+  String get end => 'Конец';
 }

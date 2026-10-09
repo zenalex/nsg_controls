@@ -86,5 +86,7 @@
   "quick_selection": "Quick selection",
   "custom_period": "Another period",
   "period_begin_must_be_before_end": "The start of the period must be before the end of the period",
-  "arbitrary_period": "Arbitrary period"
+  "arbitrary_period": "Arbitrary period",
+  "start": "Start",
+  "end": "End"
 }

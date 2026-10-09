@@ -285,4 +285,10 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
 
   @override
   String get arbitrary_period => 'Arbitrary period';
+
+  @override
+  String get start => 'Start';
+
+  @override
+  String get end => 'End';
 }

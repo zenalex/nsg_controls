@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:nsg_controls/dialog/show_nsg_dialog.dart';
+import 'package:nsg_controls/formfields/nsg_period_time_range_controls.dart';
 import 'package:nsg_controls/helpers.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
@@ -143,10 +145,35 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
   /// Кастомная опция выбора произвольного периода. По тапу открывается
   /// системный `showNsgDateRangePicker` сразу — с календарём диапазона и
   /// возможностью ввода дат текстом (встроенная функция Material-пикера).
-  /// После выбора период применяется и родительское окно picker-а закрывается
-  /// — симметрично `commonOption` (быстрый выбор).
+  /// После выбора период применяется, но родительское окно picker-а остаётся
+  /// открытым: ниже под виджетом даты показывается чекбокс «Время» и две
+  /// шкалы (начало/конец), которые превращают `days`-период в `custom` с
+  /// точностью до минуты — аналогично старому `NsgPeriodFilter`.
   Widget customOption(BuildContext context, S state) {
+    final isTimeSelected = state.period.type == NsgPeriodGranularity.custom;
+    final isSameDay = Jiffy.parseFromDateTime(state.period.begin).isSame(Jiffy.parseFromDateTime(state.period.end), unit: Unit.day);
+
+    DateTime withTime(DateTime baseDay, TimeOfDay time) {
+      final day = Jiffy.parseFromDateTime(baseDay).startOf(Unit.day);
+      return day.add(hours: time.hour, minutes: time.minute).dateTime;
+    }
+
+    NsgTypedPeriod applyPeriodTime(NsgTimeOfDayPeriod todPeriod) {
+      return NsgTypedPeriod(withTime(state.period.begin, todPeriod.begin), withTime(state.period.end, todPeriod.end));
+    }
+
+    NsgTypedPeriod applyBeginTime(TimeOfDay time) {
+      return NsgTypedPeriod(withTime(state.period.begin, time), state.period.end);
+    }
+
+    NsgTypedPeriod applyEndTime(TimeOfDay time) {
+      return NsgTypedPeriod(state.period.begin, withTime(state.period.end, time));
+    }
+
+    final timeEnabled = isTimeSelected && !state.disabled;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         NsgPeriodWidget(
           context: context,
@@ -155,7 +182,28 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
           period: state.period,
           periodGranularity: state.period.type, // Тип определяется автоматически для этого виджета
           label: tranControls.arbitrary_period,
+          timeText: state.period.dateText(isTimeSelected, Localizations.localeOf(context).languageCode),
           onChanged: (period, periodGranularity) => event.changePeriod(period),
+          // Стрелки сдвига периода. Для `.custom` штатный `NsgTypedPeriod.add/sub`
+          // сбрасывает время (add → startOf/endOf дня, sub при same-day — inDays=0,
+          // сдвиг нулевой), поэтому для custom считаем сдвиг и собираем период вручную,
+          // сохраняя hour/minute обеих границ.
+          onLeftButtonPressed: isTimeSelected
+              ? (period, _) {
+                  final shiftDays = period.end.difference(period.begin).inDays.clamp(1, 1 << 30);
+                  final nextBegin = Jiffy.parseFromDateTime(period.begin).subtract(days: shiftDays).dateTime;
+                  final nextEnd = Jiffy.parseFromDateTime(period.end).subtract(days: shiftDays).dateTime;
+                  event.changePeriod(NsgTypedPeriod(nextBegin, nextEnd));
+                }
+              : null,
+          onRightButtonPressed: isTimeSelected
+              ? (period, _) {
+                  final shiftDays = period.end.difference(period.begin).inDays.clamp(1, 1 << 30);
+                  final nextBegin = Jiffy.parseFromDateTime(period.begin).add(days: shiftDays).dateTime;
+                  final nextEnd = Jiffy.parseFromDateTime(period.end).add(days: shiftDays).dateTime;
+                  event.changePeriod(NsgTypedPeriod(nextBegin, nextEnd));
+                }
+              : null,
           onPressed: (period, periodGranularity) async {
             final minimumDate = state.minimumDate;
             final maximumDate = state.maximumDate;
@@ -176,10 +224,66 @@ class NsgPeriodPickerWidget<S extends NsgPeriodPickerState, E extends NsgPeriodP
             );
             if (selectedRange == null) return;
             if (!context.mounted) return;
-            event.changePeriod(NsgTypedPeriod.days(selectedRange.start, selectedRange.end), selected: true);
-            Navigator.pop(context);
+            final daysPeriod = NsgTypedPeriod.days(selectedRange.start, selectedRange.end);
+            if (isTimeSelected) {
+              // Переносим ранее выбранное время на новые даты.
+              final beginTime = TimeOfDay.fromDateTime(state.period.begin);
+              final endTime = TimeOfDay.fromDateTime(state.period.end);
+              event.changePeriod(NsgTypedPeriod(withTime(daysPeriod.begin, beginTime), withTime(daysPeriod.end, endTime)));
+            } else {
+              event.changePeriod(daysPeriod);
+            }
           },
         ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: NsgCheckBox(
+            simple: true,
+            label: tranControls.time,
+            value: isTimeSelected,
+            onPressed: (_) {
+              if (isTimeSelected) {
+                event.changePeriod(NsgTypedPeriod.days(state.period.begin, state.period.end));
+              } else {
+                // Включаем custom: по умолчанию 00:00 — 23:59.
+                event.changePeriod(
+                  NsgTypedPeriod(
+                    withTime(state.period.begin, const TimeOfDay(hour: 0, minute: 0)),
+                    withTime(state.period.end, const TimeOfDay(hour: 23, minute: 59)),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+        if (isTimeSelected)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: isSameDay
+                ? NsgTimeOfDayPeriodWidget(
+                    period: NsgTimeOfDayPeriod.date(state.period.begin, state.period.end),
+                    disabled: !timeEnabled,
+                    onChange: (newPeriod) => event.changePeriod(applyPeriodTime(newPeriod)),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      NsgTimeOfDayWidget(
+                        time: TimeOfDay.fromDateTime(state.period.begin),
+                        label: tranControls.start,
+                        disabled: !timeEnabled,
+                        onChange: (newTime) => event.changePeriod(applyBeginTime(newTime)),
+                      ),
+                      const SizedBox(height: 12),
+                      NsgTimeOfDayWidget(
+                        time: TimeOfDay.fromDateTime(state.period.end),
+                        label: tranControls.end,
+                        disabled: !timeEnabled,
+                        onChange: (newTime) => event.changePeriod(applyEndTime(newTime)),
+                      ),
+                    ],
+                  ),
+          ),
       ],
     );
   }
