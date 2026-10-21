@@ -12,11 +12,39 @@ import '../nsg_popup.dart';
 Future _copyToClipboard(String text, BuildContext dialogContext) async {
   await Clipboard.setData(ClipboardData(text: text));
 
-  nsgSnackbar(text: 'Скопировано в буфер обмена', type: NsgSnarkBarType.info);
+  nsgSnackbar(text: NsgErrorWidget.textCopiedToClipboard, type: NsgSnarkBarType.info);
 }
 
 ///Класс для отображение ошибок для пользователю
 class NsgErrorWidget {
+  /// Подписи диалога ошибки. Умолчания — русские строки прежних версий:
+  /// приложение, которое их не задаёт, увидит прежнее поведение. Приложение
+  /// с локализацией выставляет значения при старте и при смене языка.
+  static const String _defaultTextCopy = 'Копировать';
+  static const String _defaultTextCopiedToClipboard = 'Скопировано в буфер обмена';
+  static const String _defaultTextShare = 'Переслать';
+  static const String _defaultTextShareSubject = 'Отправить текст ошибки';
+
+  /// Кнопка копирования текста ошибки.
+  static String textCopy = _defaultTextCopy;
+
+  /// Снэкбар после копирования текста ошибки.
+  static String textCopiedToClipboard = _defaultTextCopiedToClipboard;
+
+  /// Кнопка пересылки текста ошибки.
+  static String textShare = _defaultTextShare;
+
+  /// Тема сообщения при пересылке текста ошибки.
+  static String textShareSubject = _defaultTextShareSubject;
+
+  /// Возвращает подписи к русским умолчаниям.
+  static void resetTexts() {
+    textCopy = _defaultTextCopy;
+    textCopiedToClipboard = _defaultTextCopiedToClipboard;
+    textShare = _defaultTextShare;
+    textShareSubject = _defaultTextShareSubject;
+  }
+
   static Future showErrorByString(String errorMessage, {String title = 'ERROR'}) async {
     await _showError(errorMessage, title);
   }
@@ -141,7 +169,7 @@ class NsgErrorWidget {
                         width: 150,
                         height: 40,
                         icon: Icons.copy,
-                        text: 'Копировать',
+                        text: NsgErrorWidget.textCopy,
                         onPressed: () {
                           _copyToClipboard(errorMessage, dialogContext);
                         },
@@ -154,9 +182,9 @@ class NsgErrorWidget {
                         width: 150,
                         height: 40,
                         icon: Icons.share,
-                        text: 'Переслать',
+                        text: NsgErrorWidget.textShare,
                         onPressed: () {
-                          SharePlus.instance.share(ShareParams(text: errorMessage, subject: 'Отправить текст ошибки'));
+                          SharePlus.instance.share(ShareParams(text: errorMessage, subject: NsgErrorWidget.textShareSubject));
                         },
                       ),
                     ),
