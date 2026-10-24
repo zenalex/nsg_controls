@@ -174,4 +174,20 @@ void main() {
 
     expect(loaded, greaterThan(2), reason: 'после усадки списка подгрузка обязана продолжиться');
   });
+
+  test('сеттер value пишет в поле, а не в сам себя', () {
+    // До починки сеттер присваивал сам себе (`value = val` вместо
+    // `_value = val`) — бесконечная рекурсия и StackOverflow при любом
+    // присваивании (NSG-SOFT/futbolista-tasks#3640).
+    final controller = NsgLoadingScrollController<int>();
+    addTearDown(controller.dispose);
+
+    var notified = 0;
+    controller.addListener(() => notified++);
+
+    controller.value = 42;
+
+    expect(controller.value, 42);
+    expect(notified, greaterThan(0), reason: 'присваивание обязано уведомить слушателей');
+  });
 }
