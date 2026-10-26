@@ -333,7 +333,7 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
                                 ),
                               ],
                             ),
-                            if (widget.defaultValue != null) getClearButton(),
+                            if (widget.defaultValue != null) getClearButton(context),
                           ],
                         ),
                       ),
@@ -598,16 +598,25 @@ class _NsgFilterChipsState extends State<NsgFilterChips> {
     }
   }
 
-  Widget getClearButton() {
+  Widget getClearButton(BuildContext sheetContext) {
     return NsgTextButton(
       text: tranControls.cancel,
       color: nsgtheme.colorError,
       onTap: () {
         resetFilter();
 
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
 
-        Navigator.pop(context);
+        // State чипса могла быть демонтирована, пока шторка открыта: её context
+        // читать нельзя (GT-83). Закрываем только свою шторку по её собственному
+        // контексту и только когда она — верхний маршрут.
+        if (!sheetContext.mounted) return;
+        final route = ModalRoute.of(sheetContext);
+        if (route != null && route.isCurrent) {
+          Navigator.pop(sheetContext);
+        }
       },
     );
   }
