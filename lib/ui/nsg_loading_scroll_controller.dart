@@ -87,7 +87,7 @@ class NsgLoadingScrollController<T> extends ScrollController {
 
   T? get value => _value;
   set value(T? val) {
-    value = val;
+    _value = val;
     statusChange.notifyListeners();
     notifyListeners();
   }
