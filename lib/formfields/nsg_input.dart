@@ -109,6 +109,10 @@ class NsgInput extends StatefulWidget {
   ///При работе с enum можно задать возможные варианты для выбора, если не заданы, будут предложены все
   final List<NsgDataItem>? itemsToSelect;
 
+  /// Show enum choices below the field instead of the selection dialog.
+  /// Other field types and the default modal selection are unchanged.
+  final bool enumDropdown;
+
   /// Показывать label
   final bool? showLabel;
 
@@ -245,6 +249,7 @@ class NsgInput extends StatefulWidget {
     this.mask,
     this.maskType,
     this.itemsToSelect,
+    this.enumDropdown = false,
     this.required,
     this.textFormFieldType,
     this.borderColor,
@@ -326,6 +331,8 @@ class _NsgInputState extends State<NsgInput> {
   bool get useSelectionController => inputType == NsgInputType.reference || inputType == NsgInputType.referenceList;
   TextFormFieldType? textFormFieldType;
   bool _ignoreChange = false;
+  final GlobalKey _enumAnchorKey = GlobalKey();
+  bool _enumDropdownOpen = false;
 
   bool _isNullOrEmptyDate(dynamic value) {
     return value is! DateTime || NsgDateHelper.isEmptyDate(value);
@@ -339,7 +346,7 @@ class _NsgInputState extends State<NsgInput> {
     // Во время активного редактирования не перезаписываем текст из модели,
     // иначе при обычной перестройке экрана (например, из-за клавиатуры)
     // поле может потерять стабильное состояние ввода.
-    if (focus.hasFocus) {
+    if (focus.hasFocus && !(widget.enumDropdown && inputType == NsgInputType.enumReference)) {
       return;
     }
 
@@ -587,12 +594,15 @@ class _NsgInputState extends State<NsgInput> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 2),
                       child: Text(
+                        maxLines: 1,
                         focus.hasFocus || textController.text != '' || nsgtheme.nsgInputHintAlwaysOnTop == true
                             ? (widget.required ?? widget.dataItem.isFieldRequired(widget.fieldName))
                                   ? '${widget.label} *'
                                   : widget.label
                             : ' ',
-                        style: TextStyle(fontSize: ControlOptions.instance.sizeS, color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
+                        style:
+                            widget.labelTextStyle ??
+                            TextStyle(fontSize: ControlOptions.instance.sizeS, color: widget.labelColor ?? nsgtheme.nsgInputColorLabel),
                       ),
                     ),
                   _gestureWrap(
@@ -909,6 +919,8 @@ class _NsgInputState extends State<NsgInput> {
       }
       return _addClearIcon(
         InkWell(
+          key: _enumAnchorKey,
+          canRequestFocus: !(widget.enumDropdown && inputType == NsgInputType.enumReference),
           onTap: _onPressed,
           child: AbsorbPointer(child: interactiveWidget),
         ),
@@ -964,6 +976,117 @@ class _NsgInputState extends State<NsgInput> {
           ),
       ],
     );
+  }
+
+  Future<void> _showEnumDropdown(NsgEnum selected, List<NsgDataItem> items) async {
+    if (_enumDropdownOpen || items.isEmpty) return;
+    final anchor = _enumAnchorKey.currentContext?.findRenderObject();
+    final overlay = Navigator.of(context).overlay?.context.findRenderObject();
+    if (anchor is! RenderBox || overlay is! RenderBox) return;
+    final source = widget.dataItem;
+    final fieldName = widget.fieldName;
+    final onChanged = widget.onChanged;
+    final onEditingComplete = widget.onEditingComplete;
+    final onFocusChanged = widget.onFocusChanged;
+    // Capture geometry while the anchor is active. The editor may replace the
+    // input (and its GlobalKey) while the popup route is still being laid out.
+    final anchorOffset = anchor.localToGlobal(Offset.zero, ancestor: overlay);
+    final anchorHeight = anchor.size.height;
+    final dropdownBorder = defaultOutlineBorder(
+      color: widget.borderColor ?? nsgtheme.nsgInputBorderColor,
+      borderRadius: widget.borderRadius,
+    );
+    final overlaySize = overlay.size;
+    final menuFocus = List.generate(items.length, (_) => FocusNode());
+    final selectedIndex = items.indexWhere((item) => item == selected);
+    var highlightedIndex = selectedIndex < 0 ? 0 : selectedIndex;
+    final width = anchor.size.width.clamp(0.0, overlay.size.width);
+    _enumDropdownOpen = true;
+    widget.onFocusChanged?.call(true);
+    try {
+      final choice = await showMenu<NsgDataItem>(
+        context: context,
+        requestFocus: true,
+        position: RelativeRect.fromRect(
+          Rect.fromLTWH(anchorOffset.dx, anchorOffset.dy + anchorHeight - dropdownBorder.borderSide.width, width, 0),
+          Offset.zero & overlaySize,
+        ),
+        constraints: BoxConstraints(minWidth: width, maxWidth: width),
+        menuPadding: EdgeInsets.zero,
+        color: Color.alphaBlend(nsgtheme.nsgInputDynamicListBackColor, nsgtheme.colorMainBack),
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          side: dropdownBorder.borderSide,
+        ),
+        clipBehavior: Clip.antiAlias,
+        items: [for (final (index, item) in items.indexed)
+          PopupMenuItem<NsgDataItem>(
+            value: item,
+            height: 32,
+            padding: EdgeInsets.zero,
+            child: StatefulBuilder(builder: (rowContext, updateRow) => Focus(
+              focusNode: menuFocus[index],
+              autofocus: index == highlightedIndex,
+              onFocusChange: (focused) {
+                if (focused) {
+                  highlightedIndex = index;
+                }
+                updateRow(() {});
+              },
+              onKeyEvent: (node, event) {
+                if (event is! KeyDownEvent && event is! KeyRepeatEvent) return KeyEventResult.ignored;
+                final key = event.logicalKey;
+                if (key == LogicalKeyboardKey.arrowDown || key == LogicalKeyboardKey.arrowUp) {
+                  final next = (index + (key == LogicalKeyboardKey.arrowDown ? 1 : -1)).clamp(0, items.length - 1);
+                  menuFocus[next].requestFocus();
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    final target = menuFocus[next].context;
+                    if (target != null && target.mounted) {
+                      Scrollable.ensureVisible(target, alignment: 0.5);
+                    }
+                  });
+                  return KeyEventResult.handled;
+                }
+                if (key == LogicalKeyboardKey.enter || key == LogicalKeyboardKey.numpadEnter) {
+                  Navigator.of(rowContext).pop(item);
+                  return KeyEventResult.handled;
+                }
+                return KeyEventResult.ignored;
+              },
+              child: Container(
+              width: double.infinity,
+              constraints: const BoxConstraints(minHeight: 32),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              color: index == highlightedIndex ? nsgtheme.nsgInputDynamicListBackSelectedColor : nsgtheme.nsgInputDynamicListBackColor,
+              alignment: Alignment.center,
+              child: widget.rowWidget?.call(item, item == selected) ?? Text(
+                item.toString(),
+                style: TextStyle(
+                  color: index == highlightedIndex ? nsgtheme.nsgInputDynamicListTextSelectedColor : nsgtheme.nsgInputDynamicListTextColor,
+                  fontSize: fontSize,
+                ),
+              ),
+            ))),
+          ),
+        ],
+      );
+      if (choice == null || widget.disabled || (mounted && (!identical(source, widget.dataItem) || fieldName != widget.fieldName))) return;
+      source.setFieldValue(fieldName, choice);
+      if (mounted) _notifierAll.value++;
+      if (onChanged != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          onChanged(source);
+        });
+      }
+      onEditingComplete?.call(source, fieldName);
+    } finally {
+      for (final node in menuFocus) {
+        node.dispose();
+      }
+      _enumDropdownOpen = false;
+      onFocusChanged?.call(false);
+    }
   }
 
   void _onPressed() {
@@ -1223,6 +1346,10 @@ class _NsgInputState extends State<NsgInput> {
     } else if (inputType == NsgInputType.enumReference) {
       var enumItem = widget.dataItem.getReferent(widget.fieldName) as NsgEnum;
       var itemsArray = widget.itemsToSelect ?? enumItem.getAll();
+      if (widget.enumDropdown) {
+        _showEnumDropdown(enumItem, itemsArray);
+        return;
+      }
       var form = NsgSelection(
         widgetType: widget.selectionWidgetType,
         allValues: itemsArray,
