@@ -14,6 +14,8 @@ class NsgProgressDialog {
   NsgProgressDialogWidget? dialogWidget;
   BuildContext? context;
   int? delay;
+  final NsgProgressOperation? operation;
+  final WidgetBuilder? contentBuilder;
 
   ///Если пользователь нажмет отменить, будет передан запрос на отмену сетевого соединения
   NsgCancelToken? cancelToken;
@@ -36,6 +38,8 @@ class NsgProgressDialog {
     this.textDialog = '',
     this.cancelToken,
     this.context,
+    this.operation,
+    this.contentBuilder,
   });
 
   void show({String text = ''}) {
@@ -45,9 +49,15 @@ class NsgProgressDialog {
     // Живой контекст обязателен: showDialog по размонтированному элементу
     // упадёт, и вызывающий код прервётся на середине. Лучше не показать
     // прогресс, чем уронить операцию.
-    final ctx = _firstMountedContext([() => context, () => Get.context, () => Get.overlayContext]);
+    final ctx = _firstMountedContext([
+      () => context,
+      () => Get.context,
+      () => Get.overlayContext,
+    ]);
     if (ctx == null) {
-      debugPrint('NsgProgressDialog.show: нет живого контекста — прогресс не показан');
+      debugPrint(
+        'NsgProgressDialog.show: нет живого контекста — прогресс не показан',
+      );
       return;
     }
     context = ctx;
@@ -58,22 +68,30 @@ class NsgProgressDialog {
     try {
       showDialog(
         context: ctx,
+        barrierDismissible: false,
         builder: (dialogContext) {
           _dialogContext = dialogContext;
           // Гонка: hide() успел отработать до первого build диалога (быстрая
           // операция). Без этого маршрут диалога останется на экране навсегда.
           if (_hideRequested) {
             WidgetsBinding.instance.addPostFrameCallback((_) => _closeDialog());
+            return const SizedBox.shrink();
           }
-          return NsgProgressDialogWidget(
-            delay: delay,
-            canStopped: canStopped,
-            cancelToken: cancelToken,
-            dialogWidget: showPercents ? this : null,
-            requestStop: requestStop,
-            text: text,
-            textDialog: textDialog,
-            visible: visible,
+          return PopScope(
+            canPop: false,
+            child: NsgProgressDialogWidget(
+              delay: delay,
+              canStopped: canStopped,
+              cancelToken: cancelToken,
+              dialogWidget: showPercents ? this : null,
+              requestStop: requestStop,
+              text: text,
+              textDialog: textDialog,
+              visible: visible,
+              operation: operation,
+              owner: this,
+              contentBuilder: contentBuilder,
+            ),
           );
         },
       );
@@ -143,7 +161,9 @@ class NsgProgressDialog {
       // не закрыть чужое окно.
       route.isCurrent ? navigator.pop() : navigator.removeRoute(route);
     } catch (e, st) {
-      debugPrint('NsgProgressDialog.hide: не удалось закрыть окно прогресса: $e\n$st');
+      debugPrint(
+        'NsgProgressDialog.hide: не удалось закрыть окно прогресса: $e\n$st',
+      );
     } finally {
       _dialogContext = null;
     }
@@ -156,7 +176,9 @@ class NsgProgressDialog {
   /// Кандидаты вычисляются лениво и под try: `Get.context` и
   /// `Get.overlayContext` не возвращают null, а бросают исключение, если
   /// GetRoot ещё (или уже) не в дереве.
-  static BuildContext? _firstMountedContext(List<BuildContext? Function()> candidates) {
+  static BuildContext? _firstMountedContext(
+    List<BuildContext? Function()> candidates,
+  ) {
     for (final candidate in candidates) {
       try {
         final ctx = candidate();
@@ -180,6 +202,9 @@ class NsgProgressDialogWidget extends StatefulWidget {
   final String textDialog;
   final NsgCancelToken? cancelToken;
   final bool visible;
+  final NsgProgressOperation? operation;
+  final NsgProgressDialog? owner;
+  final WidgetBuilder? contentBuilder;
   bool isClosed = false;
 
   /// Задержка в миллисекундах до появления прогрессбара
@@ -194,10 +219,14 @@ class NsgProgressDialogWidget extends StatefulWidget {
     required this.cancelToken,
     required this.visible,
     this.delay = 500,
+    this.operation,
+    this.owner,
+    this.contentBuilder,
   });
 
   @override
-  State<NsgProgressDialogWidget> createState() => _NsgProgressDialogWidgetState();
+  State<NsgProgressDialogWidget> createState() =>
+      _NsgProgressDialogWidgetState();
 }
 
 class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
@@ -225,15 +254,49 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final operation = widget.operation;
+    if (operation == null) return _buildProgress(context);
+    return AnimatedBuilder(
+      animation: operation,
+      builder: (_, _) => _buildProgress(context),
+    );
+  }
+
+  void _requestStop() {
+    if (widget.operation != null && !widget.operation!.canCancel) return;
+    try {
+      widget.requestStop?.call();
+      if (widget.operation == null) widget.cancelToken?.calcel();
+    } finally {
+      if (widget.owner != null) {
+        widget.owner!.hide();
+      } else {
+        final route = ModalRoute.of(context);
+        if (route?.isCurrent ?? false) Navigator.of(context).pop();
+      }
+    }
+  }
+
+  Widget _buildProgress(BuildContext context) {
+    final operation = widget.operation;
+    final progress = operation?.percent != null
+        ? widget.owner
+        : widget.dialogWidget;
+    if (progress != null && operation?.percent != null) {
+      progress.percent = operation!.percent!;
+    }
+    final canCancel = operation?.canCancel ?? widget.canStopped == true;
     return !loadingTooLong
         ? const SizedBox()
         : nsgBackDrop(
             child: GestureDetector(
               onLongPress: () {
-                NsgNavigator.pop();
+                if (canCancel) _requestStop();
               },
               child: Container(
-                decoration: BoxDecoration(color: ControlOptions.instance.colorMainBack.withAlpha(200)),
+                decoration: BoxDecoration(
+                  color: ControlOptions.instance.colorMainBack.withAlpha(200),
+                ),
                 child: Center(
                   child: Material(
                     color: Colors.transparent,
@@ -247,20 +310,29 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
                             child: Text(
                               widget.textDialog,
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: ControlOptions.instance.colorText),
+                              style: TextStyle(
+                                color: ControlOptions.instance.colorText,
+                              ),
                             ),
                           ),
-                        NsgProgressBar(text: widget.text!, dialogWidget: widget.dialogWidget),
-                        if (widget.canStopped == true)
+                        if (widget.contentBuilder != null)
+                          widget.contentBuilder!(context)
+                        else
+                          NsgProgressBar(
+                            text: widget.text!,
+                            dialogWidget: progress,
+                          ),
+                        if (operation?.isSlow ?? false)
+                          Text(
+                            NsgProgressWatchdog.slowText(),
+                            textAlign: TextAlign.center,
+                          ),
+                        if (canCancel)
                           NsgButton(
-                            text: 'Отмена',
-                            onPressed: () {
-                              if (widget.requestStop != null) {
-                                widget.requestStop!();
-                              }
-                              widget.cancelToken?.calcel();
-                              Navigator.pop(context);
-                            },
+                            text:
+                                operation?.cancelLabel ??
+                                NsgProgressWatchdog.cancelText(),
+                            onPressed: _requestStop,
                           ),
                       ],
                     ),

@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'nsg_controls.dart';
+import 'package:nsg_data/nsg_data.dart' show NsgOperationCancelled;
 
 // ignore: must_be_immutable
 class NsgButton extends StatelessWidget {
@@ -290,11 +291,15 @@ class NsgButton extends StatelessWidget {
     }
     bool result = false;
     if (onTapAsync != null) {
-      await nsgFutureProgressAndException(
-        func: () async {
-          result = await onTapAsync!();
-        },
-      );
+      try {
+        await nsgFutureProgressAndException(
+          func: () async {
+            result = await onTapAsync!();
+          },
+        );
+      } on NsgOperationCancelled {
+        return;
+      }
     }
 
     if (result && onAfterTapAsync != null) {
