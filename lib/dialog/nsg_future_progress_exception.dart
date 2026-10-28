@@ -139,7 +139,7 @@ Future nsgFutureProgressAndException({
     if (showProgress && !keepProgress) {
       progress.hide();
     }
-    if (operation == null) scope.dispose();
+    if (operation == null && !keepProgress) scope.dispose();
   }
 }
 

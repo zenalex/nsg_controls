@@ -46,8 +46,11 @@ class NsgProgressWatchdog {
 /// Futures cannot be killed; check throwIfCancelled before applying their result.
 class NsgProgressOperation extends ChangeNotifier {
   static final Object _scopeKey = Object();
-  static NsgProgressOperation? get current =>
-      Zone.current[_scopeKey] as NsgProgressOperation?;
+  static NsgProgressOperation? get current {
+    final operation = Zone.current[_scopeKey] as NsgProgressOperation?;
+    return operation != null && !operation._finished ? operation : null;
+  }
+
   T execute<T>(T Function() body) => runZoned(
     () => NsgCancelToken.runScoped(cancelToken, body),
     zoneValues: {_scopeKey: this},
@@ -104,7 +107,7 @@ class NsgProgressOperation extends ChangeNotifier {
   }
 
   void cancel() {
-    if (!canCancel || _finished || isCancelled) return;
+    if (!cancellable || _finished || isCancelled) return;
     _markCancelled();
     cancelToken?.calcel();
   }

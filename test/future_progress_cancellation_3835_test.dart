@@ -6,6 +6,22 @@ import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_data/nsg_data.dart';
 
 void main() {
+  test(
+    'programmatic cancellation works before the button delay, atomic opt-out does not',
+    () {
+      final operation = NsgProgressOperation()..start();
+      expect(operation.canCancel, isFalse);
+      operation.cancel();
+      expect(operation.cancelToken!.isCancelled, isTrue);
+      operation.finish(NsgProgressOutcome.cancelled);
+      operation.dispose();
+      final atomic = NsgProgressOperation(cancellable: false)..start();
+      atomic.cancel();
+      expect(atomic.isCancelled, isFalse);
+      atomic.finish(NsgProgressOutcome.success);
+      atomic.dispose();
+    },
+  );
   final events = <NsgProgressEvent>[];
   setUp(() {
     events.clear();

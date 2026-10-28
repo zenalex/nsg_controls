@@ -326,6 +326,7 @@ class _NsgProgressDialogWidgetState extends State<NsgProgressDialogWidget> {
                           Text(
                             NsgProgressWatchdog.slowText(),
                             textAlign: TextAlign.center,
+                            style: TextStyle(color: ControlOptions.instance.colorText),
                           ),
                         if (canCancel)
                           NsgButton(
