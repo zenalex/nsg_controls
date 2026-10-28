@@ -192,6 +192,48 @@ MaterialApp(
 
 ## 📱 Примеры
 
+### Отмена и сторож модального прогресса (#3835)
+
+`nsgFutureProgressAndException` по умолчанию показывает «Отменить» через 10 с,
+а через 20 с — подпись долгого ответа и одно событие `NsgProgressWatchdog`.
+Пакет не зависит от Sentry: приложение регистрирует `observer` и переводит
+`cancelText`/`slowText`. При завершении приходит событие с исходом; поздняя
+ошибка после отмены отправляется только наблюдателю, без нового окна ошибки.
+
+```dart
+try {
+  await nsgFutureProgressAndException(
+    label: 'match.lineups',
+    run: (operation) async {
+      final items = await readItems(); // nsg_data inherits the scoped token
+      operation.throwIfCancelled();
+      applyItems(items);
+    },
+  );
+} on NsgOperationCancelled {
+  // User cancelled: stop navigation/success actions and retain the draft.
+}
+```
+
+Прежний `func` остаётся совместимым; `run` — альтернативный callback со scope.
+Для загрузки передать `operation.onProgress(sent, total)` и токен в транспорт;
+scope также доступен как `NsgProgressOperation.current` внутри операции.
+Есть `cancelToken`, `canStopped`, `requestStop`, `cancelAfter`, `slowAfter`.
+`progressBuilder` сохраняет специализированное содержимое (например этапы
+фото), используя общий маршрут/отмену/сторож. `showError: false` оставляет показ
+ошибки вызывающему коду; `closeDelay` настраивает прежнюю задержку закрытия.
+Диагностика может добавить фиксированные `operation.diagnostics`; приложение
+должно разрешать только известные поля и никогда не отправлять произвольный текст.
+`cancellable: false` изолирует непрерываемую цепочку от внешнего токена, но
+сохраняет сторож. Такие исключения надо явно перечислять в клиентском PR.
+
+Отмена прерывает ожидание, бросая `NsgOperationCancelled`, и отменяет токен.
+Произвольный Future остановить невозможно: для сторонних операций нужна
+проверка `throwIfCancelled()` перед изменением UI. Отмена не откатывает запись
+сервера; неизвестный исход записи надо перечитать до повторного сохранения.
+Диалог закрывает только свой маршрут; барьер/долгое нажатие не обходят opt-out.
+Регрессии: `test/future_progress_cancellation_3835_test.dart`.
+
 Полные примеры использования доступны в папке [example/controls_examples](example/controls_examples/).
 
 ## 🔧 Требования
