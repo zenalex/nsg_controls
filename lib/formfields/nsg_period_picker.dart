@@ -456,6 +456,11 @@ class NsgPeriodWidget extends StatelessWidget {
     String? timeText,
     void Function()? onPressed,
   }) {
+    final text = Text(
+      timeText ?? period.changeType(periodGranularity).dateText(false, Localizations.localeOf(context).languageCode),
+      style: TextStyle(fontSize: nsgtheme.sizeS, color: !selected ? nsgtheme.colorPrimaryText : nsgtheme.colorText),
+      textAlign: TextAlign.center,
+    );
     return GestureDetector(
       onTap: () => !disabled ? onPressed?.call() : null,
       child: Container(
@@ -466,11 +471,9 @@ class NsgPeriodWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: selected ? Border.all(color: nsgtheme.colorMain, width: 2) : null,
         ),
-        child: Text(
-          timeText ?? period.changeType(periodGranularity).dateText(false, Localizations.localeOf(context).languageCode),
-          style: TextStyle(fontSize: nsgtheme.sizeS, color: !selected ? nsgtheme.colorPrimaryText : nsgtheme.colorText),
-          textAlign: TextAlign.center,
-        ),
+        child: periodGranularity == NsgPeriodGranularity.day && timeText == null
+            ? FittedBox(fit: BoxFit.scaleDown, child: text)
+            : text,
       ),
     );
   }

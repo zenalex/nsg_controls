@@ -5,6 +5,11 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),
 и этот проект следует [Semantic Versioning](https://semver.org/lang/ru/).
 
+## [Unreleased]
+
+### Исправления
+- `NsgPeriodWidget`: дата с днём недели в режиме «День» вписывается в узкое поле без обрезания. Формат других периодов и явно заданный `timeText` не меняются.
+
 ## [1.0.0-beta.1] - 2024-12-19
 
 ### 🚀 Новые возможности
