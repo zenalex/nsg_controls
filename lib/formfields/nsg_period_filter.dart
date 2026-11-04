@@ -247,6 +247,8 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
     super.dispose();
   }
 
+  bool get _rangeSelected => _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime;
+
   void _commitDraft() {
     _copyNsgPeriod(date, period);
     widget.controller.controllerFilter.periodSelected = _selected;
@@ -303,6 +305,24 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
       date.setToPeriod(date);
     }
     NsgPopUp.confirmOf(context);
+  }
+
+  /// При уже выбранном периоде поля дат открывают тот же диапазон.
+  /// В остальных режимах остаётся одиночный календарь.
+  Widget _rangeBoundDate({required DateTime initialTime, required ValueChanged<DateTime> onSingle}) {
+    final field = NsgDatePicker(
+      key: GlobalKey(),
+      simple: true,
+      margin: const EdgeInsets.only(top: 5),
+      initialTime: initialTime,
+      onClose: onSingle,
+    );
+    if (!_rangeSelected) return field;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _pickPeriodAndConfirm(context),
+      child: AbsorbPointer(child: field),
+    );
   }
 
   void _setToSelected(NsgPeriodType selected) {
@@ -411,6 +431,10 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                 padding: const EdgeInsets.symmetric(horizontal: 6),
                                 child: GestureDetector(
                                   onTap: () {
+                                    if (_rangeSelected) {
+                                      _pickPeriodAndConfirm(context);
+                                      return;
+                                    }
                                     NsgDatePicker(initialTime: date.beginDate, onClose: (value) {}).showPopup(context, date.beginDate, (value) {
                                       date.beginDate = value;
                                       _setToSelected(_selected);
@@ -599,13 +623,10 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         onPressed: (value) => _pickPeriodAndConfirm(context),
                                       ),
                                       Opacity(
-                                        opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
-                                        child: NsgDatePicker(
-                                          key: GlobalKey(),
-                                          simple: true,
-                                          margin: const EdgeInsets.only(top: 5),
+                                        opacity: _rangeSelected ? 1 : 0.3,
+                                        child: _rangeBoundDate(
                                           initialTime: date.beginDate,
-                                          onClose: (value) {
+                                          onSingle: (value) {
                                             if (value.difference(date.endDate) > const Duration(minutes: 0)) {
                                               date.beginDate = date.endDate;
                                               date.endDate = value;
@@ -618,13 +639,10 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
                                         ),
                                       ),
                                       Opacity(
-                                        opacity: _selected == NsgPeriodType.period || _selected == NsgPeriodType.periodWidthTime ? 1 : 0.3,
-                                        child: NsgDatePicker(
-                                          key: GlobalKey(),
-                                          simple: true,
-                                          margin: const EdgeInsets.only(top: 5),
+                                        opacity: _rangeSelected ? 1 : 0.3,
+                                        child: _rangeBoundDate(
                                           initialTime: date.endDate,
-                                          onClose: (value) {
+                                          onSingle: (value) {
                                             if (value.difference(date.beginDate) < const Duration(minutes: 0)) {
                                               date.endDate = date.beginDate;
                                               date.beginDate = value;

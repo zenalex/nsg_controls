@@ -551,6 +551,86 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
   }
 }
 
+/// Тема диапазонного календаря. Светлая схема Material оставляла
+/// `onSurfaceVariant` и `titleMedium` чёрными на тёмном `colorMainBack`.
+ThemeData nsgDateRangePickerTheme(ThemeData parent) {
+  final background = nsgtheme.colorMainBack;
+  final text = nsgtheme.colorText;
+  final selectedText = nsgtheme.colorPrimaryText;
+  final accent = nsgtheme.colorMain;
+  final accentDark = nsgtheme.colorMainDark;
+  final darkSurface = background.computeLuminance() < 0.4;
+  final scheme = (darkSurface ? const ColorScheme.dark() : const ColorScheme.light()).copyWith(
+    primary: accent,
+    onPrimary: selectedText,
+    secondary: accentDark,
+    onSecondary: selectedText,
+    surface: background,
+    onSurface: text,
+    onSurfaceVariant: text,
+    outline: accent.withAlpha(150),
+  );
+  TextStyle paint(TextStyle? style) => (style ?? const TextStyle()).copyWith(color: text);
+  final textTheme = parent.textTheme.apply(bodyColor: text, displayColor: text).copyWith(
+    titleMedium: paint(parent.textTheme.titleMedium),
+    bodyLarge: paint(parent.textTheme.bodyLarge),
+    bodyMedium: paint(parent.textTheme.bodyMedium),
+    labelLarge: paint(parent.textTheme.labelLarge),
+  );
+  return parent.copyWith(
+    brightness: scheme.brightness,
+    textTheme: textTheme,
+    colorScheme: scheme,
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: accentDark,
+      selectionColor: accent.withAlpha(80),
+      selectionHandleColor: accentDark,
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      floatingLabelStyle: TextStyle(color: text),
+      labelStyle: TextStyle(color: text.withAlpha(170)),
+      hintStyle: TextStyle(color: text.withAlpha(140)),
+      fillColor: background,
+      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: accent.withAlpha(150))),
+      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: accentDark, width: 2)),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: accentDark,
+        textStyle: TextStyle(fontSize: nsgtheme.sizeM, fontWeight: FontWeight.w600),
+      ),
+    ),
+    datePickerTheme: DatePickerThemeData(
+      backgroundColor: background,
+      rangePickerBackgroundColor: background,
+      surfaceTintColor: Colors.transparent,
+      headerBackgroundColor: accent,
+      headerForegroundColor: selectedText,
+      rangePickerHeaderBackgroundColor: accent,
+      rangePickerHeaderForegroundColor: selectedText,
+      weekdayStyle: TextStyle(color: text),
+      inputDecorationTheme: InputDecorationTheme(
+        labelStyle: TextStyle(color: text),
+        hintStyle: TextStyle(color: text),
+        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: accent.withAlpha(150))),
+        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: accentDark, width: 2)),
+      ),
+      rangeSelectionBackgroundColor: accent.withAlpha(70),
+      rangeSelectionOverlayColor: WidgetStatePropertyAll(accent.withAlpha(35)),
+      todayForegroundColor: WidgetStatePropertyAll(accentDark),
+      dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return selectedText;
+        return text;
+      }),
+      dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return accent;
+        return Colors.transparent;
+      }),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+  );
+}
+
 Future<DateTimeRange?> showNsgDateRangePicker({
   required BuildContext context,
   required DateTimeRange initialDateRange,
@@ -558,7 +638,6 @@ Future<DateTimeRange?> showNsgDateRangePicker({
   required DateTime lastDate,
   bool barrierDismissible = true,
 }) async {
-  // theme is AI generated (not guaranteed to be correct)
   final selectedRange = await showNsgDialog(
     context: context,
     showTitle: false,
@@ -568,70 +647,8 @@ Future<DateTimeRange?> showNsgDateRangePicker({
     padding: EdgeInsets.zero,
     contentPadding: EdgeInsets.zero,
     child: Theme(
-      data: Theme.of(context).copyWith(
-        textTheme: Theme.of(context).textTheme.apply(bodyColor: nsgtheme.colorText, displayColor: nsgtheme.colorText),
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: nsgtheme.colorMainDark,
-          selectionColor: nsgtheme.colorMain.withAlpha(80),
-          selectionHandleColor: nsgtheme.colorMainDark,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          floatingLabelStyle: TextStyle(color: nsgtheme.colorText),
-          labelStyle: TextStyle(color: nsgtheme.colorText.withAlpha(170)),
-          hintStyle: TextStyle(color: nsgtheme.colorText.withAlpha(140)),
-          fillColor: nsgtheme.colorMainBack,
-          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMain.withAlpha(150))),
-          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainDark, width: 2)),
-        ),
-        colorScheme: ColorScheme.light(
-          primary: nsgtheme.colorMain,
-          onPrimary: nsgtheme.colorPrimaryText,
-          secondary: nsgtheme.colorMainDark,
-          onSecondary: nsgtheme.colorPrimaryText,
-          surface: nsgtheme.colorMainBack,
-          onSurface: nsgtheme.colorText,
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            foregroundColor: nsgtheme.colorMainDark,
-            textStyle: TextStyle(fontSize: nsgtheme.sizeM, fontWeight: FontWeight.w600),
-          ),
-        ),
-      ),
-      child: DatePickerTheme(
-        data: DatePickerThemeData(
-          backgroundColor: nsgtheme.colorMainBack,
-          rangePickerBackgroundColor: nsgtheme.colorMainBack,
-          surfaceTintColor: Colors.transparent,
-          headerBackgroundColor: nsgtheme.colorMain,
-          headerForegroundColor: nsgtheme.colorPrimaryText,
-          rangePickerHeaderBackgroundColor: nsgtheme.colorMain,
-          rangePickerHeaderForegroundColor: nsgtheme.colorPrimaryText,
-          inputDecorationTheme: InputDecorationTheme(
-            labelStyle: TextStyle(color: nsgtheme.colorText),
-            hintStyle: TextStyle(color: nsgtheme.colorText),
-            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMain.withAlpha(150))),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: nsgtheme.colorMainDark, width: 2)),
-          ),
-          rangeSelectionBackgroundColor: nsgtheme.colorMain.withAlpha(70),
-          rangeSelectionOverlayColor: WidgetStatePropertyAll(nsgtheme.colorMain.withAlpha(35)),
-          todayForegroundColor: WidgetStatePropertyAll(nsgtheme.colorMainDark),
-          dayForegroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return nsgtheme.colorPrimaryText;
-            }
-            return nsgtheme.colorText;
-          }),
-          dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return nsgtheme.colorMain;
-            }
-            return Colors.transparent;
-          }),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        child: DateRangePickerDialog(initialDateRange: initialDateRange, firstDate: firstDate, lastDate: lastDate),
-      ),
+      data: nsgDateRangePickerTheme(Theme.of(context)),
+      child: DateRangePickerDialog(initialDateRange: initialDateRange, firstDate: firstDate, lastDate: lastDate),
     ),
   );
 
