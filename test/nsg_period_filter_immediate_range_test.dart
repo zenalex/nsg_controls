@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:nsg_controls/formfields/nsg_date_picker.dart';
 import 'package:nsg_controls/formfields/nsg_period_filter.dart';
 import 'package:nsg_controls/formfields/nsg_checkbox.dart';
 import 'package:nsg_controls/localization/nsg_controls_localizations.dart';
@@ -272,6 +273,40 @@ void main() {
 
     expect(source.beginDate, DateTime(2026, 9, 5, 20));
     expect(source.endDate, DateTime(2026, 9, 6, 8));
+  });
+
+  testWidgets('повторный тап по дате выбранного периода открывает тот же диапазон', (tester) async {
+    final source = NsgPeriod()
+      ..beginDate = DateTime(2026, 9, 2)
+      ..endDate = DateTime(2026, 9, 10)
+      ..selectedType = NsgPeriodType.period;
+    final seen = <DateTimeRange>[];
+    await openPopup(
+      tester,
+      source: source,
+      drafts: <NsgPeriod>[],
+      onConfirm: () {},
+      rangePicker: ({
+        required context,
+        required initialDateRange,
+        required firstDate,
+        required lastDate,
+        barrierDismissible = true,
+      }) async {
+        seen.add(initialDateRange);
+        return null;
+      },
+    );
+
+    await tester.tap(find.text('02.09.26 - 10.09.26'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('10.09.26'));
+    await tester.pumpAndSettle();
+
+    expect(seen, hasLength(2));
+    expect(seen.every((range) => range.start == DateTime(2026, 9, 2)), isTrue);
+    expect(seen.every((range) => range.end.year == 2026 && range.end.month == 9 && range.end.day == 10), isTrue);
+    expect(find.byType(NsgCalendarDatePicker), findsNothing);
   });
 
   testWidgets('ordinary chips keep the existing OK flow', (tester) async {
