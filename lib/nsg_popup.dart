@@ -83,6 +83,11 @@ class NsgPopUp extends StatefulWidget {
     return () => popup._beforeConfirm.remove(callback);
   }
 
+  /// Гасит кнопку подтверждения, пока текст даты или времени не разобран.
+  static void setConfirmEnabled(BuildContext context, bool enabled) {
+    context.findAncestorStateOfType<_NsgPopUpState>()?.applyConfirmEnabled(enabled);
+  }
+
   @override
   State<NsgPopUp> createState() => _NsgPopUpState();
 }
@@ -91,9 +96,15 @@ class _NsgPopUpState extends State<NsgPopUp> {
   final ScrollController controller1 = ScrollController();
   final ScrollController controller2 = ScrollController();
   final Set<VoidCallback> _beforeConfirm = {};
+  bool _confirmEnabled = true;
+
+  void applyConfirmEnabled(bool enabled) {
+    if (_confirmEnabled == enabled) return;
+    setState(() => _confirmEnabled = enabled);
+  }
 
   bool _confirm() {
-    if (widget.onConfirm == null) return false;
+    if (widget.onConfirm == null || !_confirmEnabled) return false;
     for (final callback in List<VoidCallback>.from(_beforeConfirm)) {
       callback();
     }
@@ -223,7 +234,9 @@ class _NsgPopUpState extends State<NsgPopUp> {
                     decoration: BoxDecoration(color: widget.colorTitleText, borderRadius: BorderRadius.circular(10)),
                     child: IconButton(
                       icon: Icon(widget.showCloseButton ? Icons.close : Icons.check, color: nsgtheme.colorPrimary, size: 24), // set your color here
-                      onPressed: () async {
+                      onPressed: (!widget.showCloseButton && widget.onConfirm != null && !_confirmEnabled)
+                          ? null
+                          : () async {
                         if (widget.onConfirm != null && widget.showCloseButton == false) {
                           _confirm();
                         }

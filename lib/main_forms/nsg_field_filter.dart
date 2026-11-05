@@ -310,7 +310,9 @@ class NsgFieldFilter {
   Widget _buildDateTimeInput(BuildContext context, VoidCallback onChanged) {
     final date = (_filterValue as DateTime?) ?? DateTime.now();
     final hasValue = _filterValue is DateTime && !NsgDateHelper.isEmptyDate(_filterValue as DateTime);
-    final label = hasValue ? NsgUserDate.instance.formatDateTime(date) : '';
+    final label = hasValue
+        ? NsgDateFormat.dateFormat(date, format: 'dd.MM.yyyy HH:mm', locale: Localizations.localeOf(context).languageCode)
+        : '';
     return InkWell(
       borderRadius: BorderRadius.circular(6),
       onTap: !isEnable
@@ -322,9 +324,11 @@ class NsgFieldFilter {
                 context: context,
                 initialTime: TimeOfDay.fromDateTime(hasValue ? date : pickedDate),
                 builder: (context, child) {
+                  final picker = child ?? const SizedBox.shrink();
+                  if (NsgUserDate.instance.legacy) return picker;
                   return MediaQuery(
                     data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: NsgUserDate.instance.use24Hour),
-                    child: child ?? const SizedBox.shrink(),
+                    child: picker,
                   );
                 },
               );

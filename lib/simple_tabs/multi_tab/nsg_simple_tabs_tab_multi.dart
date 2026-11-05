@@ -5,7 +5,7 @@ import 'package:nsg_controls/simple_tabs/nsg_simple_tabs_style.dart';
 import 'package:nsg_controls/simple_tabs/nsg_simple_tabs_tab_icon.dart';
 import 'package:nsg_controls/simple_tabs/simple_tab/nsg_simlpe_tabs_controller.dart';
 import 'package:nsg_controls/simple_tabs/simple_tab/nsg_simple_tabs_tab.dart';
-import 'package:nsg_controls/formfields/nsg_user_date.dart';
+import 'package:nsg_data/nsg_data.dart';
 
 class NsgSimpleTabsTabMulti extends NsgSimpleTabsTab {
   NsgSimpleTabsTabMulti({
@@ -77,7 +77,7 @@ class NsgSimpleTabsTabMulti extends NsgSimpleTabsTab {
       return "Вчера";
     } else {
       final pattern = date.dateTime.year < DateTime.now().year ? 'dd.MM.yy, EE' : 'dd.MM, EE';
-      return NsgUserDate.instance.formatWithPreset(date.dateTime, pattern, fallbackLocale: 'ru');
+      return NsgDateFormat.dateFormat(date.dateTime, format: pattern, locale: 'ru');
     }
   }
 }

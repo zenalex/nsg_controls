@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart';
 import 'localization/nsg_controls_localizations.dart';
 import 'localization/nsg_controls_localizations_en.dart';
 import 'localization/nsg_controls_localizations_ru.dart';
-import 'formfields/nsg_user_date.dart';
 import 'nsg_control_options.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -57,7 +56,8 @@ extension NsgDate on DateTime {
   }
 
   String format(String? format, String locale) {
-    return NsgUserDate.instance.formatWithPreset(this, format, fallbackLocale: locale);
+    if (format == '') return '';
+    return NsgDateFormat.dateFormat(this, format: format ?? ControlOptions.instance.dateformat, locale: locale);
   }
 
   Duration toDuration() {
@@ -248,6 +248,15 @@ class DatePartFormat {
   final DatePart datePart;
   final int count;
   final int position;
+}
+
+/// Строка пакета без Get. [tranControls] падает, пока нет GetRoot.
+String nsgControlsText(BuildContext context, String Function(NsgControlsLocalizations localization) read) {
+  final fromTree = NsgControlsLocalizations.of(context);
+  if (fromTree != null) return read(fromTree);
+  final code = (Localizations.maybeLocaleOf(context) ?? WidgetsBinding.instance.platformDispatcher.locale).languageCode.toLowerCase();
+  final fallback = code.startsWith('ru') ? NsgControlsLocalizationsRu() : NsgControlsLocalizationsEn();
+  return read(fallback);
 }
 
 NsgControlsLocalizations get tranControls {

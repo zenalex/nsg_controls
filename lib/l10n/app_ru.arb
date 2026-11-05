@@ -36,6 +36,8 @@
   "text_filter": "Фильтр по тексту",
   "text_filter_unchanged": "Фильтр по тексту не изменился",
   "enter_time": "Введите время",
+  "invalid_time": "Некорректное время",
+  "invalid_date": "Некорректная дата",
   "error_file_download": "Ошибка скачивания файла",
   "time": "Время",
   "saveChangesPrompt": "Вы внесли изменения. Сохранить?",

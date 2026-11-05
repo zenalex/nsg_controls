@@ -17,8 +17,24 @@ TimeOfDay _fromMinutes(int minutes) {
 
 TimeOfDay? _parseTimeOfDay(String text) {
   final parsed = NsgUserDate.instance.tryParseTime(text);
-  if (parsed == null) return null;
-  return TimeOfDay(hour: parsed.hour, minute: parsed.minute);
+  if (parsed != null) return TimeOfDay(hour: parsed.hour, minute: parsed.minute);
+  return _parseLooseTime(text);
+}
+
+/// Старый ввод без двоеточия: `1530`, `15.30`, `15-30`, `15`.
+/// В 12-часовом режиме с периодом суток час 1–12 без пометки не угадываем.
+TimeOfDay? _parseLooseTime(String text) {
+  final match = RegExp(r'^(\d{1,2})[:.-]?(\d{0,2})$').firstMatch(text.trim());
+  if (match == null) return null;
+  final hour = int.parse(match.group(1)!);
+  final minuteText = match.group(2)!;
+  final minute = minuteText.isEmpty ? 0 : int.parse(minuteText);
+  if (hour > 23 || minute > 59) return null;
+  final user = NsgUserDate.instance;
+  if (!user.legacy && !user.fixedDayMonth && !user.use24Hour && hour >= 1 && hour <= 12) {
+    return null;
+  }
+  return TimeOfDay(hour: hour, minute: minute);
 }
 
 SliderThemeData _primarySliderTheme(BuildContext context) {
@@ -99,8 +115,9 @@ class _TimeFieldState extends State<_TimeField> {
 
   @override
   Widget build(BuildContext context) {
+    final wide = !NsgUserDate.instance.use24Hour;
     return SizedBox(
-      width: 92,
+      width: wide ? 148 : 92,
       child: TextField(
         controller: controller,
         focusNode: focus,

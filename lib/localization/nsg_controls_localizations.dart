@@ -323,6 +323,18 @@ abstract class NsgControlsLocalizations {
   /// **'Введите время'**
   String get enter_time;
 
+  /// No description provided for @invalid_time.
+  ///
+  /// In ru, this message translates to:
+  /// **'Некорректное время'**
+  String get invalid_time;
+
+  /// No description provided for @invalid_date.
+  ///
+  /// In ru, this message translates to:
+  /// **'Некорректная дата'**
+  String get invalid_date;
+
   /// No description provided for @error_file_download.
   ///
   /// In ru, this message translates to:

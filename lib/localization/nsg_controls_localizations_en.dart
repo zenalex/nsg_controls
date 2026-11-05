@@ -125,6 +125,12 @@ class NsgControlsLocalizationsEn extends NsgControlsLocalizations {
   String get enter_time => 'Enter Time';
 
   @override
+  String get invalid_time => 'Invalid time';
+
+  @override
+  String get invalid_date => 'Invalid date';
+
+  @override
   String get error_file_download => 'Error file download';
 
   @override

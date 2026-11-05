@@ -18,7 +18,7 @@ class NsgUserDate {
   /// Пока приложение не вызвало [install], пикеры остаются на dd.MM.yyyy и HH:mm.
   final bool legacy;
 
-  /// Регион устройства пустой: не подставляем голый `en` (это месяц-день).
+  /// Регион пустой или пара язык+регион неизвестна intl: не подставляем голый язык.
   final bool fixedDayMonth;
 
   const NsgUserDate({
@@ -65,10 +65,13 @@ class NsgUserDate {
       );
     }
     final pair = '${language}_$country';
+    // В intl 0.20.2 нет ru_RU, th_TH, ms_MY: у них живёт голый язык, и он
+    // совпадает со страной. Голый en — это en_US, месяц первым, поэтому
+    // неизвестная пара с en падает в fixedDayMonth, как пустой регион.
     final String tag;
     if (DateFormat.localeExists(pair)) {
       tag = pair;
-    } else if (DateFormat.localeExists(language)) {
+    } else if (language != 'en' && DateFormat.localeExists(language)) {
       tag = language;
     } else {
       return NsgUserDate(
@@ -140,45 +143,11 @@ class NsgUserDate {
     return both.format(value);
   }
 
-  /// [preset] — старый явный шаблон вроде `dd.MM.yyyy`. Неизвестный шаблон
-  /// остаётся служебным и идёт в [NsgDateFormat].
+  /// Явный шаблон клиента не подменяется локалью. Локальный вывод — [formatDate],
+  /// [formatTime] и соседние методы.
   String formatWithPreset(DateTime value, String? preset, {String fallbackLocale = 'ru'}) {
-    switch (preset) {
-      case null:
-      case '':
-      case 'dd.MM.yy':
-        return formatShortDate(value);
-      case 'dd.MM.yyyy':
-        return formatDate(value);
-      case 'dd.MM':
-        return formatDayMonth(value);
-      case 'HH:mm':
-        return formatTime(value);
-      case 'HH:mm:ss':
-        return _formatClock(value, withSeconds: true);
-      case 'dd.MM.yyyy HH:mm':
-        return formatDateTime(value);
-      case 'HH:mm dd.MM.yyyy':
-        if (_empty(value)) return '';
-        return '${formatTime(value)} ${formatDate(value)}';
-      case 'HH:mm:ss dd.MM.yyyy':
-        if (_empty(value)) return '';
-        return '${_formatClock(value, withSeconds: true)} ${formatDate(value)}';
-      case 'HH dd.MM.yyyy':
-        if (_empty(value)) return '';
-        return '${_formatClock(value, hourOnly: true)} ${formatDate(value)}';
-      case 'MM.yyyy':
-        return _formatMonthYear(value);
-      case 'yyyy':
-        if (_empty(value)) return '';
-        return DateFormat('yyyy').format(value);
-      case 'dd.MM.yy, EE':
-        return _formatWithWeekday(value, shortYear: true);
-      case 'dd.MM, EE':
-        return _formatWithWeekday(value, shortYear: false);
-      default:
-        return NsgDateFormat.dateFormat(value, format: preset, locale: fallbackLocale);
-    }
+    if (preset == '') return '';
+    return NsgDateFormat.dateFormat(value, format: preset, locale: fallbackLocale);
   }
 
   DateTime? tryParseDate(String text) {
@@ -188,6 +157,8 @@ class NsgUserDate {
     final format = fixedDayMonth ? DateFormat('dd.MM.yyyy') : DateFormat.yMd(_tag);
     try {
       final parsed = format.parseStrict(trimmed);
+      if (parsed.year < 1800 || parsed.year > 2200) return null;
+      if (!_hasFourDigitYear(trimmed, parsed.year)) return null;
       return DateTime(parsed.year, parsed.month, parsed.day);
     } catch (_) {
       return null;
@@ -195,14 +166,15 @@ class NsgUserDate {
   }
 
   /// Неполное, чужое и неоднозначное значение — null. Час не берётся по модулю 24.
+  /// Обычное `HH:mm` однозначно, если в шаблоне локали нет периода суток.
   DateTime? tryParseTime(String text) {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return null;
     final plain = RegExp(r'^(\d{1,2}):(\d{2})$').firstMatch(trimmed);
     if (plain != null) {
-      return _fromPlain(plain, allowAmbiguous: use24Hour || fixedDayMonth);
+      return _fromPlain(plain, allowAmbiguous: _plainIsUnambiguous);
     }
-    if (use24Hour || fixedDayMonth) {
+    if (_plainIsUnambiguous) {
       return _parse24WithSuffix(trimmed);
     }
     return _parse12(trimmed);
@@ -245,6 +217,20 @@ class NsgUserDate {
     return pattern.contains('a');
   }
 
+  bool get _plainIsUnambiguous {
+    if (use24Hour || fixedDayMonth) return true;
+    _ensureLocales();
+    return !_localeIs12Hour(_tag);
+  }
+
+  static bool _hasFourDigitYear(String text, int year) {
+    for (final match in RegExp(r'\d+').allMatches(text)) {
+      final group = match.group(0)!;
+      if (group.length == 4 && int.tryParse(group) == year) return true;
+    }
+    return false;
+  }
+
   static bool _empty(DateTime value) => NsgDateHelper.isEmptyDate(value);
 
   static String _shortYear(String pattern) {
@@ -254,34 +240,6 @@ class NsgUserDate {
       if (token == 'yy') return token;
       return 'yy';
     });
-  }
-
-  String _formatClock(DateTime value, {bool withSeconds = false, bool hourOnly = false}) {
-    if (fixedDayMonth || use24Hour) {
-      if (hourOnly) return DateFormat('HH').format(value);
-      return DateFormat(withSeconds ? 'HH:mm:ss' : 'HH:mm').format(value);
-    }
-    _ensureLocales();
-    if (hourOnly) return DateFormat('h a', _tag).format(value);
-    return DateFormat(withSeconds ? 'h:mm:ss a' : 'h:mm a', _tag).format(value);
-  }
-
-  String _formatMonthYear(DateTime value) {
-    if (_empty(value)) return '';
-    if (fixedDayMonth) return DateFormat('MM.yyyy').format(value);
-    _ensureLocales();
-    return DateFormat.yM(_tag).format(value);
-  }
-
-  String _formatWithWeekday(DateTime value, {required bool shortYear}) {
-    if (_empty(value)) return '';
-    if (fixedDayMonth || locale.languageCode == 'ru') {
-      final pattern = shortYear ? 'dd.MM.yy, EE' : 'dd.MM, EE';
-      return DateFormat(pattern, 'ru').format(value);
-    }
-    _ensureLocales();
-    final numeric = shortYear ? formatShortDate(value) : formatDayMonth(value);
-    return '$numeric, ${DateFormat.E(_tag).format(value)}';
   }
 
   DateTime? _fromPlain(RegExpMatch plain, {required bool allowAmbiguous}) {

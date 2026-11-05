@@ -36,6 +36,8 @@
   "text_filter": "Text Filter",
   "text_filter_unchanged": "Text filter has not changed",
   "enter_time": "Enter Time",
+  "invalid_time": "Invalid time",
+  "invalid_date": "Invalid date",
   "error_file_download": "Error file download",
   "time": "Time",
   "saveChangesPrompt": "You have made changes. Save?",

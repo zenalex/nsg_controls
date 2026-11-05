@@ -1,8 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:nsg_controls/formfields/nsg_date_picker.dart';
+import 'package:nsg_controls/formfields/nsg_period_time_range_controls.dart';
 import 'package:nsg_controls/formfields/nsg_time_picker.dart';
 import 'package:nsg_controls/formfields/nsg_user_date.dart';
+import 'package:nsg_controls/helpers.dart';
+import 'package:nsg_controls/nsg_control_options.dart';
+import 'package:nsg_controls/nsg_popup.dart';
 
 void main() {
   tearDown(() => NsgUserDate.install(NsgUserDate.legacy()));
@@ -171,5 +178,178 @@ void main() {
     expect(field.readOnly, isTrue);
     expect(find.text('15:30'), findsOneWidget);
     NsgUserDate.install(NsgUserDate.legacy());
+  });
+
+  test('неизвестная пара en+регион не становится американским месяцем', () {
+    for (final country in ['RU', 'TH', 'KZ', 'AE', 'UA', 'BY']) {
+      final user = NsgUserDate.resolve(
+        appLanguage: const Locale('en'),
+        deviceLocales: [Locale('en', country)],
+        mobile: false,
+        alwaysUse24Hour: false,
+      );
+      expect(user.fixedDayMonth, isTrue, reason: country);
+      expect(user.formatDate(day(2026, 11, 3)), '03.11.2026', reason: country);
+      expect(user.tryParseDate('03/11/2026'), isNull, reason: country);
+      expect(user.tryParseDate('03.11.2026'), day(2026, 11, 3), reason: country);
+    }
+  });
+
+  test('ru на телефоне в 12-часовом режиме читает 09:30', () {
+    final ruPhone12 = NsgUserDate.resolve(
+      appLanguage: const Locale('ru'),
+      deviceLocales: const [Locale('ru', 'RU')],
+      mobile: true,
+      alwaysUse24Hour: false,
+    );
+    expect(ruPhone12.use24Hour, isFalse);
+    expect(ruPhone12.formatTime(day(2026, 11, 5, 9, 30)), '09:30');
+    expect(ruPhone12.tryParseTime('09:30'), day(1970, 1, 1, 9, 30));
+  });
+
+  test('год из текста — четыре цифры в диапазоне, короткий и буддийский отвергаются', () {
+    expect(ru.tryParseDate('03.11.26'), isNull);
+    expect(ru.tryParseDate('03.11.2'), isNull);
+    expect(ru.tryParseDate('03.11.2026'), day(2026, 11, 3));
+    expect(th.tryParseDate('3/11/2569'), isNull);
+  });
+
+  test('явный формат не подменяется локалью и пустая дата не становится 00:00', () {
+    final empty = DateTime.utc(1754, 1, 1);
+    final sample = day(2026, 11, 3);
+    expect(empty.format('HH:mm', 'ru'), '');
+    expect(empty.format('HH:mm:ss', 'en'), '');
+    expect(sample.format('', 'en'), '');
+    expect(sample.format(null, 'ru'), DateFormat(ControlOptions.instance.dateformat, 'ru').format(sample));
+    final weekday = sample.format('dd.MM.yy, EE', 'en');
+    expect(weekday.toLowerCase(), contains('tue'));
+    expect(enUs.formatWithPreset(sample, 'dd.MM.yyyy', fallbackLocale: 'en'), '03.11.2026');
+    expect(enUs.formatWithPreset(sample, 'HH:mm', fallbackLocale: 'en'), '00:00');
+    expect(enUs.formatWithPreset(empty, 'HH:mm'), '');
+  });
+
+  testWidgets('короткий год не вызывает onChange и показывает ошибку', (tester) async {
+    final got = await pumpDate(tester, ru, '03.11.26');
+    expect(got?.year, isNot(26));
+    expect(got?.year, isNot(2));
+    expect(tester.widget<TextField>(find.byType(TextField)).decoration!.errorText, isNotNull);
+  });
+
+  testWidgets('колесо ru в 12-часовом режиме отдаёт DateTime напрямую', (tester) async {
+    final ruPhone12 = NsgUserDate.resolve(
+      appLanguage: const Locale('ru'),
+      deviceLocales: const [Locale('ru', 'RU')],
+      mobile: true,
+      alwaysUse24Hour: false,
+    );
+    NsgUserDate.install(ruPhone12);
+    DateTime? got;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: TimePickerContent(initialTime: DateTime(2026, 11, 5, 15, 30), onChange: (value) => got = value),
+        ),
+      ),
+    );
+    final next = DateTime(2026, 11, 5, 9, 30);
+    tester.widget<CupertinoDatePicker>(find.byType(CupertinoDatePicker)).onDateTimeChanged(next);
+    await tester.pump();
+    expect(got, next);
+  });
+
+  testWidgets('25:00 показывает ошибку и не подтверждает старое время', (tester) async {
+    NsgUserDate.install(ru);
+    var confirmed = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: NsgPopUp(
+            title: 'time',
+            height: 360,
+            popOnConfirm: false,
+            onConfirm: () => confirmed = true,
+            getContent: () => [TimePickerContent(initialTime: DateTime(2026, 11, 5, 15, 30), onChange: (_) {})],
+          ),
+        ),
+      ),
+    );
+    await tester.enterText(find.byType(TextFormField), '25:00');
+    await tester.pump();
+    expect(tester.widget<TextField>(find.byType(TextField)).decoration!.errorText, isNotNull);
+    await tester.tap(find.byIcon(Icons.check));
+    await tester.pump();
+    expect(confirmed, isFalse);
+  });
+
+  testWidgets('буква P переключает период и не дописывается в текст', (tester) async {
+    NsgUserDate.install(enUs);
+    DateTime? got;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: TimePickerContent(initialTime: DateTime(2026, 11, 5, 3, 30), onChange: (value) => got = value),
+        ),
+      ),
+    );
+    await tester.enterText(find.byType(TextFormField), '3:30 ');
+    await tester.pump();
+    await tester.enterText(find.byType(TextFormField), '3:30 P');
+    await tester.pump();
+    final text = tester.widget<EditableText>(find.byType(EditableText)).controller.text;
+    expect(text.contains('PMM'), isFalse);
+    expect(text.toUpperCase(), contains('PM'));
+    expect(got?.hour, 15);
+  });
+
+  testWidgets('стрелка сегмента переключает AM/PM', (tester) async {
+    NsgUserDate.install(enUs);
+    DateTime? got;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: TimePickerContent(initialTime: DateTime(2026, 11, 5, 15, 30), onChange: (value) => got = value),
+        ),
+      ),
+    );
+    await tester.tap(find.byIcon(Icons.chevron_left));
+    await tester.pump();
+    expect(got?.hour, 3);
+    await tester.tap(find.byType(TextFormField));
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(got?.hour, 15);
+  });
+
+  testWidgets('поле диапазона принимает 1530, 15.30, 15-30 и 15', (tester) async {
+    NsgUserDate.install(NsgUserDate.legacy());
+    TimeOfDay? got;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: NsgTimeOfDayWidget(time: const TimeOfDay(hour: 0, minute: 0), onChange: (value) => got = value),
+        ),
+      ),
+    );
+    for (final sample in ['1530', '15.30', '15-30', '15']) {
+      got = null;
+      await tester.enterText(find.byType(TextField), sample);
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      expect(got, TimeOfDay(hour: 15, minute: sample == '15' ? 0 : 30), reason: sample);
+    }
+    final legacyWidth = tester.getSize(find.byType(TextField)).width;
+    expect(legacyWidth, 92);
+
+    NsgUserDate.install(enUs);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: NsgTimeOfDayWidget(time: const TimeOfDay(hour: 15, minute: 30), onChange: (_) {}),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(tester.getSize(find.byType(TextField)).width, greaterThan(92));
   });
 }

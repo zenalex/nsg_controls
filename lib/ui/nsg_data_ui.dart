@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/routes/new_path_route.dart';
 import 'package:nsg_data/nsg_data.dart';
-import 'package:nsg_controls/formfields/nsg_user_date.dart';
 import 'package:nsg_controls/ui/nsg_loading_scroll_controller.dart';
 
 // Import for MatchItem - this might need to be adjusted based on actual import path
@@ -209,10 +208,10 @@ class DataGroup {
     if (groupValue != null) {
       try {
         if (groupValue is DateTime && partOfDate != null) {
-          return NsgUserDate.instance.formatWithPreset(
+          return NsgDateFormat.dateFormat(
             groupValue,
-            partOfDate!.formatTime,
-            fallbackLocale: Localizations.localeOf(Get.context!).languageCode,
+            format: partOfDate!.formatTime,
+            locale: Localizations.localeOf(Get.context!).languageCode,
           );
         }
         return groupValue.toString();

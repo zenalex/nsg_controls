@@ -217,19 +217,40 @@ class _DatePickerContentState extends State<DatePickerContent> {
   }
 
   bool _ignoreChange = false;
+
+  bool get _onPhone => NsgUserDate.instance.phonePicker(!kIsWeb && (Platform.isAndroid || Platform.isIOS));
+
   void textChanged() {
     if (_ignoreChange) return;
     final parsed = NsgUserDate.instance.tryParseDate(textController.text);
-    if (parsed == null) return;
+    if (parsed == null) {
+      _publish(false);
+      return;
+    }
     _initialTime = textController.text;
     _initialTime2 = parsed;
-    final onPhone = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
-    if (onPhone) {
+    if (_onPhone) {
       datepicker?.setState(_initialTime2);
     } else {
       calendarpicker?.setState(_initialTime2);
     }
     widget.onChange(_initialTime2);
+    _publish(true);
+  }
+
+  void _publish(bool valid) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      NsgPopUp.setConfirmEnabled(context, valid);
+      setState(() {});
+    });
+  }
+
+  String? _dateError() {
+    final text = textController.text.trim();
+    if (text.isEmpty) return null;
+    if (NsgUserDate.instance.tryParseDate(text) == null) return nsgControlsText(context, (labels) => labels.invalid_date);
+    return null;
   }
 
   @override
@@ -247,7 +268,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
     final hint = NsgUserDate.instance.dateHint;
     final separators = hint.replaceAll(RegExp(r'\d'), '');
     final allowed = RegExp('[0-9${RegExp.escape(separators)}]');
-    final onPhone = NsgUserDate.instance.phonePicker(!kIsWeb && (Platform.isAndroid || Platform.isIOS));
+    final onPhone = _onPhone;
     final fieldWidth = (hint.length * 14.0 + 32).clamp(150.0, 240.0);
     final inputCursorColor = nsgtheme.nsgDatePickerInputCursorColor ?? nsgtheme.colorBase.b100;
     final inputBorderColor = nsgtheme.nsgDatePickerInputBorderColor ?? nsgtheme.colorMainDark;
@@ -259,7 +280,6 @@ class _DatePickerContentState extends State<DatePickerContent> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(
-          height: 40,
           width: fieldWidth,
           child: TextFormField(
             readOnly: onPhone,
@@ -270,6 +290,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
             controller: textController,
             decoration: InputDecoration(
               hintText: hint,
+              errorText: _dateError(),
               hintStyle: TextStyle(color: inputTextColor),
               errorStyle: TextStyle(color: inputTextColor),
               labelText: '',
@@ -290,9 +311,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
             style: TextStyle(color: inputTextColor, fontSize: 24),
           ),
         ),
-        !kIsWeb && (Platform.isAndroid || Platform.isIOS)
-            ? SizedBox(width: 300, height: 280, child: getCupertinoPicker())
-            : SizedBox(height: 250, width: 300, child: getCalendarPicker()),
+        onPhone ? SizedBox(width: 300, height: 280, child: getCupertinoPicker()) : SizedBox(height: 250, width: 300, child: getCalendarPicker()),
       ],
     );
   }
@@ -310,6 +329,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
         textController.text = _initialTime;
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
         _ignoreChange = false;
+        _publish(true);
       },
     );
     return calendarpicker!;
@@ -329,6 +349,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
         textController.text = _initialTime;
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
         _ignoreChange = false;
+        _publish(true);
       },
     );
     return datepicker!;
