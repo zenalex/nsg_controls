@@ -267,10 +267,10 @@ extension NsgDataUIExtension<T extends NsgDataItem> on NsgDataUI<T> {
       bool equialDate = false;
       String formatedDate = "";
       if (item.getField(fieldName) is NsgDataDateField) {
-        formatedDate = NsgDateFormat.dateFormat(
+        formatedDate = NsgUserDate.instance.formatWithPreset(
           item.getFieldValue(fieldName),
-          format: partOfDate.formatTime,
-          locale: Localizations.localeOf(Get.context!).languageCode,
+          partOfDate.formatTime,
+          fallbackLocale: Localizations.localeOf(Get.context!).languageCode,
         );
 
         equialDate = (item.getField(fieldName) is NsgDataDateField && groupsMap.containsKey(formatedDate));

@@ -2051,11 +2051,8 @@ class _NsgTableState extends State<NsgTable> {
       /// Если Дата
     } else if (field is NsgDataDateField) {
       if (fieldkey is DateTime && !NsgDateHelper.isEmptyDate(fieldkey)) {
-        var format = 'dd.MM.yy';
-        if (column.format.isNotEmpty) {
-          format = column.format;
-        }
-        text = '${NsgDateFormat.dateFormat(fieldkey, format: format, locale: Localizations.localeOf(context).languageCode)}';
+        final format = column.format.isNotEmpty ? column.format : 'dd.MM.yy';
+        text = NsgUserDate.instance.formatWithPreset(fieldkey, format, fallbackLocale: Localizations.localeOf(context).languageCode);
       } else {
         text = '';
       }

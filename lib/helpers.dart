@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'localization/nsg_controls_localizations.dart';
 import 'localization/nsg_controls_localizations_en.dart';
 import 'localization/nsg_controls_localizations_ru.dart';
+import 'formfields/nsg_user_date.dart';
 import 'nsg_control_options.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -56,11 +57,7 @@ extension NsgDate on DateTime {
   }
 
   String format(String? format, String locale) {
-    return NsgDateFormat.dateFormat(
-      this,
-      format: format ?? ControlOptions.instance.dateformat,
-      locale: locale,
-    );
+    return NsgUserDate.instance.formatWithPreset(this, format, fallbackLocale: locale);
   }
 
   Duration toDuration() {

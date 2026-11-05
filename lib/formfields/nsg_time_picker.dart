@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:flutter/services.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_icon_button.dart';
 
@@ -125,8 +125,6 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
     textScaleFactor = MediaQuery.of(context).textScaleFactor;
     int hours = _initialTime.inHours;
     int minutes = _initialTime.inMinutes - hours * 60;
-    String hoursString = hours.toString().padLeft(2, '0');
-    String minutesString = minutes.toString().padLeft(2, '0');
 
     inkWellWrapper({required Widget child}) {
       if (widget.disabled == true) {
@@ -198,7 +196,7 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
                     child:
                         // widget.lableWidget ??
                         Text(
-                          "$hoursString:$minutesString",
+                          NsgUserDate.instance.formatTime(DateTime(1970, 1, 1, hours, minutes)),
                           textAlign: widget.textAlign,
                           style:
                               // widget.textStyle ??
@@ -244,58 +242,72 @@ class _TimePickerContentState extends State<TimePickerContent> {
   }
 
   //bool _ignoreChange = false;
-  void textChanged() {
-    _initialTime = textController.text;
-    DateTime? initialTimeNew;
-    var splitedTime = _initialTime.split(':');
-    if (splitedTime.length > 1) {
-      var hours = (int.tryParse(splitedTime[0]) ?? 0) % 24;
-      var minutes = (int.tryParse(splitedTime[1]) ?? 0) % 60;
-      var hoursString = hours.toString().padLeft(2, '0');
-      var minutesString = minutes.toString().padLeft(2, '0');
-      var parsedTime = '$hoursString:$minutesString';
-      if (textController.text != parsedTime) {
-        textController.text = parsedTime;
-        textController.selection = TextSelection.collapsed(offset: parsedTime.length - 1);
-      }
-      var now = widget.dateForTime ?? DateTime.now();
-      initialTimeNew = DateTime(now.year, now.month, now.day, hours, minutes);
-    }
-    if (initialTimeNew != null) {
-      _initialTime2 = initialTimeNew;
-      if (!kIsWeb && (Platform.isIOS || Platform.isAndroid) && datepicker != null) datepicker!.setState(_initialTime2);
-      widget.onChange(_initialTime2);
-    }
-    if (textController.text != _initialTime) {
-      var start = textController.selection.start;
-      //_ignoreChange = true;
-      textController.text = _initialTime;
+  bool _ignoreChange = false;
 
-      textController.selection = TextSelection.fromPosition(TextPosition(offset: start));
-      //_ignoreChange = false;
+  void textChanged() {
+    if (_ignoreChange) return;
+    final parsed = NsgUserDate.instance.tryParseTime(textController.text);
+    if (parsed == null) return;
+    final now = widget.dateForTime ?? DateTime.now();
+    final initialTimeNew = DateTime(now.year, now.month, now.day, parsed.hour, parsed.minute);
+    _initialTime2 = initialTimeNew;
+    _initialTime = textController.text;
+    if (NsgUserDate.instance.phonePicker(!kIsWeb && (Platform.isIOS || Platform.isAndroid)) && datepicker != null) {
+      datepicker!.setState(_initialTime2);
     }
+    widget.onChange(_initialTime2);
+  }
+
+  void _show(DateTime value) {
+    _ignoreChange = true;
+    _initialTime = NsgUserDate.instance.formatTime(value);
+    textController.text = _initialTime;
+    textController.selection = TextSelection.collapsed(offset: textController.text.length);
+    _ignoreChange = false;
+    _initialTime2 = value;
+    widget.onChange(value);
+  }
+
+  void _applyPeriod(int index) {
+    final parsed = NsgUserDate.instance.tryParseTime(textController.text);
+    final base = parsed ?? _initialTime2;
+    final hour12 = base.hour % 12;
+    final hour = index == 0 ? hour12 : hour12 + 12;
+    final now = widget.dateForTime ?? DateTime.now();
+    _show(DateTime(now.year, now.month, now.day, hour, base.minute));
   }
 
   @override
   Widget build(BuildContext context) {
     if (_initialTime.isEmpty) {
-      _initialTime = DateFormat('HH:mm', 'ru_RU').format(widget.initialTime);
+      _initialTime = NsgUserDate.instance.formatTime(widget.initialTime);
+      _initialTime2 = widget.initialTime;
       textController.text = _initialTime;
     }
+    final onPhone = NsgUserDate.instance.phonePicker(!kIsWeb && (Platform.isIOS || Platform.isAndroid));
+    final use24 = NsgUserDate.instance.use24Hour;
+    final periods = use24 ? const <String>[] : DateFormat.jm(NsgUserDate.instance.locale.toString()).dateSymbols.AMPMS;
+    final lettersMatchEnglish = periods.length >= 2 && periods[0].toLowerCase().startsWith('a') && periods[1].toLowerCase().startsWith('p');
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        SizedBox(
+        CallbackShortcuts(
+          bindings: lettersMatchEnglish
+              ? {
+                  const SingleActivator(LogicalKeyboardKey.keyA): () => _applyPeriod(0),
+                  const SingleActivator(LogicalKeyboardKey.keyP): () => _applyPeriod(1),
+                }
+              : const {},
+          child: SizedBox(
           height: 40,
-          width: 120,
+          width: use24 ? 120 : 220,
           child: TextFormField(
-            autofocus: true,
-            inputFormatters: [
-              MaskTextInputFormatter(mask: "##:##", filter: {"#": RegExp(r'\d+|-|/')}),
-            ],
-            keyboardType: TextInputType.number,
+            readOnly: onPhone,
+            autofocus: !onPhone,
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(use24 ? r'[0-9:]' : r'[0-9:A-Za-z\u00A0\u202F .]'))],
+            keyboardType: use24 ? TextInputType.number : TextInputType.text,
             cursorColor: ControlOptions.instance.colorBase.b100,
             textAlign: TextAlign.center,
             decoration: InputDecoration(
@@ -315,8 +327,16 @@ class _TimePickerContentState extends State<TimePickerContent> {
             controller: textController,
           ),
         ),
-        //  if (kIsWeb || Platform.isWindows) getTopPluses(),
-        if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) SizedBox(width: 300, height: 300, child: getCupertinoPicker()),
+        ),
+        if (!use24 && !onPhone)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (var i = 0; i < periods.length && i < 2; i++)
+                TextButton(onPressed: () => _applyPeriod(i), child: Text(periods[i])),
+            ],
+          ),
+        if (onPhone) SizedBox(width: 300, height: 300, child: getCupertinoPicker()),
         //   if (kIsWeb || Platform.isWindows) getBottomMinuses()
       ],
     );
@@ -394,7 +414,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         //widget.onChange(value);
-        _initialTime = DateFormat('HH:mm', 'ru_RU').format(value);
+        _initialTime = NsgUserDate.instance.formatTime(value);
 
         //NsgDateFormat.dateFormat(value, format: 'HH:mm');
         //_ignoreChange = true;
@@ -449,7 +469,7 @@ class NsgCupertinoTimeState extends State<NsgCupertinoTimePicker> {
         mode: CupertinoDatePickerMode.time,
         initialDateTime: widget.initialDateTime,
         onDateTimeChanged: (d) => widget.onDateTimeChanged(d),
-        use24hFormat: true,
+        use24hFormat: NsgUserDate.instance.use24Hour,
         minuteInterval: 1,
       ),
     );

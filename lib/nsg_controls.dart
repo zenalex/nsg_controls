@@ -7,6 +7,7 @@ export 'nsg_text_input.dart';
 export 'nsg_popup.dart';
 export 'formfields/nsg_time_picker.dart';
 export 'formfields/nsg_date_picker.dart';
+export 'formfields/nsg_user_date.dart';
 export 'nsg_listpage.dart';
 export 'formfields/nsg_checkbox.dart';
 export 'nsg_multi_selection.dart';

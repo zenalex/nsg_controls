@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:nsg_controls/formfields/nsg_date_picker.dart';
+import 'package:nsg_controls/formfields/nsg_user_date.dart';
 import 'package:nsg_controls/formfields/nsg_input_type.dart';
 import 'package:nsg_controls/main_forms/nsg_comparision_operator_icons.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
@@ -309,7 +310,7 @@ class NsgFieldFilter {
   Widget _buildDateTimeInput(BuildContext context, VoidCallback onChanged) {
     final date = (_filterValue as DateTime?) ?? DateTime.now();
     final hasValue = _filterValue is DateTime && !NsgDateHelper.isEmptyDate(_filterValue as DateTime);
-    final label = hasValue ? NsgDateFormat.dateFormat(date, format: 'dd.MM.yyyy HH:mm', locale: Localizations.localeOf(context).languageCode) : '';
+    final label = hasValue ? NsgUserDate.instance.formatDateTime(date) : '';
     return InkWell(
       borderRadius: BorderRadius.circular(6),
       onTap: !isEnable
@@ -317,7 +318,16 @@ class NsgFieldFilter {
           : () async {
               final initial = hasValue ? date : DateTime.now();
               NsgDatePicker(initialTime: initial, simple: true, margin: EdgeInsets.zero, onClose: (_) {}).showPopup(context, initial, (pickedDate) async {
-                final time = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(hasValue ? date : pickedDate));
+                final time = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.fromDateTime(hasValue ? date : pickedDate),
+                builder: (context, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: NsgUserDate.instance.use24Hour),
+                    child: child ?? const SizedBox.shrink(),
+                  );
+                },
+              );
                 if (time == null) {
                   _filterValue = DateTime(pickedDate.year, pickedDate.month, pickedDate.day);
                 } else {

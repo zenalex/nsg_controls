@@ -5,11 +5,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:nsg_controls/dialog/show_nsg_dialog.dart';
 import 'package:nsg_controls/nsg_controls.dart';
-import 'package:nsg_data/nsg_data.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:flutter/services.dart';
 
 import '../helpers.dart';
 
@@ -171,7 +169,7 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
                     child:
                         widget.labelWidget ??
                         Text(
-                          NsgDateFormat.dateFormat(_initTime, format: 'dd.MM.yy', locale: Localizations.localeOf(context).languageCode),
+                          NsgUserDate.instance.formatShortDate(_initTime),
                           textAlign: widget.textAlign,
                           style:
                               // widget.textStyle ??
@@ -211,7 +209,9 @@ class _DatePickerContentState extends State<DatePickerContent> {
     //textController.text = _initialTime;
     //var loc = Localizations.localeOf(context).languageCode;
 
-    textController.text = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy', locale: 'en');
+    textController.text = NsgUserDate.instance.formatDate(widget.initialTime);
+    _initialTime = textController.text;
+    _initialTime2 = widget.initialTime;
     textController.addListener(textChanged);
     super.initState();
   }
@@ -219,45 +219,17 @@ class _DatePickerContentState extends State<DatePickerContent> {
   bool _ignoreChange = false;
   void textChanged() {
     if (_ignoreChange) return;
-    var value = textController.text;
-    // if (value.length < _initialTime.length) {
-    //   _initialTime = value;
-    //   return;
-    // } else if (value.length == _initialTime.length) {
-    var start = textController.selection.start;
-    if (start < _initialTime.length) {
-      _initialTime = value.substring(0, start) + _initialTime.substring(start);
+    final parsed = NsgUserDate.instance.tryParseDate(textController.text);
+    if (parsed == null) return;
+    _initialTime = textController.text;
+    _initialTime2 = parsed;
+    final onPhone = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
+    if (onPhone) {
+      datepicker?.setState(_initialTime2);
     } else {
-      _initialTime = value;
+      calendarpicker?.setState(_initialTime2);
     }
-
-    DateTime? initialTimeNew;
-    try {
-      initialTimeNew = DateFormat('dd.MM.yyyy').parse(_initialTime);
-      // ignore: empty_catches
-    } catch (e) {}
-    if (initialTimeNew != null) {
-      _initialTime2 = initialTimeNew;
-      /* ---------------------------------------------------- только на мобильных обновляем Дейтпикер --------------------------------------------------- */
-      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-        datepicker!.setState(_initialTime2);
-      } else {
-        /* ----------------------------------------------------- на десктопе обновляем Календарьпикер ----------------------------------------------------- */
-        calendarpicker!.setState(_initialTime2);
-      }
-      widget.onChange(_initialTime2);
-    }
-    if (textController.text != _initialTime) {
-      var start = textController.selection.start;
-      _ignoreChange = true;
-      textController.text = _initialTime;
-
-      textController.selection = TextSelection.fromPosition(TextPosition(offset: start));
-      _ignoreChange = false;
-    }
-    // } else {
-    //   _initialTime = value;
-    // }
+    widget.onChange(_initialTime2);
   }
 
   @override
@@ -269,9 +241,14 @@ class _DatePickerContentState extends State<DatePickerContent> {
   @override
   Widget build(BuildContext context) {
     if (_initialTime.isEmpty) {
-      _initialTime = NsgDateFormat.dateFormat(widget.initialTime, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
+      _initialTime = NsgUserDate.instance.formatDate(widget.initialTime);
       _initialTime2 = widget.initialTime;
     }
+    final hint = NsgUserDate.instance.dateHint;
+    final separators = hint.replaceAll(RegExp(r'\d'), '');
+    final allowed = RegExp('[0-9${RegExp.escape(separators)}]');
+    final onPhone = NsgUserDate.instance.phonePicker(!kIsWeb && (Platform.isAndroid || Platform.isIOS));
+    final fieldWidth = (hint.length * 14.0 + 32).clamp(150.0, 240.0);
     final inputCursorColor = nsgtheme.nsgDatePickerInputCursorColor ?? nsgtheme.colorBase.b100;
     final inputBorderColor = nsgtheme.nsgDatePickerInputBorderColor ?? nsgtheme.colorMainDark;
     final inputFocusedBorderColor = nsgtheme.nsgDatePickerInputFocusedBorderColor ?? nsgtheme.colorMainText;
@@ -283,14 +260,16 @@ class _DatePickerContentState extends State<DatePickerContent> {
       children: <Widget>[
         SizedBox(
           height: 40,
-          width: 150,
+          width: fieldWidth,
           child: TextFormField(
-            inputFormatters: [MaskTextInputFormatter(initialText: _initialTime, mask: "##.##.####")],
+            readOnly: onPhone,
+            inputFormatters: [FilteringTextInputFormatter.allow(allowed)],
             keyboardType: TextInputType.number,
             cursorColor: inputCursorColor,
             textAlign: widget.textAlign,
             controller: textController,
             decoration: InputDecoration(
+              hintText: hint,
               hintStyle: TextStyle(color: inputTextColor),
               errorStyle: TextStyle(color: inputTextColor),
               labelText: '',
@@ -326,7 +305,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         widget.onChange(value);
-        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
+        _initialTime = NsgUserDate.instance.formatDate(value);
         _ignoreChange = true;
         textController.text = _initialTime;
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
@@ -345,7 +324,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
         widget.onChange(value);
-        _initialTime = NsgDateFormat.dateFormat(value, format: 'dd.MM.yyyy', locale: Localizations.localeOf(context).languageCode);
+        _initialTime = NsgUserDate.instance.formatDate(value);
         _ignoreChange = true;
         textController.text = _initialTime;
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
