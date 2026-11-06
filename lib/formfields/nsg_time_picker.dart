@@ -8,15 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:nsg_controls/nsg_icon_button.dart';
 
 import '../helpers.dart';
 
-/// На Android штатный Material-пикер. На iOS остаётся колесо, на десктопе — поле.
-bool nsgUseMaterialTimePicker() {
-  if (kIsWeb || !Platform.isAndroid) return false;
-  return NsgUserDate.instance.phonePicker(true);
+/// На Android после [NsgUserDate.install] — штатный Material-пикер.
+/// Без install остаётся диалог Nsg с 24-часовым колесом.
+/// [android] задаётся в тесте: на этой машине платформа не Android.
+bool nsgUseMaterialTimePicker({bool? android}) {
+  final onAndroid = android ?? (!kIsWeb && Platform.isAndroid);
+  if (!onAndroid) return false;
+  final user = NsgUserDate.instance;
+  if (user.legacy) return false;
+  return user.mobile;
 }
 
 Future<TimeOfDay?> showNsgMaterialTimePicker(BuildContext context, TimeOfDay initial) {
@@ -109,10 +115,11 @@ class NsgTimePicker extends StatefulWidget {
       return;
     }
     final onPhone = NsgUserDate.instance.phonePicker(!kIsWeb && (Platform.isIOS || Platform.isAndroid));
+    final desktopHeight = NsgUserDate.instance.legacy ? 120.0 : 220.0;
     showDialog(
       context: context,
       builder: (BuildContext context) => NsgPopUp(
-        height: onPhone ? 420 : 220,
+        height: onPhone ? 420 : desktopHeight,
         title: tranControls.enter_time,
         onConfirm: () {
           onClose(selectedDate);
@@ -255,6 +262,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
   String _initialTime = '';
   DateTime _initialTime2 = DateTime.now();
   final textController = TextEditingController();
+  final _legacyMask = MaskTextInputFormatter(mask: '##:##', filter: {'#': RegExp(r'\d+|-|/')});
   late final FocusNode _focus;
   List<String> _periods = const [];
   bool _periodLetters = false;
@@ -279,6 +287,10 @@ class _TimePickerContentState extends State<TimePickerContent> {
 
   void textChanged() {
     if (_ignoreChange) return;
+    if (NsgUserDate.instance.legacy) {
+      _legacyTextChanged();
+      return;
+    }
     final parsed = NsgUserDate.instance.tryParseTime(textController.text);
     if (parsed == null) {
       _publish(false);
@@ -293,6 +305,21 @@ class _TimePickerContentState extends State<TimePickerContent> {
     }
     widget.onChange(_initialTime2);
     _publish(true);
+  }
+
+  void _legacyTextChanged() {
+    final parts = textController.text.split(':');
+    if (parts.length < 2) return;
+    final hours = (int.tryParse(parts[0]) ?? 0) % 24;
+    final minutes = (int.tryParse(parts[1]) ?? 0) % 60;
+    final now = widget.dateForTime ?? DateTime.now();
+    final parsed = DateTime(now.year, now.month, now.day, hours, minutes);
+    _initialTime2 = parsed;
+    _initialTime = textController.text;
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid) && datepicker != null) {
+      datepicker!.setState(_initialTime2);
+    }
+    widget.onChange(_initialTime2);
   }
 
   void _publish(bool valid) {
@@ -351,11 +378,12 @@ class _TimePickerContentState extends State<TimePickerContent> {
       _initialTime2 = widget.initialTime;
       textController.text = _initialTime;
     }
+    final legacy = NsgUserDate.instance.legacy;
     final onPhone = NsgUserDate.instance.phonePicker(!kIsWeb && (Platform.isIOS || Platform.isAndroid));
     final use24 = NsgUserDate.instance.use24Hour;
     _periods = use24 ? const <String>[] : DateFormat.jm(NsgUserDate.instance.locale.toString()).dateSymbols.AMPMS;
     _periodLetters = _periods.length >= 2 && _periods[0].toLowerCase().startsWith('a') && _periods[1].toLowerCase().startsWith('p');
-    final timeError = _timeError();
+    final timeError = legacy ? null : _timeError();
     final periodIndex = _initialTime2.hour >= 12 ? 1 : 0;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -363,15 +391,18 @@ class _TimePickerContentState extends State<TimePickerContent> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(
-          width: use24 ? 120 : 220,
+          height: legacy ? 40 : null,
+          width: legacy ? 120 : (use24 ? 120 : 220),
           child: TextFormField(
             focusNode: _focus,
-            readOnly: onPhone,
-            autofocus: !onPhone,
-            inputFormatters: [
-              _PeriodLetterFormatter(enabled: _periodLetters, onPeriod: _applyPeriod),
-              FilteringTextInputFormatter.allow(RegExp(use24 ? r'[0-9:]' : r'[0-9:A-Za-z\u00A0\u202F .]')),
-            ],
+            readOnly: onPhone && !legacy,
+            autofocus: legacy || !onPhone,
+            inputFormatters: legacy
+                ? [_legacyMask]
+                : [
+                    _PeriodLetterFormatter(enabled: _periodLetters, onPeriod: _applyPeriod),
+                    FilteringTextInputFormatter.allow(RegExp(use24 ? r'[0-9:]' : r'[0-9:A-Za-z\u00A0\u202F .]')),
+                  ],
             keyboardType: use24 ? TextInputType.number : TextInputType.text,
             cursorColor: ControlOptions.instance.colorBase.b100,
             textAlign: TextAlign.center,

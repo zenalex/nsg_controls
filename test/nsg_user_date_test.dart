@@ -352,4 +352,75 @@ void main() {
     await tester.pump();
     expect(tester.getSize(find.byType(TextField)).width, greaterThan(92));
   });
+
+  test('legacy на Android не открывает Material-пикер', () {
+    NsgUserDate.install(NsgUserDate.legacy());
+    expect(nsgUseMaterialTimePicker(android: true), isFalse);
+    expect(nsgUseMaterialTimePicker(android: false), isFalse);
+  });
+
+  test('после install Material-пикер только на Android-телефоне', () {
+    NsgUserDate.install(enPhone24);
+    expect(nsgUseMaterialTimePicker(android: true), isTrue);
+    NsgUserDate.install(ru);
+    expect(nsgUseMaterialTimePicker(android: true), isFalse);
+  });
+
+  testWidgets('legacy: маска даты и подтверждение при неразобранном тексте', (tester) async {
+    NsgUserDate.install(NsgUserDate.legacy());
+    var confirmed = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: NsgPopUp(
+            title: 'date',
+            height: 520,
+            popOnConfirm: false,
+            onConfirm: () => confirmed = true,
+            getContent: () => [
+              DatePickerContent(
+                initialTime: DateTime(2026, 11, 3),
+                textAlign: TextAlign.center,
+                onChange: (_) {},
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    final field = tester.widget<TextField>(find.byType(TextField));
+    expect(field.readOnly, isFalse);
+    await tester.enterText(find.byType(TextFormField), '99999999');
+    await tester.pump();
+    expect(tester.widget<EditableText>(find.byType(EditableText)).controller.text, '99.99.9999');
+    await tester.tap(find.byIcon(Icons.check));
+    await tester.pump();
+    expect(confirmed, isTrue);
+  });
+
+  testWidgets('legacy: маска времени и подтверждение при 25:00', (tester) async {
+    NsgUserDate.install(NsgUserDate.legacy());
+    var confirmed = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: NsgPopUp(
+            title: 'time',
+            height: 360,
+            popOnConfirm: false,
+            onConfirm: () => confirmed = true,
+            getContent: () => [TimePickerContent(initialTime: DateTime(2026, 11, 5, 15, 30), onChange: (_) {})],
+          ),
+        ),
+      ),
+    );
+    final field = tester.widget<TextField>(find.byType(TextField));
+    expect(field.readOnly, isFalse);
+    await tester.enterText(find.byType(TextFormField), '2500');
+    await tester.pump();
+    expect(tester.widget<EditableText>(find.byType(EditableText)).controller.text, '25:00');
+    await tester.tap(find.byIcon(Icons.check));
+    await tester.pump();
+    expect(confirmed, isTrue);
+  });
 }

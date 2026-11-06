@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:nsg_controls/dialog/show_nsg_dialog.dart';
 import 'package:nsg_controls/nsg_controls.dart';
 import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../helpers.dart';
 
@@ -202,6 +203,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
   String _initialTime = '';
   DateTime _initialTime2 = DateTime.now();
   final textController = TextEditingController();
+  final _legacyMask = MaskTextInputFormatter(mask: '##.##.####');
   var firstDate = DateTime.now().subtract(const Duration(days: 200));
   var lastDate = DateTime.now().add(const Duration(days: 200));
   @override
@@ -222,6 +224,19 @@ class _DatePickerContentState extends State<DatePickerContent> {
 
   void textChanged() {
     if (_ignoreChange) return;
+    if (NsgUserDate.instance.legacy) {
+      final parsed = NsgUserDate.instance.tryParseDate(textController.text);
+      if (parsed == null) return;
+      _initialTime = textController.text;
+      _initialTime2 = parsed;
+      if (_onPhone) {
+        datepicker?.setState(_initialTime2);
+      } else {
+        calendarpicker?.setState(_initialTime2);
+      }
+      widget.onChange(_initialTime2);
+      return;
+    }
     final parsed = NsgUserDate.instance.tryParseDate(textController.text);
     if (parsed == null) {
       _publish(false);
@@ -265,6 +280,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       _initialTime = NsgUserDate.instance.formatDate(widget.initialTime);
       _initialTime2 = widget.initialTime;
     }
+    final legacy = NsgUserDate.instance.legacy;
     final hint = NsgUserDate.instance.dateHint;
     final separators = hint.replaceAll(RegExp(r'\d'), '');
     final allowed = RegExp('[0-9${RegExp.escape(separators)}]');
@@ -280,17 +296,18 @@ class _DatePickerContentState extends State<DatePickerContent> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(
-          width: fieldWidth,
+          height: legacy ? 40 : null,
+          width: legacy ? 150 : fieldWidth,
           child: TextFormField(
-            readOnly: onPhone,
-            inputFormatters: [FilteringTextInputFormatter.allow(allowed)],
+            readOnly: onPhone && !legacy,
+            inputFormatters: legacy ? [_legacyMask] : [FilteringTextInputFormatter.allow(allowed)],
             keyboardType: TextInputType.number,
             cursorColor: inputCursorColor,
             textAlign: widget.textAlign,
             controller: textController,
             decoration: InputDecoration(
-              hintText: hint,
-              errorText: _dateError(),
+              hintText: legacy ? null : hint,
+              errorText: legacy ? null : _dateError(),
               hintStyle: TextStyle(color: inputTextColor),
               errorStyle: TextStyle(color: inputTextColor),
               labelText: '',
