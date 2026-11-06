@@ -944,6 +944,7 @@ class _NsgInputState extends State<NsgInput> {
   /// Stack строится всегда — форма дерева не должна зависеть от того, пустое
   /// поле или нет (#2437). [showIcon] гасит только саму иконку.
   Widget _addClearIcon(Widget child, {required bool showIcon}) {
+    final clearColor = Theme.of(context).extension<NsgInputTheme>()?.clearIconColor;
     return Stack(
       alignment: Alignment.centerRight,
       children: [
@@ -974,12 +975,12 @@ class _NsgInputState extends State<NsgInput> {
               child: HoverWidget(
                 hoverChild: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Icon(Icons.close_outlined, color: nsgtheme.nsginputCloseIconColor, size: 16),
+                  child: Icon(Icons.close_outlined, color: clearColor ?? nsgtheme.nsginputCloseIconColor, size: 16),
                 ),
                 onHover: (PointerEnterEvent event) {},
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Icon(Icons.close_outlined, color: nsgtheme.nsginputCloseIconColorHover, size: 16),
+                  child: Icon(Icons.close_outlined, color: clearColor ?? nsgtheme.nsginputCloseIconColorHover, size: 16),
                 ),
               ),
             ),

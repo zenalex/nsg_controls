@@ -13,6 +13,7 @@ class NsgInputTheme extends ThemeExtension<NsgInputTheme> {
     this.hintColor,
     this.borderColor,
     this.focusedBorderColor,
+    this.clearIconColor,
   });
 
   final Color? textColor;
@@ -20,6 +21,7 @@ class NsgInputTheme extends ThemeExtension<NsgInputTheme> {
   final Color? hintColor;
   final Color? borderColor;
   final Color? focusedBorderColor;
+  final Color? clearIconColor;
 
   @override
   NsgInputTheme copyWith({
@@ -28,18 +30,21 @@ class NsgInputTheme extends ThemeExtension<NsgInputTheme> {
     Color? hintColor,
     Color? borderColor,
     Color? focusedBorderColor,
+    Color? clearIconColor,
   }) => NsgInputTheme(
     textColor: textColor ?? this.textColor,
     labelColor: labelColor ?? this.labelColor,
     hintColor: hintColor ?? this.hintColor,
     borderColor: borderColor ?? this.borderColor,
     focusedBorderColor: focusedBorderColor ?? this.focusedBorderColor,
+    clearIconColor: clearIconColor ?? this.clearIconColor,
   );
 
   @override
   NsgInputTheme lerp(covariant NsgInputTheme? other, double t) {
     if (other == null) return this;
     return NsgInputTheme(
+      clearIconColor: Color.lerp(clearIconColor, other.clearIconColor, t),
       textColor: Color.lerp(textColor, other.textColor, t),
       labelColor: Color.lerp(labelColor, other.labelColor, t),
       hintColor: Color.lerp(hintColor, other.hintColor, t),
