@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nsg_controls/formfields/nsg_user_date.dart';
 import 'package:nsg_controls/helpers.dart';
 import 'package:nsg_controls/nsg_control_options.dart';
 import 'package:nsg_data/helpers/nsg_period_new.dart';
 
 String _formatTimeOfDay(TimeOfDay time) {
-  final h = time.hour.toString().padLeft(2, '0');
-  final m = time.minute.toString().padLeft(2, '0');
-  return '$h:$m';
+  return NsgUserDate.instance.formatTime(DateTime(1970, 1, 1, time.hour, time.minute));
 }
 
 int _toMinutes(TimeOfDay time) => time.hour * 60 + time.minute;
@@ -17,15 +16,25 @@ TimeOfDay _fromMinutes(int minutes) {
 }
 
 TimeOfDay? _parseTimeOfDay(String text) {
-  final trimmed = text.trim();
-  final match = RegExp(r'^(\d{1,2})[:.-]?(\d{0,2})$').firstMatch(trimmed);
+  final parsed = NsgUserDate.instance.tryParseTime(text);
+  if (parsed != null) return TimeOfDay(hour: parsed.hour, minute: parsed.minute);
+  return _parseLooseTime(text);
+}
+
+/// Старый ввод без двоеточия: `1530`, `15.30`, `15-30`, `15`.
+/// В 12-часовом режиме с периодом суток час 1–12 без пометки не угадываем.
+TimeOfDay? _parseLooseTime(String text) {
+  final match = RegExp(r'^(\d{1,2})[:.-]?(\d{0,2})$').firstMatch(text.trim());
   if (match == null) return null;
-  final h = int.tryParse(match.group(1) ?? '');
-  final mRaw = match.group(2) ?? '';
-  final m = mRaw.isEmpty ? 0 : int.tryParse(mRaw);
-  if (h == null || m == null) return null;
-  if (h < 0 || h > 23 || m < 0 || m > 59) return null;
-  return TimeOfDay(hour: h, minute: m);
+  final hour = int.parse(match.group(1)!);
+  final minuteText = match.group(2)!;
+  final minute = minuteText.isEmpty ? 0 : int.parse(minuteText);
+  if (hour > 23 || minute > 59) return null;
+  final user = NsgUserDate.instance;
+  if (!user.legacy && !user.fixedDayMonth && !user.use24Hour && hour >= 1 && hour <= 12) {
+    return null;
+  }
+  return TimeOfDay(hour: hour, minute: minute);
 }
 
 SliderThemeData _primarySliderTheme(BuildContext context) {
@@ -106,8 +115,9 @@ class _TimeFieldState extends State<_TimeField> {
 
   @override
   Widget build(BuildContext context) {
+    final wide = !NsgUserDate.instance.use24Hour;
     return SizedBox(
-      width: 92,
+      width: wide ? 148 : 92,
       child: TextField(
         controller: controller,
         focusNode: focus,

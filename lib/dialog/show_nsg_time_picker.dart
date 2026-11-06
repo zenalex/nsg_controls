@@ -12,6 +12,13 @@ Future<TimeOfDay?> showNsgTimePicker({
   TimeOfDay? maximumTime,
   String? label,
 }) async {
+  if (nsgUseMaterialTimePicker()) {
+    final picked = await showNsgMaterialTimePicker(context, initialTime);
+    if (picked == null) return null;
+    if (minimumTime != null && !(picked.isAfter(minimumTime) || picked.isAtSameTimeAs(minimumTime))) return null;
+    if (maximumTime != null && !(picked.isBefore(maximumTime) || picked.isAtSameTimeAs(maximumTime))) return null;
+    return picked;
+  }
   final date = DateTime.now();
   TimeOfDay? selectedTime;
   ValueNotifier<String?> errorMessage = ValueNotifier<String?>(null);

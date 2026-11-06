@@ -126,6 +126,12 @@ class NsgControlsLocalizationsRu extends NsgControlsLocalizations {
   String get enter_time => 'Введите время';
 
   @override
+  String get invalid_time => 'Некорректное время';
+
+  @override
+  String get invalid_date => 'Некорректная дата';
+
+  @override
   String get error_file_download => 'Ошибка скачивания файла';
 
   @override

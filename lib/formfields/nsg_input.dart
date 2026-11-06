@@ -567,7 +567,9 @@ class _NsgInputState extends State<NsgInput> {
             //textController.text = widget.label;
             _syncTextControllerValue('');
           } else {
-            _syncTextControllerValue(NsgDateFormat.dateFormat(fieldValue, format: widget.formatDateTime, locale: Localizations.localeOf(context).languageCode));
+            _syncTextControllerValue(
+              NsgDateFormat.dateFormat(fieldValue, format: widget.formatDateTime, locale: Localizations.localeOf(context).languageCode),
+            );
           }
         } else {
           _syncTextControllerValue(fieldValue.toString());

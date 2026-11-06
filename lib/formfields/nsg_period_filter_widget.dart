@@ -268,9 +268,9 @@ class NsgPeriodFilterContentState extends State<NsgPeriodFilterContent> {
   DateTime _minutesToTime(int minutes) => DateTime(0).add(Duration(minutes: minutes));
 
   String _formatTimeMinutes(int minutes) {
-    final hours = (minutes ~/ 60).toString().padLeft(2, '0');
-    final mins = (minutes % 60).toString().padLeft(2, '0');
-    return '$hours:$mins';
+    final hours = minutes ~/ 60;
+    final mins = minutes % 60;
+    return NsgUserDate.instance.formatTime(DateTime(1970, 1, 1, hours, mins));
   }
 
   @override

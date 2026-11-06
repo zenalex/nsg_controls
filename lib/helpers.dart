@@ -56,11 +56,8 @@ extension NsgDate on DateTime {
   }
 
   String format(String? format, String locale) {
-    return NsgDateFormat.dateFormat(
-      this,
-      format: format ?? ControlOptions.instance.dateformat,
-      locale: locale,
-    );
+    if (format == '') return '';
+    return NsgDateFormat.dateFormat(this, format: format ?? ControlOptions.instance.dateformat, locale: locale);
   }
 
   Duration toDuration() {
@@ -251,6 +248,15 @@ class DatePartFormat {
   final DatePart datePart;
   final int count;
   final int position;
+}
+
+/// Строка пакета без Get. [tranControls] падает, пока нет GetRoot.
+String nsgControlsText(BuildContext context, String Function(NsgControlsLocalizations localization) read) {
+  final fromTree = NsgControlsLocalizations.of(context);
+  if (fromTree != null) return read(fromTree);
+  final code = (Localizations.maybeLocaleOf(context) ?? WidgetsBinding.instance.platformDispatcher.locale).languageCode.toLowerCase();
+  final fallback = code.startsWith('ru') ? NsgControlsLocalizationsRu() : NsgControlsLocalizationsEn();
+  return read(fallback);
 }
 
 NsgControlsLocalizations get tranControls {
