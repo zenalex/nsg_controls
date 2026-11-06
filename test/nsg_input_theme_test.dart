@@ -23,6 +23,7 @@ void main() {
   Future<_Record> mount(
     WidgetTester tester, {
     NsgInputTheme? theme,
+    Color background = Colors.white,
     TextFormFieldType border = TextFormFieldType.outlineInputBorder,
     TextStyle? textStyle,
     TextStyle? labelStyle,
@@ -37,7 +38,10 @@ void main() {
     final row = _Record()..newRecord();
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData(extensions: [if (theme != null) theme]),
+        theme: ThemeData(
+          scaffoldBackgroundColor: background,
+          extensions: [if (theme != null) theme],
+        ),
         home: Scaffold(
           body: SizedBox(
             width: 300,
@@ -121,6 +125,7 @@ void main() {
         final row = await mount(
           tester,
           theme: t,
+          background: dark ? Colors.black : Colors.white,
           border: border,
           changed: (_) => changes++,
         );
