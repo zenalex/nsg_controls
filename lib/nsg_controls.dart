@@ -1,4 +1,5 @@
 export 'formfields/nsg_input.dart';
+export 'formfields/nsg_input_theme.dart';
 export 'formfields/nsg_input_type.dart';
 export 'nsg_selection.dart';
 export 'nsg_control_options.dart';

@@ -37,6 +37,35 @@ flutter pub get
 
 Все элементы ввода `NsgInput` работают поверх `NsgDataItem` / `NsgDataController`, поэтому совместимы и с REST-провайдером NSG, и с новым `serverpod`-адаптером из `nsg_data`.
 
+### Цвета NsgInput из темы приложения
+
+`NsgInputTheme` в `ThemeData.extensions` позволяет приложению задать цвета
+текста, верхней подписи, подсказки, обычной рамки и рамки фокуса. Цвета следует
+подбирать под фактический фон поля; extension сам не меняет фон и не вычисляет
+контраст. Без extension или при `null` в отдельном слоте сохраняются прежние
+цвета `ControlOptions`.
+
+```dart
+ThemeData(
+  extensions: const [
+    NsgInputTheme(
+      textColor: Colors.black,
+      labelColor: Colors.black,
+      hintColor: Colors.black54,
+      borderColor: Colors.black54,
+      focusedBorderColor: Colors.deepPurple,
+    ),
+  ],
+)
+```
+
+Явные `textStyle`, `labelTextStyle`, `labelColor`, `labelWidget` и `borderColor`
+сохраняют прежний приоритет и семантику. В частности, `borderColor` задаёт обычную
+рамку, а рамка фокуса остаётся отдельным слотом. Явный `hint` использует
+`hintColor`; `labelTextStyle` применяется к подсказке из `label`, как и прежде.
+Размеры, шрифты, ошибки валидации, заливки, курсор, значки и пункты выпадающих списков
+этим extension не меняются.
+
 ### Формы и поля ввода
 
 ```dart
