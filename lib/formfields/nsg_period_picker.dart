@@ -441,8 +441,8 @@ class NsgPeriodWidget extends StatelessWidget {
       onTap: () => !disabled && onPressed != null ? onPressed() : null,
       child: Container(
         padding: EdgeInsets.all(5),
-        decoration: BoxDecoration(color: nsgtheme.colorMain, borderRadius: BorderRadius.circular(10)),
-        child: Icon(icon, size: 25),
+        decoration: BoxDecoration(color: nsgtheme.colorPrimary, borderRadius: BorderRadius.circular(10)),
+        child: Icon(icon, size: 25, color: nsgtheme.colorSecondary),
       ),
     );
   }
@@ -471,9 +471,7 @@ class NsgPeriodWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: selected ? Border.all(color: nsgtheme.colorMain, width: 2) : null,
         ),
-        child: periodGranularity == NsgPeriodGranularity.day && timeText == null
-            ? FittedBox(fit: BoxFit.scaleDown, child: text)
-            : text,
+        child: periodGranularity == NsgPeriodGranularity.day && timeText == null ? FittedBox(fit: BoxFit.scaleDown, child: text) : text,
       ),
     );
   }
