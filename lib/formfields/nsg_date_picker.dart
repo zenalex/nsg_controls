@@ -340,6 +340,10 @@ class _DatePickerContentState extends State<DatePickerContent> {
       firstDateTime: widget.firstDateTime,
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
+        // Раньше onChange и _publish: их setState пересоздаёт сетку
+        // с initialDateTime. Без этой записи подсветка возвращалась
+        // на день открытия, а в поле уже стояла выбранная дата.
+        _initialTime2 = value;
         widget.onChange(value);
         _initialTime = NsgUserDate.instance.formatDate(value);
         _ignoreChange = true;
@@ -360,6 +364,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
       key: GlobalKey(),
       initialDateTime: _initialTime2,
       onDateTimeChanged: (DateTime value) {
+        _initialTime2 = value;
         widget.onChange(value);
         _initialTime = NsgUserDate.instance.formatDate(value);
         _ignoreChange = true;
@@ -474,7 +479,10 @@ class NsgCalendarDatePickerState extends State<NsgCalendarDatePicker> {
         : widget.initialDateTime;
 
     final calendarPicker = CalendarDatePicker(
-      key: GlobalKey(),
+      // Новый GlobalKey на каждом build сбрасывал выбор на initialDate.
+      // Ключ меняется только вместе с начальным днём: так ввод в поле
+      // по-прежнему переносит сетку, а чужой setState выбор не трогает.
+      key: ValueKey<DateTime>(DateTime(widget.initialDateTime.year, widget.initialDateTime.month, widget.initialDateTime.day)),
       firstDate: widget.firstDateTime ?? DateTime(0),
       lastDate: widget.lastDateTime ?? lastDate,
       initialDate: widget.initialDateTime,
