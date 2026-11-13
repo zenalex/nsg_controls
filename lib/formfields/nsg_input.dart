@@ -19,6 +19,8 @@ import 'package:nsg_controls/formfields/nsg_field_type.dart';
 
 import 'nsg_input_selection_widget_type.dart';
 
+part 'nsg_phone_code_field.dart';
+
 class NsgInput extends StatefulWidget {
   final String label;
   final Color? labelColor;
@@ -37,10 +39,10 @@ class NsgInput extends StatefulWidget {
   final int maxLines;
   final int minLines;
 
-  /// Дефолтный выбранный код страны, например: 'en'
+  /// Дефолтный ISO-код страны, например: 'RU'.
   final String? countryCodeInitial;
 
-  /// Список кодов стран при выборе кода телефонного номера страны, например: ['en','ru']
+  /// Допустимые ISO-коды стран, например: ['RU', 'IN', 'TH'].
   final List<String>? countryCodes;
 
   ///Для обработки нажатия на физические кнопки при нахождении в фокусе
@@ -626,25 +628,25 @@ class _NsgInputState extends State<NsgInput> {
                         alignment: Alignment.center,
                         children: [
                           inputType == NsgInputType.phoneCode
-                              ? CountryDropdown(
-                                  initialCountryData: widget.countryCodeInitial == null
-                                      ? null
-                                      : PhoneCodes.getPhoneCountryDataByCountryCode(widget.countryCodeInitial!),
-                                  filter: getPhoneCountryDataByCountryCodes(),
-                                  printCountryName: true,
-                                  onCountrySelected: (PhoneCountryData countryData) {
-                                    textController.text = countryData.countryCode.toString();
-                                    widget.dataItem.setFieldValue(widget.fieldName, countryData.countryCode.toString());
-                                    if (widget.onChanged != null) {
-                                      widget.onChanged!(widget.dataItem);
-                                    }
-                                    if (widget.onEditingComplete != null) {
-                                      widget.onEditingComplete!(widget.dataItem, widget.fieldName);
-                                    }
+                              ? _NsgPhoneCodeField(
+                                  key: ObjectKey(widget.dataItem),
+                                  iso: fieldValue.toString(),
+                                  initialIso: widget.countryCodeInitial,
+                                  countries: getPhoneCountryDataByCountryCodes() ?? PhoneCodes.getAllCountryDatas(),
+                                  enabled: !_disabled,
+                                  showClear: widget.showDeleteIcon,
+                                  focusNode: focus,
+                                  label: widget.label,
+                                  onChanged: (iso) {
+                                    textController.text = iso;
+                                    widget.dataItem.setFieldValue(widget.fieldName, iso);
+                                    widget.onChanged?.call(widget.dataItem);
                                     _notifierAll.value++;
                                   },
-                                  dropdownColor: nsgtheme.colorModalBack,
+                                  onComplete: () => widget.onEditingComplete?.call(widget.dataItem, widget.fieldName),
+                                  onSubmitted: (_) => widget.onFieldSubmitted?.call(widget.dataItem, widget.fieldName),
                                   decoration: InputDecoration(
+                                    hintText: widget.hint,
                                     suffixIcon: widget.suffixIcon,
                                     floatingLabelBehavior: widget.floatingLabelBehavior,
                                     contentPadding: getContentPaddingPhoneCode(),
@@ -779,7 +781,7 @@ class _NsgInputState extends State<NsgInput> {
                                 ),
                               ),
                             ),
-                          if (widget.hint != null && focus.hasFocus && textController.text == '')
+                          if (inputType != NsgInputType.phoneCode && widget.hint != null && focus.hasFocus && textController.text == '')
                             ValueListenableBuilder(
                               valueListenable: _notifier,
                               builder: (BuildContext context, bool val, Widget? child) {
