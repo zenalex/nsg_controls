@@ -148,11 +148,64 @@ class NsgTimePicker extends StatefulWidget {
 class _NsgTimePickerState extends State<NsgTimePicker> {
   late double textScaleFactor;
   Duration _initialTime = const Duration();
+  late final TextEditingController _inlineText;
+  late final FocusNode _inlineFocus;
+  bool _inlineDirty = false;
+
+  String _formatInline() => NsgUserDate.instance.formatTime(
+    DateTime(1970, 1, 1, _initialTime.inHours, _initialTime.inMinutes % 60),
+  );
+
+  void _commitInline() {
+    if (!_inlineDirty || widget.disabled) return;
+    var text = _inlineText.text.trim();
+    if (NsgUserDate.instance.use24Hour && RegExp(r'^\d{4}$').hasMatch(text)) {
+      text = '${text.substring(0, 2)}:${text.substring(2)}';
+    }
+    final parsed = NsgUserDate.instance.tryParseTime(text);
+    if (parsed == null) return;
+    final duration = Duration(hours: parsed.hour, minutes: parsed.minute);
+    if (widget.validator != null && !widget.validator!(duration)) return;
+    _inlineDirty = false;
+    _initialTime = duration;
+    _inlineText.value = TextEditingValue(
+      text: _formatInline(),
+      selection: TextSelection.collapsed(offset: _formatInline().length),
+    );
+    if (widget.validator != null) {
+      widget.onValidTime?.call(duration);
+    } else {
+      widget.onClose(duration);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant NsgTimePicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialTime != oldWidget.initialTime) {
+      _initialTime = widget.initialTime;
+      if (!_inlineFocus.hasFocus) {
+        _inlineDirty = false;
+        _inlineText.text = _formatInline();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _inlineFocus.dispose();
+    _inlineText.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
     _initialTime = widget.initialTime;
+    _inlineText = TextEditingController(text: _formatInline());
+    _inlineFocus = FocusNode()..addListener(() {
+      if (!_inlineFocus.hasFocus) _commitInline();
+    });
   }
 
   @override
@@ -188,6 +241,29 @@ class _NsgTimePickerState extends State<NsgTimePicker> {
           child: child,
         );
       }
+    }
+
+    if (kIsWeb || !(Platform.isIOS || Platform.isAndroid)) {
+      return Padding(
+        padding: widget.margin,
+        child: TextFormField(
+          controller: _inlineText,
+          focusNode: _inlineFocus,
+          enabled: !widget.disabled,
+          textAlign: widget.textAlign ?? TextAlign.center,
+          keyboardType: NsgUserDate.instance.use24Hour ? TextInputType.datetime : TextInputType.text,
+          textInputAction: TextInputAction.done,
+          decoration: InputDecoration(
+            labelText: widget.simple ? null : widget.label,
+            isDense: widget.simple,
+          ),
+          onChanged: (_) => _inlineDirty = true,
+          onEditingComplete: () {
+            _commitInline();
+            _inlineFocus.unfocus();
+          },
+        ),
+      );
     }
 
     return inkWellWrapper(
