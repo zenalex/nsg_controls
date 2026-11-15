@@ -115,7 +115,8 @@ class NsgTimePicker extends StatefulWidget {
       return;
     }
     final onPhone = NsgUserDate.instance.phonePicker(!kIsWeb && (Platform.isIOS || Platform.isAndroid));
-    final desktopHeight = NsgUserDate.instance.legacy ? 120.0 : 220.0;
+    // 120 прячет строку «Некорректное время» под шапкой. Валидное время её не показывает.
+    final desktopHeight = NsgUserDate.instance.legacy ? 168.0 : 220.0;
     showDialog(
       context: context,
       builder: (BuildContext context) => NsgPopUp(
@@ -308,18 +309,21 @@ class _TimePickerContentState extends State<TimePickerContent> {
   }
 
   void _legacyTextChanged() {
-    final parts = textController.text.split(':');
-    if (parts.length < 2) return;
-    final hours = (int.tryParse(parts[0]) ?? 0) % 24;
-    final minutes = (int.tryParse(parts[1]) ?? 0) % 60;
+    // Не по модулю: 25:75 иначе молча становится 01:15, без сообщения.
+    final parsed = NsgUserDate.instance.tryParseTime(textController.text);
+    if (parsed == null) {
+      _publish(false);
+      return;
+    }
     final now = widget.dateForTime ?? DateTime.now();
-    final parsed = DateTime(now.year, now.month, now.day, hours, minutes);
-    _initialTime2 = parsed;
+    final value = DateTime(now.year, now.month, now.day, parsed.hour, parsed.minute);
+    _initialTime2 = value;
     _initialTime = textController.text;
     if (!kIsWeb && (Platform.isIOS || Platform.isAndroid) && datepicker != null) {
       datepicker!.setState(_initialTime2);
     }
     widget.onChange(_initialTime2);
+    _publish(true);
   }
 
   void _publish(bool valid) {
@@ -383,7 +387,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
     final use24 = NsgUserDate.instance.use24Hour;
     _periods = use24 ? const <String>[] : DateFormat.jm(NsgUserDate.instance.locale.toString()).dateSymbols.AMPMS;
     _periodLetters = _periods.length >= 2 && _periods[0].toLowerCase().startsWith('a') && _periods[1].toLowerCase().startsWith('p');
-    final timeError = legacy ? null : _timeError();
+    final timeError = _timeError();
     final periodIndex = _initialTime2.hour >= 12 ? 1 : 0;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -391,7 +395,7 @@ class _TimePickerContentState extends State<TimePickerContent> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(
-          height: legacy ? 40 : null,
+          height: legacy && timeError == null ? 40 : null,
           width: legacy ? 120 : (use24 ? 120 : 220),
           child: TextFormField(
             focusNode: _focus,
