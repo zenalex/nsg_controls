@@ -398,7 +398,7 @@ void main() {
     expect(confirmed, isTrue);
   });
 
-  testWidgets('legacy: маска времени и подтверждение при 25:00', (tester) async {
+  testWidgets('legacy: маска времени, 25:00 не подтверждается', (tester) async {
     NsgUserDate.install(NsgUserDate.legacy());
     var confirmed = false;
     await tester.pumpWidget(
@@ -419,6 +419,60 @@ void main() {
     await tester.enterText(find.byType(TextFormField), '2500');
     await tester.pump();
     expect(tester.widget<EditableText>(find.byType(EditableText)).controller.text, '25:00');
+    expect(tester.widget<TextField>(find.byType(TextField)).decoration!.errorText, anyOf('Некорректное время', 'Invalid time'));
+    await tester.tap(find.byIcon(Icons.check));
+    await tester.pump();
+    expect(confirmed, isFalse);
+  });
+
+  testWidgets('legacy: 25:75 остаётся в поле и не становится 01:15', (tester) async {
+    NsgUserDate.install(NsgUserDate.legacy());
+    final changes = <DateTime>[];
+    var confirmed = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: NsgPopUp(
+            title: 'time',
+            height: 360,
+            popOnConfirm: false,
+            onConfirm: () => confirmed = true,
+            getContent: () => [
+              TimePickerContent(initialTime: DateTime(2026, 11, 5, 15, 30), onChange: changes.add),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    changes.clear();
+    await tester.enterText(find.byType(TextFormField), '2575');
+    await tester.pump();
+    await tester.pump();
+    expect(tester.widget<EditableText>(find.byType(EditableText)).controller.text, '25:75');
+    expect(changes, isEmpty);
+    expect(tester.widget<TextField>(find.byType(TextField)).decoration!.errorText, anyOf('Некорректное время', 'Invalid time'));
+    await tester.tap(find.byIcon(Icons.check));
+    await tester.pump();
+    expect(confirmed, isFalse);
+
+    await tester.enterText(find.byType(TextFormField), '1260');
+    await tester.pump();
+    await tester.pump();
+    expect(tester.widget<EditableText>(find.byType(EditableText)).controller.text, '12:60');
+    expect(changes, isEmpty);
+    await tester.tap(find.byIcon(Icons.check));
+    await tester.pump();
+    expect(confirmed, isFalse);
+
+    await tester.enterText(find.byType(TextFormField), '1845');
+    await tester.pump();
+    await tester.pump();
+    expect(tester.widget<EditableText>(find.byType(EditableText)).controller.text, '18:45');
+    expect(changes, isNotEmpty);
+    expect(changes.last.hour, 18);
+    expect(changes.last.minute, 45);
+    expect(tester.widget<TextField>(find.byType(TextField)).decoration!.errorText, isNull);
     await tester.tap(find.byIcon(Icons.check));
     await tester.pump();
     expect(confirmed, isTrue);
