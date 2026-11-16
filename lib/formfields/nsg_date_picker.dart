@@ -212,6 +212,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
     //var loc = Localizations.localeOf(context).languageCode;
 
     textController.text = NsgUserDate.instance.formatDate(widget.initialTime);
+    _syncLegacyMask();
     _initialTime = textController.text;
     _initialTime2 = widget.initialTime;
     textController.addListener(textChanged);
@@ -219,6 +220,16 @@ class _DatePickerContentState extends State<DatePickerContent> {
   }
 
   bool _ignoreChange = false;
+
+  // Программная запись в controller обходит inputFormatters. Маска должна
+  // знать весь текущий текст до первой замены выделенного сегмента (#4602).
+  void _syncLegacyMask() {
+    if (!NsgUserDate.instance.legacy) return;
+    _legacyMask.updateMask(
+      mask: '##.##.####',
+      newValue: TextEditingValue(text: textController.text),
+    );
+  }
 
   bool get _onPhone => NsgUserDate.instance.phonePicker(!kIsWeb && (Platform.isAndroid || Platform.isIOS));
 
@@ -348,6 +359,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
         _initialTime = NsgUserDate.instance.formatDate(value);
         _ignoreChange = true;
         textController.text = _initialTime;
+        _syncLegacyMask();
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
         _ignoreChange = false;
         _publish(true);
@@ -369,6 +381,7 @@ class _DatePickerContentState extends State<DatePickerContent> {
         _initialTime = NsgUserDate.instance.formatDate(value);
         _ignoreChange = true;
         textController.text = _initialTime;
+        _syncLegacyMask();
         textController.selection = TextSelection.fromPosition(const TextPosition(offset: 0));
         _ignoreChange = false;
         _publish(true);
