@@ -42,6 +42,7 @@ class NsgLoadingScrollController<T> extends ScrollController {
             _attCount++;
             if (function != null) {
               Future(function!).then((T val) {
+                if (_disposed) return;
                 _value = val;
                 _stat = NsgLoadingScrollStatus.success;
               }, onError: _failAttempt);
@@ -73,6 +74,7 @@ class NsgLoadingScrollController<T> extends ScrollController {
   //Map<int, double> heightMap = {};
   DataGroupList dataGroups = DataGroupList([]);
 
+  bool _disposed = false;
   int _errCount = 0;
   int _attCount = 0;
 
@@ -125,11 +127,18 @@ class NsgLoadingScrollController<T> extends ScrollController {
   /// четвёртой ошибки: у [Future.then] не было onError, и асинхронная ошибка
   /// уходила в никуда вместе со статусом.
   void _failAttempt(Object error, StackTrace stackTrace) {
+    if (_disposed) return;
     _errCount++;
     // Порог в три ошибки - замысел исходного кода, он сохранён: рябь сети даёт
     // право на следующую попытку, устойчивый отказ переводит список в error.
     // Изменилось только то, что из loading выходят ОБЕ ветки, а не одна.
     _stat = _errCount > 3 ? NsgLoadingScrollStatus.error : NsgLoadingScrollStatus.success;
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 
   /// Восстановить [lastOffset] после пересборки списка. Без [position] при 0/2+ Scrollable; один jumpTo на серию rebuild.

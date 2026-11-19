@@ -21,6 +21,8 @@
 // принёс, обнулял бы счётчик сам себе — сеттер статуса зовёт notifyListeners,
 // то есть того же слушателя, — и получалась бы вечная карусель таймеров.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nsg_controls/ui/nsg_loading_scroll_controller.dart';
@@ -174,6 +176,52 @@ void main() {
 
     expect(loaded, greaterThan(2), reason: 'после усадки списка подгрузка обязана продолжиться');
   });
+
+  for (final fails in [false, true]) {
+    testWidgets('закрытие списка во время подгрузки (ошибка: $fails)', (tester) async {
+      final pending = Completer<int>();
+      var calls = 0;
+      final controller = NsgLoadingScrollController<Object?>(
+        function: () {
+          calls++;
+          return pending.future;
+        },
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 400,
+                height: 300,
+                child: SingleChildScrollView(
+                  controller: controller,
+                  child: const SizedBox(width: 400, height: 400),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -30));
+      await tester.pumpAndSettle();
+      expect(calls, 1);
+      expect(controller.status, NsgLoadingScrollStatus.loading);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+      if (fails) {
+        pending.completeError(StateError('страница не приехала'));
+      } else {
+        pending.complete(42);
+      }
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      expect(controller.value, isNull);
+      expect(controller.status, NsgLoadingScrollStatus.loading);
+    });
+  }
 
   test('сеттер value пишет в поле, а не в сам себя', () {
     // До починки сеттер присваивал сам себе (`value = val` вместо
