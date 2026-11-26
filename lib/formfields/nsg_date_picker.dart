@@ -118,9 +118,11 @@ class _NsgDatePickerState extends State<NsgDatePicker> {
           onTap: widget.disabled != true
               ? () {
                   NsgDatePicker(initialTime: _initTime, onClose: (value) {}).showPopup(context, _initTime, (value) {
+                    if (!mounted) return;
                     widget.onClose(value);
-                    _initTime = value;
-                    setState(() {});
+                    if (mounted) {
+                      setState(() => _initTime = value);
+                    }
                   });
                 }
               : null,
